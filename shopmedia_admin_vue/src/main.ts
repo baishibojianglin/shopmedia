@@ -7,8 +7,12 @@ import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-Vue.prototype.$axios = axios
+
+// 公用配置
 Vue.config.productionTip = false
+Vue.prototype.$axios = axios  //ajax插件
+Vue.prototype.$url='http://www.shopmedia.com/index.php/'  //后台域名
+axios.defaults.withCredentials=true  //解决跨域后保持相同session(允许ajax携带cook)
 Vue.use(ElementUI)
 
 new Vue({
