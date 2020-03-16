@@ -5,6 +5,7 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+Vue.prototype.$serverUrl = 'http://www.shopmedia.com/index.php/partner/'
 Vue.prototype.$store = store
 
 App.mpType = 'app'
