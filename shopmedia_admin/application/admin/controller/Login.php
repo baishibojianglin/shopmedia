@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\lib\Aes;
 
+
 /**
  * admin模块登录控制器类
  * Class Login
@@ -58,20 +59,33 @@ class Login extends Common
         }
         // 密码md5加密
         $data['password'] = md5($data['password']);
+
+
         // 查询数据表模型类
-        $list = model('CompanyUser')->checklogin($data['account'], $data['password']);
+        $mapuser['account'] = $data['account'];
+        $mapuser['password'] = $data['password'];
+        $list = model('User')->where($mapuser)->field('password,token_time', true)->find();
+
+        
         if (empty($list)) {
           $result['status'] = 0;
           $result['message'] = '账号或密码不正确';
           return json($result);
         }
+
+        if ($list['status']==0) {
+          $result['status'] = 0;
+          $result['message'] = '账号被停用';
+          return json($result);
+        }
+
         // 通过验证,生成token
         $token = md5(uniqid(mt_rand(), true)) . mt_rand();
+
         // 将token存入供应商账户表
-        $lsittoken = model('CompanyUser')->savetoken($list['user_id'], $token);
+        $lsittoken = model('User')->savetoken($list['id'], $token);
         // 用aes加密token
-        $token = $aes->encrypt($token);
-        $list['token'] = $token;
+        $list['token'] = $aes->encrypt($token);
         // 成功放行登录
         if (!empty($lsittoken)) {
           $result['value'] = $list;

@@ -26,6 +26,7 @@
 </template>
 
 <script> 
+      import aes from '@/assets/js/aes.js' 
 	  export default {
 	    data(){
 	      return {
@@ -89,16 +90,17 @@
 					str:str,
 					sign:sign
 				}).then(function(res){
+					
 					if(res.data['status']==0){ //验证未通过
 					   self.$message({
 						 message:res.data['message'],
 						 type: 'warning'
 					   });						
 					}else{  //登录成功
-					   //前端存储token、分公司（供应商）id、分公司（供应商）名字等存入缓存
+					   //前端存储token、登录账号id、等存入缓存
 					    localStorage.setItem("company",JSON.stringify(res.data.value));
 					   //跳转首页
-					    self.$router.replace({path:'/home'});		
+					    self.$router.replace({path:'/home'});	
 					}					
 				})
 			}

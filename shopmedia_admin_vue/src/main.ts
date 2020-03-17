@@ -15,6 +15,13 @@ Vue.prototype.$url='http://www.shopmedia.com/index.php/'  //后台域名
 axios.defaults.withCredentials=true  //解决跨域后保持相同session(允许ajax携带cook)
 Vue.use(ElementUI)
 
+// 引入基本样式
+import './assets/css/basic.css'
+
+// 验证签名值
+Vue.prototype.$sign = 'jl_goodshop'
+
+
 new Vue({
   router,
   store,
