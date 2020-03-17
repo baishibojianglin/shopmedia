@@ -7,12 +7,12 @@
  */
 
 return [
-    'password_pre_salt' => '#dlst_hunter', // 密码加密盐
-    'aeskey' => 'ccd8a57555e2e8c088044a760626fa03', // aes密钥，服务端和客户端必须保持一致 MD5('#dlst_hunter')
+    'password_pre_salt' => '#sustock_shop_media', // 密码加密盐
+    'aeskey' => '7ff9968f64d69c6ccabe3e2c1bc38ffe', // aes密钥，服务端和客户端必须保持一致 MD5('#sustock_shop_media')
     'apptypes' => ['android', 'ios', 'devtools'],
-    'app_sign_time' => 10, // sign失效时间
-    'app_sign_cache_time' => 20, // sign缓存失效时间
-    'login_time_out_day' => 7, // 登录token的失效时间
+    'app_sign_time' => 10, // sign失效时间（秒）
+    'app_sign_cache_time' => 20, // sign缓存失效时间（秒）
+    'login_time_out_day' => 7, // 登录token的失效时间（天）
 
     'I_SERVER_NAME' => 'http://' . $_SERVER['SERVER_NAME'] . '/index.php/', // 当前域名
 ];

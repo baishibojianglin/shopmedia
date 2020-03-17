@@ -40,3 +40,14 @@ Route::resource('company_user', 'admin/company_user');
 // 供应商
 Route::get('company_tree', 'admin/company/companyTree'); // 供应商列表树
 Route::POST('createCompany','admin/Company/submitCompany'); // 创建供应商
+
+
+
+/* 媒体设备合作者客户端路由 */
+// 登录与注册
+Route::put('partner/login', 'partner/login/login'); // 登录
+Route::post('partner/register', 'partner/login/register'); // 注册
+Route::put('partner/pwd', 'partner/login/pwd'); // 找回密码
+Route::put('partner/logout', 'partner/login/logout'); // 退出登录
+// 用户
+Route::resource('partner/partner', 'partner/partner');
