@@ -43,11 +43,11 @@ Route::POST('createCompany','admin/Company/submitCompany'); // 创建供应商
 
 
 
-/* 媒体设备合作者客户端路由 */
+/* （媒体设备合作者等）客户端路由 */
 // 登录与注册
-Route::put('partner/login', 'partner/login/login'); // 登录
-Route::post('partner/register', 'partner/login/register'); // 注册
-Route::put('partner/pwd', 'partner/login/pwd'); // 找回密码
-Route::put('partner/logout', 'partner/login/logout'); // 退出登录
+Route::put('api/login', 'api/login/login'); // 登录
+Route::post('api/register', 'api/login/register'); // 注册
+Route::put('api/pwd', 'api/login/pwd'); // 找回密码
+Route::put('api/logout', 'api/login/logout'); // 退出登录
 // 用户
-Route::resource('partner/partner', 'partner/partner');
+Route::resource('api/user', 'api/user');

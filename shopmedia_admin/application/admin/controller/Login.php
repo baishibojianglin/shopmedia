@@ -62,9 +62,9 @@ class Login extends Common
 
 
         // 查询数据表模型类
-        $mapuser['account'] = $data['account'];
-        $mapuser['password'] = $data['password'];
-        $list = model('User')->where($mapuser)->field('password,token_time', true)->find();
+        $map['account'] = $data['account'];
+        $map['password'] = $data['password'];
+        $list = model('Admin')->where($map)->field('password,token_time', true)->find();
 
         
         if (empty($list)) {
@@ -83,7 +83,7 @@ class Login extends Common
         $token = md5(uniqid(mt_rand(), true)) . mt_rand();
 
         // 将token存入供应商账户表
-        $lsittoken = model('User')->savetoken($list['id'], $token);
+        $lsittoken = model('Admin')->savetoken($list['id'], $token);
         // 用aes加密token
         $list['token'] = $aes->encrypt($token);
         // 成功放行登录
