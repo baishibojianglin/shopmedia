@@ -14,7 +14,7 @@
 						<dl class="m0">
 							
 							<dt @click="menush(1)">
-								<span class="el-icon-menu" id="menu1"> 设备管理</span>
+								<span class="el-icon-mobile" id="menu1"> 设备管理</span>
 								<span class="fr derection" :class="menuvalue[1]?derectionup:derectiondown"></span>
 							</dt>
 							<el-collapse-transition>

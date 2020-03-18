@@ -1,24 +1,37 @@
 <template>
 	<div class="create">
-		<el-row>
-		  <el-col :span="22">
-			 <el-steps :active="active" finish-status="success" style="margin-left: 50px;margin-bottom: 50px;">
-			   <el-step title="填写基本信息"></el-step>
-			   <el-step title="配置商品种类"></el-step>
-			   <el-step title="配置销售地区"></el-step>
-			   <el-step title="创建成功"></el-step>
-			 </el-steps>			  
-		  </el-col>
-		 </el-row>
-         
-		
+
 		 <el-form  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
 			 
-		   <el-form-item label="供应商名称" prop="name">
-			 <el-input style="width:350px;"  v-model="ruleForm.name"></el-input>
+		   <el-form-item label="设备品牌" prop="brand">	
+			   <el-select v-model="ruleForm.brand" placeholder="请选择">
+				 <el-option
+				   v-for="item in options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		   </el-form-item>
+		   
+
+		   <el-form-item label="设备型号" prop="brand">	
+			   <el-select v-model="ruleForm.brand" placeholder="请选择">
+				 <el-option
+				   v-for="item in options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		   </el-form-item>		   
+		   
+		   
+		   <el-form-item label="出售价格" prop="sale_price">
+			 <el-input style="width:350px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
 
-		   <el-form-item label="供应商地址" prop="address">
+		   <el-form-item label="" prop="address">
 			 <el-input style="width:350px;"  v-model="ruleForm.address"></el-input>
 		   </el-form-item>
 
@@ -74,8 +87,13 @@
    export default {
      data() {
 		   return {
+				options: [{
+					 value: '长虹',
+					 label: '长虹'
+				   }],
 				ruleForm: {
-				   name: '', //供应商名字
+				   brand:'长虹', //设备品牌
+				   sale_price: '', //供应商名字
 				   address:'', //供应商地址
 				   phone:'', //供应商联系电话
 			       url_idcard:'', //身份证正面图片地址
@@ -87,8 +105,11 @@
 				   step:1 //创建进度
 				},
 				rules: {
-				  name: [
-					{ required: true, message: '请输入供应商名称', trigger: 'blur' }
+				  brand: [
+					{ required: true, message: '请选择设备品牌', trigger: 'blur' }
+				  ],
+				  sale_price: [
+					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
 				  ],
 				  address:[
 					{ required: true, message: '请输入供应商地址', trigger: 'blur' }					  
@@ -114,7 +135,6 @@
 				},
 				dialogImageUrl: '',
 				dialogVisible: false, //放大预览图片
-				active: 0,  //步骤条
 				img_name:[], //存储图片名字
 				hideUpload:[false,false] //隐藏图片添加按钮
 		   }
@@ -156,12 +176,7 @@
 		  resetForm(formName) {
 			this.$refs[formName].resetFields();
 		  },
-		  /**
-		   * 步骤条
-		   */
-		  next(){
-			if (this.active++ > 2) this.active = 0;
-		  },
+
 		  /**
 		   * 上传图片
 		   * @param {string} response  返回图片地址
@@ -243,5 +258,12 @@
 	}
 	.hide .el-upload--picture-card {
 		display: none;
+	}
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+	    -webkit-appearance: none;
+	}
+	input[type="number"]{
+	    -moz-appearance: textfield;
 	}
 </style>
