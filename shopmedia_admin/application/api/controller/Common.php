@@ -1,6 +1,6 @@
 <?php
 
-namespace app\partner\controller;
+namespace app\api\controller;
 
 use app\common\lib\exception\ApiException;
 use app\common\lib\IAuth;
@@ -8,9 +8,9 @@ use think\Cache;
 use think\Controller;
 
 /**
- * partner模块公共控制器类
+ * api模块公共控制器类
  * Class Common
- * @package app\partner\controller
+ * @package app\api\controller
  */
 class Common extends Controller
 {

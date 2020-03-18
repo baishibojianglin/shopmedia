@@ -1,15 +1,15 @@
 <?php
 
-namespace app\admin\model;
+namespace app\common\model;
 
 use think\Model;
 
 /**
- * 供应商信息模型类
- * Class Company
+ * 管理员模型类
+ * Class Admin
  * @package app\admin\model
  */
-class User extends Base
+class Admin extends Base
 {
     /**
      * 表前缀
@@ -17,7 +17,7 @@ class User extends Base
     protected $connection = ['prefix' => 'goodsmedia_'];
 
     /**
-     * 存入token到供应商账户表
+     * 存入token到管理员表
      * @param $id
      * @param $token
      * @return false|int

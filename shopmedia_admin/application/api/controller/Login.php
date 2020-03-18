@@ -1,17 +1,17 @@
 <?php
 
-namespace app\partner\controller;
+namespace app\api\controller;
 
 use app\common\lib\Aes;
 use app\common\lib\exception\ApiException;
 use app\common\lib\IAuth;
-use app\common\model\Partner;
+use app\common\model\User;
 use think\Controller;
 
 /**
- * partner模块客户端登录控制器类
+ * api模块客户端登录控制器类
  * Class Login
- * @package app\partner\controller
+ * @package app\api\controller
  */
 class Login extends Common
 {
@@ -48,7 +48,7 @@ class Login extends Common
 
 
         // validate验证
-        $validate = validate('Partner');
+        $validate = validate('User');
         if (!$validate->check($param, [], 'login')) {
             return show(config('code.error'), $validate->getError(), [], 403);
         }
@@ -61,18 +61,18 @@ class Login extends Common
         ];
 
         // 查询该手机号用户是否存在
-        $partner = Partner::get(['phone' => $param['phone']]);
-        if ($partner && $partner['status'] == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
+        $user = User::get(['phone' => $param['phone']]);
+        if ($user && $user['status'] == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
-                if (IAuth::encrypt($param['password']) != $partner['password']) {
+                if (IAuth::encrypt($param['password']) != $user['password']) {
                     return show(config('code.error'), '密码错误', [], 403);
                 }
             }
 
             // 更新token和token失效时间
             try { // 捕获异常
-                $id = model('Partner')->save($data, ['phone' => $param['phone']]); // 更新
+                $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
@@ -84,10 +84,10 @@ class Login extends Common
         if ($id) {
             // 返回token给客户端
             $result = [
-                'token' => (new Aes())->encrypt($token . '&' . $partner['partner_id']), // AES加密（自定义拼接字符串）
-                'partner_id' => $partner['partner_id'],
-                'partner_name' => $partner['partner_name'],
-                'phone' => $partner['phone'],
+                'token' => (new Aes())->encrypt($token . '&' . $user['user_id']), // AES加密（自定义拼接字符串）
+                'user_id' => $user['user_id'],
+                'user_name' => $user['user_name'],
+                'phone' => $user['phone'],
             ];
             return show(config('code.success'), 'OK', $result);
         } else {
@@ -160,7 +160,7 @@ class Login extends Common
 
                 $data['token'] = $token; // token
                 $data['token_time'] = strtotime('+' . config('app.login_time_out_day') . 'days'); // token失效时间
-                $data['user_name'] = 'WEST-' . trim($param['phone']); // 定义默认用户名
+                $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
                 $data['phone'] = trim($param['phone']);
                 $data['password'] = IAuth::encrypt($param['password']);
                 $data['status'] = config('code.status_enable');
@@ -370,7 +370,7 @@ class Login extends Common
             }
         } else { // 如果为首次登录，则注册用户
             if (!empty($param['code'])) {
-                $data['user_name'] = 'WEST-' . $param['phone']; // 定义默认用户名
+                $data['user_name'] = 'Sustock-' . $param['phone']; // 定义默认用户名
                 $data['phone'] = $param['phone'];
                 $data['status'] = config('code.status_enable');
 
