@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
 // 设备管理
-import Addservice from '@/pages/service/Addservice.vue'
+import AddDevice from '@/pages/device/AddDevice.vue'
 
 
 Vue.use(VueRouter)
@@ -23,7 +23,7 @@ const routes = [
 		component:Home,
 		children: [
 			// 2--设备管理
-			{path: 'addservice',name: 'addservice',component:Addservice}, //创建供应商
+			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //创建供应商
 		]
 	}
 ]

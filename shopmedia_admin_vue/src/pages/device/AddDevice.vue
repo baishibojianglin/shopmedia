@@ -6,19 +6,19 @@
 		   <el-form-item label="设备品牌" prop="brand">	
 			   <el-select v-model="ruleForm.brand" placeholder="请选择">
 				 <el-option
-				   v-for="item in options"
+				   v-for="item in brand_options"
 				   :key="item.value"
 				   :label="item.label"
 				   :value="item.value">
 				 </el-option>
 			   </el-select>
-		   </el-form-item>
+		    </el-form-item>
 		   
 
-		   <el-form-item label="设备型号" prop="brand">	
-			   <el-select v-model="ruleForm.brand" placeholder="请选择">
+		   <el-form-item label="设备型号" prop="model">	
+			   <el-select v-model="ruleForm.model" placeholder="请选择">
 				 <el-option
-				   v-for="item in options"
+				   v-for="item in model_options"
 				   :key="item.value"
 				   :label="item.label"
 				   :value="item.value">
@@ -27,11 +27,11 @@
 		   </el-form-item>		   
 		   
 		   
-		   <el-form-item label="出售价格" prop="sale_price">
-			 <el-input style="width:350px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
+		   <el-form-item label="租售价格" prop="sale_price">
+			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
 
-		   <el-form-item label="" prop="address">
+		   <el-form-item label="区域位置" prop="address">
 			 <el-input style="width:350px;"  v-model="ruleForm.address"></el-input>
 		   </el-form-item>
 
@@ -87,12 +87,25 @@
    export default {
      data() {
 		   return {
-				options: [{
+				brand_options: [
+				   {
 					 value: '长虹',
 					 label: '长虹'
-				   }],
+				   },
+				],
+			    model_options: [
+				    {
+					 value: 'ch001',
+					 label: 'ch001'
+					},
+					{
+					 value: 'ch002',
+					 label: 'ch002'
+					}
+				],
 				ruleForm: {
 				   brand:'长虹', //设备品牌
+				   model:'',//设备型号
 				   sale_price: '', //供应商名字
 				   address:'', //供应商地址
 				   phone:'', //供应商联系电话
@@ -107,6 +120,9 @@
 				rules: {
 				  brand: [
 					{ required: true, message: '请选择设备品牌', trigger: 'blur' }
+				  ],
+				  model: [
+				  	{ required: true, message: '请选择设备型号', trigger: 'blur' }
 				  ],
 				  sale_price: [
 					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
@@ -266,4 +282,5 @@
 	input[type="number"]{
 	    -moz-appearance: textfield;
 	}
+	input{width: 200px;}
 </style>
