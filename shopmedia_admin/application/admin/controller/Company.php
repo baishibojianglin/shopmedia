@@ -9,8 +9,6 @@ class Company extends Base
 {
 
 
-
-
    /**
    *创建分公司
    */
@@ -19,7 +17,7 @@ class Company extends Base
 		//添加分公司基本信息
 		$form['data']['status']=1; //正常
         $form['data']['createtime']=date('Y-m-d H:i:s');
-        $number=Db::table('goodsmedia_company')->insert($form['data']);
+        $number=Db::name('company')->insert($form['data']);
 		
 		if($number>0){
 			$message['status']=1;
@@ -30,6 +28,28 @@ class Company extends Base
 		}
 		return json($message);
 	}
+
+
+   /**
+   *获取分公司基本信息
+   */
+	public function getCompany(){
+		$form=input();
+		//添加分公司基本信息
+		$mapcompany['company_id']=$form['company_id'];
+        $companylist=Db::name('company')->where($mapcompany)->find();
+		
+		if(!empty($companylist)){
+			$message['data']=$companylist;
+			$message['status']=1;
+			$message['words']='获取成功';
+		}else{
+			$message['status']=0;
+			$message['words']='获取失败';
+		}
+		return json($message);
+	}
+
 
 
 	

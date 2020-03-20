@@ -5,7 +5,7 @@
 		 <el-form  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
 			 
 		   <el-form-item label="分公司名称" prop="company_name">
-			 <el-input style="width:350px;"  v-model="ruleForm.company_name"></el-input>
+			 <el-input style="width:217px;"  v-model="ruleForm.company_name"></el-input>
 		   </el-form-item>
 
 		   <el-form-item label="所在地区" prop="city_id">
@@ -29,11 +29,11 @@
 
 
 		   <el-form-item label="负责人姓名" prop="person_name">
-		   			 <el-input style="width:350px;"  v-model="ruleForm.person_name"></el-input>
+		   			 <el-input style="width:217px;"  v-model="ruleForm.person_name"></el-input>
 		   </el-form-item>
 
 		   <el-form-item label="联系电话" prop="phone">
-			 <el-input style="width:350px;"  v-model="ruleForm.phone"></el-input>
+			 <el-input style="width:217px;"  v-model="ruleForm.phone"></el-input>
 		   </el-form-item>
 	   
 		   
@@ -90,15 +90,18 @@
 				if(t_parent_id){
 					parent_id=t_parent_id;
 				}
+                self.ruleForm.city_id=''; //清楚上次选择的市级数据
 				this.$axios.post(this.$url+'getzone',{
 					parent_id:parent_id
 				}).then(function(res){
 				   if(res.data.status==1){
 					   if(parent_id==0){  //省级
+					      self.provincelist.splice(0,self.provincelist.length);
 						  res.data.data.forEach((value,index)=>{
 							  self.$set(self.provincelist,index,{value:value.region_id,label:value.region_name});
 						  })						   
 					   }else{  //市级
+					      self.citylist.splice(0,self.citylist.length);
 						  res.data.data.forEach((value,index)=>{
 						  	  self.$set(self.citylist,index,{value:value.region_id,label:value.region_name});
 						  }) 
@@ -107,7 +110,7 @@
 				   }else{
 					  self.$message({
 							message:'网络繁忙，请重试',
-							type: 'success'
+							type: 'warning'
 					  });					   
 				   }
 				})				

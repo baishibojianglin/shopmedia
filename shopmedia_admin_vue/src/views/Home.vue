@@ -113,7 +113,7 @@
 			/**
 			 * 获取供应商名称
 			 */
-			let account=JSON.parse(localStorage.getItem("company"));
+			let account=JSON.parse(localStorage.getItem("admin_user"));
 			this.name=account['company_name'];
 			
 			/**

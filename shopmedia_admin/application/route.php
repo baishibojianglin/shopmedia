@@ -6,6 +6,11 @@ use think\Route;
 Route::POST('login','admin/Login/login');
 //登录验证码
 Route::GET('code','admin/Login/createverifycode');
+// 分公司
+Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
+//传媒屏管理
+Route::POST('getCompany','admin/Company/getCompany'); // 创建分公司
+
 //上传图片
 Route::POST('upload','admin/Common/uploadimg');
 //删除图片
@@ -37,9 +42,8 @@ Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规�
 Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
 // 供应商账户
 Route::resource('company_user', 'admin/company_user');
-// 分公司
 Route::get('company_tree', 'admin/company/companyTree'); // 供应商列表树
-Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
+
 
 
 

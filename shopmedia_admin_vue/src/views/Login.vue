@@ -98,7 +98,7 @@
 					   });						
 					}else{  //登录成功
 					   //前端存储token、登录账号id、等存入缓存
-					    localStorage.setItem("company",JSON.stringify(res.data.value));
+					    localStorage.setItem("admin_user",JSON.stringify(res.data.value));
 					   //跳转首页
 					    self.$router.replace({path:'/home'});	
 					}					

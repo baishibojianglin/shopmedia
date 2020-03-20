@@ -26,17 +26,31 @@
 			   </el-select>
 		   </el-form-item>		   
 
-		   <el-form-item label="区域位置" prop="address">
-			 <el-input style="width:350px;"  v-model="ruleForm.address"></el-input>
-		   </el-form-item>		   
+		   <el-form-item label="放置区域" prop="street_id">
+			 <el-select @change="zone" v-model="ruleForm.area_id" placeholder="请选择">
+			 				 <el-option
+			 				   v-for="item in arealist"
+			 				   :key="item.value"
+			 				   :label="item.label"
+			 				   :value="item.value">
+			 				 </el-option>
+			 </el-select> 
+			 <el-select style="margin-left: 5px;" v-model="ruleForm.street_id" placeholder="请选择">
+			 				 <el-option
+			 				   v-for="item in streetlist"
+			 				   :key="item.value"
+			 				   :label="item.label"
+			 				   :value="item.value">
+			 				 </el-option>
+			 </el-select>		 
+		   </el-form-item>
+	   
 		   
 		   <el-form-item label="租售价格" prop="sale_price">
 			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
 
-		   <el-form-item label="联系电话" prop="phone">
-			 <el-input style="width:350px;"  v-model="ruleForm.phone"></el-input>
-		   </el-form-item>
+
 
 		   <el-form-item label="法人身份证" prop="url_idcard" class="idcard">
 			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_idcard"></el-input>
@@ -47,30 +61,7 @@
 			     <img width="100%" :src="dialogImageUrl" alt="">
 			   </el-dialog>
 		   </el-form-item>
-	   
-		   <el-form-item label="法人姓名" prop="legalperson_name">
-		   			 <el-input style="width:350px;"  v-model="ruleForm.legalperson_name"></el-input>
-		   </el-form-item>
-
-		   <el-form-item label="法人身份证号码" prop="legalperson_idcard_code">
-		   			 <el-input style="width:350px;"  v-model="ruleForm.legalperson_idcard_code"></el-input>
-		   </el-form-item>
-		   		   
-		   <el-form-item label="营业执照" prop="url_license" class="license">
-			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_license"></el-input>
-			   <el-upload :class="{hide:hideUpload[1]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="1" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_license',1)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,1,1)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,1,1,'url_license')}" :on-preview="handlePictureCardPreview"  name='image'>
-				     <i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传营业执照</i>
-			   </el-upload>
-			   <el-dialog :visible.sync="dialogVisible">
-			     <img width="100%" :src="dialogImageUrl" alt="">
-			   </el-dialog>
-		   </el-form-item>  
-		   
-		   
-		   <el-form-item label="社会统一信用码" prop="license_creditcode">
-			 <el-input style="width:350px;"  v-model="ruleForm.license_creditcode"></el-input>
-		   </el-form-item>		   
-		   
+	  		   
 		   
 		   <el-form-item>
 			 <el-button type="primary" @click="submitForm('ruleForm')">下一步</el-button>
@@ -105,16 +96,10 @@
 				ruleForm: {
 				   brand:'长虹', //设备品牌
 				   model:'',//设备型号
+				   area_id:'',//县区id
+				   street_id:'',//街道id
 				   sale_price: '', //供应商名字
-				   address:'', //供应商地址
-				   phone:'', //供应商联系电话
 			       url_idcard:'', //身份证正面图片地址
-				   legalperson_name:'', //法人姓名
-				   legalperson_idcard_code:'', //法人身份证号码
-				   url_license:'', //营业执照图片地址
-				   license_creditcode:'', //营业执照社会统一信用码
-				   parent_id:'', //上级供应商id
-				   step:1 //创建进度
 				},
 				rules: {
 				  brand: [
@@ -123,38 +108,91 @@
 				  model: [
 				  	{ required: true, message: '请选择设备型号', trigger: 'blur' }
 				  ],
+				  street_id: [
+				  	{ required: true, message: '请选择投放区域', trigger: 'blur' }
+				  ],
 				  sale_price: [
 					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
 				  ],
-				  address:[
-					{ required: true, message: '请输入供应商地址', trigger: 'blur' }					  
-				  ],
-				  phone:[
-					{ required: true, message: '请输入供应商电话', trigger: 'blur' }					  
-				  ],
 				  url_idcard:[
 					{ required: true, message: '请上传法人身份证正面照' }
-				  ],
-				  legalperson_name:[
-					{ required: true, message: '请输入法人姓名', trigger: 'blur' }
-				  ],
-				  legalperson_idcard_code:[
-					{ required: true, message: '请填写法人身份证号码', trigger: 'blur' }
-				  ],
-				  url_license:[
-					{ required: true, message: '请上传营业执照'}					  
-				  ],																		
-				  license_creditcode:[
-					{ required: true, message: '请输入社会统一信用码', trigger: 'blur' }	
-				  ]												  
+				  ]											  
 				},
+				arealist:[],//县（区）
+				streetlist:[],//街道
+				flag_area:0, //加载县区数据标志
 				dialogImageUrl: '',
 				dialogVisible: false, //放大预览图片
 				img_name:[], //存储图片名字
 				hideUpload:[false,false] //隐藏图片添加按钮
 		   }
      },
+	 mounted(){
+		   
+		  //调用 -获取登录账号所属分公司信息 - 方法
+ 	       this.getcompany();
+	 },
      methods: {
+
+            /**
+			 * 获取登录账号所属的分公司信息
+			 */
+            getcompany(){
+				let self=this;
+				let admin_user=JSON.parse(localStorage.getItem('admin_user')); //取出的缓存的登录账户信息
+				this.$axios.post(this.$url+'getCompany',{
+					company_id:admin_user.company_id
+				}).then(function(res){
+				   if(res.data.status==1){
+                       self.zone(res.data.data.city_id);
+				   }else{
+					  self.$message({
+							message:'网络繁忙，请重试',
+							type: 'warning'
+					  });					   
+				   }
+				})
+
+			},
+			/**
+			 * 获取地区列表
+			 */
+			zone(t_parent_id){
+				let self=this;
+				let parent_id=0;
+				if(t_parent_id){
+					parent_id=t_parent_id;
+				}
+				self.ruleForm.street_id=''; //清楚上次选择的街道数据
+				this.$axios.post(this.$url+'getzone',{
+					parent_id:parent_id
+				}).then(function(res){
+				   if(res.data.status==1){
+					   if(self.flag_area==0){  //县区
+					      self.arealist.splice(0,self.arealist.length);
+						  res.data.data.forEach((value,index)=>{
+							  self.$set(self.arealist,index,{value:value.region_id,label:value.region_name});
+						  })
+						  self.flag_area=1;//县区已经加载记录标志						 
+					   }else{  //街道
+					      self.streetlist.splice(0,self.streetlist.length);
+						  res.data.data.forEach((value,index)=>{
+						  	  self.$set(self.streetlist,index,{value:value.region_id,label:value.region_name});
+						  }) 
+					   }
+
+				   }else{
+					  self.$message({
+							message:'网络繁忙，请重试',
+							type: 'warning'
+					  });					   
+				   }
+				})				
+			},
+		 	 		 
+		 
+		 
+		 
 		  /**
 		  * 提交表单
 		  * @param {Object} formName
