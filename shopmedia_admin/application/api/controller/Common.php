@@ -25,7 +25,7 @@ class Common extends Controller
      */
     public function _initialize()
     {
-        //$this->checkRequestAuth(); // TODO：生产环境必须检查数据的合法性
+        $this->checkRequestAuth(); // TODO：生产环境必须检查数据的合法性
     }
 
     /**
