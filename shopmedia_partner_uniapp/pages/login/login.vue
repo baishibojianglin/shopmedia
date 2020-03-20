@@ -2,11 +2,11 @@
 	<view class="content">
 		<view class="input-group">
 			<view class="input-row border">
-				<text class="title">手机号：</text>
+				<text class="title">手机号</text>
 				<m-input class="m-input" type="text" clearable focus v-model="account" placeholder="请输入手机号"></m-input>
 			</view>
 			<view class="input-row">
-				<text class="title">密码：</text>
+				<text class="title">密码</text>
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
 		</view>
@@ -30,23 +30,18 @@
 </template>
 
 <script>
-	import service from '../../service.js';
-	import {
-		mapState,
-		mapMutations
-	} from 'vuex'
-	import mInput from '../../components/m-input.vue'
+	import {mapState, mapMutations} from 'vuex';
+	import common from '@/common/common.js';
+	import mInput from '../../components/m-input.vue';
 
 	export default {
-		components: {
-			mInput
-		},
+		components: {mInput},
 		data() {
 			return {
 				providerList: [],
 				hasProvider: false,
-				account: '',
-				password: '',
+				account: '18989898899',
+				password: 'abc123',
 				positionTop: 0,
 				isDevtools: false,
 			}
@@ -54,6 +49,7 @@
 		computed: mapState(['forcedLogin']),
 		methods: {
 			...mapMutations(['login']),
+			
 			initProvider() {
 				const filters = ['weixin', 'qq', 'sinaweibo'];
 				uni.getProvider({
@@ -76,6 +72,7 @@
 					}
 				});
 			},
+			
 			initPosition() {
 				/**
 				 * 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
@@ -83,45 +80,68 @@
 				 */
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
+			
+			/**
+			 * 登录
+			 */
 			bindLogin() {
+				let self = this;
+				
 				/**
 				 * 客户端对账号信息进行一些必要的校验。
-				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
 				 */
-				if (this.account.length < 5) {
+				// 手机号
+				if (!this.account.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) { /* 或 !(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(this.account) */
 					uni.showToast({
 						icon: 'none',
-						title: '账号最短为 5 个字符'
+						title: '手机号不合法'
 					});
-					return;
+				    return;
 				}
-				if (this.password.length < 6) {
-					uni.showToast({
+				// 密码
+				if (!this.password.match(/^[a-zA-Z]\w{5,17}$/)) {
+				    uni.showToast({
 						icon: 'none',
-						title: '密码最短为 6 个字符'
+						title: '密码必须以字母开头，长度在6~18之间，只能包含字母、数字和下划线'
 					});
-					return;
+				    return;
 				}
+				
 				/**
-				 * 下面简单模拟下服务端的处理
-				 * 检测用户账号密码是否在已注册的用户列表中
-				 * 实际开发中，使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
+				 * 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				 */
-				const data = {
-					account: this.account,
-					password: this.password
-				};
-				const validUser = service.getUsers().some(function(user) {
-					return data.account === user.account && data.password === user.password;
-				});
-				if (validUser) {
-					this.toMain(this.account);
-				} else {
-					uni.showToast({
-						icon: 'none',
-						title: '用户账号或密码不正确',
-					});
-				}
+				uni.request({
+					url: this.$serverUrl + 'login',
+					data: {
+						phone: this.account,
+						password: this.password,
+					},
+					header: {
+						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+						'version': getApp().globalData.version, // 应用大版本号
+						'model': getApp().globalData.systemInfo.model, // 手机型号
+						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
+						'did': getApp().globalData.did, // 设备号
+					},
+					method: 'PUT',
+					success: function(res){
+						// console.log('login success', res);
+						if (1 == res.data.status) {
+							let userInfo = res.data.data;
+							self.login(userInfo);
+							self.toMain(userInfo); // 跳转到首页
+							/* uni.reLaunch({url: '../main/main',}); */
+						} else {
+						    uni.showToast({
+						        icon: 'none',
+						        title: res.data.message, // '用户账号或密码不正确'
+						    });
+						}
+					},
+					fail(error) {
+						console.log('bindLogin失败：', error);
+					}
+				})
 			},
 			oauth(value) {
 				uni.login({
@@ -161,8 +181,13 @@
 					});
 				}
 			},
-			toMain(userName) {
-				this.login(userName);
+			
+			/**
+			 * 跳转到首页
+			 * @param {Object} userInfo
+			 */
+			toMain(userInfo) {
+				this.login(userInfo);
 				/**
 				 * 强制登录时使用reLaunch方式跳转过来
 				 * 返回首页也使用reLaunch方式
@@ -174,10 +199,9 @@
 				} else {
 					uni.navigateBack();
 				}
-
 			}
 		},
-		onReady() {
+		onReady() {console.log('sign:', common.sign())
 			this.initPosition();
 			this.initProvider();
 			// #ifdef MP-WEIXIN

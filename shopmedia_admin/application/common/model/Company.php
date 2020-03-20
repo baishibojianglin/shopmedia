@@ -5,16 +5,47 @@ namespace app\common\model;
 use think\Model;
 
 /**
- * 供应商信息模型类
+ * 分公司信息模型类
  * Class Company
  * @package app\admin\model
  */
 class Company extends Base
 {
     /**
-     * 表前缀
+     * 获取分公司列表数据
+     * @param array $map
+     * @param int $size
+     * @return \think\Paginator
      */
-    protected $connection = ['prefix' => 'goodshop_'];
+    public function getCompany($map = [], $size = 5)
+    {
+        $result = $this->alias('c')
+            ->field($this->_getListField())
+            ->join('__REGION__ rp', 'c.province_id = rp.region_id', 'LEFT') // 省分
+            ->join('__REGION__ rc', 'c.city_id = rc.region_id', 'LEFT') // 城市
+            ->where($map)->cache(true, 10)->paginate($size);
+        return $result;
+    }
+
+    /**
+     * 通用化获取参数的数据字段
+     * @return array
+     */
+    private function _getListField()
+    {
+        return [
+            'c.company_id',
+            'c.company_name',
+            'c.province_id',
+            'c.city_id',
+            'c.person_name',
+            'c.phone',
+            'c.status',
+            'c.createtime',
+            'rp.region_name province',
+            'rc.region_name city'
+        ];
+    }
 
     /**
      * 创建供应商

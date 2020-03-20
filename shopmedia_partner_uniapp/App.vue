@@ -1,7 +1,23 @@
 <script>
 	export default {
+		// 全局变量
+		globalData: {
+			systemInfo: '', // 设备系统信息
+			version: 1, // 应用大版本号
+			did: '12345dg', // 设备号
+		},
+		
 		onLaunch: function() {
-			console.log('App Launch');
+			// console.log('App Launch');
+			
+			let self = this;
+			
+			// 获取设备系统信息
+			uni.getSystemInfo({
+				success: function (res) {
+					self.globalData.systemInfo = res; // getApp().globalData.systemInfo = res
+				}
+			});
 		},
 		onShow: function() {
 			console.log('App Show');
@@ -17,6 +33,9 @@
 	@import "components/m-icon/m-icon.css";
 
 	/*每个页面公共css */
+	/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
+	@import './common/uni.css';
+	
 	page {
 		min-height: 100%;
 		display: flex;
