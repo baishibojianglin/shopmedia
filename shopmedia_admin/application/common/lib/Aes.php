@@ -30,7 +30,7 @@ class Aes {
      */
     public function encrypt($string)
     {  
-        $data = openssl_encrypt($string, 'AES-256-CBC', $key = config('app.aeskey'), $this->options, $this->iv); // AES-128-ECB
+        $data = openssl_encrypt($string, 'AES-128-ECB', $this->key, $this->options);
         return $data;
     }
 
@@ -43,7 +43,34 @@ class Aes {
      */
     public function decrypt($string)
     {
-        $decrypted = openssl_decrypt($string, 'AES-256-CBC', $key = config('app.aeskey'), $this->options, $this->iv); // AES-128-ECB
+        $decrypted = openssl_decrypt($string, 'AES-128-ECB', $this->key, $this->options);
+        return $decrypted;
+    }
+
+
+    /**
+     * 客户端AES加密
+     * @param string $string 需要加密的字符串
+     * @return string
+     * @internal param string $key 密钥
+     * @internal param string $iv 初始化向量
+     */
+    public function opensslEncrypt($string)
+    {
+        $data = openssl_encrypt($string, 'AES-256-CBC', $key = config('app.aeskey'), $this->options, $this->iv);
+        return $data;
+    }
+
+    /**
+     * 客户端AES解密
+     * @param string $string 需要解密的字符串
+     * @return string
+     * @internal param string $key 密钥
+     * @internal param string $iv 初始化向量
+     */
+    public function opensslDecrypt($string)
+    {
+        $decrypted = openssl_decrypt($string, 'AES-256-CBC', $key = config('app.aeskey'), $this->options, $this->iv);
         return $decrypted;
     }
 }

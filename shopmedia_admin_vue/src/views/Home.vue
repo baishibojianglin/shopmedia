@@ -20,7 +20,7 @@
 							<el-collapse-transition>
 								<div v-show="menuvalue[3]">
 									<router-link to="/home/companycreate"><dd id='menu31' :class="activevalue[31]?activeclass:''" @click="menuactive(31,3,1)">新增分公司</dd></router-link>
-									<router-link to="/home/goodsbrand"><dd id='menu32' :class="activevalue[32]?activeclass:''" @click="menuactive(32,3,2)">分公司列表</dd></router-link>
+									<router-link to="/home/company"><dd id='menu32' :class="activevalue[32]?activeclass:''" @click="menuactive(32,3,2)">分公司列表</dd></router-link>
 								</div>
 							</el-collapse-transition>																		
 							

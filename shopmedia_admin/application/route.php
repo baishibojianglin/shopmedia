@@ -38,6 +38,7 @@ Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree');
 // 供应商账户
 Route::resource('company_user', 'admin/company_user');
 // 分公司
+Route::resource('company', 'admin/company');
 Route::get('company_tree', 'admin/company/companyTree'); // 供应商列表树
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
 
