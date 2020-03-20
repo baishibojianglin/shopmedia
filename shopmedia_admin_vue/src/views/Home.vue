@@ -13,29 +13,28 @@
 					<div class="homemenu">
 						<dl class="m0">
 							
-							<dt @click="menush(1)">
-								<span class="el-icon-mobile" id="menu1"> 设备管理</span>
-								<span class="fr derection" :class="menuvalue[1]?derectionup:derectiondown"></span>
-							</dt>
-							<el-collapse-transition>
-								<div v-show="menuvalue[1]">
-									<router-link to="/home/adddevice"><dd id='menu11' :class="activevalue[11]?activeclass:''"  @click="menuactive(11,1,1)">新增设备</dd></router-link>
-									<router-link to="/home/companycreate"><dd id='menu12' :class="activevalue[12]?activeclass:''"  @click="menuactive(12,1,2)">经销商列表</dd></router-link>
-								</div>
-							</el-collapse-transition>
-							
-							
 							<dt @click="menush(3)">
-								<span class="el-icon-s-goods" id="menu3"> 商品管理</span>
+								<span class="el-icon-office-building" id="menu3"> 分公司管理</span>
 								<span class="fr derection" :class="menuvalue[3]?derectionup:derectiondown"></span>
 							</dt>
 							<el-collapse-transition>
 								<div v-show="menuvalue[3]">
-									<!-- <router-link to="/"><dd id='menu31' :class="activevalue[31]?activeclass:''" @click="menuactive(31,3,1)">商品列表</dd></router-link> -->
-									<router-link to="/home/goodscate"><dd id='menu32' :class="activevalue[32]?activeclass:''" @click="menuactive(32,3,2)">商品类别</dd></router-link>
-									<router-link to="/home/goodsbrand"><dd id='menu33' :class="activevalue[33]?activeclass:''" @click="menuactive(33,3,3)">品牌管理</dd></router-link>
+									<router-link to="/home/companycreate"><dd id='menu31' :class="activevalue[31]?activeclass:''" @click="menuactive(31,3,1)">新增分公司</dd></router-link>
+									<router-link to="/home/goodsbrand"><dd id='menu32' :class="activevalue[32]?activeclass:''" @click="menuactive(32,3,2)">分公司列表</dd></router-link>
+								</div>
+							</el-collapse-transition>																		
+							
+							<dt @click="menush(1)">
+								<span class="el-icon-mobile" id="menu1"> 传媒屏管理</span>
+								<span class="fr derection" :class="menuvalue[1]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[1]">
+									<router-link to="/home/adddevice"><dd id='menu11' :class="activevalue[11]?activeclass:''"  @click="menuactive(11,1,1)">新增传媒屏</dd></router-link>
+									<router-link to="/home/companycreate"><dd id='menu12' :class="activevalue[12]?activeclass:''"  @click="menuactive(12,1,2)">经销商列表</dd></router-link>
 								</div>
 							</el-collapse-transition>
+						
 							
 							<dt @click="menush(4)">
 								<span class="el-icon-user-solid" id="menu4"> 账户管理</span>
@@ -115,7 +114,7 @@
 			 * 获取供应商名称
 			 */
 			let account=JSON.parse(localStorage.getItem("company"));
-			this.name=account['name'];
+			this.name=account['company_name'];
 			
 			/**
 			 * 控制窗口高度

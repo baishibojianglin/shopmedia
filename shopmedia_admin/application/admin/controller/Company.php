@@ -1,48 +1,49 @@
 <?php
 namespace app\admin\controller;
+use think\Controller;
 use think\Request;
-
-
-
-
+use think\Db;
 
 
 class Company extends Base
 {
 
+
+
+
    /**
-   *创建供应商
+   *创建分公司
    */
-	public function submitCompany(){
+	public function createCompany(){
 		$form=input();
-		//添加供应商基本信息
-		$listcompany=model('Company')->inCompany($form['data']);
+		//添加分公司基本信息
+		$form['data']['status']=1; //正常
+        $form['data']['createtime']=date('Y-m-d H:i:s');
+        $number=Db::table('goodsmedia_company')->insert($form['data']);
 		
-		if($listcompany>0){
-			$message['companyid']=$listcompany;
+		if($number>0){
 			$message['status']=1;
-			$message['words']='基本信息添加成功';
+			$message['words']='创建成功';
 		}else{
 			$message['status']=0;
-			$message['words']='基本信息添加失败';
+			$message['words']='创建失败';
 		}
 		return json($message);
 	}
 
+
+	
+
    /**
    *获取销售区域
    */
-	public function getArea(){
+	public function getzone(){
 		$form=input();	
 		$maparea['parent_id']=$form['parent_id'];
 	    $listarea=model('Region')->where($maparea)->cache(true, 10)->select();
-        //原来勾选的商品种类
-    	$mapcompany['id']=$form['id'];
-        $listselectarea=model('Company')->where($mapcompany)->field('salearea')->find();
 
 		if(!empty($listarea)){
 			$message['data']=$listarea;
-			$message['selectdata']=$listselectarea;
 			$message['status']=1;
 		}else{
 			$message['data']=[];

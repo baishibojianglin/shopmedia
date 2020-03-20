@@ -10,8 +10,8 @@ Route::GET('code','admin/Login/createverifycode');
 Route::POST('upload','admin/Common/uploadimg');
 //删除图片
 Route::POST('deleteimages','admin/Common/deleteimg');
-//获取平台销售区域数据
-Route::POST('getarea','admin/Company/getArea');
+//获取地区列表
+Route::POST('getzone','admin/Company/getzone');
 //获取供应商销售区域数据
 Route::POST('companyarea','admin/Company/getarea_company');
 //插入供应商销售区域数据
@@ -37,9 +37,9 @@ Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规�
 Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
 // 供应商账户
 Route::resource('company_user', 'admin/company_user');
-// 供应商
+// 分公司
 Route::get('company_tree', 'admin/company/companyTree'); // 供应商列表树
-Route::POST('createCompany','admin/Company/submitCompany'); // 创建供应商
+Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
 
 
 

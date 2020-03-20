@@ -22,11 +22,8 @@ class Company extends Base
      */
     public function inCompany($data)
     {
-        //入库供应商基本信息表
 
-        $data['role']=1;  //供应商
-        $data['status']=2; //草稿创建中
-        $data['type']=1; //正式数据
+        $data['status']=1; //正常
         $data['create_time']=date('Y-m-d H:i:s');
         $list=$this->save($data);
         return $this->id;

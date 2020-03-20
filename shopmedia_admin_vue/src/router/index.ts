@@ -4,6 +4,8 @@ import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
 // 设备管理
 import AddDevice from '@/pages/device/AddDevice.vue'
+//分公司管理
+import CompanyCreate from '@/pages/company/CompanyCreate.vue'
 
 
 Vue.use(VueRouter)
@@ -23,7 +25,9 @@ const routes = [
 		component:Home,
 		children: [
 			// 2--设备管理
-			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //创建供应商
+			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加设备
+			// 2--分公司管理
+			{path: 'companycreate',name: 'companycreate',component:CompanyCreate}, //创建供应商
 		]
 	}
 ]
