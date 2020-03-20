@@ -25,14 +25,13 @@
 				 </el-option>
 			   </el-select>
 		   </el-form-item>		   
-		   
-		   
-		   <el-form-item label="租售价格" prop="sale_price">
-			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
-		   </el-form-item>
 
 		   <el-form-item label="区域位置" prop="address">
 			 <el-input style="width:350px;"  v-model="ruleForm.address"></el-input>
+		   </el-form-item>		   
+		   
+		   <el-form-item label="租售价格" prop="sale_price">
+			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
 
 		   <el-form-item label="联系电话" prop="phone">
