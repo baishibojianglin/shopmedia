@@ -21,7 +21,7 @@ class Company extends Base
     {
         $result = $this->alias('c')
             ->field($this->_getListField())
-            ->join('__REGION__ rp', 'c.province_id = rp.region_id', 'LEFT') // 省分
+            ->join('__REGION__ rp', 'c.province_id = rp.region_id', 'LEFT') // 省份
             ->join('__REGION__ rc', 'c.city_id = rc.region_id', 'LEFT') // 城市
             ->where($map)->cache(true, 10)->paginate($size);
         return $result;

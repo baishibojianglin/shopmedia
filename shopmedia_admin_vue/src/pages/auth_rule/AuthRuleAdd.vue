@@ -106,8 +106,8 @@
 				this.$axios.get(this.$url + 'auth_rule_tree', {
 					// 请求头配置
 					headers: {
-						'company-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-						'company-user-token': JSON.parse(localStorage.getItem('company')).token
+						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
 					}
 				})
 				.then(function(res) {
@@ -149,8 +149,8 @@
 						}, {
 							// 请求头配置
 							headers: {
-								'company-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-								'company-user-token': JSON.parse(localStorage.getItem('company')).token
+								'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
+								'admin-user-token': JSON.parse(localStorage.getItem('company')).token
 							}
 						})
 						.then(function(res) {

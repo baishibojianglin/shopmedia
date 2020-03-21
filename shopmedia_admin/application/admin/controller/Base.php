@@ -39,13 +39,13 @@ class Base extends Common
     public function isLogin()
     {
         // 判断 token 是否存在
-        if (empty($this->headers['company-user-token'])) {
+        if (empty($this->headers['admin-user-token'])) {
             return false;
         }
 
         // 判断 token 合法性
         $aes = new Aes();
-        $companyToken = $aes->decrypt($this->headers['company-user-token']); // AES解密
+        $companyToken = $aes->decrypt($this->headers['admin-user-token']); // AES解密
         if (empty($companyToken)) {
             return false;
         }

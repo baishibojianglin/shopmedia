@@ -7,6 +7,17 @@ import AddDevice from '@/pages/device/AddDevice.vue'
 //分公司管理
 import Company from '@/pages/company/Company.vue'
 import CompanyCreate from '@/pages/company/CompanyCreate.vue'
+// 用户管理（传媒设备合作者）
+import UserPartner from '@/pages/user_partner/UserPartner.vue'
+import UserPartnerAdd from '@/pages/user_partner/UserPartnerAdd.vue'
+import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
+// 用户管理（传媒设备合作者业务员）
+import UserToPartner from '@/pages/user_to_partner/UserToPartner.vue'
+// 区域管理
+import Region from '@/pages/region/Region.vue'
+import RegionCity from '@/pages/region/RegionCity.vue'
+import RegionCounty from '@/pages/region/RegionCounty.vue'
+import RegionTown from '@/pages/region/RegionTown.vue'
 
 
 Vue.use(VueRouter)
@@ -30,6 +41,17 @@ const routes = [
 			// 2--分公司管理
 			{path: 'company',name: 'company',component:Company}, //分公司列表
 			{path: 'companycreate',name: 'companycreate',component:CompanyCreate}, //创建供应商
+			// 2--用户（传媒设备合作者）
+			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
+			{path: 'user_partner_add', name: 'user_partner_add', component: UserPartnerAdd}, // 新增用户
+			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
+			// 2--用户（传媒设备合作者业务员）
+			{path: 'user_to_partner', name: 'user_to_partner', component: UserToPartner}, // 用户列表
+			// 2--区域管理
+			{path: 'region', name: 'region', component: Region}, // 省级区域
+			{path: 'regioncity', name: 'regioncity', component: RegionCity}, // 市级区域
+			{path: 'regioncounty', name: 'regioncounty', component: RegionCounty}, // 区县级区域
+			{path: 'regiontown', name: 'regiontown', component: RegionTown}, // 乡镇街道级区域
 		]
 	}
 ]
