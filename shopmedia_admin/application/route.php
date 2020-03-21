@@ -10,7 +10,13 @@ Route::GET('code','admin/Login/createverifycode');
 Route::resource('company', 'admin/company');
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
 //传媒屏管理
-Route::POST('getCompany','admin/Company/getCompany'); // 创建分公司
+Route::POST('getCompany','admin/Company/getCompany');
+// 区域
+Route::resource('region', 'admin/region');
+// 用户（传媒设备合作者）
+Route::resource('user_partner', 'admin/UserPartner');
+// 用户（传媒设备合作者业务员）
+Route::resource('user_to_partner', 'admin/UserToPartner');
 
 
 
@@ -28,8 +34,6 @@ Route::POST('submitArea','admin/Company/submitArea');
 Route::POST('getshopcate','admin/Company/getshopcate_company');
 //插入供应商销售商品种类
 Route::POST('shopcateinsert','admin/Company/cate_insert');
-// 区域
-Route::resource('region', 'admin/region');
 // 商品类别
 Route::resource('goods_cate', 'admin/goods_cate');
 Route::get('goods_cate_tree', 'admin/goods_cate/goodsCateTree'); // 商品类别列表树

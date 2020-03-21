@@ -47,6 +47,17 @@
 									<router-link to="/home/company_user"><dd id='menu43' :class="activevalue[43]?activeclass:''"  @click="menuactive(43,4,3)">供应商账户</dd></router-link>
 								</div>
 							</el-collapse-transition>
+							
+							<dt @click="menush(5)">
+								<span class="el-icon-user" id="menu5"> 用户管理</span>
+								<span class="fr derection" :class="menuvalue[5]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[5]">
+									<router-link to="/home/user_partner"><dd id='menu51' :class="activevalue[51]?activeclass:''"  @click="menuactive(51,5,1)">设备合作者</dd></router-link>
+									<router-link to="/home/user_to_partner"><dd id='menu52' :class="activevalue[52]?activeclass:''"  @click="menuactive(52,5,2)">设备合作业务员</dd></router-link>
+								</div>
+							</el-collapse-transition>
 
 							<dt @click="menush(2)">
 								<span class="el-icon-s-tools" id="menu2"> 系统设置</span>
