@@ -27,7 +27,7 @@
 				<el-table :data="companyList" border style="width: 100%">
 					<el-table-column prop="company_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="company_name" label="分公司名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="province" label="身份" min-width="120"></el-table-column>
+					<el-table-column prop="province" label="省份" min-width="120"></el-table-column>
 					<el-table-column prop="city" label="城市" min-width="120"></el-table-column>
 					<el-table-column prop="person_name" label="负责人" width="120"></el-table-column>
 					<el-table-column prop="phone" label="负责人电话" width="120"></el-table-column>

@@ -7,6 +7,11 @@ import AddDevice from '@/pages/device/AddDevice.vue'
 //分公司管理
 import Company from '@/pages/company/Company.vue'
 import CompanyCreate from '@/pages/company/CompanyCreate.vue'
+// 区域管理
+import Region from '@/pages/region/Region.vue'
+import RegionCity from '@/pages/region/RegionCity.vue'
+import RegionCounty from '@/pages/region/RegionCounty.vue'
+import RegionTown from '@/pages/region/RegionTown.vue'
 
 
 Vue.use(VueRouter)
@@ -30,6 +35,11 @@ const routes = [
 			// 2--分公司管理
 			{path: 'company',name: 'company',component:Company}, //分公司列表
 			{path: 'companycreate',name: 'companycreate',component:CompanyCreate}, //创建供应商
+			// 2--区域管理
+			{path: 'region', name: 'region', component: Region}, // 省级区域
+			{path: 'regioncity', name: 'regioncity', component: RegionCity}, // 市级区域
+			{path: 'regioncounty', name: 'regioncounty', component: RegionCounty}, // 区县级区域
+			{path: 'regiontown', name: 'regiontown', component: RegionTown}, // 乡镇街道级区域
 		]
 	}
 ]
