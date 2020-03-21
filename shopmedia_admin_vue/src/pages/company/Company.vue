@@ -27,7 +27,7 @@
 				<el-table :data="companyList" border style="width: 100%">
 					<el-table-column prop="company_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="company_name" label="分公司名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="province" label="身份" min-width="120"></el-table-column>
+					<el-table-column prop="province" label="省份" min-width="120"></el-table-column>
 					<el-table-column prop="city" label="城市" min-width="120"></el-table-column>
 					<el-table-column prop="person_name" label="负责人" width="120"></el-table-column>
 					<el-table-column prop="phone" label="负责人电话" width="120"></el-table-column>
@@ -38,8 +38,8 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="120">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toCompanyEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>

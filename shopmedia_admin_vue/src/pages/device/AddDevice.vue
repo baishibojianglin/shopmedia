@@ -24,10 +24,23 @@
 				   :value="item.value">
 				 </el-option>
 			   </el-select>
-		   </el-form-item>		   
+		   </el-form-item>	
+				  
+		   <el-form-item label="设备尺寸" prop="size">	
+			   <el-select v-model="ruleForm.size" placeholder="请选择">
+				 <el-option
+				   v-for="item in size_options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		   </el-form-item>				  
+				  
+				  
 
 		   <el-form-item label="放置区域" prop="street_id">
-			 <el-select @change="zone" v-model="ruleForm.area_id" placeholder="请选择">
+			 <el-select @change="zone" v-model="ruleForm.area_id" placeholder="请选择区(县)">
 			 				 <el-option
 			 				   v-for="item in arealist"
 			 				   :key="item.value"
@@ -35,7 +48,7 @@
 			 				   :value="item.value">
 			 				 </el-option>
 			 </el-select> 
-			 <el-select style="margin-left: 5px;" v-model="ruleForm.street_id" placeholder="请选择">
+			 <el-select style="margin-left: 5px;" v-model="ruleForm.street_id" placeholder="请选择街道(乡镇)">
 			 				 <el-option
 			 				   v-for="item in streetlist"
 			 				   :key="item.value"
@@ -44,22 +57,77 @@
 			 				 </el-option>
 			 </el-select>		 
 		   </el-form-item>
-	   
-		   
-		   <el-form-item label="租售价格" prop="sale_price">
-			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
+
+		   <el-form-item label="详细地址" prop="address">
+			 <el-input style="width:440px;"  clearable v-model="ruleForm.address"></el-input>
+		   </el-form-item>	   
+
+		   <el-form-item label="定位经度" prop="longitude">
+			 <el-input style="width:217px;"  clearable v-model="ruleForm.longitude"></el-input>
 		   </el-form-item>
 
+		   <el-form-item label="定位纬度" prop="latitude">
+			 <el-input style="width:217px;"  clearable v-model="ruleForm.latitude"></el-input>
+		   </el-form-item>
 
+		   <el-form-item label="店铺名称" prop="shopname">
+			 <el-input style="width:217px;"  clearable v-model="ruleForm.shopname"></el-input>
+		   </el-form-item>
 
-		   <el-form-item label="法人身份证" prop="url_idcard" class="idcard">
-			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_idcard"></el-input>
-			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="1" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_idcard',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,1,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,1,'url_idcard')}" :on-preview="handlePictureCardPreview"  name='image'>
-				     <i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传正面照</i>
+		   <el-form-item label="店铺大小" prop="shopsize">
+			 <el-input style="width:217px;"  clearable v-model="ruleForm.shopsize"></el-input>
+		   </el-form-item>
+
+		   <el-form-item label="店铺类型" prop="shopcate">	
+			   <el-select v-model="ruleForm.shopcate" placeholder="请选择">
+				 <el-option
+				   v-for="item in shopcate_options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		    </el-form-item>
+
+		   <el-form-item label="周边环境" prop="environment">	
+			   <el-select v-model="ruleForm.environment" placeholder="请选择">
+				 <el-option
+				   v-for="item in environment_options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		    </el-form-item>
+		   
+
+		   <el-form-item label="实景照片(5张以内)" prop="url_image" class="idcard">
+			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_image"></el-input>
+			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="5" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_idcard',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,5,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,5,'url_idcard')}" :on-preview="handlePictureCardPreview"  name='image'>
+				     <i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传图片</i>
 			   </el-upload>
 			   <el-dialog :visible.sync="dialogVisible">
 			     <img width="100%" :src="dialogImageUrl" alt="">
 			   </el-dialog>
+		   </el-form-item>
+
+		   <el-form-item label="基本描述" prop="describe">
+			 <el-input style="width:440px;" type="textarea"  clearable v-model="ruleForm.describe"></el-input>
+		   </el-form-item>
+	
+		   <el-form-item label="评估等级" prop="level">
+			   <el-select v-model="ruleForm.level" placeholder="请选择">
+				 <el-option
+				   v-for="item in level_options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		   </el-form-item>	
+		   
+		   <el-form-item label="租售价格" prop="sale_price">
+			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
 	  		   
 		   
@@ -93,13 +161,70 @@
 					 label: 'ch002'
 					}
 				],
+			    shopcate_options: [
+				    {
+					 value: '商超',
+					 label: '商超'
+					},
+					{
+					 value: '餐饮',
+					 label: '餐饮'
+					},
+					{
+					 value: '服装',
+					 label: '服装'
+					},
+					{
+					 value: '生鲜',
+					 label: '生鲜'
+					}
+				],
+				size_options: [
+				    {
+					 value: '22',
+					 label: '22'
+					},
+					{
+					 value: '32',
+					 label: '32'
+					}
+				],
+				environment_options: [
+				    {
+					 value: '商业区',
+					 label: '商业区'
+					},
+					{
+					 value: '居民区',
+					 label: '居民区'
+					}
+				],
+				level_options: [
+				    {
+					 value: '普通',
+					 label: '普通'
+					},
+					{
+					 value: '优质',
+					 label: '优质'
+					}
+				],
 				ruleForm: {
 				   brand:'长虹', //设备品牌
 				   model:'',//设备型号
 				   area_id:'',//县区id
 				   street_id:'',//街道id
-				   sale_price: '', //供应商名字
-			       url_idcard:'', //身份证正面图片地址
+				   address:'',//详细地址
+				   shopname:'',//店铺名称
+				   shopcate:'',//店铺类型
+				   longitude:'',//定位经度
+				   latitude:'',//定位纬度
+				   shopsize:'',//店铺大小
+				   environment:'',//店铺周边环境
+			       url_image:'' ,//图片
+				   describe:'',//基本描述
+				   level:'',//等级
+				   sale_price: '', //价格
 				},
 				rules: {
 				  brand: [
@@ -108,15 +233,45 @@
 				  model: [
 				  	{ required: true, message: '请选择设备型号', trigger: 'blur' }
 				  ],
+				  size: [
+				  	{ required: true, message: '请选择设备尺寸', trigger: 'blur' }
+				  ],
 				  street_id: [
 				  	{ required: true, message: '请选择投放区域', trigger: 'blur' }
 				  ],
-				  sale_price: [
-					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
+				  address: [
+				  	{ required: true, message: '请填写详细地址', trigger: 'blur' }
 				  ],
-				  url_idcard:[
-					{ required: true, message: '请上传法人身份证正面照' }
-				  ]											  
+				  shopname: [
+				  	{ required: true, message: '请填写店铺名称', trigger: 'blur' }
+				  ],
+				  shopcate: [
+				  	{ required: true, message: '请选择店铺类型', trigger: 'blur' }
+				  ],
+				  longitude: [
+				  	{ required: true, message: '请填写店铺经度', trigger: 'blur' }
+				  ],
+				  latitude: [
+				  	{ required: true, message: '请填写店铺纬度', trigger: 'blur' }
+				  ],
+				  environment: [
+				  	{ required: true, message: '请填写店铺纬度', trigger: 'blur' }
+				  ],
+				  shopsize: [
+				  	{ required: true, message: '请填写店铺大小', trigger: 'blur' }
+				  ],
+				  url_image:[
+				  	{ required: true, message: '请上传照片' }
+				  ],
+				  describe:[
+				  	{ required: true, message: '请填写基本情况', trigger: 'blur' }
+				  ],
+				  level:[
+				  	{ required: true, message: '请选择等级', trigger: 'blur' }
+				  ],
+				  sale_price:[
+					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
+				  ],										  
 				},
 				arealist:[],//县（区）
 				streetlist:[],//街道
@@ -290,24 +445,14 @@
 		width: 180px;
 	}
 	.idcard .el-upload-list--picture-card .el-upload-list__item{
-		width: 190px;
+		width: 170px;
 		height: 120px;
 		line-height: 120px;
 	}
 	.idcard .el-upload--picture-card {
-		width: 190px;
+		width: 170px;
 		height: 120px;
 		line-height: 120px;
-	}
-	.license .el-upload-list--picture-card .el-upload-list__item{
-		width: 120px;
-		height: 170px;
-		line-height: 170px;
-	}
-	.license .el-upload--picture-card {
-		width: 140px;
-		height: 198px;
-		line-height: 198px;
 	}
 	.hide .el-upload--picture-card {
 		display: none;
