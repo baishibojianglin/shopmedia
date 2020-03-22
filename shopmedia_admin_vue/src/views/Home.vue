@@ -56,6 +56,9 @@
 								<div v-show="menuvalue[5]">
 									<router-link to="/home/user_partner"><dd id='menu51' :class="activevalue[51]?activeclass:''"  @click="menuactive(51,5,1)">设备合作者</dd></router-link>
 									<router-link to="/home/user_to_partner"><dd id='menu52' :class="activevalue[52]?activeclass:''"  @click="menuactive(52,5,2)">设备合作业务员</dd></router-link>
+									<router-link to="/home/user_to_ad"><dd id='menu53' :class="activevalue[53]?activeclass:''"  @click="menuactive(53,5,3)">广告主业务员</dd></router-link>
+									<router-link to="/home/user_to_shop"><dd id='menu54' :class="activevalue[54]?activeclass:''"  @click="menuactive(54,5,4)">店铺端业务员</dd></router-link>
+									<router-link to="/home/user_shop"><dd id='menu55' :class="activevalue[55]?activeclass:''"  @click="menuactive(55,5,5)">店铺端用户</dd></router-link>
 								</div>
 							</el-collapse-transition>
 
