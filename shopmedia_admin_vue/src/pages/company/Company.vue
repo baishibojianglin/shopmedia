@@ -38,8 +38,8 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="120">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toCompanyEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
