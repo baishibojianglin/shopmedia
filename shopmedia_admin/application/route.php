@@ -17,6 +17,12 @@ Route::resource('region', 'admin/region');
 Route::resource('user_partner', 'admin/UserPartner');
 // 用户（传媒设备合作者业务员）
 Route::resource('user_to_partner', 'admin/UserToPartner');
+// 用户（广告主业务员）
+Route::resource('user_to_ad', 'admin/UserToAd');
+// 用户（店铺端业务员）
+Route::resource('user_to_shop', 'admin/UserToShop');
+// 用户（店铺端用户）
+Route::resource('user_shop', 'admin/UserShop');
 
 
 
@@ -55,7 +61,7 @@ Route::get('company_tree', 'admin/company/companyTree'); // 供应商列表树
 
 
 
-/* （媒体设备合作者等）客户端路由 */
+/* 客户端路由 */
 // 登录与注册
 Route::put('api/login', 'api/login/login'); // 登录
 Route::post('api/register', 'api/login/register'); // 注册

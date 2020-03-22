@@ -8,11 +8,11 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户（传媒设备合作者业务员）控制器类
- * Class UserToPartner
+ * admin模块用户（店铺端用户）控制器类
+ * Class UserShop
  * @package app\admin\controller
  */
-class UserToPartner extends Base
+class UserShop extends Base
 {
     /**
      * 显示用户资源列表
@@ -42,14 +42,14 @@ class UserToPartner extends Base
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
             try {
-                $data = model('User')->getUserToPartner($map, $this->size);
+                $data = model('User')->getUserShop($map, $this->size);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             $status = config('code.status');
             foreach ($data as $key => $value) {
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['utp_status'] : config('code.status_disable'); // 状态
-                $data[$key]['status_msg'] = $status[$value['utp_status']]; // 定义状态信息
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
+                $data[$key]['status_msg'] = $status[$value['us_status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);

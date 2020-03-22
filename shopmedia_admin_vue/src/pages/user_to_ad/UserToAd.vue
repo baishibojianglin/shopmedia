@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>设备合作业务员</span></el-col>
+					<el-col :span="6"><span>广告主业务员</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
@@ -34,7 +34,7 @@
 					</el-table-column>
 					<el-table-column prop="phone" label="电话号码" width="180">
 						<template slot-scope="scope">
-							{{scope.row.phone}}{{scope.row.phone ? (scope.row.phone_verified == 1 ? '(已验证)' : '(未验证)') : ''}}
+							{{scope.row.phone}}{{scope.row.phone_verified == 1 ? '(已验证)' : '(未验证)'}}
 						</template>
 					</el-table-column>
 					<el-table-column prop="company_name" label="分公司" min-width="180"></el-table-column>
@@ -92,46 +92,46 @@
 			 */
 			getUserList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_to_partner', {
-						params: {
-							user_name: this.formInline.user_name,
-							page: this.listPagination.current_page,
-							size: this.listPagination.per_page
-						}/* ,
-						headers: {
-							'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-							'admin-user-token': JSON.parse(localStorage.getItem('company')).token
-						} */
-					})
-					.then(function(res) {
-						if (res.data.status == 1) {
-							// 用户列表分页参数
-							self.listPagination = res.data.data;
+				this.$axios.get(this.$url + 'user_to_ad', {
+					params: {
+						user_name: this.formInline.user_name,
+						page: this.listPagination.current_page,
+						size: this.listPagination.per_page
+					}/* ,
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+					} */
+				})
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 用户列表分页参数
+						self.listPagination = res.data.data;
 
-							// 当数据为空时
-							if (self.listPagination.total == 0) {
-								self.$message({
-									message: '数据不存在',
-									type: 'warning'
-								});
-								return;
-							}
-
-							// 用户列表
-							self.userList = self.listPagination.data;
-						} else {
+						// 当数据为空时
+						if (self.listPagination.total == 0) {
 							self.$message({
-								message: '网络忙，请重试',
+								message: '数据不存在',
 								type: 'warning'
 							});
+							return;
 						}
-					})
-					.catch(function(error) {
+
+						// 用户列表
+						self.userList = self.listPagination.data;
+					} else {
 						self.$message({
-							message: error.response.data.message,
+							message: '网络忙，请重试',
 							type: 'warning'
 						});
+					}
+				})
+				.catch(function(error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
 					});
+				});
 			},
 
 			/**
@@ -167,7 +167,7 @@
 			 */
 			toUserEdit(row) {
 				this.$router.push({
-					path: "user_to_partner_edit",
+					path: "user_to_ad_edit",
 					query: {
 						user_id: row.user_id
 					}
@@ -186,7 +186,7 @@
 				}).then(() => {
 					// 调用删除接口
 					let self = this;
-					this.$axios.delete(this.$url + 'user_to_partner/' + scope.row.user_id)
+					this.$axios.delete(this.$url + 'user_to_ad/' + scope.row.user_id)
 						.then(function(res) {
 							// 移除元素
 							self.userList.splice(scope.$index, 1);
