@@ -101,9 +101,9 @@
 		    </el-form-item>
 		   
 
-		   <el-form-item label="实景照片(5张以内)" prop="url_image" class="idcard">
+		   <el-form-item label="实景(5张以内)" prop="url_image" class="idcard">
 			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_image"></el-input>
-			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="5" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_idcard',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,5,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,5,'url_idcard')}" :on-preview="handlePictureCardPreview"  name='image'>
+			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="5" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_image',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,5,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,5,'url_idcard')}" :on-preview="handlePictureCardPreview"  name='image'>
 				     <i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传图片</i>
 			   </el-upload>
 			   <el-dialog :visible.sync="dialogVisible">
@@ -129,8 +129,7 @@
 		   <el-form-item label="租售价格" prop="sale_price">
 			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
-	  		   
-		   
+		   		   
 		   <el-form-item>
 			 <el-button type="primary" @click="submitForm('ruleForm')">下一步</el-button>
 			 <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -147,7 +146,7 @@
 		   return {
 				brand_options: [
 				   {
-					 value: '长虹',
+					 value: '1',
 					 label: '长虹'
 				   },
 				],
@@ -163,19 +162,19 @@
 				],
 			    shopcate_options: [
 				    {
-					 value: '商超',
+					 value: '1',
 					 label: '商超'
 					},
 					{
-					 value: '餐饮',
+					 value: '2',
 					 label: '餐饮'
 					},
 					{
-					 value: '服装',
+					 value: '3',
 					 label: '服装'
 					},
 					{
-					 value: '生鲜',
+					 value: '4',
 					 label: '生鲜'
 					}
 				],
@@ -191,40 +190,42 @@
 				],
 				environment_options: [
 				    {
-					 value: '商业区',
+					 value: '1',
 					 label: '商业区'
 					},
 					{
-					 value: '居民区',
+					 value: '2',
 					 label: '居民区'
 					}
 				],
 				level_options: [
 				    {
-					 value: '普通',
+					 value: '1',
 					 label: '普通'
 					},
 					{
-					 value: '优质',
+					 value: '2',
 					 label: '优质'
 					}
 				],
 				ruleForm: {
-				   brand:'长虹', //设备品牌
-				   model:'',//设备型号
-				   area_id:'',//县区id
-				   street_id:'',//街道id
-				   address:'',//详细地址
-				   shopname:'',//店铺名称
-				   shopcate:'',//店铺类型
-				   longitude:'',//定位经度
-				   latitude:'',//定位纬度
-				   shopsize:'',//店铺大小
-				   environment:'',//店铺周边环境
-			       url_image:'' ,//图片
-				   describe:'',//基本描述
-				   level:'',//等级
-				   sale_price: '', //价格
+				   brand:'1', //设备品牌
+				   model:'1',//设备型号
+				   area_id:'1',//县区id
+				   street_id:'1',//街道id
+				   address:'1',//详细地址
+				   shopname:'1',//店铺名称
+				   shopcate:'1',//店铺类型
+				   longitude:'1',//定位经度
+				   latitude:'1',//定位纬度
+				   shopsize:'1',//店铺大小
+				   environment:'1',//店铺周边环境
+			       url_image:'1' ,//图片
+				   describe:'1',//基本描述
+				   level:'1',//等级
+				   sale_price: '1', //价格
+				   company_id:'1', //分公司id
+				   create_user:'1'//创建人id
 				},
 				rules: {
 				  brand: [
@@ -254,11 +255,11 @@
 				  latitude: [
 				  	{ required: true, message: '请填写店铺纬度', trigger: 'blur' }
 				  ],
-				  environment: [
-				  	{ required: true, message: '请填写店铺纬度', trigger: 'blur' }
-				  ],
 				  shopsize: [
 				  	{ required: true, message: '请填写店铺大小', trigger: 'blur' }
+				  ],
+				  environment: [
+				  	{ required: true, message: '请选择店铺商业环境', trigger: 'blur' }
 				  ],
 				  url_image:[
 				  	{ required: true, message: '请上传照片' }
@@ -355,21 +356,22 @@
 		  submitForm(formName) {
 			 
 			let self=this;
-			let company=JSON.parse(localStorage.getItem('company')); //取出的缓存的登录账户信息
-			this.ruleForm.parent_id=company.company_id; //获取登录账号所属的供应商id，并赋值给表单
-			this.ruleForm.create_user=company.user_id; //获取登录账号的用户id，并赋值给表单
+			let admin_user=JSON.parse(localStorage.getItem('admin_user')); //取出的缓存的登录账户信息
+			this.ruleForm.company_id=admin_user.company_id; //获取登录账号所属的供应商id，并赋值给表单
+			this.ruleForm.create_user=admin_user.id; //获取登录账号的用户id，并赋值给表单
+			//去除图片地址最后一个符号","
+			this.ruleForm['url_image']=this.ruleForm['url_image'].slice(0,-1);
 			this.$refs[formName].validate((valid) => {
 			  if (valid) {
-				this.$axios.post(this.$url+'createCompany',{
+				this.$axios.post(this.$url+'addDevice',{
 				   data:this.ruleForm
 				}).then(function(res){
+					console.log(res.data)
                    if(res.data.status==1){
 					  self.$message({
 					   		message:'基本信息填写成功',
 					   		type: 'success'
 					  });
-					  self.$router.push({path: "companycate", query: {companyid:res.data.companyid}});
-					  self.next(); 
 				   }
 				})                
 			  }else {
@@ -394,7 +396,7 @@
 		   * @param {string} index 上传组件索引
 		   */
 		  returnUrl(response, file, fileList,url_name,index){
-			  this.ruleForm[url_name]=response['url'];
+			  this.ruleForm[url_name]=this.ruleForm[url_name]+response['url']+',';
 			  this.$set(this.img_name,index,response['name']);
 		  },
           /**
