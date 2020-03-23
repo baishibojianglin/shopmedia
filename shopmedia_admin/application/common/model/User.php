@@ -26,7 +26,7 @@ class User extends Base
         $order = ['user_id' => 'asc'];
 
         $result = $this->field('password', true) // 字段排除
-        ->where($map)
+            ->where($map)
             ->order($order)
             ->paginate($size);
         return $result;
