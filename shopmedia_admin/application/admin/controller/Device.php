@@ -24,6 +24,7 @@ class Device extends Base
 		$form=input();
 		$form['data']['status']=1; //正常
         $form['data']['createtime']=date('Y-m-d H:i:s');
+        $form['data']['saled_part']=0;
         $number=Db::name('device')->insert($form['data']);
 		
 		if($number>0){

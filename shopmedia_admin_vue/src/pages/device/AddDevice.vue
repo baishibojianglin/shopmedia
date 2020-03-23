@@ -40,7 +40,7 @@
 				  
 
 		   <el-form-item label="放置区域" prop="street_id">
-			 <el-select @change="zone" v-model="ruleForm.area_id" placeholder="请选择区(县)">
+			 <el-select @change="zone" v-model="area_id" placeholder="请选择区(县)">
 			 				 <el-option
 			 				   v-for="item in arealist"
 			 				   :key="item.value"
@@ -211,7 +211,7 @@
 				ruleForm: {
 				   brand:'1', //设备品牌
 				   model:'1',//设备型号
-				   area_id:'1',//县区id
+				   size:'1',//设备尺寸
 				   street_id:'1',//街道id
 				   address:'1',//详细地址
 				   shopname:'1',//店铺名称
@@ -274,6 +274,7 @@
 					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
 				  ],										  
 				},
+				area_id:'',//县区id
 				arealist:[],//县（区）
 				streetlist:[],//街道
 				flag_area:0, //加载县区数据标志
@@ -366,10 +367,9 @@
 				this.$axios.post(this.$url+'addDevice',{
 				   data:this.ruleForm
 				}).then(function(res){
-					console.log(res.data)
                    if(res.data.status==1){
 					  self.$message({
-					   		message:'基本信息填写成功',
+					   		message:'设备添加成功',
 					   		type: 'success'
 					  });
 				   }
