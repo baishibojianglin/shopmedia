@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
 // 设备管理
+import Device from '@/pages/device/Device.vue'
 import AddDevice from '@/pages/device/AddDevice.vue'
 //分公司管理
 import Company from '@/pages/company/Company.vue'
@@ -12,6 +13,7 @@ import CompanyEdit from '@/pages/company/CompanyEdit.vue'
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
 import UserPartnerAdd from '@/pages/user_partner/UserPartnerAdd.vue'
 import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
+import UserPartnerDevice from '@/pages/user_partner/UserPartnerDevice.vue'
 // 用户管理（传媒设备合作者业务员）
 import UserToPartner from '@/pages/user_to_partner/UserToPartner.vue'
 // 用户管理（广告主业务员）
@@ -44,6 +46,7 @@ const routes = [
 		component:Home,
 		children: [
 			// 2--设备管理
+			{path: 'device', name: 'device', component: Device}, //设备列表
 			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加设备
 			// 2--分公司管理
 			{path: 'company',name: 'company',component:Company}, //分公司列表
@@ -53,6 +56,7 @@ const routes = [
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_add', name: 'user_partner_add', component: UserPartnerAdd}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
+			{path: 'user_partner_device', name: 'user_partner_device', component: UserPartnerDevice}, // 拥有设备
 			// 2--用户管理（传媒设备合作者业务员）
 			{path: 'user_to_partner', name: 'user_to_partner', component: UserToPartner}, // 用户列表
 			// 2--用户管理（广告主业务员）

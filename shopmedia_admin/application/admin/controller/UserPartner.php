@@ -353,4 +353,53 @@ class UserPartner extends Base
             return show(config('code.error'), '请求不合法', '', 400);
         }
     }
+
+    /**
+     * 获取用户（传媒设备合作者）拥有设备
+     * @param $id
+     * @return \think\response\Json
+     */
+    public function userPartnerDevice($id)
+    {
+        // 传入的参数
+        $param = input('param.');
+        if (isset($param['size'])) { // 每页条数
+            $param['size'] = intval($param['size']);
+        }
+
+        // 查询条件
+        $map = [];
+        // 获取传媒设备ID集合
+        $userPartner = Db::name('user_partner')->field('device_ids')->find($id);
+        $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
+        $deviceIds = [];
+        foreach ($deviceIdsAndShare as $key => $value) {
+            $deviceIds[] = $value['device_id'];
+        }
+        $map['device_id'] = ['in', $deviceIds];
+
+        // 获取分页page、size
+        $this->getPageAndSize($param);
+
+        // 获取用户（传媒设备合作者）拥有的传媒设备分页列表数据 模式一：基于paginate()自动化分页
+        try {
+            $data = model('Device')->getDevice($map, $this->size);
+        } catch (\Exception $e) {
+            return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+        }
+
+        // 处理数据
+        $status = config('code.status');
+        foreach($data as $key1 => $value1) {
+            $data[$key1]['status_msg'] = $status[$value1['status']]; // 定义状态信息
+
+            foreach ($deviceIdsAndShare as $key2 => $value2) {
+                if ($value1['device_id'] == $value2['device_id']) {
+                    $data[$key1]['share'] = $value2['share']; // 定义share
+                }
+            }
+        }
+
+        return show(config('code.success'), 'OK', $data);
+    }
 }

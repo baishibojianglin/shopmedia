@@ -11,11 +11,15 @@ Route::resource('company', 'admin/company');
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
 Route::POST('getCompany','admin/Company/getCompany'); //获取分公司基本信息
 //传媒设备管理
+Route::resource('device','admin/Device');
+
+
 Route::POST('addDevice','admin/Device/addDevice');
 // 区域
 Route::resource('region', 'admin/region');
 // 用户（传媒设备合作者）
 Route::resource('user_partner', 'admin/UserPartner');
+Route::get('user_partner_device/:id', 'admin/UserPartner/userPartnerDevice'); // 传媒设备合作者拥有设备
 // 用户（传媒设备合作者业务员）
 Route::resource('user_to_partner', 'admin/UserToPartner');
 // 用户（广告主业务员）
