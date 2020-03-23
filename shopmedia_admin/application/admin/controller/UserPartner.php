@@ -359,7 +359,7 @@ class UserPartner extends Base
      * @param $id
      * @return \think\response\Json
      */
-    public function getUserPartnerDevice($id)
+    public function userPartnerDevice($id)
     {
         // 传入的参数
         $param = input('param.');
@@ -383,7 +383,7 @@ class UserPartner extends Base
 
         // 获取用户（传媒设备合作者）拥有的传媒设备分页列表数据 模式一：基于paginate()自动化分页
         try {
-            $data = model('Device')->getUserPartnerDevice($map, $this->size);
+            $data = model('Device')->getDevice($map, $this->size);
         } catch (\Exception $e) {
             return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
         }

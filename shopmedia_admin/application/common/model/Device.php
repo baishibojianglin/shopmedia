@@ -12,15 +12,15 @@ use think\Model;
 class Device extends Base
 {
     /**
-     * 获取用户（传媒设备合作者）拥有的传媒设备列表数据（基于paginate()自动化分页）
+     * 获取传媒设备列表数据（基于paginate()自动化分页）
      * @param array $map
      * @param int $size
      * @return \think\Paginator
      */
-    public function getUserPartnerDevice($map = [], $size = 5)
+    public function getDevice($map = [], $size = 5)
     {
         $result = $this->alias('d')
-            ->field('d.device_id, d.brand, d.model, d.size, d.street_id, d.address, d.shopname, d.url_image, d.sale_price, d.company_id, d.status, rs.region_name street, c.company_name, rp.region_name province, rc.region_name city')
+            ->field('d.device_id, d.brand, d.model, d.size, d.street_id, d.address, d.shopname, d.url_image, d.sale_price, d.saled_part, d.company_id, d.status, rs.region_name street, c.company_name, rp.region_name province, rc.region_name city')
             ->join('__REGION__ rs', 'd.street_id = rs.region_id', 'LEFT') // 区域（街道）
             ->join('__COMPANY__ c', 'd.company_id = c.company_id', 'LEFT') // 分公司
             ->join('__REGION__ rp', 'c.province_id = rp.region_id', 'LEFT') // 区域（省份）

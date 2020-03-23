@@ -35,7 +35,6 @@ class Company extends Base
 				$map['c.company_name'] = ['like', '%' . trim($param['company_name']) . '%'];
 			}
 
-
 			// 获取分页page、size
 			$this->getPageAndSize($param);
 
