@@ -7,6 +7,7 @@ import AddDevice from '@/pages/device/AddDevice.vue'
 //分公司管理
 import Company from '@/pages/company/Company.vue'
 import CompanyCreate from '@/pages/company/CompanyCreate.vue'
+import CompanyEdit from '@/pages/company/CompanyEdit.vue'
 // 用户管理（传媒设备合作者）
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
 import UserPartnerAdd from '@/pages/user_partner/UserPartnerAdd.vue'
@@ -47,6 +48,7 @@ const routes = [
 			// 2--分公司管理
 			{path: 'company',name: 'company',component:Company}, //分公司列表
 			{path: 'companycreate',name: 'companycreate',component:CompanyCreate}, //创建供应商
+			{path: 'companyedit',name: 'companyedit',component:CompanyEdit}, //创建供应商
 			// 2--用户管理（传媒设备合作者）
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_add', name: 'user_partner_add', component: UserPartnerAdd}, // 新增用户

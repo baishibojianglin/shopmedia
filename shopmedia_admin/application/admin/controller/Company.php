@@ -65,14 +65,19 @@ class Company extends Base
 
 
    /**
-   *创建分公司
+   *创建（更新）分公司
    */
 	public function createCompany(){
 		$form=input();
 		//添加分公司基本信息
-		$form['data']['status']=1; //正常
         $form['data']['createtime']=date('Y-m-d H:i:s');
-        $number=Db::name('company')->insert($form['data']);
+        if($form['company_id']!=''){ //更新
+        	$mapcompany['company_id']=$form['company_id'];
+        	$number=Db::name('company')->where($mapcompany)->update($form['data']);
+        }else{ //新增
+        	$number=Db::name('company')->insert($form['data']);
+        }
+        
 		
 		if($number>0){
 			$message['status']=1;
@@ -82,6 +87,7 @@ class Company extends Base
 			$message['words']='创建失败';
 		}
 		return json($message);
+
 	}
 
 

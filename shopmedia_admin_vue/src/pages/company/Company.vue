@@ -9,7 +9,7 @@
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
 								<el-input placeholder="查询分公司" v-model="formInline.company_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getCompanyList()"></el-button>
+									<el-button slot="append"  icon="el-icon-search" @click="getCompanyList()"></el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
@@ -17,14 +17,14 @@
 					</el-col>
 					<el-col :span="12">
 						<!-- 新增 s -->
-						<router-link to="companycreate"><el-button size="mini" icon="el-icon-plus">新增分公司</el-button></router-link>
+						<router-link to="companycreate"><el-button size="mini" type="primary" icon="el-icon-plus">新增分公司</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
 			</div>
 			<div class="">
 				<!-- 分公司列表 s -->
-				<el-table :data="companyList" border style="width: 100%">
+				<el-table :data="companyList" empty-text="" border style="width: 100%">
 					<el-table-column prop="company_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="company_name" label="分公司名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="province" label="省份" min-width="120"></el-table-column>
@@ -33,7 +33,8 @@
 					<el-table-column prop="phone" label="负责人电话" width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<el-tag :type="scope.row.status === 0 ? 'info' : (scope.row.status === 1 ? 'success' : 'danger')" size="mini">{{scope.row.status_msg}}</el-tag>
+							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')" size="mini">{{scope.row.status_msg}}</span>
+							<!-- <el-tag :type="scope.row.status === 0 ? 'info' : (scope.row.status === 1 ? 'success' : 'danger')" size="mini">{{scope.row.status_msg}}</el-tag> -->
 						</template>
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="120">
@@ -158,7 +159,8 @@
 			 * @param {Object} row
 			 */
 			toCompanyEdit(row) {
-				this.$router.push({path: "company_edit", query: {company_id: row.company_id, company_name: row.company_name}});
+				console.log(row)
+				this.$router.push({path: "companyedit", query: {company_id: row.company_id, province_id: row.province_id}});
 			},
 			
 			/**

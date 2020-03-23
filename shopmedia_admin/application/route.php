@@ -9,8 +9,8 @@ Route::GET('code','admin/Login/createverifycode');
 // 分公司
 Route::resource('company', 'admin/company');
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
+Route::POST('getCompany','admin/Company/getCompany'); //获取分公司基本信息
 //传媒设备管理
-Route::POST('getCompany','admin/Company/getCompany');
 Route::POST('addDevice','admin/Device/addDevice');
 // 区域
 Route::resource('region', 'admin/region');
