@@ -353,4 +353,13 @@ class UserPartner extends Base
             return show(config('code.error'), '请求不合法', '', 400);
         }
     }
+
+
+    /**
+     *
+     */
+    public function userPartnerDevice()
+    {
+        
+    }
 }

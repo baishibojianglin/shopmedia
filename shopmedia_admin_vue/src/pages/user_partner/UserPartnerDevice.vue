@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>设备合作者</span></el-col>
+					<el-col :span="6"><span>设备合作者拥有设备</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
@@ -15,10 +15,13 @@
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<!-- <el-col :span="12"> -->
 						<!-- 新增 s -->
 						<!-- <router-link to="user_add"><el-button size="mini" icon="el-icon-plus">新增用户</el-button></router-link> -->
 						<!-- 新增 e -->
+					<!-- </el-col> -->
+					<el-col :span="3" :offset="9">
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
 				</el-row>
 			</div>
@@ -47,9 +50,8 @@
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
 					<el-table-column prop="login_ip" label="登录IP" width="180"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="210">
+					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toUserDevice(scope.row)">设备</el-button>
 							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
 						</template>
@@ -210,17 +212,11 @@
 			},
 			
 			/**
-			 * 跳转用户（传媒设备合作者）拥有设备列表页
-			 * @param {Object} row
+			 * 返回上一页
 			 */
-			toUserDevice(row) {
-				this.$router.push({
-					path: "user_partner_device",
-					query: {
-						user_id: row.user_id
-					}
-				});
-			}
+			back(){
+				this.$router.go(-1);
+			},
 		}
 	}
 </script>
