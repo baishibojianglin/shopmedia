@@ -79,12 +79,19 @@
 				</el-col> <!--menu e-->
 				
 				<el-col  :xs="18" :sm="19" :md="20" :lg="21" :xl="22">  <!--main s-->
-				
-					<el-col  :span='24' class="createtitle">
+
+<!-- 					<el-col  :span='24' class="createtitle">
 						<span>{{menuonetitle}} </span>
 						<span class="el-icon-arrow-right"></span>
 						<span> {{menutwotitle}}</span>
+					</el-col> -->
+				
+					<el-col  :span='24' class="createtitle">
+						<span>{{onetitle}} </span>
+						<span class="el-icon-arrow-right"></span>
+						<span> {{twotitle}}</span>
 					</el-col>
+					
 					
 					<el-col :span='24' class="homemain">
 						<router-view></router-view>
@@ -111,7 +118,9 @@
 				derectiondown:'el-icon-arrow-down', //一级菜单向上箭头
 				derectionup:'el-icon-arrow-up', //一级菜单向下箭头
 				activevalue:[], //激活菜单数组
-				activeclass:'activecolor' //选中二级菜单样式
+				activeclass:'activecolor', //选中二级菜单样式
+				onetitle:localStorage.getItem("onetitle"),//一级标题
+				twotitle:localStorage.getItem("twotitle")//二级标题
 			}
 		},
 		components: {
@@ -179,11 +188,18 @@
 					}
 				});
 				this.$set(this.activevalue,val,true);
-				//设置标题
+				//vuex设置标题(参考)
 				let titleobject=new Object();
 				titleobject.onetitletext=document.getElementById('menu'+onetitle).innerText;
 				titleobject.twotitletext=document.getElementById('menu'+onetitle+''+twotitle).innerText;		
 				this.menutitle(titleobject);
+				//local设置标题
+				localStorage.setItem("onetitle",titleobject.onetitletext);
+				localStorage.setItem("twotitle",titleobject.twotitletext);
+				this.onetitle=localStorage.getItem("onetitle");
+				this.twotitle=localStorage.getItem("twotitle");
+				
+				
 			}
 		}
 	}

@@ -6,6 +6,9 @@
 
 <style lang="scss">
   .text-info{
-	  color:blue;
+	  color:#B5B5B5;
+  }
+  .text-success{
+	  color:#85CE61;
   }
 </style>
