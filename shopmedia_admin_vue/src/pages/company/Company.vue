@@ -41,7 +41,7 @@
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
 							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
 							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
 						</template>
 					</el-table-column>
@@ -89,7 +89,6 @@
 			 */
 			getCompanyList(is_delete) {
 				let self = this;
-				this.formInline.is_delete = is_delete == 1 ? is_delete : '';
 				this.$axios.get(this.$url + 'company', {
 					params: {
 						company_name: this.formInline.company_name,
@@ -118,6 +117,7 @@
 						
 						// 分公司列表
 						self.companyList = self.listPagination.data;
+						self.formInline.is_delete = is_delete == 1 ? is_delete : '';
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -203,6 +203,38 @@
 						type: 'info',
 						message: '已取消删除'
 					}); */
+				});
+			},
+			
+			/**
+			 * 还原回收站数据
+			 * @param {Object} row
+			 */
+			recover(row) {
+				let self = this;
+				this.$axios.put(this.$url + 'company/' + row.company_id, {
+					// 参数
+					is_delete: row.is_delete
+				}/* , {
+					// 请求头配置
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+					}
+				} */)
+				.then(function(res) {
+					let type = res.data.status == 1 ? 'success' : 'warning';
+					self.$message({
+						message: '还原成功',
+						type: type
+					});
+					self.getCompanyList();
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
 				});
 			}
 		}

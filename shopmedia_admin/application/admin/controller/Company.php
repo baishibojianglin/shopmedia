@@ -128,6 +128,47 @@ class Company extends Base
 	}
 
 	/**
+	 * 保存更新的分公司资源
+	 *
+	 * @param  \think\Request  $request
+	 * @param  int  $id
+	 * @return \think\Response
+	 */
+	public function update(Request $request, $id)
+	{
+		// 判断为PUT请求
+		if (!request()->isPut()) {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+
+		// 传入的数据
+		$param = input('param.');
+
+		// 判断数据是否存在
+		$data = [];
+		// 当为还原软删除的数据时
+		if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
+			$data['is_delete'] = config('code.not_delete');
+		}
+
+		if (empty($data)) {
+			return show(config('code.error'), '数据不合法', '', 404);
+		}
+
+		// 更新
+		try {
+			$result = model('Company')->save($data, ['company_id' => $id]); // 更新
+		} catch (\Exception $e) {
+			return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+		}
+		if (false === $result) {
+			return show(config('code.error'), '更新失败', '', 403);
+		} else {
+			return show(config('code.success'), '更新成功', '', 201);
+		}
+	}
+
+	/**
 	 * 创建（更新）分公司
 	 * @return \think\response\Json
 	 * @throws \think\Exception
