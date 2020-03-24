@@ -25,13 +25,13 @@
 							</el-collapse-transition>																		
 							
 							<dt @click="menush(1)">
-								<span class="el-icon-mobile" id="menu1"> 传媒屏管理</span>
+								<span class="el-icon-mobile" id="menu1"> 广告屏管理</span>
 								<span class="fr derection" :class="menuvalue[1]?derectionup:derectiondown"></span>
 							</dt>
 							<el-collapse-transition>
 								<div v-show="menuvalue[1]">
-									<router-link to="/home/adddevice"><dd id='menu11' :class="activevalue[11]?activeclass:''"  @click="menuactive(11,1,1)">新增传媒屏</dd></router-link>
-									<router-link to="/home/device"><dd id='menu12' :class="activevalue[12]?activeclass:''"  @click="menuactive(12,1,2)">传媒设备</dd></router-link>
+									<router-link to="/home/adddevice"><dd id='menu11' :class="activevalue[11]?activeclass:''"  @click="menuactive(11,1,1)">新增广告屏</dd></router-link>
+									<router-link to="/home/device"><dd id='menu12' :class="activevalue[12]?activeclass:''"  @click="menuactive(12,1,2)">广告屏列表</dd></router-link>
 								</div>
 							</el-collapse-transition>
 						
