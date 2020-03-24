@@ -26,6 +26,12 @@
 				</el-row>
 			</div>
 			<div class="">
+				<!-- 用户信息 s -->
+				<el-table border style="width: 100%">
+					<el-table-column prop="device_id" label="序号" fixed width="90"></el-table-column>
+				</el-table>
+				<!-- 用户信息 e -->
+				
 				<!-- 用户（传媒设备合作者）设备列表 s -->
 				<el-table :data="userDeviceList" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="90"></el-table-column>
@@ -93,6 +99,7 @@
 			 */
 			getParams() {
 				this.user_id = this.$route.query.user_id;
+				this.user_name = this.$route.query.user_name;
 			},
 			
 			/**

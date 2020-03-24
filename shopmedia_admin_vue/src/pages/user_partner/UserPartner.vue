@@ -177,7 +177,7 @@
 			 * @param {Object} scope
 			 */
 			deleteUser(scope) {
-				this.$confirm('此操作将永久删除该用户, 是否继续?', '删除', {
+				this.$confirm('此操作将永久删除该用户类型, 是否继续?', '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -217,7 +217,8 @@
 				this.$router.push({
 					path: "user_partner_device",
 					query: {
-						user_id: row.user_id
+						user_id: row.user_id,
+						user_name: row.user_name
 					}
 				});
 			}
