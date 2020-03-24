@@ -3,19 +3,20 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>分公司列表</span></el-col>
+					<el-col :span="6"><span>分公司列表{{formInline.is_delete == 1 ? '（回收站）' : ''}}</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询分公司" v-model="formInline.company_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getCompanyList()"></el-button>
+								<el-input placeholder="分公司名称" v-model="formInline.company_name" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getCompanyList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="6"><el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)">回收站</el-button></el-col>
+					<el-col :span="6">
 						<!-- 新增 s -->
 						<router-link to="companycreate"><el-button size="mini" type="primary" icon="el-icon-plus">新增分公司</el-button></router-link>
 						<!-- 新增 e -->
@@ -24,7 +25,7 @@
 			</div>
 			<div class="">
 				<!-- 分公司列表 s -->
-				<el-table :data="companyList" empty-text="加载中..." border style="width: 100%">
+				<el-table :data="companyList" empty-text="数据加载中..." border style="width: 100%">
 					<el-table-column prop="company_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="company_name" label="分公司名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="province" label="省份" min-width="120"></el-table-column>
@@ -36,9 +37,11 @@
 							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')" size="mini">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
+					<el-table-column prop="createtime" label="创建时间" width="180" sortable></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
 							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
 						</template>
 					</el-table-column>
@@ -69,7 +72,8 @@
 		data() {
 			return {
 				formInline: {
-					company_name: '' // 分公司名称
+					company_name: '', // 分公司名称
+					is_delete: '' // 是否删除
 				},
 				companyList: [], // 分公司列表
 				listPagination: {}, // 列表分页参数
@@ -81,12 +85,14 @@
 		methods: {
 			/**
 			 * 获取分公司列表
+			 * @param {Object} is_delete
 			 */
-			getCompanyList() {
+			getCompanyList(is_delete) {
 				let self = this;
 				this.$axios.get(this.$url + 'company', {
 					params: {
 						company_name: this.formInline.company_name,
+						is_delete: is_delete,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}/* ,
@@ -111,6 +117,7 @@
 						
 						// 分公司列表
 						self.companyList = self.listPagination.data;
+						self.formInline.is_delete = is_delete == 1 ? is_delete : '';
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -166,7 +173,8 @@
 			 * @param {Object} scope
 			 */
 			deleteCompany(scope) {
-				this.$confirm('此操作将永久删除该分公司, 是否继续?', '删除', {
+				let message = scope.row.is_delete == 1 ? '此操作将永久删除该分公司，是否继续？' : '移除该分公司，放入回收站？';
+				this.$confirm(message, '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -191,9 +199,41 @@
 						});
 					});
 				}).catch(() => {
-					this.$message({
+					/* this.$message({
 						type: 'info',
 						message: '已取消删除'
+					}); */
+				});
+			},
+			
+			/**
+			 * 还原回收站数据
+			 * @param {Object} row
+			 */
+			recover(row) {
+				let self = this;
+				this.$axios.put(this.$url + 'company/' + row.company_id, {
+					// 参数
+					is_delete: row.is_delete
+				}/* , {
+					// 请求头配置
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+					}
+				} */)
+				.then(function(res) {
+					let type = res.data.status == 1 ? 'success' : 'warning';
+					self.$message({
+						message: '还原成功',
+						type: type
+					});
+					self.getCompanyList();
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
 					});
 				});
 			}

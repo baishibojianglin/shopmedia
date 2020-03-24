@@ -4,10 +4,10 @@ body{margin: 0;padding: 0; font-size:0.95em;overflow: hidden;}
 /*登录背景图片*/
 .loginbg{background-image: url(../image/loginbg.png); background-size: 100% 100%;}
 
+
 /*颜色*/
 .color-white{color:#fff;}
 .color-blue{color:#66B1FF;}
-
 
 /*字体大小*/
 .font2{font-size: 2em;}

@@ -17,7 +17,8 @@ Route::POST('addDevice','admin/Device/addDevice');
 Route::resource('region', 'admin/region');
 // 用户（传媒设备合作者）
 Route::resource('user_partner', 'admin/UserPartner');
-Route::get('user_partner_device/:id', 'admin/UserPartner/userPartnerDevice'); // 传媒设备合作者拥有设备
+Route::get('user_partner_device/:id', 'admin/UserPartner/userPartnerDevice'); // 传媒设备合作者拥有的设备
+Route::put('user_partner_device_update/:id', 'admin/UserPartner/userPartnerDeviceUpdate'); // 更新传媒设备合作者拥有的设备所占份额
 // 用户（传媒设备合作者业务员）
 Route::resource('user_to_partner', 'admin/UserToPartner');
 // 用户（广告主业务员）
