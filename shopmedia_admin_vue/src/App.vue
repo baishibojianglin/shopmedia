@@ -5,5 +5,7 @@
 </template>
 
 <style lang="scss">
-
+  .text-info{
+	  color:blue;
+  }
 </style>

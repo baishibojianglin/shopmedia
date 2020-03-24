@@ -2,7 +2,7 @@
 	<div class="create">
 
         	
-		 <el-form  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
+		 <el-form  v-loading="loading"  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
 			 
 		   <el-form-item label="分公司名称" prop="company_name">
 			 <el-input style="width:217px;"  v-model="ruleForm.company_name"></el-input>
@@ -10,24 +10,24 @@
 
 		   <el-form-item label="所在地区" prop="city_id">
 			 <el-select @change="zone" v-model="ruleForm.province_id" placeholder="请选择">
-			 				 <el-option
-			 				   v-for="item in provincelist"
-			 				   :key="item.value"
-			 				   :label="item.label"
-			 				   :value="item.value">
-			 				 </el-option>
+				 <el-option
+				   v-for="item in provincelist"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
 			 </el-select> 
 			 <el-select style="margin-left: 5px;" v-model="ruleForm.city_id" placeholder="请选择">
-			 				 <el-option
-			 				   v-for="item in citylist"
-			 				   :key="item.value"
-			 				   :label="item.label"
-			 				   :value="item.value">
-			 				 </el-option>
+				 <el-option
+				   v-for="item in citylist"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
 			 </el-select>		 
 		   </el-form-item>
-
-		   <el-form-item label="公司状态" prop="status">
+		   
+		   <el-form-item label="分公司状态" prop="status">
 			   <el-select v-model="ruleForm.status" placeholder="请选择">
 				 <el-option
 				   v-for="item in status_options"
@@ -36,7 +36,7 @@
 				   :value="item.value">
 				 </el-option>
 			   </el-select>
-		   </el-form-item>	
+		   </el-form-item>
 
 		   <el-form-item label="负责人姓名" prop="person_name">
 		   			 <el-input style="width:217px;"  v-model="ruleForm.person_name"></el-input>
@@ -45,7 +45,7 @@
 		   <el-form-item label="联系电话" prop="phone">
 			 <el-input style="width:217px;"  v-model="ruleForm.phone"></el-input>
 		   </el-form-item>
-   
+	   
 		   
 		   <el-form-item>
 			 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -63,11 +63,11 @@
 		   return {
 			   status_options: [
 					{
-					 value: '1',
+					 value: 1,
 					 label: '正常'
 					},
 					{
-					 value: '0',
+					 value: 0,
 					 label: '禁用'
 					}
 			    ],
@@ -76,9 +76,8 @@
 				   province_id:'',//省级
 				   city_id:'',//市级
 				   person_name:'',//负责人姓名
-				   phone:'' ,//联系电话
-				   status:'', //状态
-				   company_id:''//分公司id
+				   phone:'', //联系电话
+				   status:'' //状态
 				},
 				rules: {
 				  company_name: [
@@ -95,17 +94,41 @@
 				  ],
 				  status:[
 					{ required: true, message: '请选择状态', trigger: 'blur' }					  
-				  ]	
+				  ]
 				},
+				company_id:'',//分公司id
 				provincelist:[],
-				citylist:[]
+				citylist:[],
+				loading: true
 		   }
      },
 	 mounted(){
-		  //初始化地址列表
- 	       this.zone();
+		 //初始化省级地址列表
+		 this.zone();
+		 //初始化加载市级地址列表
+		 this.zone(this.$route.query.province_id);
+		 //如果是编辑，赋值原来的数据
+		 this.getdata();
+
 	 },
      methods: {
+		   /**
+			* 回显数据
+			*/
+		    getdata(){
+			   let self=this;
+			   this.$axios.post(this.$url+'getCompany',{
+				 company_id:this.$route.query.company_id
+			   }).then(function(res){
+					if(res.data.status==1){		
+					   self.company_id=res.data.data.company_id;
+					   delete res.data.data.company_id;
+					   self.ruleForm=res.data.data;
+					   self.loading=false;
+					}
+			   })
+			   
+			},
 			/**
 			 * 获取地区列表
 			 */
@@ -138,7 +161,8 @@
 							type: 'warning'
 					  });					   
 				   }
-				})				
+				})		
+				return Promise.resolve();
 			},
 		 	 
 		 
