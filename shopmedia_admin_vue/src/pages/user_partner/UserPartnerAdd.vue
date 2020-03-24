@@ -1,5 +1,5 @@
 <template>
-	<div class="company_user_add">
+	<div class="user_partner_add">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">

@@ -361,6 +361,11 @@ class UserPartner extends Base
      */
     public function userPartnerDevice($id)
     {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
         // 传入的参数
         $param = input('param.');
         if (isset($param['size'])) { // 每页条数
@@ -370,7 +375,7 @@ class UserPartner extends Base
         // 查询条件
         $map = [];
         // 获取传媒设备ID集合
-        $userPartner = Db::name('user_partner')->field('device_ids')->find($id);
+        $userPartner = Db::name('user_partner')->field('device_ids')->where(['user_id' => $id])->find();
         $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
         $deviceIds = [];
         foreach ($deviceIdsAndShare as $key => $value) {
@@ -401,5 +406,28 @@ class UserPartner extends Base
         }
 
         return show(config('code.success'), 'OK', $data);
+    }
+
+    /**
+     * 更新传媒设备合作者拥有的设备所占份额
+     * @param Request $request
+     * @param $id
+     * @return \think\response\Json
+     */
+    public function userPartnerDeviceUpdate(Request $request, $id)
+    {
+        // 判断为PUT请求
+        if (!request()->isPut()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 获取用户（传媒设备合作者）信息
+        $userPartner = DB::name('user_partner')->where(['user_id' => $id])->find();
+        $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
+
+        return show(config('code.success'), 'OK', $deviceIdsAndShare);
     }
 }

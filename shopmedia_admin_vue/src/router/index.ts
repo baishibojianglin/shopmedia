@@ -14,6 +14,7 @@ import UserPartner from '@/pages/user_partner/UserPartner.vue'
 import UserPartnerAdd from '@/pages/user_partner/UserPartnerAdd.vue'
 import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
 import UserPartnerDevice from '@/pages/user_partner/UserPartnerDevice.vue'
+import UserPartnerDeviceEdit from '@/pages/user_partner/UserPartnerDeviceEdit.vue'
 // 用户管理（传媒设备合作者业务员）
 import UserToPartner from '@/pages/user_to_partner/UserToPartner.vue'
 // 用户管理（广告主业务员）
@@ -56,7 +57,8 @@ const routes = [
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_add', name: 'user_partner_add', component: UserPartnerAdd}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
-			{path: 'user_partner_device', name: 'user_partner_device', component: UserPartnerDevice}, // 拥有设备
+			{path: 'user_partner_device', name: 'user_partner_device', component: UserPartnerDevice}, // 用户拥有的设备
+			{path: 'user_partner_device_edit', name: 'user_partner_device_edit', component: UserPartnerDeviceEdit}, // 编辑用户拥有的设备
 			// 2--用户管理（传媒设备合作者业务员）
 			{path: 'user_to_partner', name: 'user_to_partner', component: UserToPartner}, // 用户列表
 			// 2--用户管理（广告主业务员）
