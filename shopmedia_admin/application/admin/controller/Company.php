@@ -34,6 +34,9 @@ class Company extends Base
 			if (!empty($param['company_name'])) { // 分公司名称
 				$map['c.company_name'] = ['like', '%' . trim($param['company_name']) . '%'];
 			}
+			if (isset($param['is_delete'])) { // 是否删除
+				$map['c.is_delete'] = $param['is_delete'];
+			}
 
 			// 获取分页page、size
 			$this->getPageAndSize($param);
@@ -62,10 +65,73 @@ class Company extends Base
 		}
 	}
 
+	/**
+	 * 删除指定分公司资源
+	 * @param int $id
+	 * @return \think\response\Json
+	 * @throws ApiException
+	 */
+	public function delete($id)
+	{
+		// 判断为DELETE请求
+		if (request()->isDelete()) {
+			// 显示指定的分公司资源
+			try {
+				$data = model('Company')->find($id);
+				//return show(config('code.success'), 'ok', $data);
+			} catch (\Exception $e) {
+				return show(config('code.error'), '网络忙，请重试', '', 500);
+				//throw new ApiException($e->getMessage(), 500, config('code.error'));
+			}
 
-   /**
-   *创建（更新）分公司
-   */
+			// 判断数据是否存在
+			if ($data['company_id'] != $id) {
+				return show(config('code.error'), '数据不存在', '', 404);
+			}
+
+			// 判断删除条件
+			// 判断分公司状态
+			if ($data['status'] == config('code.status_enable')) { // 启用
+				return show(config('code.error'), '删除失败：分公司已启用', '', 403);
+			}
+
+			// 软删除
+			if ($data['is_delete'] != config('code.is_delete')) {
+				// 捕获异常
+				try {
+					$result = model('Company')->softDelete('company_id', $id);
+				} catch (\Exception $e) {
+					throw new ApiException($e->getMessage(), 500, config('code.error'));
+				}
+
+				if (!$result) {
+					return show(config('code.error'), '移除失败', '', 403);
+				} else {
+					return show(config('code.success'), '移除成功', '');
+				}
+			}
+
+			// 真删除
+            try {
+                $result = model('Company')->destroy($id);
+            } catch (\Exception $e) {
+                return show(config('code.error'), '网络忙，请重试', '', 500);
+            }
+            if (!$result) {
+                return show(config('code.error'), '删除失败', '', 403);
+            } else {
+                return show(config('code.success'), '删除成功');
+            }
+		} else {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+	}
+
+	/**
+	 * 创建（更新）分公司
+	 * @return \think\response\Json
+	 * @throws \think\Exception
+	 */
 	public function createCompany(){
 		$form=input();
 		//添加分公司基本信息
@@ -86,13 +152,12 @@ class Company extends Base
 			$message['words']='创建失败';
 		}
 		return json($message);
-
 	}
 
-
-   /**
-   *获取分公司基本信息
-   */
+	/**
+	 * 获取分公司基本信息
+	 * @return \think\response\Json
+	 */
 	public function getCompany(){
 		$form=input();
 		//添加分公司基本信息
@@ -110,13 +175,10 @@ class Company extends Base
 		return json($message);
 	}
 
-
-
-	
-
-   /**
-   *获取销售区域
-   */
+	/**
+	 * 获取销售区域
+	 * @return \think\response\Json
+	 */
 	public function getzone(){
 		$form=input();	
 		$maparea['parent_id']=$form['parent_id'];
@@ -132,11 +194,10 @@ class Company extends Base
 		return json($message);
 	}
 
-
-
-   /**
-   *获取供应商销售区域
-   */
+	/**
+	 * 获取供应商销售区域
+	 * @return \think\response\Json
+	 */
 	public function getarea_company(){
 		$form=input();
 		$mapcompany['id']=$form['id'];	
@@ -160,13 +221,12 @@ class Company extends Base
         }
 
 		return json($message);
-
 	}
 
-
-   /**
-   *插入供应商销售区域字段值
-   */
+	/**
+	 * 插入供应商销售区域字段值
+	 * @return \think\response\Json
+	 */
 	public function submitArea(){
 		$form=input();
 		$listcompany=model('Company')->insertcompany($form['data']);
@@ -182,10 +242,10 @@ class Company extends Base
 		return json($message);
 	}
 
-
-   /**
-   *获取商品种类
-   */
+	/**
+	 * 获取商品种类
+	 * @return \think\response\Json
+	 */
 	public function getshopcate_company(){
 		$form=input();	
 		$mapcate['parent_id']=$form['parent_id'];
@@ -195,8 +255,6 @@ class Company extends Base
         //原来勾选的商品种类
     	$mapcompany['id']=$form['id'];
         $listselectcate=model('Company')->where($mapcompany)->field('salecate')->find();
-        
-        
           
         if(!empty($listcate)){
         	$message['data']=$listcate;
@@ -209,12 +267,10 @@ class Company extends Base
 	    return json($message);
 	}
 
-
-
-
-   /**
-   *插入供应商销售商品种类字段值
-   */
+	/**
+	 * 插入供应商销售商品种类字段值
+	 * @return \think\response\Json
+	 */
 	public function cate_insert(){
 		$form=input();
 		$form['data']['status']=1;
@@ -230,10 +286,6 @@ class Company extends Base
 		}
 		return json($message);
 	}
-
-
-
-
 
 	/**
 	 * 获取供应商列表树
@@ -260,8 +312,4 @@ class Company extends Base
 
 		return show(config('code.success'), 'OK', $data);
 	}
-
-
-
-	
 }

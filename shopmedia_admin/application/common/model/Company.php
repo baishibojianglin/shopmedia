@@ -19,11 +19,17 @@ class Company extends Base
      */
     public function getCompany($map = [], $size = 5)
     {
+        if(!isset($map['c.is_delete'])) { // 是否删除
+            $map['c.is_delete'] = ['neq', config('code.is_delete')];
+        }
+
+        $order = ['c.createtime' => 'desc'];
+
         $result = $this->alias('c')
             ->field($this->_getListField())
             ->join('__REGION__ rp', 'c.province_id = rp.region_id', 'LEFT') // 省份
             ->join('__REGION__ rc', 'c.city_id = rc.region_id', 'LEFT') // 城市
-            ->where($map)->cache(true, 10)->paginate($size);
+            ->where($map)->order($order)->cache(true, 10)->paginate($size);
         return $result;
     }
 
@@ -42,6 +48,7 @@ class Company extends Base
             'c.phone',
             'c.status',
             'c.createtime',
+            'c.is_delete',
             'rp.region_name province',
             'rc.region_name city'
         ];
