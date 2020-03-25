@@ -413,6 +413,7 @@ class UserPartner extends Base
      * @param Request $request
      * @param $id
      * @return \think\response\Json
+     * @throws ApiException
      */
     public function userPartnerDeviceUpdate(Request $request, $id)
     {
@@ -424,10 +425,34 @@ class UserPartner extends Base
         // 传入的参数
         $param = input('param.');
 
-        // 获取用户（传媒设备合作者）信息
-        $userPartner = DB::name('user_partner')->where(['user_id' => $id])->find();
-        $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
+        // 判断数据是否存在
+        $data = [];
+        if (isset($param['device_id']) && isset($param['share'])) {
+            // 获取用户（传媒设备合作者）信息
+            $userPartner = DB::name('user_partner')->where(['user_id' => $id])->find();
+            $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
+            foreach ($deviceIdsAndShare as $key => $value) {
+                if ($param['device_id'] == $value['device_id']) {
+                    $deviceIdsAndShare[$key]['share'] = trim($param['share']);
+                }
+            }
 
-        return show(config('code.success'), 'OK', $deviceIdsAndShare);
+            $data['device_ids'] = json_encode($deviceIdsAndShare);
+        }
+
+        if (empty($data)) {
+            return show(config('code.error'), '数据不合法', '', 404);
+        }
+
+        try {
+            $result = Db::name('user_partner')->where(['user_id' => $id])->update($data);
+        } catch(\Exception $e) {
+            throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
+        }
+        if (false === $result) {
+            return show(config('code.error'), '更新失败', '', 403);
+        } else {
+            return show(config('code.success'), '更新成功', '', 201);
+        }
     }
 }

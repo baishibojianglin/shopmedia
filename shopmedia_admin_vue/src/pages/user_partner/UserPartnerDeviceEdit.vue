@@ -81,7 +81,6 @@
 							} */
 						})
 						.then(function(res) {
-							console.log(res);return;
 							let type = res.data.status == 1 ? 'success' : 'warning';
 							self.$message({
 								message: res.data.message,
