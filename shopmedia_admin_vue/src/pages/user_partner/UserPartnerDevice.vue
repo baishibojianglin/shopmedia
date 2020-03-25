@@ -8,8 +8,8 @@
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询设备" v-model="formInline.user_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getUserDeviceList()"></el-button>
+								<el-input placeholder="设备品牌、型号" v-model="formInline.keywords" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getUserDeviceList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
@@ -80,7 +80,7 @@
 		data() {
 			return {
 				formInline: {
-					user_name: '' // 用户名称
+					keywords: '' // 查询关键词
 				},
 				userDeviceList: [], // 用户（传媒设备合作者）设备列表
 				listPagination: {} ,// 列表分页参数
@@ -107,9 +107,10 @@
 			 */
 			getUserDeviceList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_partner_device/' + this.user_id, {
+				this.$axios.get(this.$url + 'user_partner_device', {
 					params: {
-						// user_name: this.formInline.user_name,
+						user_id: this.user_id,
+						keywords: this.formInline.keywords,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}/* ,

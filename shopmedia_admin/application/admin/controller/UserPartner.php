@@ -36,6 +36,9 @@ class UserPartner extends Base
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
             }
+            if (isset($param['is_delete'])) { // 是否删除
+                $map['up.is_delete'] = $param['is_delete'];
+            }
 
             // 获取分页page、size
             $this->getPageAndSize($param);
@@ -142,8 +145,12 @@ class UserPartner extends Base
     {
         // 判断为GET请求
         if (request()->isGet()) {
+            // 获取原始用户信息
+            $user = model('User')->field('password', true)->find($id);
+
+            // 获取设备合作者信息
             try {
-                $data = model('CompanyUser')->alias('cu')->field('cu.user_id, company_id, cu.user_name, cu.avatar, cu.account, cu.phone, cu.ratio, cu.status, aga.group_id')->join('__AUTH_GROUP_ACCESS__ aga', 'cu.user_id = aga.uid', 'LEFT')->find($id);
+                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.user_type, up.money, up.income, up.cash, up.status, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.user_type' => ['in', $user['user_type']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -178,266 +185,25 @@ class UserPartner extends Base
         // 传入的数据
         $param = input('param.');
 
-        // validate验证
-        $validate = validate('CompanyUser');
-        if (!$validate->check($param, [], 'update')) {
-            return show(config('code.error'), $validate->getError(), '', 403);
-        }
+        // TODO：validate验证
 
         // 判断数据是否存在
         $data = [];
-        if (!empty($param['user_name'])) { // 供应商账户名称
-            $data['user_name'] = trim($param['user_name']);
-
-            // 忽略唯一(unique)类型字段user_name对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'user_name' => $data['user_name']])->find();
-            if ($_data) {
-                return show(config('code.error'), '供应商账户名称已存在', '', 403);
-            }
+        if (isset($param['money'])) { // 余额
+            $data['money'] = trim($param['money']);
         }
-        if (!empty($param['avatar'])) {  // 供应商账户证件照
-            $data['avatar'] = trim($param['avatar']);
+        if (isset($param['income'])) { // 收益
+            $data['income'] = trim($param['income']);
         }
-        if (!empty($param['account'])) { // 供应商账户号
-            $data['account'] = trim($param['account']);
-
-            // 忽略唯一(unique)类型字段account对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'account' => $data['account']])->find();
-            if ($_data) {
-                return show(config('code.error'), '供应商账户号已存在', '', 403);
-            }
+        if (isset($param['cash'])) { // 提现
+            $data['cash'] = trim($param['cash']);
         }
-        if (!empty($param['password'])) { // 密码
-            $data['password'] = md5($param['password']);
+        if (isset($param['status'])) { // 状态
+            $data['status'] = $param['status'];
         }
-        if (!empty($param['phone'])) { // 电话号码
-            $data['phone'] = trim($param['phone']);
-
-            // 忽略唯一(unique)类型字段phone对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'phone' => $data['phone']])->find();
-            if ($_data) {
-                return show(config('code.error'), '供应商账户电话号码已存在', '', 403);
-            }
-        }
-        if (isset($param['ratio'])) { // 提成比例
-            $data['ratio'] = trim($param['ratio']);
-        }
-        if (isset($param['status'])) { // 状态，不能用 !empty() ，否则 status = 0 时也判断为空
-            $data['status'] = input('param.status', null, 'intval');
-
-            // 供应商账户已登录时，不能禁用
-            if ($this->companyUser['user_id'] == $id && $data['status'] == config('code.status_disable')) {
-                return show(config('code.error'), '供应商账户已登录，不能禁用', '', 403);
-            }
-        }
-        if (!empty($param['company_id'])) { // 供应商ID
-            $data['company_id'] = $param['company_id'];
-        }
-        if (!empty($param['group_id'])) { // 角色ID
-            $data['group_id'] = $param['group_id'];
-        }
-
-        if (empty($data)) {
-            return show(config('code.error'), '数据不合法', '', 404);
-        }
-
-        /* 手动控制事务 s */
-        // 启动事务
-        Db::startTrans();
-        try {
-            // 更新供应商账户
-            $res[0] = Db::name('company_user')->strict(false)->where(['user_id' => $id])->update($data);
-            $res[0] = $res[0] === false ? 0 : true;
-            //$result = model('CompanyUser')->allowField(true)->save($data, ['user_id' => $id]); // 更新
-
-            // 查询供应商是否已经绑定角色，TODO：暂时只考虑“账户-角色”一对一关系
-            $authGroupAccess = model('AuthGroupAccess')->where(['uid' => $id])->find();
-            if ($authGroupAccess) {
-                // 更新供应商账户角色
-                $res[1] = Db::name('auth_group_access')->strict(false)->where(['uid' => $id])->update(['group_id' => $data['group_id']]);
-                $res[1] = $res[1] === false ? 0 : true;
-            } else {
-                // 绑定供应商账户角色
-                $data1 = ['uid' => $id, 'group_id' => $data['group_id']];
-                $res[1] = Db::name('auth_group_access')->insert($data1);
-            }
-
-            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
-            if (in_array(0, $res)) {
-                return show(config('code.error'), '更新失败', '', 403);
-            }
-
-            // 提交事务
-            Db::commit();
-            return show(config('code.success'), '更新成功', '', 201);
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-            return show(config('code.error'), '网络忙，请重试', '', 500);
-        }
-        /* 手动控制事务 e */
-    }
-
-    /**
-     * 删除指定用户资源
-     * @param int $id
-     * @return \think\response\Json
-     * @throws ApiException
-     */
-    public function delete($id)
-    {
-        // 判断为DELETE请求
-        if (request()->isDelete()) {
-            // 显示指定的店鋪比赛场次模板
-            try {
-                $data = model('User')->find($id);
-                //return show(config('code.success'), 'ok', $data);
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
-                //throw new ApiException($e->getMessage(), 500, config('code.error'));
-            }
-
-            // 判断数据是否存在
-            if ($data['user_id'] != $id) {
-                return show(config('code.error'), '数据不存在', '', 404);
-            }
-
-            // 判断删除条件
-            // 判断是否存在下级供应商账户
-            $userList = model('User')->where(['parent_id' => $id])->select();
-            if (!empty($userList)) {
-                return show(config('code.error'), '删除失败：存在下级供应商账户', '', 403);
-            }
-            // 判断供应商账户状态
-            if ($data['status'] == config('code.status_enable')) { // 启用
-                return show(config('code.error'), '删除失败：供应商账户已启用', '', 403);
-            }
-
-            /* 手动控制事务 s */
-            // 启动事务
-            Db::startTrans();
-            try {
-                // 真删除指定供应商账户
-                $res[0] = Db::name('company_user')->where(['user_id' => $id])->delete();
-                //$result = model('User')->destroy($id);
-
-                // 真删除指定供应商账户角色
-                $res[1] = Db::name('auth_group_access')->where(['uid' => $id])->delete();
-
-                // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
-                if (in_array(0, $res)) {
-                    return show(config('code.error'), '删除失败', '', 403);
-                }
-
-                // 提交事务
-                Db::commit();
-                return show(config('code.success'), '删除成功');
-            } catch (\Exception $e) {
-                // 回滚事务
-                Db::rollback();
-                return show(config('code.error'), '网络忙，请重试', '', 500);
-            }
-            /* 手动控制事务 e */
-            /*// 真删除
-            try {
-                $result = model('CompanyUser')->destroy($id);
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
-            }
-            if (!$result) {
-                return show(config('code.error'), '删除失败', '', 403);
-            } else {
-                return show(config('code.success'), '删除成功');
-            }*/
-        } else {
-            return show(config('code.error'), '请求不合法', '', 400);
-        }
-    }
-
-    /**
-     * 获取用户（传媒设备合作者）拥有设备
-     * @param $id
-     * @return \think\response\Json
-     */
-    public function userPartnerDevice($id)
-    {
-        // 判断为GET请求
-        if (!request()->isGet()) {
-            return show(config('code.error'), '请求不合法', '', 400);
-        }
-
-        // 传入的参数
-        $param = input('param.');
-        if (isset($param['size'])) { // 每页条数
-            $param['size'] = intval($param['size']);
-        }
-
-        // 查询条件
-        $map = [];
-        // 获取传媒设备ID集合
-        $userPartner = Db::name('user_partner')->field('device_ids')->where(['user_id' => $id])->find();
-        $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
-        $deviceIds = [];
-        foreach ($deviceIdsAndShare as $key => $value) {
-            $deviceIds[] = $value['device_id'];
-        }
-        $map['d.device_id'] = ['in', $deviceIds];
-
-        // 获取分页page、size
-        $this->getPageAndSize($param);
-
-        // 获取用户（传媒设备合作者）拥有的传媒设备分页列表数据 模式一：基于paginate()自动化分页
-        try {
-            $data = model('Device')->getDevice($map, $this->size);
-        } catch (\Exception $e) {
-            return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
-        }
-
-        // 处理数据
-        $status = config('code.status');
-        foreach($data as $key1 => $value1) {
-            $data[$key1]['status_msg'] = $status[$value1['status']]; // 定义状态信息
-
-            foreach ($deviceIdsAndShare as $key2 => $value2) {
-                if ($value1['device_id'] == $value2['device_id']) {
-                    $data[$key1]['share'] = $value2['share']; // 定义share
-                }
-            }
-        }
-
-        return show(config('code.success'), 'OK', $data);
-    }
-
-    /**
-     * 更新传媒设备合作者拥有的设备所占份额
-     * @param Request $request
-     * @param $id
-     * @return \think\response\Json
-     * @throws ApiException
-     */
-    public function userPartnerDeviceUpdate(Request $request, $id)
-    {
-        // 判断为PUT请求
-        if (!request()->isPut()) {
-            return show(config('code.error'), '请求不合法', '', 400);
-        }
-
-        // 传入的参数
-        $param = input('param.');
-
-        // 判断数据是否存在
-        $data = [];
-        if (isset($param['device_id']) && isset($param['share'])) {
-            // 获取用户（传媒设备合作者）信息
-            $userPartner = DB::name('user_partner')->where(['user_id' => $id])->find();
-            $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
-            foreach ($deviceIdsAndShare as $key => $value) {
-                if ($param['device_id'] == $value['device_id']) {
-                    $deviceIdsAndShare[$key]['share'] = trim($param['share']);
-                }
-            }
-
-            $data['device_ids'] = json_encode($deviceIdsAndShare);
+        // 当为还原软删除的数据时
+        if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
+            $data['is_delete'] = config('code.not_delete');
         }
 
         if (empty($data)) {
@@ -453,6 +219,70 @@ class UserPartner extends Base
             return show(config('code.error'), '更新失败', '', 403);
         } else {
             return show(config('code.success'), '更新成功', '', 201);
+        }
+    }
+
+    /**
+     * 删除指定用户资源
+     * @param int $id
+     * @return \think\response\Json
+     * @throws ApiException
+     */
+    public function delete($id)
+    {
+        // 判断为DELETE请求
+        if (request()->isDelete()) {
+            // 显示指定的设备合作者
+            try {
+                $data = Db::name('user_partner')->where(['user_id' => $id])->find();
+            } catch (\Exception $e) {
+                return show(config('code.error'), '网络忙，请重试', '', 500);
+                //throw new ApiException($e->getMessage(), 500, config('code.error'));
+            }
+
+            // 判断数据是否存在
+            if ($data['user_id'] != $id) {
+                return show(config('code.error'), '数据不存在', '', 404);
+            }
+
+            // 判断删除条件
+            // 判断是否存在下级供应商账户
+            if ($data['status'] == config('code.status_enable')) { // 启用
+                return show(config('code.error'), '删除失败：设备合作者已启用', '', 403);
+            }
+            if (!empty($data['device_ids'])) { // 拥有的设备、份额及协议
+                return show(config('code.error'), '删除失败：设备合作者拥有传媒设备', '', 403);
+            }
+
+            // 软删除
+            if ($data['is_delete'] != config('code.is_delete')) {
+                // 捕获异常
+                try {
+                    $result = Db::name('user_partner')->where(['user_id' => $id])->update(['is_delete' => config('code.is_delete')]);
+                } catch (\Exception $e) {
+                    throw new ApiException($e->getMessage(), 500, config('code.error'));
+                }
+
+                if (!$result) {
+                    return show(config('code.error'), '移除失败', '', 403);
+                } else {
+                    return show(config('code.success'), '移除成功', '');
+                }
+            }
+
+            // 真删除
+            try {
+                $result = Db::name('user_partner')->where(['user_id' => $id])->delete();
+            } catch (\Exception $e) {
+                return show(config('code.error'), '网络忙，请重试', '', 500);
+            }
+            if (!$result) {
+                return show(config('code.error'), '删除失败', '', 403);
+            } else {
+                return show(config('code.success'), '删除成功');
+            }
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 }

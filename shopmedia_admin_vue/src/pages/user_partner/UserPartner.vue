@@ -3,22 +3,26 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>设备合作者</span></el-col>
+					<el-col :span="6"><span>设备合作者{{formInline.is_delete == 1 ? '（回收站）' : ''}}</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询用户" v-model="formInline.user_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getUserList()"></el-button>
+								<el-input placeholder="用户名称" v-model="formInline.user_name" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getUserList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="6">
 						<!-- 新增 s -->
 						<!-- <router-link to="user_add"><el-button size="mini" icon="el-icon-plus">新增用户</el-button></router-link> -->
 						<!-- 新增 e -->
+					</el-col>
+					<el-col :span="3" :offset="3">
+						<el-button size="mini" icon="el-icon-delete" @click="getUserList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="getUserList()" v-if="formInline.is_delete == 1">返回</el-button>
 					</el-col>
 				</el-row>
 			</div>
@@ -27,7 +31,7 @@
 				<el-table :data="userList" border style="width: 100%">
 					<el-table-column prop="user_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="avatar" label="头像" width="180">
+					<el-table-column prop="avatar" label="头像" width="90">
 						<template slot-scope="scope">
 							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
 						</template>
@@ -42,15 +46,16 @@
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<el-tag :type="scope.row.status === 0 ? 'info' : (scope.row.status === 1 ? 'success' : 'danger')" size="mini">{{scope.row.status_msg}}</el-tag>
+							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'" size="mini">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
 					<el-table-column prop="login_ip" label="登录IP" width="180"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="210">
+					<el-table-column label="操作" fixed="right" :min-width="formInline.is_delete != 1 ? 210 : 160">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toUserDevice(scope.row)">设备</el-button>
-							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
+							<el-button type="primary" size="mini" plain @click="toUserDevice(scope.row)" v-if="formInline.is_delete != 1">设备</el-button>
+							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
 						</template>
 					</el-table-column>
@@ -75,7 +80,8 @@
 		data() {
 			return {
 				formInline: {
-					user_name: '' // 用户名称
+					user_name: '', // 用户名称
+					is_delete: '' // 是否删除
 				},
 				userList: [], // 用户列表
 				listPagination: {} // 列表分页参数
@@ -87,12 +93,14 @@
 		methods: {
 			/**
 			 * 获取用户列表
+			 * @param {Object} is_delete
 			 */
-			getUserList() {
+			getUserList(is_delete) {
 				let self = this;
 				this.$axios.get(this.$url + 'user_partner', {
 						params: {
 							user_name: this.formInline.user_name,
+							is_delete: is_delete,
 							page: this.listPagination.current_page,
 							size: this.listPagination.per_page
 						}/* ,
@@ -117,6 +125,7 @@
 
 							// 用户列表
 							self.userList = self.listPagination.data;
+							self.formInline.is_delete = is_delete == 1 ? is_delete : '';
 						} else {
 							self.$message({
 								message: '网络忙，请重试',
@@ -177,7 +186,8 @@
 			 * @param {Object} scope
 			 */
 			deleteUser(scope) {
-				this.$confirm('此操作将永久删除该用户类型, 是否继续?', '删除', {
+				let message = scope.row.is_delete == 1 ? '此操作将永久删除该用户类型，是否继续？' : '移除该用户类型，放入回收站？';
+				this.$confirm(message, '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -202,9 +212,41 @@
 							});
 						});
 				}).catch(() => {
-					this.$message({
+					/* this.$message({
 						type: 'info',
 						message: '已取消删除'
+					}); */
+				});
+			},
+			
+			/**
+			 * 还原回收站数据
+			 * @param {Object} row
+			 */
+			recover(row) {
+				let self = this;
+				this.$axios.put(this.$url + 'user_partner/' + row.user_id, {
+					// 参数
+					is_delete: row.is_delete
+				}/* , {
+					// 请求头配置
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+					}
+				} */)
+				.then(function(res) {
+					let type = res.data.status == 1 ? 'success' : 'warning';
+					self.$message({
+						message: '还原成功',
+						type: type
+					});
+					self.getUserList();
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
 					});
 				});
 			},

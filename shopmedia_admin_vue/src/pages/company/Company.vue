@@ -20,7 +20,10 @@
 						<router-link to="companycreate"><el-button size="mini" type="primary" icon="el-icon-plus">新增分公司</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
-					<el-col :span="6" style="text-align: right;"><el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)">回收站</el-button></el-col>
+					<el-col :span="6" style="text-align: right;">
+						<el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="getCompanyList()" v-if="formInline.is_delete == 1">返回</el-button>
+					</el-col>
 				</el-row>
 			</div>
 			<div class="">
