@@ -381,7 +381,7 @@ class UserPartner extends Base
         foreach ($deviceIdsAndShare as $key => $value) {
             $deviceIds[] = $value['device_id'];
         }
-        $map['device_id'] = ['in', $deviceIds];
+        $map['d.device_id'] = ['in', $deviceIds];
 
         // 获取分页page、size
         $this->getPageAndSize($param);
