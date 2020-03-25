@@ -84,5 +84,28 @@ class Device extends Base
 		return json($message);
 	}
 
+	/**
+	 * 获取广告屏基本信息
+	 * @return \think\response\Json
+	 */
+	public function getDevice(){
+		$form=input();
+		$mapdevice['device_id']=$form['device_id'];
+        $devicelist=Db::name('device')->where($mapdevice)->find();
+		
+		if(!empty($devicelist)){
+			$message['data']=$devicelist;
+			$message['status']=1;
+			$message['words']='获取成功';
+		}else{
+			$message['status']=0;
+			$message['words']='获取失败';
+		}
+		return json($message);
+	}
+
+
+
+
 
 }

@@ -10,9 +10,10 @@ Route::GET('code','admin/Login/createverifycode');
 Route::resource('company', 'admin/company');
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
 Route::POST('getCompany','admin/Company/getCompany'); //获取分公司基本信息
-//传媒设备管理
+//广告屏管理
 Route::resource('device','admin/Device');
 Route::POST('addDevice','admin/Device/addDevice');
+Route::POST('getDevice','admin/Device/getDevice');
 // 区域
 Route::resource('region', 'admin/region');
 // 用户（传媒设备合作者）

@@ -41,7 +41,7 @@
 				  
 
 		   <el-form-item label="放置区域" prop="street_id">
-			 <el-select @change="zone" v-model="area_id" placeholder="请选择区(县)">
+			 <el-select @change="zone" v-model="ruleForm.area_id" placeholder="请选择区(县)">
 			 				 <el-option
 			 				   v-for="item in arealist"
 			 				   :key="item.value"
@@ -253,6 +253,8 @@
 				   brand:'', //设备品牌
 				   model:'',//设备型号
 				   size:'',//设备尺寸
+				   city_id:'',//市级id
+				   area_id:'',//县区id
 				   street_id:'',//街道id
 				   address:'',//详细地址
 				   shopname:'',//店铺名称
@@ -335,7 +337,6 @@
 				  	{ required: true, message: '请填写厂家广告收益率', trigger: 'blur' }
 				  ]																								
 				},
-				area_id:'',//县区id
 				arealist:[],//县（区）
 				streetlist:[],//街道
 				flag_area:0, //加载县区数据标志
@@ -346,12 +347,31 @@
 		   }
      },
 	 mounted(){
-		   
-		  //调用 -获取登录账号所属分公司信息 - 方法
- 	       this.getcompany();
+		  //初始化省级地址列表
+		  this.getcompany();
+		  //加载街道数据列表
+		 // this.zone(this.$route.query.area_id);
+		  //回显数据
+		  this.getdata()
 	 },
      methods: {
-
+		   /**
+			* 回显数据
+			*/
+		    getdata(){
+			   let self=this;
+			   this.$axios.post(this.$url+'getDevice',{
+				 device_id:this.$route.query.device_id
+			   }).then(function(res){
+					if(res.data.status==1){		
+					   self.device_id=res.data.data.device_id;
+					   delete res.data.data.device_id;
+					   self.ruleForm=res.data.data;
+					   self.loading=false;
+					}
+			   })
+			   
+			},
             /**
 			 * 获取登录账号所属的分公司信息
 			 */
@@ -446,6 +466,7 @@
 		   */
 		  resetForm(formName) {
 			this.$refs[formName].resetFields();
+			this.ruleForm.area_id='';//重置县区id
 		  },
 
 		  /**

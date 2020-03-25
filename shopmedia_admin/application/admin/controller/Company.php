@@ -201,7 +201,6 @@ class Company extends Base
 	 */
 	public function getCompany(){
 		$form=input();
-		//添加分公司基本信息
 		$mapcompany['company_id']=$form['company_id'];
         $companylist=Db::name('company')->where($mapcompany)->find();
 		
@@ -217,7 +216,7 @@ class Company extends Base
 	}
 
 	/**
-	 * 获取销售区域
+	 * 获取区域数据
 	 * @return \think\response\Json
 	 */
 	public function getzone(){
@@ -235,122 +234,8 @@ class Company extends Base
 		return json($message);
 	}
 
-	/**
-	 * 获取供应商销售区域
-	 * @return \think\response\Json
-	 */
-	public function getarea_company(){
-		$form=input();
-		$mapcompany['id']=$form['id'];	
-		$map['parent_id']=$form['parent_id'];
-		$map['level']=$form['level'];
-        //获取company表销售区域字段值，并分解成数组
-		$listcompany = model('Company')->salearea($mapcompany);
-        $listcompanyvalue=explode("|",$listcompany);
-        //查询生成前台tree组件需要的数据格式
-        $data=model('Region')->getzone($map,$listcompanyvalue);
-        //区域全选情况的查询
-        if(empty($data)){
-        	 $data=model('Region')->getRegion($map);
-        }
 
-        if(!empty($data)){
-        	$message['data']= $data;
-        	$message['status']=1;
-        }else{
-        	$message['status']=0;       	
-        }
 
-		return json($message);
-	}
 
-	/**
-	 * 插入供应商销售区域字段值
-	 * @return \think\response\Json
-	 */
-	public function submitArea(){
-		$form=input();
-		$listcompany=model('Company')->insertcompany($form['data']);
-		
-		if(!empty($listcompany)){
-			$message['companyid']=$listcompany;
-			$message['status']=1;
-			$message['words']='销售区域配置成功';
-		}else{
-			$message['status']=0;
-			$message['words']='销售区域配置失败';
-		}
-		return json($message);
-	}
 
-	/**
-	 * 获取商品种类
-	 * @return \think\response\Json
-	 */
-	public function getshopcate_company(){
-		$form=input();	
-		$mapcate['parent_id']=$form['parent_id'];
-		$mapcate['audit_status']=1;
-        //获取商品种类
-        $listcate=model('GoodsCate')->where($mapcate)->field('cate_id,cate_name')->cache(true, 10)->select();
-        //原来勾选的商品种类
-    	$mapcompany['id']=$form['id'];
-        $listselectcate=model('Company')->where($mapcompany)->field('salecate')->find();
-          
-        if(!empty($listcate)){
-        	$message['data']=$listcate;
-        	$message['selectdata']=$listselectcate;
-        	$message['status']=1;
-        }else{
-        	$message['data']=[];
-        	$message['status']=0;      	
-        }
-	    return json($message);
-	}
-
-	/**
-	 * 插入供应商销售商品种类字段值
-	 * @return \think\response\Json
-	 */
-	public function cate_insert(){
-		$form=input();
-		$form['data']['status']=1;
-		$listcompany=model('Company')->update($form['data']);
-		
-		if(!empty($listcompany)){
-			$message['companyid']=$listcompany;
-			$message['status']=1;
-			$message['words']='商品种类配置成功';
-		}else{
-			$message['status']=0;
-			$message['words']='商品种类配置失败';
-		}
-		return json($message);
-	}
-
-	/**
-	 * 获取供应商列表树
-	 * @return \think\response\Json
-	 */
-	public function companyTree()
-	{
-		// 获取商品类别列表树，用于页面下拉框列表
-		try {
-			$data = model('Company')->field('id, name')->select(); // TODO：待处理，暂时这样写
-		} catch (\Exception $e) {
-			return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
-		}
-
-		/*if ($data) {
-			// 处理数据
-			foreach ($data as $key => $value) {
-				if ($value['level'] != 0) {
-					// level 用于定义 title 前面的空位符的长度
-					$data[$key]['name'] = '└' . str_repeat('─', $value['level'] * 1). ' ' . $value['name']; // str_repeat(string,repeat) 函数把字符串重复指定的次数
-				}
-			}
-		}*/
-
-		return show(config('code.success'), 'OK', $data);
-	}
 }

@@ -41,7 +41,7 @@
 				  
 
 		   <el-form-item label="放置区域" prop="street_id">
-			 <el-select @change="zone" v-model="area_id" placeholder="请选择区(县)">
+			 <el-select @change="zone" v-model="ruleForm.area_id" placeholder="请选择区(县)">
 			 				 <el-option
 			 				   v-for="item in arealist"
 			 				   :key="item.value"
@@ -76,7 +76,7 @@
 		   </el-form-item>
 
 		   <el-form-item label="店铺大小" prop="shopsize">
-			 <el-input style="width:217px;"  clearable v-model="ruleForm.shopsize"></el-input>
+			 <el-input style="width:217px;"  clearable v-model="ruleForm.shopsize"></el-input> 平米（㎡）
 		   </el-form-item>
 
 		   <el-form-item label="店铺类型" prop="shopcate">	
@@ -253,6 +253,8 @@
 				   brand:'', //设备品牌
 				   model:'',//设备型号
 				   size:'',//设备尺寸
+				   city_id:'',//市级id
+				   area_id:'',//县区id
 				   street_id:'',//街道id
 				   address:'',//详细地址
 				   shopname:'',//店铺名称
@@ -335,7 +337,6 @@
 				  	{ required: true, message: '请填写厂家广告收益率', trigger: 'blur' }
 				  ]																								
 				},
-				area_id:'',//县区id
 				arealist:[],//县（区）
 				streetlist:[],//街道
 				flag_area:0, //加载县区数据标志
@@ -362,6 +363,7 @@
 					company_id:admin_user.company_id
 				}).then(function(res){
 				   if(res.data.status==1){
+					   self.ruleForm.city_id=res.data.data.city_id;
                        self.zone(res.data.data.city_id);
 				   }else{
 					  self.$message({
@@ -433,6 +435,7 @@
 					   		message:'设备添加成功',
 					   		type: 'success'
 					  });
+					  self.$router.push({path: "device", query: {device_id:res.data.device_id}});
 				   }
 				})                
 			  }else {
