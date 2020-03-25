@@ -15,12 +15,12 @@
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="6"><el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)">回收站</el-button></el-col>
 					<el-col :span="6">
 						<!-- 新增 s -->
 						<router-link to="companycreate"><el-button size="mini" type="primary" icon="el-icon-plus">新增分公司</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
+					<el-col :span="6" style="text-align: right;"><el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)">回收站</el-button></el-col>
 				</el-row>
 			</div>
 			<div class="">
