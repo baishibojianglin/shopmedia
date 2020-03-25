@@ -3,12 +3,12 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>传媒设备列表</span></el-col>
+					<el-col :span="6"><span>广告屏列表</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询传媒设备" v-model="formInline.company_name" clearable>
+								<el-input placeholder="查询广告屏" v-model="formInline.company_name" clearable>
 									<el-button slot="append" icon="el-icon-search" @click="getDeviceList()"></el-button>
 								</el-input>
 							</el-form-item>
@@ -17,29 +17,28 @@
 					</el-col>
 					<el-col :span="12">
 						<!-- 新增 s -->
-						<router-link to="adddevice"><el-button size="mini" type="primary" icon="el-icon-plus">新增传媒设备</el-button></router-link>
+						<router-link to="adddevice"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告屏</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
 			</div>
 			<div class="">
 				<!-- 传媒设备列表 s -->
-				<el-table :data="deviceList" border style="width: 100%">
-					<el-table-column prop="device_id" label="序号" fixed width="90"></el-table-column>
+				<el-table :data="deviceList" empty-text=" " border style="width: 100%">
+					<el-table-column prop="device_id" label="序号" fixed width="70"></el-table-column>
 					<el-table-column prop="brand" label="品牌" min-width="120"></el-table-column>
 					<el-table-column prop="model" label="型号" width="120"></el-table-column>
-					<el-table-column prop="size" label="尺寸" width="120"></el-table-column>
-					<el-table-column prop="sale_price" label="出售价格/元" width="120"></el-table-column>
-					<el-table-column prop="saled_part" label="卖出份额" width="120"></el-table-column>
-					<el-table-column prop="company_name" label="设备分公司" width="120"></el-table-column>
+					<el-table-column prop="size" label="尺寸" width="70"></el-table-column>
+					<el-table-column prop="sale_price" label="价格(元)" width="100"></el-table-column>
+					<el-table-column prop="saled_part" label="已售份额" width="100"></el-table-column>
+					<el-table-column prop="company_name" label="所属分公司" width="180"></el-table-column>
 					<el-table-column prop="province" label="省份" width="120"></el-table-column>
 					<el-table-column prop="city" label="城市" width="120"></el-table-column>
-					<el-table-column prop="street" label="街道" width="120"></el-table-column>
-					<el-table-column prop="shopname" label="店铺" width="120"></el-table-column>
+					<el-table-column prop="street" label="街道" width="150"></el-table-column>
+					<el-table-column prop="shopname" label="店铺" width="150"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'" size="mini">{{scope.row.status_msg}}</span>
-							<!-- <el-tag :type="scope.row.status === 0 ? 'info' : (scope.row.status === 1 ? 'success' : 'danger')" size="mini">{{scope.row.status_msg}}</el-tag> -->
+							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')" size="mini">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
@@ -164,9 +163,8 @@
 			 * @param {Object} row
 			 */
 			toDeviceEdit(row) {
-				this.$router.push({path: "device_edit", query: {device_id: row.device_id}});
+				this.$router.push({path: "editdevice", query: {device_id: row.device_id}});
 			},
-			
 			/**
 			 * 删除传媒设备
 			 * @param {Object} scope

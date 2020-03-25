@@ -4,13 +4,10 @@ body{margin: 0;padding: 0; font-size:0.95em;overflow: hidden;}
 /*登录背景图片*/
 .loginbg{background-image: url(../image/loginbg.png); background-size: 100% 100%;}
 
-/* 字体颜色 */
-.text-primary {color: #409eff;}
-.text-success {color: #67c23a;}
-.text-info {color: #909399;}
-.text-warning {color: #e6a23c;}
-.text-danger {color: #f56c6c;}
-.color-white {color: #fff;}
+
+/*颜色*/
+.color-white{color:#fff;}
+.color-blue{color:#66B1FF;}
 
 /*字体大小*/
 .font2{font-size: 2em;}
@@ -28,6 +25,9 @@ body{margin: 0;padding: 0; font-size:0.95em;overflow: hidden;}
 /* 主体卡片容器 */
 .main-card{
 	margin: 1rem;
+}
+.box-card {
+    margin: 0rem 0.5rem 1rem 0.5rem;
 }
 
 /*tag文字颜色*/

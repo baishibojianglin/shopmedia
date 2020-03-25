@@ -1,7 +1,7 @@
 <template>
 	<div class="create">
 
-        	
+      <el-card class="box-card">	
 		 <el-form  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
 			 
 		   <el-form-item label="分公司名称" prop="company_name">
@@ -53,7 +53,8 @@
 		   </el-form-item>
 		   
 		   
-		 </el-form>    
+		 </el-form>   
+	   </el-card>
 	</div>
 </template>
 
@@ -173,6 +174,7 @@
 		   */
 		  resetForm(formName) {
 			this.$refs[formName].resetFields();
+			this.ruleForm.province_id='';//重置省
 		  },
      }
    }

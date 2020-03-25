@@ -1,7 +1,7 @@
 <template>
 	<div class="create">
 
-        	
+        <el-card class="box-card">		
 		 <el-form  v-loading="loading"  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
 			 
 		   <el-form-item label="分公司名称" prop="company_name">
@@ -49,11 +49,12 @@
 		   
 		   <el-form-item>
 			 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-			 <el-button @click="resetForm('ruleForm')">重置</el-button>
+			 <el-button @click="resetForm('ruleForm')">返回</el-button>
 		   </el-form-item>
 		   
 		   
-		 </el-form>    
+		 </el-form>  
+		</el-card>
 	</div>
 </template>
 
@@ -196,7 +197,9 @@
 		   * @param {Object} formName
 		   */
 		  resetForm(formName) {
-			this.$refs[formName].resetFields();
+			//this.$refs[formName].resetFields();
+			//this.ruleForm.province_id='';//重置省
+			this.$router.go(-1);//返回上一级
 		  },
      }
    }

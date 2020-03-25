@@ -25,8 +25,8 @@
 			</div>
 			<div class="">
 				<!-- 分公司列表 s -->
-				<el-table :data="companyList" :empty-text="companyList ? '数据加载中…' : ''" border :default-sort="{prop: 'createtime', order: 'descending'}" style="width: 100%">
-					<el-table-column prop="company_id" label="序号" fixed width="90" sortable></el-table-column>
+				<el-table :data="companyList" empty-text="数据加载中..." border style="width: 100%">
+					<el-table-column prop="company_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="company_name" label="分公司名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="province" label="省份" min-width="120"></el-table-column>
 					<el-table-column prop="city" label="城市" min-width="120"></el-table-column>
