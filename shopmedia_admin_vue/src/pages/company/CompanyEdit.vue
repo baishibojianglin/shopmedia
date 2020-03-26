@@ -1,7 +1,14 @@
 <template>
 	<div class="create">
 
-        <el-card class="box-card">		
+        <el-card class="box-card">	
+			
+		<div slot="header" class="clearfix">
+			<el-row :gutter="20" type="flex" justify="space-between">
+				<el-col :span="24"><span class="el-icon-edit color-blue"></span> 编辑分公司信息</el-col>
+			</el-row>
+		</div>
+		
 		 <el-form  v-loading="loading"  ref="ruleForm" :model="ruleForm" :rules="rules"  label-width="150px">
 			 
 		   <el-form-item label="分公司名称" prop="company_name">
@@ -163,7 +170,6 @@
 					  });					   
 				   }
 				})		
-				return Promise.resolve();
 			},
 		 	 
 		 
@@ -181,7 +187,7 @@
 				}).then(function(res){
                    if(res.data.status==1){
 					  self.$message({
-					   		message:res.data.words,
+					   		message:'编辑成功',
 					   		type: 'success'
 					  });
 					  self.$router.push({path: "company", query: {companyid:res.data.companyid}});
