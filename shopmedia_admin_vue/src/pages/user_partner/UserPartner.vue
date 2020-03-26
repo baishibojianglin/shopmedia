@@ -36,9 +36,9 @@
 							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
 						</template>
 					</el-table-column>
-					<el-table-column prop="phone" label="电话号码" width="180">
+					<el-table-column prop="phone" label="电话号码" width="120">
 						<template slot-scope="scope">
-							{{scope.row.phone}}{{scope.row.phone_verified == 1 ? '(已验证)' : '(未验证)'}}
+							{{scope.row.phone}}{{scope.row.phone_verified == 1 ? '' : '(未验证)'}}
 						</template>
 					</el-table-column>
 					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
@@ -50,7 +50,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
-					<el-table-column prop="login_ip" label="登录IP" width="180"></el-table-column>
+					<el-table-column prop="login_ip" label="登录IP" width="120"></el-table-column>
 					<el-table-column label="操作" fixed="right" :min-width="formInline.is_delete != 1 ? 210 : 160">
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toUserDevice(scope.row)" v-if="formInline.is_delete != 1">设备</el-button>

@@ -1,21 +1,21 @@
 <template>
-	<div class="user">
+	<div class="user_type">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>设备合作业务员</span></el-col>
+					<el-col :span="6"><span>用户类型</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询用户" v-model="formInline.user_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getUserList()"></el-button>
+								<el-input placeholder="用户类型名称" v-model="formInline.type_name" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getUserTypeList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="6" :offset="6">
 						<!-- 新增 s -->
 						<!-- <router-link to="user_add"><el-button size="mini" icon="el-icon-plus">新增用户</el-button></router-link> -->
 						<!-- 新增 e -->
@@ -24,36 +24,19 @@
 			</div>
 			<div class="">
 				<!-- 用户列表 s -->
-				<el-table :data="userList" border style="width: 100%">
-					<el-table-column prop="user_id" label="序号" fixed width="90"></el-table-column>
-					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="avatar" label="头像" width="90">
-						<template slot-scope="scope">
-							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
-						</template>
-					</el-table-column>
-					<el-table-column prop="phone" label="电话号码" width="120">
-						<template slot-scope="scope">
-							{{scope.row.phone}}{{scope.row.phone ? (scope.row.phone_verified == 1 ? '' : '(未验证)') : ''}}
-						</template>
-					</el-table-column>
-					<el-table-column prop="company_name" label="分公司" min-width="180"></el-table-column>
-					<el-table-column prop="parent_id" label="上级序号" min-width="90"></el-table-column>
-					<el-table-column prop="parent_name" label="上级名称" min-width="180"></el-table-column>
-					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
-					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
-					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
+				<el-table :data="userTypeList" border style="width: 100%">
+					<el-table-column prop="type_id" label="序号" fixed width="90"></el-table-column>
+					<el-table-column prop="type_name" label="类型名称" fixed min-width="180"></el-table-column>
+					<el-table-column prop="parent_id" label="上级类型序号" width="120"></el-table-column>
+					<el-table-column prop="parent_comm_ratio" label="上级用户统一提成比例" width="180"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'" size="mini">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
-					<el-table-column prop="login_ip" label="登录IP" width="120"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="160">
+					<el-table-column label="操作" fixed="right" width="90">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
+							<el-button type="primary" size="mini" plain @click="toUserTypeEdit(scope.row)">编辑</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -77,24 +60,24 @@
 		data() {
 			return {
 				formInline: {
-					user_name: '' // 用户名称
+					type_name: '' // 用户类型名称
 				},
-				userList: [], // 用户列表
+				userTypeList: [], // 用户类型列表
 				listPagination: {} // 列表分页参数
 			}
 		},
 		mounted() {
-			this.getUserList(); // 获取用户列表
+			this.getUserTypeList(); // 获取用户列表
 		},
 		methods: {
 			/**
 			 * 获取用户列表
 			 */
-			getUserList() {
+			getUserTypeList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_to_partner', {
+				this.$axios.get(this.$url + 'user_type', {
 						params: {
-							user_name: this.formInline.user_name,
+							type_name: this.formInline.type_name,
 							page: this.listPagination.current_page,
 							size: this.listPagination.per_page
 						}/* ,
@@ -105,7 +88,7 @@
 					})
 					.then(function(res) {
 						if (res.data.status == 1) {
-							// 用户列表分页参数
+							// 用户类型列表分页参数
 							self.listPagination = res.data.data;
 
 							// 当数据为空时
@@ -117,8 +100,8 @@
 								return;
 							}
 
-							// 用户列表
-							self.userList = self.listPagination.data;
+							// 用户类型列表
+							self.userTypeList = self.listPagination.data;
 						} else {
 							self.$message({
 								message: '网络忙，请重试',
@@ -140,7 +123,7 @@
 			 */
 			handleSizeChange(page_size) {
 				this.listPagination.per_page = page_size; // 每页条数
-				this.getUserList();
+				this.getUserTypeList();
 			},
 
 			/**
@@ -149,7 +132,7 @@
 			 */
 			handleCurrentChange(current_page) {
 				this.listPagination.current_page = current_page; // 当前页数
-				this.getUserList();
+				this.getUserTypeList();
 			},
 
 			/**
@@ -162,52 +145,15 @@
 			},
 
 			/**
-			 * 跳转用户编辑页
+			 * 跳转用户类型编辑页
 			 * @param {Object} row
 			 */
-			toUserEdit(row) {
+			toUserTypeEdit(row) {
 				this.$router.push({
-					path: "user_to_partner_edit",
+					path: "user_type_edit",
 					query: {
-						user_id: row.user_id
+						type_id: row.type_id
 					}
-				});
-			},
-
-			/**
-			 * 删除用户
-			 * @param {Object} scope
-			 */
-			deleteUser(scope) {
-				this.$confirm('此操作将永久删除该用户, 是否继续?', '删除', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					// 调用删除接口
-					let self = this;
-					this.$axios.delete(this.$url + 'user_to_partner/' + scope.row.user_id)
-						.then(function(res) {
-							// 移除元素
-							self.userList.splice(scope.$index, 1);
-
-							let type = res.data.status == 1 ? 'success' : 'warning';
-							self.$message({
-								message: res.data.message,
-								type: type
-							});
-						})
-						.catch(function(error) {
-							self.$message({
-								message: error.response.data.message,
-								type: 'warning'
-							});
-						});
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '已取消删除'
-					});
 				});
 			}
 		}

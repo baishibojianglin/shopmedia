@@ -18,6 +18,9 @@
 					<el-form-item prop="device_id" label="设备编号">
 						<el-input v-model="form.device_id" readonly style="width:350px;"></el-input>
 					</el-form-item>
+					<!-- <el-form-item prop="agreement" label="租用协议">
+						<el-input v-model="form.agreement" readonly style="width:350px;"></el-input>
+					</el-form-item> -->
 					<el-form-item prop="share" label="用户份额">
 						<el-input v-model="form.share" placeholder="输入该设备用户所占份额" clearable style="width:350px;"></el-input>
 					</el-form-item>
@@ -41,6 +44,7 @@
 					user_name: '',
 					device_id: '',
 					share: '',
+					agreement: ''
 				},
 				rules: { // 验证规则
 					share: [

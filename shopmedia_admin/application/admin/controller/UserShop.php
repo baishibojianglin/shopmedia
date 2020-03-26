@@ -49,7 +49,7 @@ class UserShop extends Base
             $status = config('code.status');
             foreach ($data as $key => $value) {
                 $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
-                $data[$key]['status_msg'] = $status[$value['us_status']]; // 定义状态信息
+                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);
