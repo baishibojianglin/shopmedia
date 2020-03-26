@@ -104,7 +104,7 @@
 
 		   <el-form-item label="实景(5张以内)" prop="url_image" class="idcard">
 			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_image"></el-input>
-			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="5" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_image',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,5,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,5,'url_idcard')}" :on-preview="handlePictureCardPreview"  name='image'>
+			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="5" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_image',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,5,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,5,'url_image')}" :on-preview="handlePictureCardPreview"  name='image'>
 				     <i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传图片</i>
 			   </el-upload>
 			   <el-dialog :visible.sync="dialogVisible">
@@ -158,7 +158,24 @@
 		   
 		   <el-form-item label="厂家广告收益率" prop="factory_ad_rate">
 		   	 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.factory_ad_rate"></el-input> %
-		   </el-form-item>		   
+		   </el-form-item>	
+
+		   <el-form-item label="状态" prop="status">
+			   <el-select v-model="ruleForm.status" placeholder="请选择">
+				 <el-option
+				   v-for="item in status_options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		   </el-form-item>					  
+				  
+		   <el-form-item label="已售份额" prop="saled_part">
+		   	 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.saled_part"></el-input> %
+		   </el-form-item>					  
+				  
+				  
 		   		   
 		   <el-form-item>
 			 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -175,6 +192,24 @@
    export default {
      data() {
 		   return {
+			    status_options: [
+			      {
+			   					 value: 0,
+			   					 label: '故障'
+			      },
+			      {
+			   					 value: 1,
+			   					 label: '正常'
+			      },
+			   				  {
+			   					 value: 2,
+			   					 label: '上线'
+			   				  },
+			   				  {
+			   					 value: 3,
+			   					 label: '下线'
+			   				  }
+			    ],
 				brand_options: [
 				   {
 					 value: '1',
@@ -273,7 +308,10 @@
 				   create_user:'',//创建人id
 				   saleperson_ad_rate:'',//业务员收益率
 				   partner_ad_rate:'',//合作伙伴收益率
-				   factory_ad_rate:''//厂家收益率
+				   factory_ad_rate:'',//厂家收益率
+				   status:'',//状态
+				   saled_part:'',//已售份额
+				   name_image:''//图片名字
 				},
 				rules: {
 				  brand: [
@@ -335,15 +373,23 @@
 				  ],
 				  factory_ad_rate:[
 				  	{ required: true, message: '请填写厂家广告收益率', trigger: 'blur' }
-				  ]																								
+				  ]	,
+				  status:[
+				  	{ required: true, message: '请选择状态', trigger: 'blur' }
+				  ],
+				  saled_part:[
+				  	{ required: true, message: '请填写已售份额', trigger: 'blur' }
+				  ]
 				},
 				arealist:[],//县（区）
 				streetlist:[],//街道
 				flag_area:0, //加载县区数据标志
 				dialogImageUrl: '',
 				dialogVisible: false, //放大预览图片
-				img_name:[], //存储图片名字
-				hideUpload:[false,false] //隐藏图片添加按钮
+				hideUpload:[false,false] ,//隐藏图片添加按钮
+				device_id:'',//广告屏id
+				url_image_list:[],//图片地址列表
+				name_image_list:[]//图片名字列表
 		   }
      },
 	 mounted(){
@@ -423,12 +469,14 @@
 			let admin_user=JSON.parse(localStorage.getItem('admin_user')); //取出的缓存的登录账户信息
 			this.ruleForm.company_id=admin_user.company_id; //获取登录账号所属的供应商id，并赋值给表单
 			this.ruleForm.create_user=admin_user.id; //获取登录账号的用户id，并赋值给表单
-			//去除图片地址最后一个符号","
-			this.ruleForm['url_image']=this.ruleForm['url_image'].slice(0,-1);
+			//将图片地址和名字组装成一个字符串
+			this.ruleForm.name_image=this.name_image_list.join();
+			this.ruleForm.url_image=this.url_image_list.join();		
 			this.$refs[formName].validate((valid) => {
 			  if (valid) {
 				this.$axios.post(this.$url+'addDevice',{
-				   data:this.ruleForm
+				   data:this.ruleForm,
+				   device_id:this.device_id
 				}).then(function(res){
                    if(res.data.status==1){
 					  self.$message({
@@ -460,8 +508,8 @@
 		   * @param {string} index 上传组件索引
 		   */
 		  returnUrl(response, file, fileList,url_name,index){
-			  this.ruleForm[url_name]=this.ruleForm[url_name]+response['url']+',';
-			  this.$set(this.img_name,index,response['name']);
+			  this.url_image_list.push(response['url']);
+			  this.name_image_list.push(response['name']);
 		  },
           /**
 		   * 删除图片上传完后的添加按钮
@@ -482,14 +530,19 @@
 		   * @param {string} url_name 图片地址变量名
 		   */
 		   handleRemove(file,fileList,index,num,url_name) {
+				this.name_image_list.forEach((value,index)=>{
+					if(value==file.response.name){
+						this.name_image_list.splice(index,1);
+						this.url_image_list.splice(index,1);
+					}
+				})
 			    let self=this;
 				//删除oss上的图片
 				this.$axios.post(this.$url+'deleteimages',{
-					name:self.img_name[index]
+					name:file.response.name
 				}).then(function(res){	
 					self.$set(self.hideUpload,index,fileList.length >= num);
-					self.ruleForm[url_name]='';
-				})			   
+				})
 		   },
 		   /**
 			* 放大图片

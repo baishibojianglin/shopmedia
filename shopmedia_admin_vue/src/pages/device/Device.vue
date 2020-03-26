@@ -163,8 +163,7 @@
 			 * @param {Object} row
 			 */
 			toDeviceEdit(row) {
-				console.log(row)
-				this.$router.push({path: "editdevice", query: {device_id: row.device_id,area_id:row.area_id}});
+				this.$router.push({path: "editdevice", query: {device_id: row.device_id,city_id:row.city_id,area_id:row.area_id}});
 			},
 			/**
 			 * 删除传媒设备

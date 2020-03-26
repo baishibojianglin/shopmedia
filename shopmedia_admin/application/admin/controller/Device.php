@@ -63,16 +63,20 @@ class Device extends Base
 	}
 
 	/**
-	 * 新增广告设备
+	 * 新增（更新）广告设备
 	 * @return \think\Response
 	 * @throws ApiException
 	 */
 	public function addDevice(){
 		$form=input();
-		$form['data']['status']=1; //正常
         $form['data']['createtime']=date('Y-m-d H:i:s');
-        $form['data']['saled_part']=0;
-        $number=Db::name('device')->insert($form['data']);
+
+        if($form['device_id']!=''){ //更新
+        	$mapdevice['device_id']=$form['device_id'];
+        	$number=Db::name('device')->where($mapdevice)->update($form['data']);
+        }else{ //新增
+        	$number=Db::name('device')->insert($form['data']);
+        }
 		
 		if($number>0){
 			$message['status']=1;
@@ -82,6 +86,7 @@ class Device extends Base
 			$message['words']='添加失败';
 		}
 		return json($message);
+		//return json($form['device_id']);
 	}
 
 	/**
