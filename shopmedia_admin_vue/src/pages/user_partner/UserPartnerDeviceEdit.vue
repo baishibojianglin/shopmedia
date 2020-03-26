@@ -43,7 +43,9 @@
 					share: '',
 				},
 				rules: { // 验证规则
-					
+					share: [
+						{ required: true, message: '请输入用户份额', trigger: 'blur' }
+					]
 				}
 			}
 		},
@@ -69,7 +71,7 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_partner_device_update/' + this.form.user_id, {
+						this.$axios.put(this.$url + 'user_partner_device/' + this.form.user_id, {
 							// 参数
 							device_id: this.form.device_id,
 							share: this.form.share

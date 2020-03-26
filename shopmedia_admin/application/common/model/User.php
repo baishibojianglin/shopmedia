@@ -40,14 +40,14 @@ class User extends Base
      */
     public function getUserPartner($map = [], $size = 5)
     {
-        if(!isset($map['u.is_delete'])) {
-            $map['u.is_delete'] = ['neq', config('code.is_delete')];
+        if(!isset($map['up.is_delete'])) {
+            $map['up.is_delete'] = ['neq', config('code.is_delete')];
         }
 
         $order = ['u.user_id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['up.money', 'up.income', 'up.cash', 'up.status partner_status']))
+            ->field(array_merge($this->_getListField(), ['up.money', 'up.income', 'up.cash', 'up.status partner_status', 'up.is_delete']))
             ->join('__USER_PARTNER__ up', 'u.user_id = up.user_id') // 传媒设备合作者
             ->where($map)
             ->order($order)
@@ -171,8 +171,7 @@ class User extends Base
             'u.create_time',
             'u.create_ip',
             'u.login_time',
-            'u.login_ip',
-            'u.is_delete'
+            'u.login_ip'
         ];
     }
 }
