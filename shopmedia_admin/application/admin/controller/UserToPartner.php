@@ -48,6 +48,11 @@ class UserToPartner extends Base
             }
             $status = config('code.status');
             foreach ($data as $key => $value) {
+                // TODO：判断用户类型
+                /*if (!in_array($value['user_type'], explode(',', $value['user_types']))) {
+                    return show(config('code.error'), '数据不存在', '', 404);
+                }*/
+
                 $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['utp_status'] : config('code.status_disable'); // 状态
                 $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间

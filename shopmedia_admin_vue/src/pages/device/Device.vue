@@ -38,7 +38,7 @@
 					<el-table-column prop="shopname" label="店铺" width="150"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')" size="mini">{{scope.row.status_msg}}</span>
+							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">

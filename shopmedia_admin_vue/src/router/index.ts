@@ -24,6 +24,7 @@ import UserToPartner from '@/pages/user_to_partner/UserToPartner.vue'
 import UserToPartnerEdit from '@/pages/user_to_partner/UserToPartnerEdit.vue'
 // 用户管理（广告主业务员）
 import UserToAd from '@/pages/user_to_ad/UserToAd.vue'
+import UserToAdEdit from '@/pages/user_to_ad/UserToAdEdit.vue'
 // 用户管理（店铺端业务员）
 import UserToShop from '@/pages/user_to_shop/UserToShop.vue'
 // 用户管理（店铺端用户）
@@ -73,6 +74,7 @@ const routes = [
 			{path: 'user_to_partner_edit', name: 'user_to_partner_edit', component: UserToPartnerEdit}, // 编辑用户
 			// 2--用户管理（广告主业务员）
 			{path: 'user_to_ad', name: 'user_to_ad', component: UserToAd}, // 用户列表
+			{path: 'user_to_ad_edit', name: 'user_to_ad_edit', component: UserToAdEdit}, // 编辑用户
 			// 2--用户管理（店铺端业务员）
 			{path: 'user_to_shop', name: 'user_to_shop', component: UserToShop}, // 用户列表
 			// 2--用户管理（店铺端用户）

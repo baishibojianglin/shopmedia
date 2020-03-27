@@ -45,7 +45,7 @@
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<el-tag :type="scope.row.status === 0 ? 'info' : (scope.row.status === 1 ? 'success' : 'danger')" size="mini">{{scope.row.status_msg}}</el-tag>
+							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
