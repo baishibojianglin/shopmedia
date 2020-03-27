@@ -27,8 +27,10 @@ import UserToAd from '@/pages/user_to_ad/UserToAd.vue'
 import UserToAdEdit from '@/pages/user_to_ad/UserToAdEdit.vue'
 // 用户管理（店铺端业务员）
 import UserToShop from '@/pages/user_to_shop/UserToShop.vue'
+import UserToShopEdit from '@/pages/user_to_shop/UserToShopEdit.vue'
 // 用户管理（店铺端用户）
 import UserShop from '@/pages/user_shop/UserShop.vue'
+import UserShopEdit from '@/pages/user_shop/UserShopEdit.vue'
 // 区域管理
 import Region from '@/pages/region/Region.vue'
 import RegionCity from '@/pages/region/RegionCity.vue'
@@ -77,8 +79,10 @@ const routes = [
 			{path: 'user_to_ad_edit', name: 'user_to_ad_edit', component: UserToAdEdit}, // 编辑用户
 			// 2--用户管理（店铺端业务员）
 			{path: 'user_to_shop', name: 'user_to_shop', component: UserToShop}, // 用户列表
+			{path: 'user_to_shop_edit', name: 'user_to_shop_edit', component: UserToShopEdit}, // 编辑用户
 			// 2--用户管理（店铺端用户）
 			{path: 'user_shop', name: 'user_shop', component: UserShop}, // 用户列表
+			{path: 'user_shop_edit', name: 'user_shop_edit', component: UserShopEdit}, // 编辑用户
 			// 2--区域管理
 			{path: 'region', name: 'region', component: Region}, // 省级区域
 			{path: 'regioncity', name: 'regioncity', component: RegionCity}, // 市级区域

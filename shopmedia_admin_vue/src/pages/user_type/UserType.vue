@@ -28,7 +28,7 @@
 					<el-table-column prop="type_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="type_name" label="类型名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="parent_id" label="上级类型序号" width="120"></el-table-column>
-					<el-table-column prop="parent_comm_ratio" label="上级用户统一提成比例" width="180"></el-table-column>
+					<el-table-column prop="parent_comm_ratio" label="向上级用户统一提成比例" width="180"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>

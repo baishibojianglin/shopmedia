@@ -1,9 +1,9 @@
 <template>
-	<div class="user_type_edit">
+	<div class="user_shop_edit">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑用户类型</span></el-col>
+					<el-col :span="6"><span>编辑店铺端用户</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -12,13 +12,32 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item prop="type_name" label="类型名称">
-						<el-input v-model="form.type_name" readonly style="width:350px;"></el-input>
+					<el-form-item prop="user_name" label="用户名称">
+						<el-input v-model="form.user_name" readonly style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="parent_comm_ratio" label="向上级用户统一提成比例">
-						<el-input v-model="form.parent_comm_ratio" placeholder="输入向上级用户的统一提成比例" clearable style="width:350px;"></el-input>
+					<!-- <el-form-item prop="avatar" label="头像">
+						<el-input v-model="form.avatar" v-show="false" style="width:350px;"></el-input>
+						<el-image :src="form.avatar" fit="fill" style="width: 100px; height: 100px"></el-image>
+					</el-form-item> -->
+					<!-- <el-form-item prop="phone" label="电话号码">
+						<el-input v-model="form.phone" readonly style="width:350px;"></el-input>
+					</el-form-item> -->
+					<el-form-item prop="money" label="剩余金额/元">
+						<el-input v-model="form.money" placeholder="输入用户剩余金额" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="status" label="状态">
+					<el-form-item prop="income" label="累计收益/元">
+						<el-input v-model="form.income" placeholder="请输入累计收益金额" clearable style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="cash" label="累计提现/元">
+						<el-input v-model="form.cash" placeholder="请输入累计提现金额" clearable style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="comm_ratio" label="店铺提成比例" required>
+						<el-input v-model="form.comm_ratio" placeholder="请输入店铺提成比例" clearable style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="parent_comm_ratio" label="向上级店铺提成比例" required>
+						<el-input v-model="form.parent_comm_ratio" placeholder="请输入向上级店铺的提成比例" clearable style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="status" label="状态" required>
 						<el-radio-group v-model="form.status">
 							<el-radio :label="1">启用</el-radio>
 							<el-radio :label="0">禁用</el-radio>
@@ -40,34 +59,42 @@
 		data() {
 			return {
 				form: {
-					/* type_name: '', // 供应商账户名称
+					/* user_name: '', // 供应商账户名称
+					avatar: '', // 供应商账户证件照
+					phone: '', // 电话号码
 					status: '', // 状态 */
 				},
 				rules: { // 验证规则
-					parent_comm_ratio: [
-						{ required: true, message: '请输入向上级用户的统一提成比例', trigger: 'blur' }
+					money: [
+						{ required: true, message: '输入用户剩余金额', trigger: 'blur' }
+					],
+					income: [
+						{ required: true, message: '请输入累计收益金额', trigger: 'blur' }
+					],
+					cash: [
+						{ required: true, message: '请输入累计提现金额', trigger: 'blur' }
 					]
 				}
 			}
 		},
 		created() {
 			this.getParams();
-			this.getUserType(); // 获取指定的用户类型信息
+			this.getUser(); // 获取指定的用户信息
 		},
 		methods: {
 			/**
 			 * 获取路由带过来的参数
 			 */
 			getParams() {
-				this.form.type_id = this.$route.query.type_id;
+				this.form.user_id = this.$route.query.user_id;
 			},
 			
 			/**
-			 * 获取指定的用户类型信息
+			 * 获取指定的用户信息
 			 */
-			getUserType() {
+			getUser() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_type/' + this.form.type_id, {
+				this.$axios.get(this.$url + 'user_shop/' + this.form.user_id, {
 					/* headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
 						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
@@ -100,8 +127,12 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_type/' + this.form.type_id, {
+						this.$axios.put(this.$url + 'user_shop/' + this.form.user_id, {
 							// 参数
+							money: this.form.money,
+							income: this.form.income,
+							cash: this.form.cash,
+							comm_ratio: this.form.comm_ratio,
 							parent_comm_ratio: this.form.parent_comm_ratio,
 							status: this.form.status
 						}/* , {
@@ -141,7 +172,7 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
-				this.getUserType();
+				this.getUser();
 			},
 			
 			/**

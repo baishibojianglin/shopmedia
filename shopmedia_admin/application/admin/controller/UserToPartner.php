@@ -64,7 +64,7 @@ class UserToPartner extends Base
     }
 
     /**
-     * 保存新建的供应商账户资源
+     * 保存新建的用户资源
      * @param Request $request
      * @return \think\response\Json
      * @throws ApiException
@@ -171,7 +171,7 @@ class UserToPartner extends Base
     }
 
     /**
-     * 保存更新的供应商账户资源
+     * 保存更新的用户资源
      * @param Request $request
      * @param int $id
      * @return \think\response\Json
@@ -241,7 +241,7 @@ class UserToPartner extends Base
     }
 
     /**
-     * 删除指定供应商账户资源
+     * 删除指定用户资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
