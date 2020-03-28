@@ -63,6 +63,7 @@ class UserPartnerDevice extends Base
             foreach ($deviceIdsAndShare as $key2 => $value2) {
                 if ($value1['device_id'] == $value2['device_id']) {
                     $data[$key1]['share'] = $value2['share']; // 定义share
+                    //$data[$key1]['agreement'] = $value2['agreement']; // 定义agreement
                 }
             }
         }

@@ -17,6 +17,8 @@ Route::POST('getDevice','admin/Device/getDevice');
 Route::GET('getMarkers','admin/Device/getMarkers');
 // 区域
 Route::resource('region', 'admin/region');
+// 用户类型
+Route::resource('user_type', 'admin/UserType');
 // 用户（传媒设备合作者）
 Route::resource('user_partner', 'admin/UserPartner');
 // 用户（传媒设备合作者）拥有的设备

@@ -1,9 +1,9 @@
 <template>
-	<div class="user_partner_edit">
+	<div class="user_shop_edit">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑设备合作者</span></el-col>
+					<el-col :span="6"><span>编辑店铺端用户</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -31,7 +31,13 @@
 					<el-form-item prop="cash" label="累计提现/元">
 						<el-input v-model="form.cash" placeholder="请输入累计提现金额" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="status" label="状态">
+					<el-form-item prop="comm_ratio" label="店铺提成比例" required>
+						<el-input v-model="form.comm_ratio" placeholder="请输入店铺提成比例" clearable style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="parent_comm_ratio" label="向上级店铺提成比例" required>
+						<el-input v-model="form.parent_comm_ratio" placeholder="请输入向上级店铺的提成比例" clearable style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="status" label="状态" required>
 						<el-radio-group v-model="form.status">
 							<el-radio :label="1">启用</el-radio>
 							<el-radio :label="0">禁用</el-radio>
@@ -88,7 +94,7 @@
 			 */
 			getUser() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_partner/' + this.form.user_id, {
+				this.$axios.get(this.$url + 'user_shop/' + this.form.user_id, {
 					/* headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
 						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
@@ -121,12 +127,14 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_partner/' + this.form.user_id, {
+						this.$axios.put(this.$url + 'user_shop/' + this.form.user_id, {
 							// 参数
 							money: this.form.money,
 							income: this.form.income,
 							cash: this.form.cash,
-							status: this.form.status,
+							comm_ratio: this.form.comm_ratio,
+							parent_comm_ratio: this.form.parent_comm_ratio,
+							status: this.form.status
 						}/* , {
 							// 请求头配置
 							headers: {
@@ -164,6 +172,7 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
+				this.getUser();
 			},
 			
 			/**

@@ -48,8 +48,13 @@ class UserToPartner extends Base
             }
             $status = config('code.status');
             foreach ($data as $key => $value) {
+                // TODO：判断用户类型
+                /*if (!in_array($value['user_type'], explode(',', $value['user_types']))) {
+                    return show(config('code.error'), '数据不存在', '', 404);
+                }*/
+
                 $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['utp_status'] : config('code.status_disable'); // 状态
-                $data[$key]['status_msg'] = $status[$value['utp_status']]; // 定义状态信息
+                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);
@@ -59,7 +64,7 @@ class UserToPartner extends Base
     }
 
     /**
-     * 保存新建的供应商账户资源
+     * 保存新建的用户资源
      * @param Request $request
      * @return \think\response\Json
      * @throws ApiException
@@ -133,7 +138,7 @@ class UserToPartner extends Base
     }
 
     /**
-     * 显示指定的供应商账户资源
+     * 显示指定的用户资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -142,8 +147,12 @@ class UserToPartner extends Base
     {
         // 判断为GET请求
         if (request()->isGet()) {
+            // 获取原始用户信息
+            $user = model('User')->field('password', true)->find($id);
+
+            // 获取设备合作业务员信息
             try {
-                $data = model('CompanyUser')->alias('cu')->field('cu.user_id, company_id, cu.user_name, cu.avatar, cu.account, cu.phone, cu.ratio, cu.status, aga.group_id')->join('__AUTH_GROUP_ACCESS__ aga', 'cu.user_id = aga.uid', 'LEFT')->find($id);
+                $data = Db::name('user_to_partner')->alias('utp')->field('utp.user_id, utp.user_type, utp.money, utp.income, utp.cash, utp.status, utp.parent_comm_ratio, utp.auth_son_ratio, utp.comm_ratio, utp.auth_open_partner, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'utp.user_id = u.user_id', 'INNER')->where(['utp.user_id' => $id, 'utp.user_type' => ['in', $user['user_type']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -162,7 +171,7 @@ class UserToPartner extends Base
     }
 
     /**
-     * 保存更新的供应商账户资源
+     * 保存更新的用户资源
      * @param Request $request
      * @param int $id
      * @return \think\response\Json
@@ -179,107 +188,60 @@ class UserToPartner extends Base
         $param = input('param.');
 
         // validate验证
-        $validate = validate('CompanyUser');
+        /*$validate = validate('');
         if (!$validate->check($param, [], 'update')) {
             return show(config('code.error'), $validate->getError(), '', 403);
-        }
+        }*/
 
         // 判断数据是否存在
         $data = [];
-        if (!empty($param['user_name'])) { // 供应商账户名称
-            $data['user_name'] = trim($param['user_name']);
-
-            // 忽略唯一(unique)类型字段user_name对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'user_name' => $data['user_name']])->find();
-            if ($_data) {
-                return show(config('code.error'), '供应商账户名称已存在', '', 403);
-            }
+        if (isset($param['money'])) { // 余额
+            $data['money'] = trim($param['money']);
         }
-        if (!empty($param['avatar'])) {  // 供应商账户证件照
-            $data['avatar'] = trim($param['avatar']);
+        if (isset($param['income'])) { // 收益
+            $data['income'] = trim($param['income']);
         }
-        if (!empty($param['account'])) { // 供应商账户号
-            $data['account'] = trim($param['account']);
-
-            // 忽略唯一(unique)类型字段account对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'account' => $data['account']])->find();
-            if ($_data) {
-                return show(config('code.error'), '供应商账户号已存在', '', 403);
-            }
+        if (isset($param['cash'])) { // 提现
+            $data['cash'] = trim($param['cash']);
         }
-        if (!empty($param['password'])) { // 密码
-            $data['password'] = md5($param['password']);
+        if (isset($param['comm_ratio'])) { // 业务员提成比例
+            $data['comm_ratio'] = trim($param['comm_ratio']);
         }
-        if (!empty($param['phone'])) { // 电话号码
-            $data['phone'] = trim($param['phone']);
-
-            // 忽略唯一(unique)类型字段phone对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'phone' => $data['phone']])->find();
-            if ($_data) {
-                return show(config('code.error'), '供应商账户电话号码已存在', '', 403);
-            }
+        if (isset($param['parent_comm_ratio'])) { // 向上级业务员提成比例
+            $data['parent_comm_ratio'] = trim($param['parent_comm_ratio']);
         }
-        if (isset($param['ratio'])) { // 提成比例
-            $data['ratio'] = trim($param['ratio']);
+        if (isset($param['auth_son_ratio'])) { // 授权配置下级提成比例
+            $data['auth_son_ratio'] = trim($param['auth_son_ratio']);
         }
-        if (isset($param['status'])) { // 状态，不能用 !empty() ，否则 status = 0 时也判断为空
-            $data['status'] = input('param.status', null, 'intval');
-
-            // 供应商账户已登录时，不能禁用
-            if ($this->companyUser['user_id'] == $id && $data['status'] == config('code.status_disable')) {
-                return show(config('code.error'), '供应商账户已登录，不能禁用', '', 403);
-            }
+        if (isset($param['auth_open_partner'])) { // 授权开通设备合作者
+            $data['auth_open_partner'] = trim($param['auth_open_partner']);
         }
-        if (!empty($param['company_id'])) { // 供应商ID
-            $data['company_id'] = $param['company_id'];
+        if (isset($param['status'])) { // 状态
+            $data['status'] = $param['status'];
         }
-        if (!empty($param['group_id'])) { // 角色ID
-            $data['group_id'] = $param['group_id'];
+        // 当为还原软删除的数据时
+        if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
+            $data['is_delete'] = config('code.not_delete');
         }
 
         if (empty($data)) {
             return show(config('code.error'), '数据不合法', '', 404);
         }
 
-        /* 手动控制事务 s */
-        // 启动事务
-        Db::startTrans();
         try {
-            // 更新供应商账户
-            $res[0] = Db::name('company_user')->strict(false)->where(['user_id' => $id])->update($data);
-            $res[0] = $res[0] === false ? 0 : true;
-            //$result = model('CompanyUser')->allowField(true)->save($data, ['user_id' => $id]); // 更新
-
-            // 查询供应商是否已经绑定角色，TODO：暂时只考虑“账户-角色”一对一关系
-            $authGroupAccess = model('AuthGroupAccess')->where(['uid' => $id])->find();
-            if ($authGroupAccess) {
-                // 更新供应商账户角色
-                $res[1] = Db::name('auth_group_access')->strict(false)->where(['uid' => $id])->update(['group_id' => $data['group_id']]);
-                $res[1] = $res[1] === false ? 0 : true;
-            } else {
-                // 绑定供应商账户角色
-                $data1 = ['uid' => $id, 'group_id' => $data['group_id']];
-                $res[1] = Db::name('auth_group_access')->insert($data1);
-            }
-
-            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
-            if (in_array(0, $res)) {
-                return show(config('code.error'), '更新失败', '', 403);
-            }
-
-            // 提交事务
-            Db::commit();
-            return show(config('code.success'), '更新成功', '', 201);
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-            return show(config('code.error'), '网络忙，请重试', '', 500);
+            $result = Db::name('user_to_partner')->where(['user_id' => $id])->update($data);
+        } catch(\Exception $e) {
+            throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }
-        /* 手动控制事务 e */
+        if (false === $result) {
+            return show(config('code.error'), '更新失败', '', 403);
+        } else {
+            return show(config('code.success'), '更新成功', '', 201);
+        }
     }
 
     /**
-     * 删除指定供应商账户资源
+     * 删除指定用户资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
