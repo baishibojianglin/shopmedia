@@ -45,7 +45,7 @@ class Base extends Common
 
         // 判断 token 合法性
         $aes = new Aes();
-        $companyToken = $aes->decrypt($this->headers['admin-user-token']); // AES解密
+        $companyToken = $aes->adminDecrypt($this->headers['admin-user-token']); // AES解密
         if (empty($companyToken)) {
             return false;
         }

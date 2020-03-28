@@ -22,26 +22,26 @@ class Aes {
     public $iv = '1234567812345678';
 
     /**
-     * AES加密
+     * 后台管理系统AES加密
      * @param string $string 需要加密的字符串
      * @return string
      * @internal param string $key 密钥
      * @internal param string $iv 初始化向量
      */
-    public function encrypt($string)
+    public function adminEncrypt($string)
     {  
         $data = openssl_encrypt($string, 'AES-128-ECB', $this->key, $this->options);
         return $data;
     }
 
     /**
-     * AES解密
+     * 后台管理系统AES解密
      * @param string $string 需要解密的字符串
      * @return string
      * @internal param string $key 密钥
      * @internal param string $iv 初始化向量
      */
-    public function decrypt($string)
+    public function adminDecrypt($string)
     {
         $decrypted = openssl_decrypt($string, 'AES-128-ECB', $this->key, $this->options);
         return $decrypted;
@@ -55,7 +55,7 @@ class Aes {
      * @internal param string $key 密钥
      * @internal param string $iv 初始化向量
      */
-    public function opensslEncrypt($string)
+    public function encrypt($string)
     {
         $data = openssl_encrypt($string, 'AES-256-CBC', $key = config('app.aeskey'), $this->options, $this->iv);
         return $data;
@@ -68,7 +68,7 @@ class Aes {
      * @internal param string $key 密钥
      * @internal param string $iv 初始化向量
      */
-    public function opensslDecrypt($string)
+    public function decrypt($string)
     {
         $decrypted = openssl_decrypt($string, 'AES-256-CBC', $key = config('app.aeskey'), $this->options, $this->iv);
         return $decrypted;

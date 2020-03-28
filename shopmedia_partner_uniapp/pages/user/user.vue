@@ -11,7 +11,7 @@
 				</view>
 				<view class="uni-flex uni-row">
 					<view class="text" style="-webkit-flex: 1;flex: 1;">{{userData.phone}}</view>
-					<view class="text" style="-webkit-flex: 1;flex: 1;">立即购买</view>
+					<view class="text" style="-webkit-flex: 1;flex: 1;">（占位）</view>
 				</view>
 			</view>
 		</view>

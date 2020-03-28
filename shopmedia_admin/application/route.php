@@ -16,18 +16,14 @@ Route::POST('addDevice','admin/Device/addDevice');
 Route::POST('getDevice','admin/Device/getDevice');
 // 区域
 Route::resource('region', 'admin/region');
-// 用户类型
-Route::resource('user_type', 'admin/UserType');
+// 用户角色
+Route::resource('user_role', 'admin/UserRole');
+// 用户（业务员）
+Route::resource('user_salesman', 'admin/UserSalesman');
 // 用户（传媒设备合作者）
 Route::resource('user_partner', 'admin/UserPartner');
 // 用户（传媒设备合作者）拥有的设备
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
-// 用户（传媒设备合作者业务员）
-Route::resource('user_to_partner', 'admin/UserToPartner');
-// 用户（广告主业务员）
-Route::resource('user_to_ad', 'admin/UserToAd');
-// 用户（店铺端业务员）
-Route::resource('user_to_shop', 'admin/UserToShop');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
 
