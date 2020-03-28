@@ -24,8 +24,9 @@
 			</div>
 			<div class="">
 				<!-- 用户列表 s -->
-				<el-table :data="userList" border style="width: 100%">
-					<el-table-column prop="user_id" label="序号" fixed width="90"></el-table-column>
+				<el-table :data="userList" border :span-method="objectSpanMethod" style="width: 100%">
+					<!-- <el-table-column prop="id" label="序号" fixed width="90"></el-table-column> -->
+					<el-table-column prop="user_id" label="用户序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="avatar" label="头像" width="90">
 						<template slot-scope="scope">
@@ -92,7 +93,7 @@
 			 */
 			getUserList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_to_partner', {
+				this.$axios.get(this.$url + 'user_salesman', {
 						params: {
 							user_name: this.formInline.user_name,
 							page: this.listPagination.current_page,
@@ -103,7 +104,7 @@
 							'admin-user-token': JSON.parse(localStorage.getItem('company')).token
 						} */
 					})
-					.then(function(res) {
+					.then(function(res) {console.log(res)
 						if (res.data.status == 1) {
 							// 用户列表分页参数
 							self.listPagination = res.data.data;
@@ -160,6 +161,26 @@
 			filterStatus(value, row) {
 				return row.status === value;
 			},
+			
+			/**
+			 * 合并行的计算方法
+			 */
+			objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+				let columnIndexArray = [0, 1]; // 列号组成的数组
+				if (columnIndexArray.includes(columnIndex) === true) {
+					if (rowIndex % 2 === 0) {
+						return {
+							rowspan: 2,
+							colspan: 1
+						};
+					} else {
+						return {
+							rowspan: 0,
+							colspan: 0
+						};
+					}
+				}
+			},
 
 			/**
 			 * 跳转用户编辑页
@@ -167,7 +188,7 @@
 			 */
 			toUserEdit(row) {
 				this.$router.push({
-					path: "user_to_partner_edit",
+					path: "user_salesman_edit",
 					query: {
 						user_id: row.user_id
 					}
@@ -186,7 +207,7 @@
 				}).then(() => {
 					// 调用删除接口
 					let self = this;
-					this.$axios.delete(this.$url + 'user_to_partner/' + scope.row.user_id)
+					this.$axios.delete(this.$url + 'user_salesman/' + scope.row.user_id)
 						.then(function(res) {
 							// 移除元素
 							self.userList.splice(scope.$index, 1);

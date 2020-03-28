@@ -53,7 +53,7 @@ class UserSalesman extends Base
                     return show(config('code.error'), '数据不存在', '', 404);
                 }*/
 
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['utp_status'] : config('code.status_disable'); // 状态
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
                 $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
@@ -152,7 +152,7 @@ class UserSalesman extends Base
 
             // 获取设备合作业务员信息
             try {
-                $data = Db::name('user_to_partner')->alias('utp')->field('utp.user_id, utp.user_type, utp.money, utp.income, utp.cash, utp.status, utp.parent_comm_ratio, utp.auth_son_ratio, utp.comm_ratio, utp.auth_open_partner, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'utp.user_id = u.user_id', 'INNER')->where(['utp.user_id' => $id, 'utp.user_type' => ['in', $user['user_type']]])->find();
+                $data = Db::name('user_salesman')->alias('us')->field('us.uid, us.role_id, us.money, us.income, us.cash, usus.status, us.parent_comm_ratio, us.auth_son_ratio, us.comm_ratio, us.auth_open_user, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'us.uid = u.user_id', 'INNER')->where(['us.uid' => $id, 'us.role_id' => ['in', $user['user_type']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
