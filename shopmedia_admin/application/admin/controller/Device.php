@@ -109,7 +109,24 @@ class Device extends Base
 		return json($message);
 	}
 
-
+	/**
+	 * 获取广告屏位置信息
+	 * @return \think\response\Json
+	 */
+	public function getMarkers(){
+		$form=input();
+        $devicelist=Db::name('device')->select();
+		
+		if(!empty($devicelist)){
+			$message['data']=$devicelist;
+			$message['status']=1;
+			$message['words']='获取成功';
+		}else{
+			$message['status']=0;
+			$message['words']='获取失败';
+		}
+		return json($message);
+	}
 
 
 

@@ -14,6 +14,7 @@ Route::POST('getCompany','admin/Company/getCompany'); //获取分公司基本信
 Route::resource('device','admin/Device');
 Route::POST('addDevice','admin/Device/addDevice');
 Route::POST('getDevice','admin/Device/getDevice');
+Route::GET('getMarkers','admin/Device/getMarkers');
 // 区域
 Route::resource('region', 'admin/region');
 // 用户（传媒设备合作者）
