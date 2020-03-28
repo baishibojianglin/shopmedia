@@ -1,15 +1,15 @@
 <template>
-	<div class="user_type">
+	<div class="user_role">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>用户类型</span></el-col>
+					<el-col :span="6"><span>用户角色</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="用户类型名称" v-model="formInline.type_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getUserTypeList()">查询</el-button>
+								<el-input placeholder="用户角色名称" v-model="formInline.title" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getUserRoleList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
@@ -23,11 +23,11 @@
 				</el-row>
 			</div>
 			<div class="">
-				<!-- 用户列表 s -->
-				<el-table :data="userTypeList" border style="width: 100%">
-					<el-table-column prop="type_id" label="序号" fixed width="90"></el-table-column>
-					<el-table-column prop="type_name" label="类型名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="parent_id" label="上级类型序号" width="120"></el-table-column>
+				<!-- 用户角色列表 s -->
+				<el-table :data="userRoleList" border style="width: 100%">
+					<el-table-column prop="id" label="序号" fixed width="90"></el-table-column>
+					<el-table-column prop="title" label="角色名称" fixed min-width="180"></el-table-column>
+					<el-table-column prop="parent_id" label="上级角色序号" width="120"></el-table-column>
 					<el-table-column prop="parent_comm_ratio" label="向上级用户统一提成比例" width="180"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
@@ -36,11 +36,11 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" width="90">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toUserTypeEdit(scope.row)">编辑</el-button>
+							<el-button type="primary" size="mini" plain @click="toUserRoleEdit(scope.row)">编辑</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
-				<!-- 用户列表 e -->
+				<!-- 用户角色列表 e -->
 
 				<!-- 分页 s -->
 				<div>
@@ -60,24 +60,24 @@
 		data() {
 			return {
 				formInline: {
-					type_name: '' // 用户类型名称
+					title: '' // 用户角色名称
 				},
-				userTypeList: [], // 用户类型列表
+				userRoleList: [], // 用户角色列表
 				listPagination: {} // 列表分页参数
 			}
 		},
 		mounted() {
-			this.getUserTypeList(); // 获取用户列表
+			this.getUserRoleList(); // 获取用户角色列表
 		},
 		methods: {
 			/**
-			 * 获取用户列表
+			 * 获取用户角色列表
 			 */
-			getUserTypeList() {
+			getUserRoleList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_type', {
+				this.$axios.get(this.$url + 'user_role', {
 						params: {
-							type_name: this.formInline.type_name,
+							title: this.formInline.title,
 							page: this.listPagination.current_page,
 							size: this.listPagination.per_page
 						}/* ,
@@ -88,7 +88,7 @@
 					})
 					.then(function(res) {
 						if (res.data.status == 1) {
-							// 用户类型列表分页参数
+							// 用户角色列表分页参数
 							self.listPagination = res.data.data;
 
 							// 当数据为空时
@@ -100,8 +100,8 @@
 								return;
 							}
 
-							// 用户类型列表
-							self.userTypeList = self.listPagination.data;
+							// 用户角色列表
+							self.userRoleList = self.listPagination.data;
 						} else {
 							self.$message({
 								message: '网络忙，请重试',
@@ -123,7 +123,7 @@
 			 */
 			handleSizeChange(page_size) {
 				this.listPagination.per_page = page_size; // 每页条数
-				this.getUserTypeList();
+				this.getUserRoleList();
 			},
 
 			/**
@@ -132,11 +132,11 @@
 			 */
 			handleCurrentChange(current_page) {
 				this.listPagination.current_page = current_page; // 当前页数
-				this.getUserTypeList();
+				this.getUserRoleList();
 			},
 
 			/**
-			 * 筛选用户状态
+			 * 筛选用户角色状态
 			 * @param {Object} value
 			 * @param {Object} row
 			 */
@@ -145,14 +145,14 @@
 			},
 
 			/**
-			 * 跳转用户类型编辑页
+			 * 跳转用户角色编辑页
 			 * @param {Object} row
 			 */
-			toUserTypeEdit(row) {
+			toUserRoleEdit(row) {
 				this.$router.push({
-					path: "user_type_edit",
+					path: "user_role_edit",
 					query: {
-						type_id: row.type_id
+						id: row.id
 					}
 				});
 			}

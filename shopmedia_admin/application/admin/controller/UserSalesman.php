@@ -8,11 +8,11 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户（店铺端业务员）控制器类
- * Class UserToShop
+ * admin模块用户（业务员）控制器类
+ * Class UserSalesman
  * @package app\admin\controller
  */
-class UserToShop extends Base
+class UserSalesman extends Base
 {
     /**
      * 显示用户资源列表
@@ -42,13 +42,18 @@ class UserToShop extends Base
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
             try {
-                $data = model('User')->getUserToShop($map, $this->size);
+                $data = model('User')->getUserSalesman($map, $this->size);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             $status = config('code.status');
             foreach ($data as $key => $value) {
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['uts_status'] : config('code.status_disable'); // 状态
+                // TODO：判断用户类型
+                /*if (!in_array($value['user_type'], explode(',', $value['user_types']))) {
+                    return show(config('code.error'), '数据不存在', '', 404);
+                }*/
+
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['utp_status'] : config('code.status_disable'); // 状态
                 $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
@@ -59,7 +64,7 @@ class UserToShop extends Base
     }
 
     /**
-     * 保存新建的用户账户资源
+     * 保存新建的用户资源
      * @param Request $request
      * @return \think\response\Json
      * @throws ApiException
@@ -133,7 +138,7 @@ class UserToShop extends Base
     }
 
     /**
-     * 显示指定的用户账户资源
+     * 显示指定的用户资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -145,9 +150,9 @@ class UserToShop extends Base
             // 获取原始用户信息
             $user = model('User')->field('password', true)->find($id);
 
-            // 获取店铺端业务员信息
+            // 获取设备合作业务员信息
             try {
-                $data = Db::name('user_to_shop')->alias('uts')->field('uts.user_id, uts.user_type, uts.money, uts.income, uts.cash, uts.status, uts.parent_comm_ratio, uts.auth_son_ratio, uts.comm_ratio, uts.auth_open_shop, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'uts.user_id = u.user_id', 'INNER')->where(['uts.user_id' => $id, 'uts.user_type' => ['in', $user['user_type']]])->find();
+                $data = Db::name('user_to_partner')->alias('utp')->field('utp.user_id, utp.user_type, utp.money, utp.income, utp.cash, utp.status, utp.parent_comm_ratio, utp.auth_son_ratio, utp.comm_ratio, utp.auth_open_partner, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'utp.user_id = u.user_id', 'INNER')->where(['utp.user_id' => $id, 'utp.user_type' => ['in', $user['user_type']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -208,8 +213,8 @@ class UserToShop extends Base
         if (isset($param['auth_son_ratio'])) { // 授权配置下级提成比例
             $data['auth_son_ratio'] = trim($param['auth_son_ratio']);
         }
-        if (isset($param['auth_open_shop'])) { // 授权开通店铺端
-            $data['auth_open_shop'] = trim($param['auth_open_shop']);
+        if (isset($param['auth_open_partner'])) { // 授权开通设备合作者
+            $data['auth_open_partner'] = trim($param['auth_open_partner']);
         }
         if (isset($param['status'])) { // 状态
             $data['status'] = $param['status'];
@@ -224,7 +229,7 @@ class UserToShop extends Base
         }
 
         try {
-            $result = Db::name('user_to_shop')->where(['user_id' => $id])->update($data);
+            $result = Db::name('user_to_partner')->where(['user_id' => $id])->update($data);
         } catch(\Exception $e) {
             throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }

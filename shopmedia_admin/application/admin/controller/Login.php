@@ -23,14 +23,14 @@ class Login extends Common
         // 解密类实例化
         $aes = new Aes();
         // 解密sign
-        $sign = $aes->decrypt($value['sign']);
+        $sign = $aes->adminDecrypt($value['sign']);
         if ($sign != 'jl_goodshop') {
             $result['status'] = 0;
             $result['message'] = '验签不正确';
             return json($result);
         }
         // 解密账号和密码
-        $str = $aes->decrypt($value['str']);
+        $str = $aes->adminDecrypt($value['str']);
         // 字符串分解成变量
         parse_str($str, $data);
         // 账号是否为空
@@ -85,7 +85,7 @@ class Login extends Common
         // 将token存入供应商账户表
         $lsittoken = model('Admin')->savetoken($list['id'], $token);
         // 用aes加密token
-        $list['token'] = $aes->encrypt($token);
+        $list['token'] = $aes->adminEncrypt($token);
         // 成功放行登录
         if (!empty($lsittoken)) {
           $result['value'] = $list;

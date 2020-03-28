@@ -8,14 +8,14 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户类型控制器类
- * Class UserType
+ * admin模块用户角色控制器类
+ * Class UserRole
  * @package app\admin\controller
  */
-class UserType extends Base
+class UserRole extends Base
 {
     /**
-     * 显示用户类型资源列表
+     * 显示用户角色资源列表
      * @return \think\response\Json
      */
     public function index()
@@ -30,8 +30,8 @@ class UserType extends Base
 
             // 查询条件
             $map = [];
-            if (!empty($param['type_name'])) { // 用户类型名称
-                $map['type_name'] = ['like', '%' . $param['type_name'] . '%'];
+            if (!empty($param['title'])) { // 用户角色名称
+                $map['title'] = ['like', '%' . $param['title'] . '%'];
             }
 
             // 获取分页page、size
@@ -39,7 +39,7 @@ class UserType extends Base
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
             try {
-                $data = model('UserType')->getUserType($map, $this->size);
+                $data = model('UserRole')->getUserRole($map, $this->size);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
@@ -54,7 +54,7 @@ class UserType extends Base
     }
 
     /**
-     * 显示指定的用户类型资源
+     * 显示指定的用户角色资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -63,9 +63,9 @@ class UserType extends Base
     {
         // 判断为GET请求
         if (request()->isGet()) {
-            // 获取用户类型信息
+            // 获取用户角色信息
             try {
-                $data = model('UserType')->find($id);
+                $data = model('UserRole')->find($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -84,7 +84,7 @@ class UserType extends Base
     }
 
     /**
-     * 保存更新的用户类型资源
+     * 保存更新的用户角色资源
      * @param Request $request
      * @param int $id
      * @return \think\response\Json
@@ -116,7 +116,7 @@ class UserType extends Base
         }
 
         try {
-            $result =model('UserType')->update($data, ['type_id' => $id]);
+            $result =model('UserRole')->update($data, ['id' => $id]);
         } catch(\Exception $e) {
             throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }

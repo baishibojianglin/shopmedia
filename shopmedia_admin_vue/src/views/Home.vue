@@ -54,13 +54,11 @@
 							</dt>
 							<el-collapse-transition>
 								<div v-show="menuvalue[5]">
-									<router-link to="/home/user_type"><dd id='menu51' :class="activevalue[51]?activeclass:''"  @click="menuactive(51,5,1)">用户类型</dd></router-link>
+									<router-link to="/home/user_role"><dd id='menu51' :class="activevalue[51]?activeclass:''"  @click="menuactive(51,5,1)">用户角色</dd></router-link>
 									<!-- <router-link to="/home/user"><dd id='menu52' :class="activevalue[52]?activeclass:''"  @click="menuactive(52,5,2)">全部用户</dd></router-link> -->
-									<router-link to="/home/user_partner"><dd id='menu53' :class="activevalue[53]?activeclass:''"  @click="menuactive(53,5,3)">设备合作者</dd></router-link>
-									<router-link to="/home/user_to_partner"><dd id='menu54' :class="activevalue[54]?activeclass:''"  @click="menuactive(54,5,4)">设备合作业务员</dd></router-link>
-									<router-link to="/home/user_to_ad"><dd id='menu55' :class="activevalue[55]?activeclass:''"  @click="menuactive(55,5,5)">广告主业务员</dd></router-link>
-									<router-link to="/home/user_to_shop"><dd id='menu56' :class="activevalue[56]?activeclass:''"  @click="menuactive(56,5,6)">店铺端业务员</dd></router-link>
-									<router-link to="/home/user_shop"><dd id='menu57' :class="activevalue[57]?activeclass:''"  @click="menuactive(57,5,7)">店铺端用户</dd></router-link>
+									<router-link to="/home/user_salesman"><dd id='menu53' :class="activevalue[53]?activeclass:''"  @click="menuactive(53,5,3)">业务员</dd></router-link>
+									<router-link to="/home/user_partner"><dd id='menu54' :class="activevalue[54]?activeclass:''"  @click="menuactive(54,5,4)">设备合作者</dd></router-link>
+									<router-link to="/home/user_shop"><dd id='menu55' :class="activevalue[55]?activeclass:''"  @click="menuactive(55,5,5)">店铺端用户</dd></router-link>
 								</div>
 							</el-collapse-transition>
 
