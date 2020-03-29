@@ -31,7 +31,10 @@ class UserRole extends Base
             // 查询条件
             $map = [];
             if (!empty($param['title'])) { // 用户角色名称
-                $map['title'] = ['like', '%' . $param['title'] . '%'];
+                $map['ur.title'] = ['like', '%' . $param['title'] . '%'];
+            }
+            if (isset($param['parent_id'])) { // 上级角色ID
+                $map['ur.parent_id'] = intval($param['parent_id']);
             }
 
             // 获取分页page、size
@@ -51,6 +54,31 @@ class UserRole extends Base
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }
+    }
+
+    /**
+     * 用户角色列表（不分页）
+     * @return \think\response\Json
+     */
+    public function userRoleList()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的数据
+        $param = input('param.');
+
+        // 查询条件
+        $map = [];
+        if (isset($param['parent_id'])) { // 上级角色ID
+            $map['parent_id'] = intval($param['parent_id']);
+        }
+
+        $data = model('UserRole')->where($map)->select();
+
+        return show(config('code.success'), 'OK', $data);
     }
 
     /**

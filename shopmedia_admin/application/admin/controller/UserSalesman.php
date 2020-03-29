@@ -36,6 +36,45 @@ class UserSalesman extends Base
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
             }
+            if (!empty($param['parent_name'])) { // 上级用户名称
+                $map['p.user_name'] = ['like', '%' . $param['parent_name'] . '%'];
+            }
+            if (isset($param['role_id']) && $param['role_id'] != null) { // 用户角色ID
+                // 如果必须同时存在多个角色才满足
+                // 条件1. role_id集合。如果只需存在一个或多个角色既满足（user_role 表 role_id 字段），只写该条件 $map['us.role_id']，忽略 $map['u.user_id']
+                $map['us.role_id'] = ['in', $param['role_id']];
+
+                // 条件2. user_id集合
+                $userIds = []; // 定义用户ID集合
+                // 1.查询业务员信息获取 uid
+                $userSalesmanList = Db::name('user_salesman')->field('uid,role_id')->where(['role_id' => ['in', $param['role_id']]])->select();
+                // 2.通过uid获取 user 表 user_type 字段值
+                if ($userSalesmanList) {
+                    foreach ($userSalesmanList as $k => $v) {
+                        $userIds[$k] = $v['uid'];
+                        $user = model('User')->field('user_id, user_type')->where(['user_id' => $v['uid']])->find();
+                        if ($user) {
+                            $userType = explode(',', $user['user_type']);
+                            foreach ($param['role_id'] as $k1 => $v1) {
+                                if (!in_array($v1, $userType)) {
+                                    //$userIds[] = $v['user_id'];
+                                    unset($userIds[$k]);
+                                    //return show(config('code.error'), 'not found', '', 404);
+                                }
+                            }
+                        }
+                    }
+                }
+                //return show(config('code.error'), array_unique($userIds), '', 404);
+                $map['u.user_id'] = ['in', array_unique($userIds)];
+            }
+            if (isset($param['status']) && $param['status'] != null) { // 角色状态
+                if (intval($param['status']) == config('code.status_enable')) { // 启用
+                    $map['u.status&us.status'] = config('code.status_enable');
+                } else { // 禁用
+                    $map['u.status|us.status'] = config('code.status_disable');
+                }
+            }
 
             // 获取分页page、size
             $this->getPageAndSize($param);
@@ -47,6 +86,7 @@ class UserSalesman extends Base
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             $status = config('code.status');
+            $isAuth = config('code.is_auth');
             foreach ($data as $key => $value) {
                 // TODO：判断用户类型
                 /*if (!in_array($value['user_type'], explode(',', $value['user_types']))) {
@@ -55,6 +95,8 @@ class UserSalesman extends Base
 
                 $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
                 $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
+                $data[$key]['auth_son_ratio_msg'] = $isAuth[$data[$key]['auth_son_ratio']]; // 定义授权配置下级提成比例状态信息
+                $data[$key]['auth_open_user_msg'] = $isAuth[$data[$key]['auth_open_user']]; // 定义授权开通目标客户状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);
