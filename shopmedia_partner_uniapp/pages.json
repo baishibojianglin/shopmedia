@@ -13,7 +13,8 @@
 		}, {
 			"path": "pages/reg/reg",
 			"style": {
-				"navigationBarTitleText": "注册"
+				"app-plus": {"titleNView": false},
+				"backgroundColor":"#fff"
 			}
 		}, {
 			"path": "pages/pwd/pwd",
@@ -45,7 +46,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarBackgroundColor": "#0faeff",
-		"backgroundColor": "#fbf9fe"
+		"navigationBarBackgroundColor": "#3F45F2",
+		"backgroundColor": "#fff"
 	}
 }

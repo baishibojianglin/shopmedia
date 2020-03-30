@@ -7,11 +7,8 @@
 			did: '12345dg', // 设备号
 		},
 		
-		onLaunch: function() {
-			// console.log('App Launch');
-			
-			let self = this;
-			
+		onLaunch: function() {		
+			let self = this;	
 			// 获取设备系统信息
 			uni.getSystemInfo({
 				success: function (res) {
@@ -29,6 +26,40 @@
 </script>
 
 <style>
+	/*阿里图标库*/
+	@font-face {
+	  font-family: 'iconfont';  /* project id 1721327 */
+	  src: url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.eot');
+	  src: url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.eot?#iefix') format('embedded-opentype'),
+	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.woff2') format('woff2'),
+	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.woff') format('woff'),
+	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.ttf') format('truetype'),
+	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.svg#iconfont') format('svg');
+	}	
+	.icon{
+		font-family: iconfont;
+		font-size: 24px;
+	}	
+	
+	/*颜色*/
+	.color-blue{
+		color:#3F45F2;
+	}
+	
+	/*行列转换*/
+	.inline{
+		display: inline-block;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/* 头条小程序需要把 iconfont 样式放到组件外 */
 	@import "components/m-icon/m-icon.css";
 
@@ -83,8 +114,9 @@
 		display: flex;
 		flex: 1;
 		flex-direction: column;
-		background-color: #efeff4;
+		background-color: #fff;
 		padding: 10px;
+		text-align: center;
 	}
 
 	.input-group {
