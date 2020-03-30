@@ -246,7 +246,7 @@
 			 * 合并行
 			 */
 			objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-				let columnIndexArray = [1, 3, 4]; // 列号组成的数组
+				let columnIndexArray = [1, 3, 4, 5, 15, 16]; // 列号组成的数组
 				if (columnIndexArray.includes(columnIndex) === true) { // 即 columnIndex === 0 || columnIndex === 1 …
 					const _row = this.spanArr[rowIndex];
 					const _col = _row > 0 ? 1 : 0;
