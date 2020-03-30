@@ -103,7 +103,7 @@ class GoodsCate extends Base
         // 判断为POST请求
         if(request()->isPost()){
             $data = input('post.');
-            $data['company_user_id'] = $this->companyUser['user_id']; // 创建者(平台管理员)ID
+            $data['company_user_id'] = $this->adminUser['user_id']; // 创建者(平台管理员)ID
 
             // validate验证数据合法性
             $validate = validate('GoodsCate');
@@ -199,7 +199,7 @@ class GoodsCate extends Base
             }
             if (isset($param['audit_status'])) { // 审核状态
                 $data['audit_status'] = input('param.audit_status', null, 'intval');
-                $data['audit_id'] = $this->companyUser['user_id'];
+                $data['audit_id'] = $this->adminUser['user_id'];
                 $data['audit_time'] = time();
             }
             if (isset($param['is_on_sale'])) { // 是否上架

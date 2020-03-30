@@ -30,8 +30,8 @@ class UserShop extends Base
 
             // 查询条件
             $map = [];
-            /*if ($this->companyUser['company_id'] != 1) { // 平台可以查看所有账户，供应商只能查看自有账户
-                $map['cu.company_id'] = $this->companyUser['company_id'];
+            /*if ($this->adminUser['company_id'] != 1) { // 平台可以查看所有账户，供应商只能查看自有账户
+                $map['cu.company_id'] = $this->adminUser['company_id'];
             }*/
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
@@ -79,22 +79,22 @@ class UserShop extends Base
 
             // 处理数据
             // 供应商ID：1.平台登录时，通过下拉框选择获取供应商ID；2.供应商账户登录时，新增的下级供应商账户的所属供应商ID为当前登录账户对应的供应商ID
-            if ($this->companyUser['company_id'] != 1) {
-                $data['company_id'] = $this->companyUser['company_id'];
+            if ($this->adminUser['company_id'] != 1) {
+                $data['company_id'] = $this->adminUser['company_id'];
             }
 
             // 上级ID：1.平台只能新增每个供应商的总账户，该供应商的总账户上级ID为平台管理员user_id；2.供应商账户新增下级账户时，TODO：parent_id待处理
-            if ($this->companyUser['company_id'] == 1) { // 平台账户登录时
+            if ($this->adminUser['company_id'] == 1) { // 平台账户登录时
                 // 当平台管理员登录时
-                if ($this->companyUser['parent_id'] == 0) {
-                    $data['parent_id'] = $this->companyUser['user_id'];
+                if ($this->adminUser['parent_id'] == 0) {
+                    $data['parent_id'] = $this->adminUser['user_id'];
                 }
                 // 当平台非管理员账户登录时
-                if ($this->companyUser['parent_id'] == 1) {
-                    $data['parent_id'] = $this->companyUser['parent_id'];
+                if ($this->adminUser['parent_id'] == 1) {
+                    $data['parent_id'] = $this->adminUser['parent_id'];
                 }
             } else { // 供应商账户登录时
-                $data['parent_id'] = $this->companyUser['user_id']; // TODO：parent_id待处理
+                $data['parent_id'] = $this->adminUser['user_id']; // TODO：parent_id待处理
             }
 
             $data['password'] = md5($data['password']); // 密码
@@ -289,17 +289,6 @@ class UserShop extends Base
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
             /* 手动控制事务 e */
-            /*// 真删除
-            try {
-                $result = model('CompanyUser')->destroy($id);
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
-            }
-            if (!$result) {
-                return show(config('code.error'), '删除失败', '', 403);
-            } else {
-                return show(config('code.success'), '删除成功');
-            }*/
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }

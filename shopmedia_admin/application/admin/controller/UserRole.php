@@ -80,6 +80,7 @@ class UserRole extends Base
 
         // 查询条件
         $map = [];
+        $map['status'] = config('code.status_enable'); // 启用角色
         if (isset($param['parent_id'])) { // 上级角色ID
             $map['parent_id'] = intval($param['parent_id']);
         }

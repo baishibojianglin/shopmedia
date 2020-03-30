@@ -98,8 +98,8 @@
 						size: this.listPagination.per_page
 					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
 				.then(function(res) {
