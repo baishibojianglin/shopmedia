@@ -1,85 +1,125 @@
 <template>
 	<view class="content">
-		<view class="input-group">
-			<view class="input-row border">
-				<text class="title">账号：</text>
-				<m-input type="text" focus clearable v-model="account" placeholder="请输入账号"></m-input>
-			</view>
-			<view class="input-row border">
-				<text class="title">密码：</text>
-				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
-			</view>
-			<view class="input-row">
-				<text class="title">邮箱：</text>
-				<m-input type="text" clearable v-model="email" placeholder="请输入邮箱"></m-input>
-			</view>
+        <u-row>
+            <u-col span="24" class="contain-logo">
+				<image class="logo" mode="aspectFit" :src="logourl"></image>
+			</u-col>
+        </u-row>
+		<view class="content-view">
+			<u-row>
+
+				<input v-show='false' name="please" v-model="please" placeholder="邀请码" />
+				
+				<u-col span="24" class="input-list">
+					    <text class="iconposition icon color-blue">&#xe7d5;</text>
+						<input name="phone" v-model="phone" placeholder="请输手机号" />
+				</u-col>
+				<u-col span="24" class="input-list">
+					    <text class="iconposition icon color-blue">&#xe7b8;</text>
+						<input name="password" v-model="password" placeholder="请输入密码" />
+				</u-col>
+				<u-col span="24" class="input-list">
+					    <text class="iconposition icon color-blue">&#xe7d6;</text>
+						<input name="verifycode" v-model="verifycode" placeholder="手机验证码" />
+						<button type="primary"  class="verify-button">获取验证码</button>
+				</u-col>
+				<u-col span="24" class="book">
+						<checkbox-group>
+							<label>
+								    <checkbox class="checkbox inline" value="cb" color="#3F45F2" checked="true" />
+									<navigator class="inline text" url="navigate/navigate?title=navigate">
+										阅读并同意<text class="color-blue">《商市通用户协议》</text>
+									</navigator>												
+							</label>
+						</checkbox-group>
+				</u-col>
+
+				<u-col span="24">
+                     <button type="primary" class="submit">注 册</button>
+				</u-col>					
+	
+			</u-row>			
 		</view>
-		<view class="btn-row">
-			<button type="primary" class="primary" @tap="register">注册</button>
-		</view>
+
 	</view>
 </template>
 
 <script>
-	import service from '../../service.js';
-	import mInput from '../../components/m-input.vue';
-
+	import Vue from 'vue'
+	import Row from 'components/dl-grid/row.vue'
+	import Col from 'components/dl-grid/col.vue'
+	
+	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
+	Vue.component('u-col', Col);
+	
 	export default {
 		components: {
-			mInput
+		
 		},
 		data() {
 			return {
-				account: '',
-				password: '',
-				email: ''
+				please:'',//邀请码
+				phone:'',//手机号
+				password:'',//密码
+				verifycode:'',//验证码
+                logourl:'/static/img/logo.png'	
 			}
 		},
 		methods: {
-			register() {
-				/**
-				 * 客户端对账号信息进行一些必要的校验。
-				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
-				 */
-				if (this.account.length < 5) {
-					uni.showToast({
-						icon: 'none',
-						title: '账号最短为 5 个字符'
-					});
-					return;
-				}
-				if (this.password.length < 6) {
-					uni.showToast({
-						icon: 'none',
-						title: '密码最短为 6 个字符'
-					});
-					return;
-				}
-				if (this.email.length < 3 || !~this.email.indexOf('@')) {
-					uni.showToast({
-						icon: 'none',
-						title: '邮箱地址不合法'
-					});
-					return;
-				}
-
-				const data = {
-					account: this.account,
-					password: this.password,
-					email: this.email
-				}
-				service.addUser(data);
-				uni.showToast({
-					title: '注册成功'
-				});
-				uni.navigateBack({
-					delta: 1
-				});
-			}
-		}
+	    }
 	}
 </script>
 
 <style>
-
+	.contain-logo{
+		margin-top: 30px;
+		text-align: center;
+	}
+	 .logo{
+		height: 130px;
+	 }
+	 .logo-text{
+		 font-size: 20px;
+		 font-weight: bold;
+	 }
+	 .content-view{
+		 width: 90%;
+		 margin: 50px auto;
+	 }
+	 .iconposition{
+		 position: absolute;
+		 left:20px;
+		 bottom: 4px;
+	 }
+	 .input-list{
+         position: relative;
+		 border-bottom: 1px solid #F1F1F1;
+		 padding-bottom: 5px;
+		 margin-bottom: 30px;
+	 }
+	 .verify-button{
+		 position: absolute;
+		 right: 0;
+		 bottom: 3px;
+		 font-size: 13px;
+		 background-color: #3F45F2;
+	 }
+	 .contain-checkbox{
+		 margin-top: 20px;
+	 }
+	 .checkbox{
+		 font-size: 10rpx;
+	 }
+	 .text{
+		position: relative;
+		top:3px;
+	 }
+	 .book{
+		 text-align: center;
+		 margin-top: 15px;
+	 }
+	 .submit{
+		 background-color: #3F45F2;
+		 margin-top: 35px;
+	 }
 </style>
