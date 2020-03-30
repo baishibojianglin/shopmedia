@@ -1,9 +1,9 @@
 <template>
-	<div class="user_salesman_edit">
+	<div class="user_salesman_create">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑业务员</span></el-col>
+					<el-col :span="6"><span>新增业务员</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -12,27 +12,28 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item prop="user_name" label="用户名称">
+					<!-- <el-form-item prop="user_name" label="用户名称">
 						<el-input v-model="form.user_name" disabled style="width:350px;"></el-input>
+					</el-form-item> -->
+					<el-form-item prop="phone" label="电话号码">
+						<el-input v-model="form.phone" style="width:350px;"></el-input>
+					</el-form-item>
+					<el-form-item prop="password" label="登录密码">
+						<el-input v-model="form.password" clearable show-password style="width:350px;"></el-input>
 					</el-form-item>
 					<!-- <el-form-item prop="avatar" label="头像">
 						<el-input v-model="form.avatar" v-show="false" style="width:350px;"></el-input>
 						<el-image :src="form.avatar" fit="fill" style="width: 100px; height: 100px"></el-image>
 					</el-form-item> -->
-					<!-- <el-form-item prop="phone" label="电话号码">
-						<el-input v-model="form.phone" readonly style="width:350px;"></el-input>
-					</el-form-item> -->
-					<el-form-item prop="title" label="业务员角色">
-						<el-input v-model="form.title" disabled style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="money" label="剩余金额/元">
-						<el-input v-model="form.money" placeholder="输入用户剩余金额" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="income" label="累计收益/元">
-						<el-input v-model="form.income" placeholder="请输入累计收益金额" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="cash" label="累计提现/元">
-						<el-input v-model="form.cash" placeholder="请输入累计提现金额" clearable style="width:350px;"></el-input>
+					<el-form-item prop="role_id" label="业务员角色">
+						<el-select v-model="form.role_id" placeholder="选择角色" filterable>
+							<el-option
+								v-for="item in userRoleList"
+								:key="item.id"
+								:label="item.title"
+								:value="item.id">
+							</el-option>
+						</el-select>
 					</el-form-item>
 					<el-form-item prop="comm_ratio" label="业务员提成比例" required>
 						<el-input v-model="form.comm_ratio" placeholder="请输入业务员提成比例" clearable style="width:350px;"></el-input>
@@ -52,13 +53,6 @@
 							<el-radio :label="0">禁止</el-radio>
 						</el-radio-group>
 					</el-form-item>
-					<!-- <el-form-item prop="user_status" label="用户状态" required>
-						<el-radio-group v-model="form.user_status">
-							<el-radio :label="1">启用</el-radio>
-							<el-radio :label="0">禁用</el-radio>
-						</el-radio-group>
-						<span class="text-danger">（当用户启用时，角色启用才有效；当用户禁用时，该用户所有角色都将被禁用）</span>
-					</el-form-item> -->
 					<el-form-item prop="status" label="角色状态" required>
 						<el-radio-group v-model="form.status">
 							<el-radio :label="1">启用</el-radio>
@@ -81,55 +75,49 @@
 		data() {
 			return {
 				form: {
-					id: '',
 					/* user_name: '', // 用户名称
 					avatar: '', // 用户头像
 					phone: '', // 电话号码
 					status: '', // 状态 */
 				},
-				rules: { // 验证规则
-					money: [
-						{ required: true, message: '输入用户剩余金额', trigger: 'blur' }
+				rules: { // 验证规则中
+					phone: [
+						{ required: true, pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码', trigger: 'blur' }
 					],
-					income: [
-						{ required: true, message: '请输入累计收益金额', trigger: 'blur' }
+					password: [
+						{ required: true, message: '请输入密码', trigger: 'blur' },
+						{ min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
 					],
-					cash: [
-						{ required: true, message: '请输入累计提现金额', trigger: 'blur' }
-					],
-					user_status: [
-						{ required: true, message: '请选择用户状态', trigger: 'change' }
-					] 
-				}
+					role_id: [
+						{ required: true, message: '请选择业务员角色', trigger: 'change' }
+					]
+				},
+				
+				userRoleList: [] // 用户角色列表
 			}
 		},
 		created() {
-			this.getParams();
-			this.getUser(); // 获取指定的用户信息
+			this.getUserRoleList();
 		},
 		methods: {
 			/**
-			 * 获取路由带过来的参数
+			 * 获取用户角色（业务员）列表
 			 */
-			getParams() {
-				this.form.id = this.$route.query.id;
-			},
-			
-			/**
-			 * 获取指定的用户信息
-			 */
-			getUser() {
+			getUserRoleList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_salesman/' + this.form.id, {
-					/* headers: {
+				this.$axios.get(this.$url + 'user_role_list', {
+					params: {
+						parent_id: 1
+					}/* ,
+					headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
 						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
 					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 用户信息
-						self.form = res.data.data;
+						// 用户角色列表
+						self.userRoleList = res.data.data;
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -137,7 +125,7 @@
 						});
 					}
 				})
-				.catch(function (error) {
+				.catch(function(error) {
 					self.$message({
 						message: error.response.data.message,
 						type: 'warning'
@@ -146,24 +134,22 @@
 			},
 			
 			/**
-			 * 编辑用户提交表单
+			 * 新增用户提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
-				this.getParams(); // 不写没有数据
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_salesman/' + this.form.id, {
+						this.$axios.post(this.$url + 'user_salesman', {
 							// 参数
-							money: this.form.money,
-							income: this.form.income,
-							cash: this.form.cash,
+							phone: this.form.phone,
+							password: this.form.password,
+							role_id: this.form.role_id,
 							comm_ratio: this.form.comm_ratio,
 							parent_comm_ratio: this.form.parent_comm_ratio,
 							auth_son_ratio: this.form.auth_son_ratio,
 							auth_open_user: this.form.auth_open_user,
-							user_status: this.form.user_status,
 							status: this.form.status
 						}/* , {
 							// 请求头配置

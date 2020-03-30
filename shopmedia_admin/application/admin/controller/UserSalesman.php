@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\lib\exception\ApiException;
+use app\common\lib\IAuth;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -36,6 +37,43 @@ class UserSalesman extends Base
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
             }
+            if (!empty($param['parent_name'])) { // 上级用户名称
+                $map['p.user_name'] = ['like', '%' . $param['parent_name'] . '%'];
+            }
+            if (isset($param['role_id']) && $param['role_id'] != null) { // 用户角色ID
+                // 如果必须满足同时存在多个角色，下面两个条件缺一不可
+                // 条件1. role_id集合。如果只需存在一个或多个角色（user_role 表 role_id 字段），只写该条件 $map['us.role_id']，忽略 $map['u.user_id']
+                $map['us.role_id'] = ['in', $param['role_id']];
+
+                // 条件2. user_id集合
+                $userIds = []; // 定义用户ID集合
+                // 1.查询业务员信息获取 uid
+                $userSalesmanList = Db::name('user_salesman')->field('uid,role_id')->where(['role_id' => ['in', $param['role_id']]])->select();
+                // 2.通过uid获取 user 表 role_ids 字段值
+                if ($userSalesmanList) {
+                    foreach ($userSalesmanList as $k => $v) {
+                        $userIds[$k] = $v['uid'];
+                        $user = model('User')->field('user_id, role_ids')->where(['user_id' => $v['uid']])->find();
+                        if ($user) {
+                            $roleIds = explode(',', $user['role_ids']);
+                            foreach ($param['role_id'] as $k1 => $v1) {
+                                if (!in_array($v1, $roleIds)) {
+                                    unset($userIds[$k]);
+                                    //return show(config('code.error'), 'not found', '', 404);
+                                }
+                            }
+                        }
+                    }
+                }
+                $map['u.user_id'] = ['in', array_unique($userIds)];
+            }
+            if (isset($param['status']) && $param['status'] != null) { // 角色状态
+                if (intval($param['status']) == config('code.status_enable')) { // 启用
+                    $map['u.status&us.status'] = config('code.status_enable');
+                } else { // 禁用
+                    $map['u.status|us.status'] = config('code.status_disable');
+                }
+            }
 
             // 获取分页page、size
             $this->getPageAndSize($param);
@@ -47,14 +85,17 @@ class UserSalesman extends Base
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             $status = config('code.status');
+            $isAuth = config('code.is_auth');
             foreach ($data as $key => $value) {
                 // TODO：判断用户类型
-                /*if (!in_array($value['user_type'], explode(',', $value['user_types']))) {
+                /*if (!in_array($value['role_id'], explode(',', $value['role_ids']))) {
                     return show(config('code.error'), '数据不存在', '', 404);
                 }*/
 
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['utp_status'] : config('code.status_disable'); // 状态
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
                 $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
+                $data[$key]['auth_son_ratio_msg'] = $isAuth[$data[$key]['auth_son_ratio']]; // 定义授权配置下级提成比例状态信息
+                $data[$key]['auth_open_user_msg'] = $isAuth[$data[$key]['auth_open_user']]; // 定义授权开通目标客户状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);
@@ -77,32 +118,14 @@ class UserSalesman extends Base
             $data = input('post.');
 
             // validate验证
-            $validate = validate('CompanyUser');
+            /*$validate = validate('');
             if (!$validate->check($data)) {
                 return show(config('code.error'), $validate->getError(), '', 403);
-            }
+            }*/
 
             // 处理数据
-            // 供应商ID：1.平台登录时，通过下拉框选择获取供应商ID；2.供应商账户登录时，新增的下级供应商账户的所属供应商ID为当前登录账户对应的供应商ID
-            if ($this->companyUser['company_id'] != 1) {
-                $data['company_id'] = $this->companyUser['company_id'];
-            }
-
-            // 上级ID：1.平台只能新增每个供应商的总账户，该供应商的总账户上级ID为平台管理员user_id；2.供应商账户新增下级账户时，TODO：parent_id待处理
-            if ($this->companyUser['company_id'] == 1) { // 平台账户登录时
-                // 当平台管理员登录时
-                if ($this->companyUser['parent_id'] == 0) {
-                    $data['parent_id'] = $this->companyUser['user_id'];
-                }
-                // 当平台非管理员账户登录时
-                if ($this->companyUser['parent_id'] == 1) {
-                    $data['parent_id'] = $this->companyUser['parent_id'];
-                }
-            } else { // 供应商账户登录时
-                $data['parent_id'] = $this->companyUser['user_id']; // TODO：parent_id待处理
-            }
-
-            $data['password'] = md5($data['password']); // 密码
+            $data['user_name'] = 'Sustock-' . trim($data['phone']); // 用户名
+            $data['password'] = IAuth::encrypt($data['password']); // 密码
             $data['status'] = isset($data['status']) ? $data['status'] : config('code.status_disable'); // 状态
             $data['create_time'] = time(); // 创建时间
             $data['create_ip'] = request()->ip(); // 创建IP
@@ -111,21 +134,29 @@ class UserSalesman extends Base
             // 启动事务
             Db::startTrans();
             try {
-                // 新增供应商账户
-                $res[0] = $userId = Db::name('company_user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+                // 新增原始用户
+                $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
 
-                // 绑定供应商账户角色
-                $data1 = ['uid' => $userId, 'group_id' => $data['group_id']];
-                $res[1] = Db::name('auth_group_access')->insert($data1);
+                // 新增业务员角色
+                $data1 = [
+                    'uid' => $userId,
+                    'role_id' => $data['role_id'],
+                    'status' => $data['status']
+                ];
+                // TODO：分公司ID：1.平台登录时，通过下拉框选择获取分公司ID；2.分公司账户登录时，分公司ID为当前登录账户对应的分公司ID
+                /*if ($this->companyUser['company_id'] != 1) {
+                    $data1['company_id'] = $this->companyUser['company_id'];
+                }*/
+                $res[1] = Db::name('user_salesman')->insert($data1);
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                 if (in_array(0, $res)) {
-                    return show(config('code.error'), '供应商账户新增失败', '', 403);
+                    return show(config('code.error'), '新增失败', '', 403);
                 }
 
                 // 提交事务
                 Db::commit();
-                return show(config('code.success'), '供应商账户新增成功', '', 201);
+                return show(config('code.success'), '新增成功', '', 201);
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
@@ -148,11 +179,17 @@ class UserSalesman extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             // 获取原始用户信息
-            $user = model('User')->field('password', true)->find($id);
+            $userSalesman = Db::name('user_salesman')->field('uid')->find($id);
+            $user = model('User')->field('password', true)->find($userSalesman['uid']);
 
-            // 获取设备合作业务员信息
+            // 获取业务员信息
             try {
-                $data = Db::name('user_to_partner')->alias('utp')->field('utp.user_id, utp.user_type, utp.money, utp.income, utp.cash, utp.status, utp.parent_comm_ratio, utp.auth_son_ratio, utp.comm_ratio, utp.auth_open_partner, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'utp.user_id = u.user_id', 'INNER')->where(['utp.user_id' => $id, 'utp.user_type' => ['in', $user['user_type']]])->find();
+                $data = Db::name('user_salesman')->alias('us')
+                    ->field('us.uid, us.role_id, us.money, us.income, us.cash, us.status, us.parent_comm_ratio, us.auth_son_ratio, us.comm_ratio, us.auth_open_user, u.user_name, u.role_ids, u.phone, u.avatar, u.status user_status, ur.title')
+                    ->join('__USER__ u', 'us.uid = u.user_id', 'INNER')
+                    ->join('__USER_ROLE__ ur', 'us.role_id = ur.id', 'INNER')
+                    ->where(['us.id' => $id, 'us.role_id' => ['in', $user['role_ids']]])
+                    ->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -213,11 +250,14 @@ class UserSalesman extends Base
         if (isset($param['auth_son_ratio'])) { // 授权配置下级提成比例
             $data['auth_son_ratio'] = trim($param['auth_son_ratio']);
         }
-        if (isset($param['auth_open_partner'])) { // 授权开通设备合作者
-            $data['auth_open_partner'] = trim($param['auth_open_partner']);
+        if (isset($param['auth_open_user'])) { // 授权开通目标客户
+            $data['auth_open_user'] = trim($param['auth_open_user']);
         }
-        if (isset($param['status'])) { // 状态
-            $data['status'] = $param['status'];
+        /*if (isset($param['user_status'])) { // 用户状态
+            $data['user_status'] = intval($param['user_status']);
+        }*/
+        if (isset($param['status'])) { // 角色状态
+            $data['status'] = intval($param['status']);
         }
         // 当为还原软删除的数据时
         if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
@@ -228,16 +268,40 @@ class UserSalesman extends Base
             return show(config('code.error'), '数据不合法', '', 404);
         }
 
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
         try {
-            $result = Db::name('user_to_partner')->where(['user_id' => $id])->update($data);
-        } catch(\Exception $e) {
-            throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
-        }
-        if (false === $result) {
-            return show(config('code.error'), '更新失败', '', 403);
-        } else {
+            // 更新业务员角色信息
+            $res[0] = Db::name('user_salesman')->strict(false)->where(['id' => $id])->update($data);
+            $res[0] = $res[0] === false ? 0 : true;
+            //$result = model('CompanyUser')->allowField(true)->save($data, ['user_id' => $id]); // 更新
+
+            // 获取用户ID
+            $userSalesman = Db::name('user_salesman')->field('uid')->find($id);
+            if ($userSalesman['uid']) {
+                // 更新原始用户信息
+                if ($data['status'] == config('code.status_enable')) {
+                    $res[1] = Db::name('user')->strict(false)->where(['user_id' => $userSalesman['uid']])->update(['status' => $data['status']]);
+                    $res[1] = $res[1] === false ? 0 : true;
+                }
+            }
+
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return show(config('code.error'), '更新失败', '', 403);
+            }
+
+            // 提交事务
+            Db::commit();
             return show(config('code.success'), '更新成功', '', 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return show(config('code.error'), '网络忙，请重试', '', 500);
+            //throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }
+        /* 手动控制事务 e */
     }
 
     /**

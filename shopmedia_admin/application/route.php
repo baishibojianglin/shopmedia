@@ -19,6 +19,7 @@ Route::GET('getMarkers','admin/Device/getMarkers');
 Route::resource('region', 'admin/region');
 // 用户角色
 Route::resource('user_role', 'admin/UserRole');
+Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列表（不分页）
 // 用户（业务员）
 Route::resource('user_salesman', 'admin/UserSalesman');
 // 用户（传媒设备合作者）

@@ -147,7 +147,7 @@ class UserShop extends Base
 
             // 获取店铺端用户信息
             try {
-                $data = Db::name('user_shop')->alias('us')->field('us.user_id, us.user_type, us.money, us.income, us.cash, us.status, us.parent_comm_ratio, us.comm_ratio, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'us.user_id = u.user_id', 'INNER')->where(['us.user_id' => $id, 'us.user_type' => ['in', $user['user_type']]])->find();
+                $data = Db::name('user_shop')->alias('us')->field('us.user_id, us.role_id, us.money, us.income, us.cash, us.status, us.parent_comm_ratio, us.comm_ratio, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'us.user_id = u.user_id', 'INNER')->where(['us.user_id' => $id, 'us.role_id' => ['in', $user['role_ids']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
