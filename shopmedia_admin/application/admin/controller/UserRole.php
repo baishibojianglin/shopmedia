@@ -30,12 +30,13 @@ class UserRole extends Base
 
             // 查询条件
             $map = [];
+            $map['ur.parent_id'] = 0;
             if (!empty($param['title'])) { // 用户角色名称
                 $map['ur.title'] = ['like', '%' . $param['title'] . '%'];
             }
-            if (isset($param['parent_id'])) { // 上级角色ID
+            /*if (isset($param['parent_id'])) { // 上级角色ID
                 $map['ur.parent_id'] = intval($param['parent_id']);
-            }
+            }*/
 
             // 获取分页page、size
             $this->getPageAndSize($param);
@@ -49,6 +50,13 @@ class UserRole extends Base
             $status = config('code.status');
             foreach ($data as $key => $value) {
                 $data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
+
+                // 获取下级列表
+                $childrenRole = model('UserRole')->where(['parent_id' => $value['id']])->select();
+                foreach ($childrenRole as $k => $v) {
+                    $childrenRole[$k]['status_msg'] = $status[$v['status']]; // 定义状态信息
+                }
+                $data[$key]['children'] = $childrenRole;
             }
             return show(config('code.success'), 'OK', $data);
         } else {

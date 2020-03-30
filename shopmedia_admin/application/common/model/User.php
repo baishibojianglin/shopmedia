@@ -73,7 +73,7 @@ class User extends Base
         $order = ['u.user_id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['up.user_type', 'up.money', 'up.income', 'up.cash', 'up.status partner_status', 'up.is_delete']))
+            ->field(array_merge($this->_getListField(), ['up.role_id', 'up.money', 'up.income', 'up.cash', 'up.status partner_status', 'up.is_delete']))
             ->join('__USER_PARTNER__ up', 'u.user_id = up.user_id') // 传媒设备合作者
             ->where($map)
             ->order($order)
@@ -96,7 +96,7 @@ class User extends Base
         $order = ['u.user_id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['us.user_type', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'p.user_name parent_name']))
+            ->field(array_merge($this->_getListField(), ['us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'p.user_name parent_name']))
             ->join('__USER_SHOP__ us', 'u.user_id = us.user_id') // 店铺端业务员
             ->join('__USER__ p', 'us.parent_id = p.user_id', 'LEFT') // 上级
             ->where($map)
@@ -114,7 +114,7 @@ class User extends Base
         return [
             'u.user_id',
             'u.user_name',
-            'u.user_type user_types',
+            'u.role_ids',
             'u.phone',
             'u.phone_verified',
             'u.avatar',

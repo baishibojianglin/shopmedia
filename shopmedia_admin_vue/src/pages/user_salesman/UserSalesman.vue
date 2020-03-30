@@ -45,7 +45,7 @@
 					</el-col>
 					<el-col :span="6">
 						<!-- 新增 s -->
-						<router-link to="user_add"><el-button size="mini" type="primary" icon="el-icon-plus">新增业务员</el-button></router-link>
+						<router-link to="user_salesman_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增业务员</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
@@ -275,7 +275,7 @@
 				this.$router.push({
 					path: "user_salesman_edit",
 					query: {
-						user_id: row.user_id
+						id: row.id
 					}
 				});
 			},
@@ -292,7 +292,7 @@
 				}).then(() => {
 					// 调用删除接口
 					let self = this;
-					this.$axios.delete(this.$url + 'user_salesman/' + scope.row.user_id)
+					this.$axios.delete(this.$url + 'user_salesman/' + scope.row.id)
 						.then(function(res) {
 							// 移除元素
 							self.userList.splice(scope.$index, 1);

@@ -13,7 +13,7 @@
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
 					<el-form-item prop="title" label="角色名称">
-						<el-input v-model="form.title" readonly style="width:350px;"></el-input>
+						<el-input v-model="form.title" disabled style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="parent_comm_ratio" label="向上级用户统一提成比例">
 						<el-input v-model="form.parent_comm_ratio" placeholder="输入向上级用户的统一提成比例" clearable style="width:350px;"></el-input>

@@ -150,7 +150,7 @@ class UserPartner extends Base
 
             // 获取设备合作者信息
             try {
-                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.user_type, up.money, up.income, up.cash, up.status, u.user_name, u.user_type user_types, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.user_type' => ['in', $user['user_type']]])->find();
+                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.role_id' => ['in', $user['role_ids']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }

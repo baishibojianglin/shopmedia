@@ -15,6 +15,7 @@ import UserRole from '@/pages/user_role/UserRole.vue'
 import UserRoleEdit from '@/pages/user_role/UserRoleEdit.vue'
 // 用户（业务员）管理
 import UserSalesman from '@/pages/user_salesman/UserSalesman.vue'
+import UserSalesmanCreate from '@/pages/user_salesman/UserSalesmanCreate.vue'
 import UserSalesmanEdit from '@/pages/user_salesman/UserSalesmanEdit.vue'
 // 用户（传媒设备合作者）管理
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
@@ -61,6 +62,7 @@ const routes = [
 			{path: 'user_role_edit', name: 'user_role_edit', component: UserRoleEdit}, // 用户角色列表
 			// 2--用户（业务员）管理
 			{path: 'user_salesman', name: 'user_salesman', component: UserSalesman}, // 用户列表
+			{path: 'user_salesman_create', name: 'user_salesman_create', component: UserSalesmanCreate}, // 创建用户
 			{path: 'user_salesman_edit', name: 'user_salesman_edit', component: UserSalesmanEdit}, // 编辑用户
 			// 2--用户（传媒设备合作者）管理
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
