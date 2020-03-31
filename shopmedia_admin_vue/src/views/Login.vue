@@ -90,19 +90,26 @@
 					str:str,
 					sign:sign
 				}).then(function(res){
-					
-					if(res.data['status']==0){ //验证未通过
-					   self.$message({
-						 message:res.data['message'],
-						 type: 'warning'
-					   });						
-					}else{  //登录成功
-					   //前端存储token、登录账号id、等存入缓存
-					    localStorage.setItem("admin_user",JSON.stringify(res.data.value));
-					   //跳转首页
-					    self.$router.replace({path:'/home'});	
-					}					
-				})
+					if (res.data['status'] == 1) { // 登录成功
+						// 前端将token、登录账号id等存入缓存
+						localStorage.setItem("admin_user",JSON.stringify(res.data.data));
+						// 跳转首页
+						if (localStorage.getItem('admin_user')) {
+							self.$router.replace({path:'/home'});
+						}
+					} else { // 验证未通过
+						self.$message({
+							message:res.data['message'],
+							type: 'warning'
+						});
+					}
+				}).catch((error) => {
+					// 错误处理
+					this.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
 			}
 		}	
 		

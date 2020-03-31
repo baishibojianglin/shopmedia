@@ -103,11 +103,11 @@
 							is_delete: is_delete,
 							page: this.listPagination.current_page,
 							size: this.listPagination.per_page
-						}/* ,
+						},
 						headers: {
-							'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+							'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 							'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-						} */
+						}
 					})
 					.then(function(res) {
 						if (res.data.status == 1) {
@@ -228,13 +228,13 @@
 				this.$axios.put(this.$url + 'user_partner/' + row.user_id, {
 					// 参数
 					is_delete: row.is_delete
-				}/* , {
+				}, {
 					// 请求头配置
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					}
-				} */)
+				})
 				.then(function(res) {
 					let type = res.data.status == 1 ? 'success' : 'warning';
 					self.$message({

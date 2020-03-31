@@ -84,11 +84,11 @@
 							title: this.formInline.title,
 							page: this.listPagination.current_page,
 							size: this.listPagination.per_page
-						}/* ,
+						},
 						headers: {
-							'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+							'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 							'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-						} */
+						}
 					})
 					.then(function(res) {
 						if (res.data.status == 1) {

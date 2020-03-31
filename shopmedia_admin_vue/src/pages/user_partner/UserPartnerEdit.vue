@@ -89,10 +89,10 @@
 			getUser() {
 				let self = this;
 				this.$axios.get(this.$url + 'user_partner/' + this.form.user_id, {
-					/* headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					} */
+					}
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -127,13 +127,13 @@
 							income: this.form.income,
 							cash: this.form.cash,
 							status: this.form.status,
-						}/* , {
+						}, {
 							// 请求头配置
 							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 							}
-						} */)
+						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';
 							self.$message({
