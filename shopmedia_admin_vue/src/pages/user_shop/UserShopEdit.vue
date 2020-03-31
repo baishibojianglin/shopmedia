@@ -95,10 +95,10 @@
 			getUser() {
 				let self = this;
 				this.$axios.get(this.$url + 'user_shop/' + this.form.user_id, {
-					headers: {
+					/* headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -137,10 +137,10 @@
 							status: this.form.status
 						}, {
 							// 请求头配置
-							headers: {
+							/* headers: {
 								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							} */
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

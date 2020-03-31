@@ -71,7 +71,7 @@ class Login extends Common
         $token = md5(uniqid(mt_rand(), true)) . mt_rand();
         $saveData = [
             'token' => $token, // token
-            'token_time' => strtotime('+' . config('app.login_time_out_day') . 'days'), // token失效时间
+            'token_time' => strtotime('+' . config('admin.login_time_out')), // token失效时间
             'login_time' => time(), // 登录时间
             'login_ip' => request()->ip() // 登录IP
         ];

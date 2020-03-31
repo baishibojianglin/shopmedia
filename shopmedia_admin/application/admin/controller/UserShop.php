@@ -30,7 +30,7 @@ class UserShop extends Base
 
             // 查询条件
             $map = [];
-            /*if ($this->adminUser['company_id'] != 1) { // 平台可以查看所有账户，供应商只能查看自有账户
+            /*if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有账户，供应商只能查看自有账户
                 $map['cu.company_id'] = $this->adminUser['company_id'];
             }*/
             if (!empty($param['user_name'])) { // 用户名称
@@ -79,7 +79,7 @@ class UserShop extends Base
 
             // 处理数据
             // 供应商ID：1.平台登录时，通过下拉框选择获取供应商ID；2.供应商账户登录时，新增的下级供应商账户的所属供应商ID为当前登录账户对应的供应商ID
-            if ($this->adminUser['company_id'] != 1) {
+            if ($this->adminUser['company_id'] != config('admin.platform_company_id')) {
                 $data['company_id'] = $this->adminUser['company_id'];
             }
 

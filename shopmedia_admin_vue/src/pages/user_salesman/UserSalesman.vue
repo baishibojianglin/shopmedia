@@ -153,11 +153,11 @@
 						status: this.formInline.status,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
-					},
+					}/* ,
 					headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -325,11 +325,11 @@
 				this.$axios.get(this.$url + 'user_role_list', {
 					params: {
 						parent_id: 1
-					},
+					}/* ,
 					headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {

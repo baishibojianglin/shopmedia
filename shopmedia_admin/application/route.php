@@ -2,15 +2,26 @@
 use think\Route;
 
 /*-----后台管理中心路由-----*/
-//登录
+// 登录
 Route::POST('login','admin/Login/login');
-//登录验证码
+// 登录验证码
 Route::GET('code','admin/Login/createverifycode');
+// Auth用户组
+Route::resource('auth_group', 'admin/auth_group');
+Route::get('auth_group_tree', 'admin/auth_group/authGroupTree'); // Auth用户组列表树
+Route::put('config_auth_group_rule/:id', 'admin/auth_group/configAuthGroupRule'); // 配置Auth用户组权限规则
+// Auth权限规则
+Route::resource('auth_rule', 'admin/auth_rule');
+Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规则列表树
+Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
+// 管理员
+Route::resource('admin', 'admin/admin');
 // 分公司
 Route::resource('company', 'admin/company');
+Route::get('company_tree', 'admin/company/companyTree'); // 分公司列表树
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
-Route::POST('getCompany','admin/Company/getCompany'); //获取分公司基本信息
-//广告屏管理
+Route::POST('getCompany','admin/Company/getCompany'); // 获取分公司基本信息
+// 广告屏管理
 Route::resource('device','admin/Device');
 Route::POST('addDevice','admin/Device/addDevice');
 Route::POST('getDevice','admin/Device/getDevice');
@@ -28,7 +39,6 @@ Route::resource('user_partner', 'admin/UserPartner');
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
-
 
 
 //上传图片
@@ -50,18 +60,6 @@ Route::resource('goods_cate', 'admin/goods_cate');
 Route::get('goods_cate_tree', 'admin/goods_cate/goodsCateTree'); // 商品类别列表树
 // 商品品牌
 Route::resource('goods_brand', 'admin/goods_brand');
-// Auth用户组
-Route::resource('auth_group', 'admin/auth_group');
-Route::get('auth_group_tree', 'admin/auth_group/authGroupTree'); // Auth用户组列表树
-Route::put('config_auth_group_rule/:id', 'admin/auth_group/configAuthGroupRule'); // 配置Auth用户组权限规则
-// Auth权限规则
-Route::resource('auth_rule', 'admin/auth_rule');
-Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规则列表树
-Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
-// 供应商账户
-Route::resource('company_user', 'admin/company_user');
-
-Route::get('company_tree', 'admin/company/companyTree'); // 供应商列表树
 
 
 

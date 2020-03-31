@@ -32,16 +32,21 @@
 			 * 两种情况：1.客户端管理用户登录的缓存信息被清空；2.服务端token过期
 			 */
 			checkLogin() {
-				// 当客户端缓存被清空时
-				if (!localStorage.getItem('admin_user'))  {
-					this.$message({
-						message: '登录失效，请重新登录',
-						type: 'warning'
-					});
-					// 跳转登录页
-					this.$router.replace({path:'/'});
+				// 判断是否在登录页
+				if (this.$route.path != '/') {
+					// 当客户端缓存被清空时
+					if (!localStorage.getItem('admin_user'))  {
+						this.$message({
+							message: '登录失效，请重新登录',
+							type: 'warning'
+						});
+						
+						// 跳转登录页
+						this.$router.replace({path:'/'});
+					}
+					
+					// TODO：当服务端token过期时
 				}
-				// TODO：当服务端token过期时
 			}
 		}
 	}

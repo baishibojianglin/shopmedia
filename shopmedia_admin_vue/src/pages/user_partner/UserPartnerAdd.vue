@@ -158,10 +158,10 @@
 				let self = this;
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					// 请求头配置
-					headers: {
+					/* headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -202,10 +202,10 @@
 							group_id: this.form.group_id
 						}, {
 							// 请求头配置
-							headers: {
+							/* headers: {
 								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							} */
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

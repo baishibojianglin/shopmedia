@@ -57,7 +57,7 @@ class Login extends Common
         $token = IAuth::setAppLoginToken($param['phone']);
         $data = [
             'token' => $token, // token
-            'token_time' => strtotime('+' . config('app.login_time_out_day') . 'days'), // token失效时间
+            'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
         ];
 
         // 查询该手机号用户是否存在
@@ -159,7 +159,7 @@ class Login extends Common
                 $token = IAuth::setAppLoginToken($param['phone']);
 
                 $data['token'] = $token; // token
-                $data['token_time'] = strtotime('+' . config('app.login_time_out_day') . 'days'); // token失效时间
+                $data['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
                 $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
                 $data['phone'] = trim($param['phone']);
                 $data['password'] = IAuth::encrypt($param['password']);
@@ -349,7 +349,7 @@ class Login extends Common
         $token = IAuth::setAppLoginToken($param['phone']); // 设置登录的唯一性token
         $data = [
             'token' => $token, // token
-            'token_time' => strtotime('+' . config('app.login_time_out_day') . 'days'), // token失效时间
+            'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
         ];
 
         // 查询该手机号用户是否存在

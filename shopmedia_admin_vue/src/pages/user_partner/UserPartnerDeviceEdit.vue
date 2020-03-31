@@ -81,10 +81,10 @@
 							share: this.form.share
 						}, {
 							// 请求头配置
-							headers: {
+							/* headers: {
 								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							} */
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

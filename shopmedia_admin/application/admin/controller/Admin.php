@@ -8,14 +8,14 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块供应商账户控制器类
- * Class CompanyUser
+ * admin模块管理员控制器类
+ * Class Admin
  * @package app\admin\controller
  */
-class CompanyUser extends Base
+class Admin extends Base
 {
     /**
-     * 显示供应商账户资源列表
+     * 显示管理员资源列表
      * @return \think\response\Json
      */
     public function index()
@@ -30,11 +30,11 @@ class CompanyUser extends Base
 
             // 查询条件
             $map = [];
-            if ($this->adminUser['company_id'] != 1) { // 平台可以查看所有账户，供应商只能查看自有账户
-                $map['cu.company_id'] = $this->adminUser['company_id'];
+            if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有账户，分公司只能查看自有账户
+                $map['a.company_id'] = $this->adminUser['company_id'];
             }
-            if (!empty($param['user_name'])) { // 供应商账户名称
-                $map['cu.user_name'] = ['like', '%' . $param['user_name'] . '%'];
+            if (!empty($param['account'])) { // 管理员账号
+                $map['a.account'] = ['like', '%' . $param['account'] . '%'];
             }
 
             // 获取分页page、size
@@ -42,7 +42,7 @@ class CompanyUser extends Base
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
             try {
-                $data = model('CompanyUser')->getCompanyUser($map, $this->size);
+                $data = model('Admin')->getAdmin($map, $this->size);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
@@ -58,7 +58,7 @@ class CompanyUser extends Base
     }
 
     /**
-     * 保存新建的供应商账户资源
+     * 保存新建的管理员资源
      * @param Request $request
      * @return \think\response\Json
      * @throws ApiException
@@ -71,14 +71,14 @@ class CompanyUser extends Base
             $data = input('post.');
 
             // validate验证
-            $validate = validate('CompanyUser');
+            $validate = validate('Admin');
             if (!$validate->check($data)) {
                 return show(config('code.error'), $validate->getError(), '', 403);
             }
 
             // 处理数据
             // 供应商ID：1.平台登录时，通过下拉框选择获取供应商ID；2.供应商账户登录时，新增的下级供应商账户的所属供应商ID为当前登录账户对应的供应商ID
-            if ($this->adminUser['company_id'] != 1) {
+            if ($this->adminUser['company_id'] != config('admin.platform_company_id')) {
                 $data['company_id'] = $this->adminUser['company_id'];
             }
 
@@ -132,7 +132,7 @@ class CompanyUser extends Base
     }
 
     /**
-     * 显示指定的供应商账户资源
+     * 显示指定的管理员资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -142,7 +142,7 @@ class CompanyUser extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-                $data = model('CompanyUser')->alias('cu')->field('cu.user_id, company_id, cu.user_name, cu.avatar, cu.account, cu.phone, cu.ratio, cu.status, aga.group_id')->join('__AUTH_GROUP_ACCESS__ aga', 'cu.user_id = aga.uid', 'LEFT')->find($id);
+                $data = model('Admin')->alias('a')->field('a.id, a.account, a.company_id, a.status, aga.group_id')->join('__AUTH_GROUP_ACCESS__ aga', 'a.id = aga.uid', 'LEFT')->find($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -161,7 +161,7 @@ class CompanyUser extends Base
     }
 
     /**
-     * 保存更新的供应商账户资源
+     * 保存更新的管理员资源
      * @param Request $request
      * @param int $id
      * @return \think\response\Json
@@ -178,7 +178,7 @@ class CompanyUser extends Base
         $param = input('param.');
 
         // validate验证
-        $validate = validate('CompanyUser');
+        $validate = validate('Admin');
         if (!$validate->check($param, [], 'update')) {
             return show(config('code.error'), $validate->getError(), '', 403);
         }
@@ -189,7 +189,7 @@ class CompanyUser extends Base
             $data['user_name'] = trim($param['user_name']);
 
             // 忽略唯一(unique)类型字段user_name对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'user_name' => $data['user_name']])->find();
+            $_data = model('Admin')->where(['user_id' => ['neq', $id], 'user_name' => $data['user_name']])->find();
             if ($_data) {
                 return show(config('code.error'), '供应商账户名称已存在', '', 403);
             }
@@ -201,7 +201,7 @@ class CompanyUser extends Base
             $data['account'] = trim($param['account']);
 
             // 忽略唯一(unique)类型字段account对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'account' => $data['account']])->find();
+            $_data = model('Admin')->where(['user_id' => ['neq', $id], 'account' => $data['account']])->find();
             if ($_data) {
                 return show(config('code.error'), '供应商账户号已存在', '', 403);
             }
@@ -213,7 +213,7 @@ class CompanyUser extends Base
             $data['phone'] = trim($param['phone']);
 
             // 忽略唯一(unique)类型字段phone对自身数据的唯一性验证
-            $_data = model('CompanyUser')->where(['user_id' => ['neq', $id], 'phone' => $data['phone']])->find();
+            $_data = model('Admin')->where(['user_id' => ['neq', $id], 'phone' => $data['phone']])->find();
             if ($_data) {
                 return show(config('code.error'), '供应商账户电话号码已存在', '', 403);
             }
@@ -247,7 +247,7 @@ class CompanyUser extends Base
             // 更新供应商账户
             $res[0] = Db::name('company_user')->strict(false)->where(['user_id' => $id])->update($data);
             $res[0] = $res[0] === false ? 0 : true;
-            //$result = model('CompanyUser')->allowField(true)->save($data, ['user_id' => $id]); // 更新
+            //$result = model('Admin')->allowField(true)->save($data, ['user_id' => $id]); // 更新
 
             // 查询供应商是否已经绑定角色，TODO：暂时只考虑“账户-角色”一对一关系
             $authGroupAccess = model('AuthGroupAccess')->where(['uid' => $id])->find();
@@ -278,7 +278,7 @@ class CompanyUser extends Base
     }
 
     /**
-     * 删除指定供应商账户资源
+     * 删除指定管理员资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -289,7 +289,7 @@ class CompanyUser extends Base
         if (request()->isDelete()) {
             // 显示指定的店鋪比赛场次模板
             try {
-                $data = model('CompanyUser')->find($id);
+                $data = model('Admin')->find($id);
                 //return show(config('code.success'), 'ok', $data);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
@@ -303,8 +303,8 @@ class CompanyUser extends Base
 
             // 判断删除条件
             // 判断是否存在下级供应商账户
-            $companyUserList = model('CompanyUser')->where(['parent_id' => $id])->select();
-            if (!empty($companyUserList)) {
+            $adminList = model('Admin')->where(['parent_id' => $id])->select();
+            if (!empty($adminList)) {
                 return show(config('code.error'), '删除失败：存在下级供应商账户', '', 403);
             }
             // 判断供应商账户状态
@@ -318,7 +318,7 @@ class CompanyUser extends Base
             try {
                 // 真删除指定供应商账户
                 $res[0] = Db::name('company_user')->where(['user_id' => $id])->delete();
-                //$result = model('CompanyUser')->destroy($id);
+                //$result = model('Admin')->destroy($id);
 
                 // 真删除指定供应商账户角色
                 $res[1] = Db::name('auth_group_access')->where(['uid' => $id])->delete();
@@ -339,7 +339,7 @@ class CompanyUser extends Base
             /* 手动控制事务 e */
             /*// 真删除
             try {
-                $result = model('CompanyUser')->destroy($id);
+                $result = model('Admin')->destroy($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }

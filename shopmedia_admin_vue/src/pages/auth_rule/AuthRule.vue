@@ -24,7 +24,7 @@
 			</div>
 			<div class="">
 				<!-- 权限规则列表 s -->
-				<el-table :data="authRuleList" height="500" border style="width: 100%">
+				<el-table :data="authRuleList" empty-text="数据加载中..." max-height="500" border style="width: 100%">
 					<el-table-column prop="id" type="" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="title" label="权限规则名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="name" label="权限规则" min-width="180"></el-table-column>
@@ -93,11 +93,11 @@
 						title: this.formInline.title,
 						// page: this.listPagination.current_page,
 						// size: this.listPagination.per_page
-					},
+					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {

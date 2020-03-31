@@ -98,11 +98,11 @@
 						region_name: this.formInline.region_name,
 						level: 4,
 						parent_id: this.$route.query.parent_id
-					},
+					}/* ,
 					headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {

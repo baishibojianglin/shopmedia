@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>新增供应商账户</span></el-col>
+					<el-col :span="6"><span>编辑供应商账户</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -16,9 +16,9 @@
 						<el-select v-model="form.company_id" :disabled="companySelectDisabled" placeholder="请选择…" filterable>
 							<el-option
 								v-for="item in companyOptions"
-								:key="item.id"
-								:label="item.name"
-								:value="item.id">
+								:key="item.company_id"
+								:label="item.company_name"
+								:value="item.company_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -75,15 +75,12 @@
 		data() {
 			return {
 				form: {
-					company_id: '', // 供应商ID
-					user_name: '', // 供应商账户名称
+					/* user_name: '', // 供应商账户名称
 					avatar: '', // 供应商账户证件照
 					account: '', // 供应商账户号
-					password: '', // 密码
 					phone: '', // 电话号码
 					ratio: '', // 提成比例
-					status: '', // 状态 
-					group_id: '', // 角色ID
+					status: '', // 状态 */
 				},
 				rules: { // 验证规则
 					company_id: [
@@ -101,7 +98,6 @@
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
 					password: [
-						{ required: true, message: '请输入密码', trigger: 'blur' },
 						{ min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
 					],
 					phone: [
@@ -117,16 +113,49 @@
 			}
 		},
 		created() {
+			this.getParams();
+			this.getCompanyUser(); // 获取指定的供应商账户信息
 			this.getCompanyTree(); // 获取供应商列表树
 			this.getAuthGroupTree(); // 获取角色列表树
-			
-			// 供应商ID
-			this.form.company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
-			if (this.form.company_id != 1) {
-				this.companySelectDisabled = true;
-			}
 		},
 		methods: {
+			/**
+			 * 获取路由带过来的参数
+			 */
+			getParams() {
+				this.form.user_id = this.$route.query.user_id;
+			},
+			
+			/**
+			 * 获取指定的供应商账户信息
+			 */
+			getCompanyUser() {
+				let self = this;
+				this.$axios.get(this.$url + 'company_user/' + this.form.user_id, {
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+					}
+				})
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 供应商账户信息
+						self.form = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
 			/**
 			 * 获取供应商列表树
 			 */
@@ -182,14 +211,14 @@
 			},
 			
 			/**
-			 * 新增供应商账户提交表单
+			 * 编辑供应商账户提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.post(this.$url + 'company_user', {
+						this.$axios.put(this.$url + 'company_user/' + this.form.user_id, {
 							// 参数
 							company_id: this.form.company_id,
 							user_name: this.form.user_name,

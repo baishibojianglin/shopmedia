@@ -24,7 +24,7 @@
 			</div>
 			<div class="">
 				<!-- 角色列表 s -->
-				<el-table :data="authGroupList" height="500" border style="width: 100%">
+				<el-table :data="authGroupList" empty-text="数据加载中..." max-height="500" border style="width: 100%">
 					<el-table-column prop="id" type="" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="title" label="角色名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="parent_id" type="" label="上级序号" width="90">
@@ -102,11 +102,11 @@
 						title: this.formInline.title,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
-					},
+					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {

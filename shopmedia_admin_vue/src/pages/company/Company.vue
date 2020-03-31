@@ -100,7 +100,7 @@
 						size: this.listPagination.per_page
 					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
@@ -221,7 +221,7 @@
 				}/* , {
 					// 请求头配置
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					}
 				} */)
