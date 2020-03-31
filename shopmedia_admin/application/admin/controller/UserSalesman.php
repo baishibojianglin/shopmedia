@@ -31,8 +31,9 @@ class UserSalesman extends Base
 
             // 查询条件
             $map = [];
-            /*if ($this->companyUser['company_id'] != 1) { // 平台可以查看所有账户，供应商只能查看自有账户
-                $map['cu.company_id'] = $this->companyUser['company_id'];
+            $map['ur.status'] = config('code.status_enable'); // 启用角色
+            /*if ($this->adminUser['company_id'] != 1) { // 平台可以查看所有账户，供应商只能查看自有账户
+                $map['cu.company_id'] = $this->adminUser['company_id'];
             }*/
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
@@ -116,16 +117,18 @@ class UserSalesman extends Base
         if (request()->isPost()) {
             // 传入的数据
             $data = input('post.');
+            $data['user_name'] = 'Sustock-' . trim($data['phone']); // 用户名
 
             // validate验证
-            /*$validate = validate('');
+            $validate = validate('User');
             if (!$validate->check($data)) {
                 return show(config('code.error'), $validate->getError(), '', 403);
-            }*/
+            }
 
             // 处理数据
             $data['user_name'] = 'Sustock-' . trim($data['phone']); // 用户名
             $data['password'] = IAuth::encrypt($data['password']); // 密码
+            $data['role_ids'] = $data['role_id']; // 用户角色ID集合
             $data['status'] = isset($data['status']) ? $data['status'] : config('code.status_disable'); // 状态
             $data['create_time'] = time(); // 创建时间
             $data['create_ip'] = request()->ip(); // 创建IP
@@ -144,8 +147,8 @@ class UserSalesman extends Base
                     'status' => $data['status']
                 ];
                 // TODO：分公司ID：1.平台登录时，通过下拉框选择获取分公司ID；2.分公司账户登录时，分公司ID为当前登录账户对应的分公司ID
-                /*if ($this->companyUser['company_id'] != 1) {
-                    $data1['company_id'] = $this->companyUser['company_id'];
+                /*if ($this->adminUser['company_id'] != 1) {
+                    $data1['company_id'] = $this->adminUser['company_id'];
                 }*/
                 $res[1] = Db::name('user_salesman')->insert($data1);
 
@@ -275,7 +278,6 @@ class UserSalesman extends Base
             // 更新业务员角色信息
             $res[0] = Db::name('user_salesman')->strict(false)->where(['id' => $id])->update($data);
             $res[0] = $res[0] === false ? 0 : true;
-            //$result = model('CompanyUser')->allowField(true)->save($data, ['user_id' => $id]); // 更新
 
             // 获取用户ID
             $userSalesman = Db::name('user_salesman')->field('uid')->find($id);
@@ -364,17 +366,6 @@ class UserSalesman extends Base
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
             /* 手动控制事务 e */
-            /*// 真删除
-            try {
-                $result = model('CompanyUser')->destroy($id);
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
-            }
-            if (!$result) {
-                return show(config('code.error'), '删除失败', '', 403);
-            } else {
-                return show(config('code.success'), '删除成功');
-            }*/
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }

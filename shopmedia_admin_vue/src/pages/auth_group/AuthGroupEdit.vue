@@ -98,8 +98,8 @@
 				let self = this;
 				this.$axios.get(this.$url + 'auth_group/' + this.form.id, {
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					}
 				})
 				.then(function(res) {
@@ -132,8 +132,8 @@
 					},
 					// 请求头配置
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					}
 				})
 				.then(function(res) {
@@ -172,8 +172,8 @@
 						}, {
 							// 请求头配置
 							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-								'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 							}
 						})
 						.then(function(res) {

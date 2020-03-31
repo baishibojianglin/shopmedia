@@ -121,7 +121,7 @@
 			this.getAuthGroupTree(); // 获取角色列表树
 			
 			// 供应商ID
-			this.form.company_id = JSON.parse(localStorage.getItem('company')).company_id;
+			this.form.company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
 			if (this.form.company_id != 1) {
 				this.companySelectDisabled = true;
 			}
@@ -159,8 +159,8 @@
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					// 请求头配置
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					}
 				})
 				.then(function(res) {
@@ -203,8 +203,8 @@
 						}, {
 							// 请求头配置
 							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('company')).user_id,
-								'admin-user-token': JSON.parse(localStorage.getItem('company')).token
+								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 							}
 						})
 						.then(function(res) {
