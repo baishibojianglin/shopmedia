@@ -52,7 +52,7 @@
 			</div>
 			<div class="">
 				<!-- 用户列表 s -->
-				<el-table :data="userList" border :span-method="objectSpanMethod" style="width: 100%">
+				<el-table :data="userList" border empty-text="数据加载中…" :span-method="objectSpanMethod" style="width: 100%">
 					<!-- <el-table-column prop="id" label="序号" fixed width="90"></el-table-column> -->
 					<el-table-column prop="user_id" label="用户序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>

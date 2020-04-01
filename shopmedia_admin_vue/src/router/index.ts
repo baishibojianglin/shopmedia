@@ -19,7 +19,7 @@ import UserSalesmanCreate from '@/pages/user_salesman/UserSalesmanCreate.vue'
 import UserSalesmanEdit from '@/pages/user_salesman/UserSalesmanEdit.vue'
 // 用户（传媒设备合作者）管理
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
-import UserPartnerAdd from '@/pages/user_partner/UserPartnerAdd.vue'
+import UserPartnerCreate from '@/pages/user_partner/UserPartnerCreate.vue'
 import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
 import UserPartnerDevice from '@/pages/user_partner/UserPartnerDevice.vue'
 import UserPartnerDeviceEdit from '@/pages/user_partner/UserPartnerDeviceEdit.vue'
@@ -33,12 +33,12 @@ import RegionCounty from '@/pages/region/RegionCounty.vue'
 import RegionTown from '@/pages/region/RegionTown.vue'
 // 管理员管理·角色
 import AuthGroup from '@/pages/auth_group/AuthGroup.vue'
-import AuthGroupAdd from '@/pages/auth_group/AuthGroupAdd.vue'
+import AuthGroupCreate from '@/pages/auth_group/AuthGroupCreate.vue'
 import AuthGroupEdit from '@/pages/auth_group/AuthGroupEdit.vue'
 import AuthGroupRule from '@/pages/auth_group/AuthGroupRule.vue'
 // 管理员管理·权限规则
 import AuthRule from '@/pages/auth_rule/AuthRule.vue'
-import AuthRuleAdd from '@/pages/auth_rule/AuthRuleAdd.vue'
+import AuthRuleCreate from '@/pages/auth_rule/AuthRuleCreate.vue'
 import AuthRuleEdit from '@/pages/auth_rule/AuthRuleEdit.vue'
 // 管理员管理·管理员
 import Admin from '@/pages/admin/Admin.vue'
@@ -79,7 +79,7 @@ const routes = [
 			{path: 'user_salesman_edit', name: 'user_salesman_edit', component: UserSalesmanEdit}, // 编辑用户
 			// 2--用户（传媒设备合作者）管理
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
-			{path: 'user_partner_add', name: 'user_partner_add', component: UserPartnerAdd}, // 新增用户
+			{path: 'user_partner_create', name: 'user_partner_create', component: UserPartnerCreate}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
 			{path: 'user_partner_device', name: 'user_partner_device', component: UserPartnerDevice}, // 用户拥有的设备
 			{path: 'user_partner_device_edit', name: 'user_partner_device_edit', component: UserPartnerDeviceEdit}, // 编辑用户拥有的设备
@@ -94,12 +94,12 @@ const routes = [
 			// 2--管理员管理
 			// 角色
 			{path: 'auth_group', name: 'auth_group', component: AuthGroup}, // 角色管理
-			{path: 'auth_group_add', name: 'auth_group_add', component: AuthGroupAdd}, // 新增角色
+			{path: 'auth_group_create', name: 'auth_group_create', component: AuthGroupCreate}, // 新增角色
 			{path: 'auth_group_edit', name: 'auth_group_edit', component: AuthGroupEdit}, // 编辑角色
 			{path: 'auth_group_rule', name: 'auth_group_rule', component: AuthGroupRule}, // 角色权限规则配置
 			// 权限规则
 			{path: 'auth_rule', name: 'auth_rule', component: AuthRule}, // 权限规则
-			{path: 'auth_rule_add', name: 'auth_rule_add', component: AuthRuleAdd}, // 新增权限规则
+			{path: 'auth_rule_create', name: 'auth_rule_create', component: AuthRuleCreate}, // 新增权限规则
 			{path: 'auth_rule_edit', name: 'auth_rule_edit', component: AuthRuleEdit}, // 编辑权限规则
 			// 管理员
 			{path: 'admin', name: 'admin', component: Admin}, // 管理员列表

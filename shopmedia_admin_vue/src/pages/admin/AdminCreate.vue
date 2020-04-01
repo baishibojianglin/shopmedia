@@ -12,7 +12,7 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item label="分公司" prop="company_id">
+					<el-form-item label="平台或分公司" prop="company_id">
 						<el-select v-model="form.company_id" :disabled="companySelectDisabled" placeholder="请选择…" filterable>
 							<el-option
 								v-for="item in companyOptions"
@@ -118,9 +118,9 @@
 			this.getCompanyTree(); // 获取分公司列表树
 			this.getAuthGroupTree(); // 获取角色列表树
 			
-			// 供应商ID
-			this.form.company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
-			if (this.form.company_id != 0) {
+			// 分公司ID
+			let company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
+			if (company_id != 0) {
 				this.companySelectDisabled = true;
 			}
 		},
@@ -131,7 +131,7 @@
 			getCompanyTree() {
 				let self = this;
 				this.$axios.get(this.$url + 'company_tree')
-				.then(function(res) {console.log(res)
+				.then(function(res) {
 					if (res.data.status == 1) {
 						self.companyOptions = res.data.data;
 					} else {

@@ -24,7 +24,7 @@
 			</div>
 			<div class="">
 				<!-- 管理员列表 s -->
-				<el-table :data="adminList" empty-text="数据加载中..." max-height="500" border style="width: 100%">
+				<el-table :data="adminList" max-height="500" border empty-text="数据加载中…" style="width: 100%">
 					<el-table-column prop="id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="account" label="管理员账号" fixed min-width="120"></el-table-column>
 					<el-table-column prop="parent_id" label="上级序号" width="90">

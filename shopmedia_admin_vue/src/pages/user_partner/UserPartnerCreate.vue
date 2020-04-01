@@ -1,5 +1,5 @@
 <template>
-	<div class="user_partner_add">
+	<div class="user_partner_create">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
@@ -122,7 +122,7 @@
 			
 			// 供应商ID
 			this.form.company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
-			if (this.form.company_id != 1) {
+			if (this.form.company_id != 0) {
 				this.companySelectDisabled = true;
 			}
 		},
