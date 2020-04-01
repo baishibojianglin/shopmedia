@@ -64,7 +64,9 @@ class AuthGroup extends Base
 
         // 查询条件
         $map = [];
-        if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // Auth用户组ID
+        $map['status'] = config('code.status_enable'); // 启用状态
+        // Auth用户组ID集合
+        if ($this->adminUser['company_id'] != config('admin.platform_company_id')) {
             $authGroupIds = model('AuthGroup')->getAuthGroupIdsByUserId($this->adminUser['id']);
             if (isset($param['parent_id'])) { // Auth用户组上级ID
                 $param['parent_id'] = intval($param['parent_id']);
@@ -72,6 +74,9 @@ class AuthGroup extends Base
                 $authGroupIds = array_unique($authGroupIds);
             }
             $map['id'] = ['in', $authGroupIds];
+        }
+        if (isset($param['company_id'])) { // 所属分公司ID
+            $map['company_id'] = intval($param['company_id']);
         }
 
         // 获取商品类别列表树，用于页面下拉框列表
@@ -84,7 +89,7 @@ class AuthGroup extends Base
         if ($data) {
             // 处理数据
             foreach ($data as $key => $value) {
-                $data[$key]['title'] = $value['title'] . '（' . ($value['type'] == 0 ? '私有角色' : '通用角色') . '）';
+                //$data[$key]['title'] = $value['title'] . '（' . ($value['type'] == 0 ? '私有角色' : '通用角色') . '）';
                 /*if ($value['level'] != 0) {
                     // level 用于定义 title 前面的空位符的长度
                     $data[$key]['title'] = '└' . str_repeat('─', $value['level'] * 1). ' ' . $value['title']; // str_repeat(string,repeat) 函数把字符串重复指定的次数

@@ -77,23 +77,23 @@ class Admin extends Base
             }
 
             // 处理数据
-            // 供应商ID：1.平台登录时，通过下拉框选择获取供应商ID；2.供应商账户登录时，新增的下级供应商账户的所属供应商ID为当前登录账户对应的供应商ID
+            // 分公司ID：1.平台登录时，通过下拉框选择获取分公司ID；2.分公司管理员登录时，新增的分公司管理员所属的分公司ID为当前登录管理员对应的分公司ID
             if ($this->adminUser['company_id'] != config('admin.platform_company_id')) {
                 $data['company_id'] = $this->adminUser['company_id'];
             }
 
-            // 上级ID：1.平台只能新增每个供应商的总账户，该供应商的总账户上级ID为平台管理员user_id；2.供应商账户新增下级账户时，TODO：parent_id待处理
-            if ($this->adminUser['company_id'] == 1) { // 平台账户登录时
+            // 上级ID：1.平台只能新增每个分公司的总管理员，该分公司的总管理员上级ID为平台管理员id；2.分公司管理员新增下级账户时，TODO：parent_id待处理
+            if ($this->adminUser['company_id'] == config('admin.platform_company_id')) { // 平台账户登录时
                 // 当平台管理员登录时
                 if ($this->adminUser['parent_id'] == 0) {
-                    $data['parent_id'] = $this->adminUser['user_id'];
+                    $data['parent_id'] = $this->adminUser['id'];
                 }
                 // 当平台非管理员账户登录时
                 if ($this->adminUser['parent_id'] == 1) {
                     $data['parent_id'] = $this->adminUser['parent_id'];
                 }
-            } else { // 供应商账户登录时
-                $data['parent_id'] = $this->adminUser['user_id']; // TODO：parent_id待处理
+            } else { // 分公司管理员登录时
+                $data['parent_id'] = $this->adminUser['id']; // TODO：parent_id待处理
             }
 
             $data['password'] = md5($data['password']); // 密码
@@ -105,21 +105,21 @@ class Admin extends Base
             // 启动事务
             Db::startTrans();
             try {
-                // 新增供应商账户
-                $res[0] = $userId = Db::name('company_user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+                // 新增管理员
+                $res[0] = $userId = Db::name('admin')->strict(false)->insertGetId($data); // 新增数据并返回主键值
 
-                // 绑定供应商账户角色
+                // 绑定管理员角色
                 $data1 = ['uid' => $userId, 'group_id' => $data['group_id']];
                 $res[1] = Db::name('auth_group_access')->insert($data1);
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                 if (in_array(0, $res)) {
-                    return show(config('code.error'), '供应商账户新增失败', '', 403);
+                    return show(config('code.error'), '新增失败', '', 403);
                 }
 
                 // 提交事务
                 Db::commit();
-                return show(config('code.success'), '供应商账户新增成功', '', 201);
+                return show(config('code.success'), '新增成功', '', 201);
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
@@ -189,7 +189,7 @@ class Admin extends Base
             $data['user_name'] = trim($param['user_name']);
 
             // 忽略唯一(unique)类型字段user_name对自身数据的唯一性验证
-            $_data = model('Admin')->where(['user_id' => ['neq', $id], 'user_name' => $data['user_name']])->find();
+            $_data = model('Admin')->where(['id' => ['neq', $id], 'user_name' => $data['user_name']])->find();
             if ($_data) {
                 return show(config('code.error'), '供应商账户名称已存在', '', 403);
             }
@@ -201,7 +201,7 @@ class Admin extends Base
             $data['account'] = trim($param['account']);
 
             // 忽略唯一(unique)类型字段account对自身数据的唯一性验证
-            $_data = model('Admin')->where(['user_id' => ['neq', $id], 'account' => $data['account']])->find();
+            $_data = model('Admin')->where(['id' => ['neq', $id], 'account' => $data['account']])->find();
             if ($_data) {
                 return show(config('code.error'), '供应商账户号已存在', '', 403);
             }
@@ -213,7 +213,7 @@ class Admin extends Base
             $data['phone'] = trim($param['phone']);
 
             // 忽略唯一(unique)类型字段phone对自身数据的唯一性验证
-            $_data = model('Admin')->where(['user_id' => ['neq', $id], 'phone' => $data['phone']])->find();
+            $_data = model('Admin')->where(['id' => ['neq', $id], 'phone' => $data['phone']])->find();
             if ($_data) {
                 return show(config('code.error'), '供应商账户电话号码已存在', '', 403);
             }
@@ -225,7 +225,7 @@ class Admin extends Base
             $data['status'] = input('param.status', null, 'intval');
 
             // 供应商账户已登录时，不能禁用
-            if ($this->adminUser['user_id'] == $id && $data['status'] == config('code.status_disable')) {
+            if ($this->adminUser['id'] == $id && $data['status'] == config('code.status_disable')) {
                 return show(config('code.error'), '供应商账户已登录，不能禁用', '', 403);
             }
         }
@@ -245,9 +245,9 @@ class Admin extends Base
         Db::startTrans();
         try {
             // 更新供应商账户
-            $res[0] = Db::name('company_user')->strict(false)->where(['user_id' => $id])->update($data);
+            $res[0] = Db::name('admin')->strict(false)->where(['id' => $id])->update($data);
             $res[0] = $res[0] === false ? 0 : true;
-            //$result = model('Admin')->allowField(true)->save($data, ['user_id' => $id]); // 更新
+            //$result = model('Admin')->allowField(true)->save($data, ['id' => $id]); // 更新
 
             // 查询供应商是否已经绑定角色，TODO：暂时只考虑“账户-角色”一对一关系
             $authGroupAccess = model('AuthGroupAccess')->where(['uid' => $id])->find();
@@ -297,7 +297,7 @@ class Admin extends Base
             }
 
             // 判断数据是否存在
-            if ($data['user_id'] != $id) {
+            if ($data['id'] != $id) {
                 return show(config('code.error'), '数据不存在', '', 404);
             }
 
@@ -317,7 +317,7 @@ class Admin extends Base
             Db::startTrans();
             try {
                 // 真删除指定供应商账户
-                $res[0] = Db::name('company_user')->where(['user_id' => $id])->delete();
+                $res[0] = Db::name('admin')->where(['id' => $id])->delete();
                 //$result = model('Admin')->destroy($id);
 
                 // 真删除指定供应商账户角色
