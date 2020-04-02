@@ -18,10 +18,10 @@
 		<view class="btn-row">
 			<button type="primary" style="background-color: #3F44F3;" @tap="bindLogin">登录</button>
 		</view>
-		<view class="action-row">
-			<navigator url="../reg/reg">注册账号</navigator>
+		<view class="action-row" style="margin-top: 10px;">
+			<navigator style="color: #000;" url="../reg/reg">注册账号</navigator>
 			<text>|</text>
-			<navigator url="../pwd/pwd">忘记密码</navigator>
+			<navigator style="color: #000;" url="../pwd/pwd">忘记密码</navigator>
 		</view>
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
@@ -123,7 +123,7 @@
 				 * 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				 */
 				uni.request({
-					url: this.$serverUrl + 'login',
+					url: this.$serverUrl + 'api/login',
 					data: {
 						phone: this.account,
 						password: this.password,
@@ -213,7 +213,7 @@
 				}
 			}
 		},
-		onReady() {console.log('sign:', common.sign())
+		onReady() {
 			this.initPosition();
 			this.initProvider();
 			// #ifdef MP-WEIXIN

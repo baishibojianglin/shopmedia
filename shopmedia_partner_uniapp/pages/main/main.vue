@@ -1,83 +1,75 @@
 <template>
 	<view class="content">
-		<view v-if="hasLogin" class="hello">
-			<view class="title">
-				您好 {{userInfo.user_name}}，您已成功登录。
-			</view>
-			<view class="ul">
-				<view>这是 uni-app 带登录模板的示例App首页。</view>
-				<view>在 “我的” 中点击 “退出” 可以 “注销当前账户”</view>
-			</view>
-		</view>
-		<view v-if="!hasLogin" class="hello">
-			<view class="title">
-				您好 游客。
-			</view>
-			<view class="ul">
-				<view>这是 uni-app 带登录模板的示例App首页。</view>
-				<view>在 “我的” 中点击 “登录” 可以 “登录您的账户”</view>
-			</view>
-		</view>
+        <u-row>
+            <u-col span="24" class="contain-map">
+				<map 
+					class="map"
+					:scale='10'
+					:latitude="latitude" 
+					:longitude="longitude" 
+					:markers='markers'
+					:enable-satellite="true"
+				>	
+				</map>
+			</u-col>
+        </u-row>         
 	</view>
 </template>
 
 <script>
-	import {
-		mapState
-	} from 'vuex'
+	import Vue from 'vue'
+	import Row from '@/components/dl-grid/row.vue'
+	import Col from '@/components/dl-grid/col.vue'	
+	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
+	Vue.component('u-col', Col);
 
 	export default {
-		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo']),
-		onLoad() {
-			if (!this.hasLogin) {
-				uni.showModal({
-					title: '未登录',
-					content: '您未登录，需要登录后才能继续',
-					/**
-					 * 如果需要强制登录，不显示取消按钮
-					 */
-					showCancel: !this.forcedLogin,
-					success: (res) => {
-						if (res.confirm) {
-							/**
-							 * 如果需要强制登录，使用reLaunch方式
-							 */
-							if (this.forcedLogin) {
-								uni.reLaunch({
-									url: '../login/login'
-								});
-							} else {
-								uni.navigateTo({
-									url: '../login/login'
-								});
-							}
-						}
+		data() {
+				return {
+						latitude:30.547441,
+						longitude: 104.061738,
+						markers:[],			
 					}
-				});
-			}
+		},
+		onLoad() {
+              this.getmarkers();
+		},
+		methods: {
+		   //获取广告屏位置
+           getmarkers(){
+			   let self=this;
+			   uni.request({
+			       url: this.$serverUrl+'getMarkers',
+			       success: (res) => {
+					    res.data.data.forEach((value,index)=>{
+							self.$set(self.markers,index,{
+								title:'广告屏：'+value.device_id,
+								longitude:value.longitude,
+								latitude:value.latitude
+								});
+						})
+						
+			       }
+			   });
+		   }
+
 		}
 	}
 </script>
 
 <style>
-	.hello {
-		display: flex;
-		flex: 1;
-		flex-direction: column;
+	.content{
+		margin: 0;
+		padding: 0;		
 	}
-
-	.title {
-		color: #8f8f94;
-		margin-top: 25px;
+	.contain-map{
+		margin: 0;
+		padding: 0;
 	}
-
-	.ul {
-		font-size: 15px;
-		color: #8f8f94;
-		margin-top: 25px;
-	}
-
-	.ul>view {
-		line-height: 25px;
+	.map{
+	   width: 100%;
+	   height: 250px;
+	   margin: 0;
+	   padding: 0;
 	}
 </style>

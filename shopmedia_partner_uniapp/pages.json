@@ -3,7 +3,8 @@
 		{
 			"path": "pages/main/main",
 			"style": {
-				"navigationBarTitleText": "登录模板"
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "店通广告屏分布"
 			}
 		}, 
 		{
