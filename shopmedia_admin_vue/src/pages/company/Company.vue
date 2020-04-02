@@ -21,14 +21,14 @@
 						<!-- 新增 e -->
 					</el-col>
 					<el-col :span="6" style="text-align: right;">
-<!-- 						<el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
- -->						<el-button size="mini" icon="el-icon-back" title="返回" @click="getCompanyList()" v-if="formInline.is_delete == 1">返回</el-button>
+						<!-- <el-button size="mini" icon="el-icon-delete" @click="getCompanyList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="getCompanyList()" v-if="formInline.is_delete == 1">返回</el-button> -->
 					</el-col>
 				</el-row>
 			</div>
 			<div class="">
 				<!-- 分公司列表 s -->
-				<el-table :data="companyList" empty-text="数据加载中..." border style="width: 100%">
+				<el-table :data="companyList" empty-text="数据加载中…" border style="width: 100%">
 					<el-table-column prop="company_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="company_name" label="分公司名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="province" label="省份" min-width="120"></el-table-column>
@@ -100,7 +100,7 @@
 						size: this.listPagination.per_page
 					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
@@ -221,7 +221,7 @@
 				}/* , {
 					// 请求头配置
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					}
 				} */)

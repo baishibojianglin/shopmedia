@@ -34,19 +34,7 @@
 									<router-link to="/home/device"><dd id='menu12' :class="activevalue[12]?activeclass:''"  @click="menuactive(12,1,2)">广告屏列表</dd></router-link>
 								</div>
 							</el-collapse-transition>
-						
 							
-							<dt @click="menush(4)">
-								<span class="el-icon-user-solid" id="menu4"> 系统管理员</span>
-								<span class="fr derection" :class="menuvalue[4]?derectionup:derectiondown"></span>
-							</dt>
-							<el-collapse-transition>
-								<div v-show="menuvalue[4]">
-									<router-link to="/home/auth_group"><dd id='menu41' :class="activevalue[41]?activeclass:''"  @click="menuactive(41,4,1)">角色</dd></router-link>
-									<router-link to="/home/auth_rule"><dd id='menu42' :class="activevalue[42]?activeclass:''"  @click="menuactive(42,4,2)">权限</dd></router-link>
-									<router-link to="/home/company_user"><dd id='menu43' :class="activevalue[43]?activeclass:''"  @click="menuactive(43,4,3)">管理员</dd></router-link>
-								</div>
-							</el-collapse-transition>
 							
 							<dt @click="menush(5)">
 								<span class="el-icon-user" id="menu5"> 用户管理</span>
@@ -62,6 +50,20 @@
 								</div>
 							</el-collapse-transition>
 
+
+							<dt @click="menush(4)">
+								<span class="el-icon-user-solid" id="menu4"> 系统管理员</span>
+								<span class="fr derection" :class="menuvalue[4]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[4]">
+									<router-link to="/home/auth_group"><dd id='menu41' :class="activevalue[41]?activeclass:''"  @click="menuactive(41,4,1)">角色</dd></router-link>
+									<router-link to="/home/auth_rule"><dd id='menu42' :class="activevalue[42]?activeclass:''"  @click="menuactive(42,4,2)">权限</dd></router-link>
+									<router-link to="/home/admin"><dd id='menu43' :class="activevalue[43]?activeclass:''"  @click="menuactive(43,4,3)">管理员</dd></router-link>
+								</div>
+							</el-collapse-transition>
+							
+							
 							<dt @click="menush(2)">
 								<span class="el-icon-s-tools" id="menu2"> 系统设置</span>
 								<span class="fr derection" :class="menuvalue[2]?derectionup:derectiondown"></span>
@@ -70,9 +72,7 @@
 								<div v-show="menuvalue[2]">
 									<router-link to="/home/region"><dd id='menu21' :class="activevalue[21]?activeclass:''" @click="menuactive(21,2,1)">区域管理</dd></router-link>
 								</div>
-							</el-collapse-transition>							
-							
-							
+							</el-collapse-transition>
 							
 						</dl>
 					</div>
@@ -80,18 +80,17 @@
 				
 				<el-col  :xs="18" :sm="19" :md="20" :lg="21" :xl="22">  <!--main s-->
 
-<!-- 					<el-col  :span='24' class="createtitle">
+					<!-- <el-col  :span='24' class="createtitle">
 						<span>{{menuonetitle}} </span>
 						<span class="el-icon-arrow-right"></span>
 						<span> {{menutwotitle}}</span>
 					</el-col> -->
-				
+					
 					<el-col  :span='24' class="createtitle">
 						<span>{{onetitle}} </span>
 						<span class="el-icon-arrow-right"></span>
 						<span> {{twotitle}}</span>
 					</el-col>
-					
 					
 					<el-col :span='24' class="homemain">
 						<router-view></router-view>
@@ -102,7 +101,6 @@
 		</el-row>
 	</div>
 </template>
-
 
 <script>
 	import wincontrol from '@/assets/js/wincontrol.js';

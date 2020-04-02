@@ -1,9 +1,9 @@
 <template>
-	<div class="company_user_add">
+	<div class="user_partner_create">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑供应商账户</span></el-col>
+					<el-col :span="6"><span>新增供应商账户</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -75,12 +75,15 @@
 		data() {
 			return {
 				form: {
-					/* user_name: '', // 供应商账户名称
+					company_id: '', // 供应商ID
+					user_name: '', // 供应商账户名称
 					avatar: '', // 供应商账户证件照
 					account: '', // 供应商账户号
+					password: '', // 密码
 					phone: '', // 电话号码
 					ratio: '', // 提成比例
-					status: '', // 状态 */
+					status: '', // 状态 
+					group_id: '', // 角色ID
 				},
 				rules: { // 验证规则
 					company_id: [
@@ -98,6 +101,7 @@
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
 					password: [
+						{ required: true, message: '请输入密码', trigger: 'blur' },
 						{ min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
 					],
 					phone: [
@@ -113,49 +117,16 @@
 			}
 		},
 		created() {
-			this.getParams();
-			this.getCompanyUser(); // 获取指定的供应商账户信息
 			this.getCompanyTree(); // 获取供应商列表树
 			this.getAuthGroupTree(); // 获取角色列表树
+			
+			// 供应商ID
+			this.form.company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
+			if (this.form.company_id != 0) {
+				this.companySelectDisabled = true;
+			}
 		},
 		methods: {
-			/**
-			 * 获取路由带过来的参数
-			 */
-			getParams() {
-				this.form.user_id = this.$route.query.user_id;
-			},
-			
-			/**
-			 * 获取指定的供应商账户信息
-			 */
-			getCompanyUser() {
-				let self = this;
-				this.$axios.get(this.$url + 'company_user/' + this.form.user_id, {
-					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
-				})
-				.then(function(res) {
-					if (res.data.status == 1) {
-						// 供应商账户信息
-						self.form = res.data.data;
-					} else {
-						self.$message({
-							message: '网络忙，请重试',
-							type: 'warning'
-						});
-					}
-				})
-				.catch(function (error) {
-					self.$message({
-						message: error.response.data.message,
-						type: 'warning'
-					});
-				});
-			},
-			
 			/**
 			 * 获取供应商列表树
 			 */
@@ -187,10 +158,10 @@
 				let self = this;
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					// 请求头配置
-					headers: {
+					/* headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -211,14 +182,14 @@
 			},
 			
 			/**
-			 * 编辑供应商账户提交表单
+			 * 新增供应商账户提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'company_user/' + this.form.user_id, {
+						this.$axios.post(this.$url + 'company_user', {
 							// 参数
 							company_id: this.form.company_id,
 							user_name: this.form.user_name,
@@ -231,10 +202,10 @@
 							group_id: this.form.group_id
 						}, {
 							// 请求头配置
-							headers: {
+							/* headers: {
 								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							} */
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

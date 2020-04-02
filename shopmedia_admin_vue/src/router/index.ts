@@ -2,11 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
-//设备管理
+// 设备管理
 import Device from '@/pages/device/Device.vue'
 import AddDevice from '@/pages/device/AddDevice.vue'
 import EditDevice from '@/pages/device/EditDevice.vue'
-//分公司管理
+// 分公司管理
 import Company from '@/pages/company/Company.vue'
 import CompanyCreate from '@/pages/company/CompanyCreate.vue'
 import CompanyEdit from '@/pages/company/CompanyEdit.vue'
@@ -19,7 +19,7 @@ import UserSalesmanCreate from '@/pages/user_salesman/UserSalesmanCreate.vue'
 import UserSalesmanEdit from '@/pages/user_salesman/UserSalesmanEdit.vue'
 // 用户（传媒设备合作者）管理
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
-import UserPartnerAdd from '@/pages/user_partner/UserPartnerAdd.vue'
+import UserPartnerCreate from '@/pages/user_partner/UserPartnerCreate.vue'
 import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
 import UserPartnerDevice from '@/pages/user_partner/UserPartnerDevice.vue'
 import UserPartnerDeviceEdit from '@/pages/user_partner/UserPartnerDeviceEdit.vue'
@@ -31,6 +31,19 @@ import Region from '@/pages/region/Region.vue'
 import RegionCity from '@/pages/region/RegionCity.vue'
 import RegionCounty from '@/pages/region/RegionCounty.vue'
 import RegionTown from '@/pages/region/RegionTown.vue'
+// 管理员管理·角色
+import AuthGroup from '@/pages/auth_group/AuthGroup.vue'
+import AuthGroupCreate from '@/pages/auth_group/AuthGroupCreate.vue'
+import AuthGroupEdit from '@/pages/auth_group/AuthGroupEdit.vue'
+import AuthGroupRule from '@/pages/auth_group/AuthGroupRule.vue'
+// 管理员管理·权限规则
+import AuthRule from '@/pages/auth_rule/AuthRule.vue'
+import AuthRuleCreate from '@/pages/auth_rule/AuthRuleCreate.vue'
+import AuthRuleEdit from '@/pages/auth_rule/AuthRuleEdit.vue'
+// 管理员管理·管理员
+import Admin from '@/pages/admin/Admin.vue'
+import AdminCreate from '@/pages/admin/AdminCreate.vue'
+import AdminEdit from '@/pages/admin/AdminEdit.vue'
 
 
 Vue.use(VueRouter)
@@ -66,7 +79,7 @@ const routes = [
 			{path: 'user_salesman_edit', name: 'user_salesman_edit', component: UserSalesmanEdit}, // 编辑用户
 			// 2--用户（传媒设备合作者）管理
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
-			{path: 'user_partner_add', name: 'user_partner_add', component: UserPartnerAdd}, // 新增用户
+			{path: 'user_partner_create', name: 'user_partner_create', component: UserPartnerCreate}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
 			{path: 'user_partner_device', name: 'user_partner_device', component: UserPartnerDevice}, // 用户拥有的设备
 			{path: 'user_partner_device_edit', name: 'user_partner_device_edit', component: UserPartnerDeviceEdit}, // 编辑用户拥有的设备
@@ -78,6 +91,20 @@ const routes = [
 			{path: 'regioncity', name: 'regioncity', component: RegionCity}, // 市级区域
 			{path: 'regioncounty', name: 'regioncounty', component: RegionCounty}, // 区县级区域
 			{path: 'regiontown', name: 'regiontown', component: RegionTown}, // 乡镇街道级区域
+			// 2--管理员管理
+			// 角色
+			{path: 'auth_group', name: 'auth_group', component: AuthGroup}, // 角色管理
+			{path: 'auth_group_create', name: 'auth_group_create', component: AuthGroupCreate}, // 新增角色
+			{path: 'auth_group_edit', name: 'auth_group_edit', component: AuthGroupEdit}, // 编辑角色
+			{path: 'auth_group_rule', name: 'auth_group_rule', component: AuthGroupRule}, // 角色权限规则配置
+			// 权限规则
+			{path: 'auth_rule', name: 'auth_rule', component: AuthRule}, // 权限规则
+			{path: 'auth_rule_create', name: 'auth_rule_create', component: AuthRuleCreate}, // 新增权限规则
+			{path: 'auth_rule_edit', name: 'auth_rule_edit', component: AuthRuleEdit}, // 编辑权限规则
+			// 管理员
+			{path: 'admin', name: 'admin', component: Admin}, // 管理员列表
+			{path: 'admin_create', name: 'admin_create', component: AdminCreate}, // 新增管理员
+			{path: 'admin_edit', name: 'admin_edit', component: AdminEdit}, // 编辑管理员
 		]
 	}
 ]

@@ -96,7 +96,7 @@
 				let self = this;
 				this.$axios.get(this.$url + 'user_shop/' + this.form.user_id, {
 					/* headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
@@ -135,13 +135,13 @@
 							comm_ratio: this.form.comm_ratio,
 							parent_comm_ratio: this.form.parent_comm_ratio,
 							status: this.form.status
-						}/* , {
+						}, {
 							// 请求头配置
-							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+							/* headers: {
+								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
-						} */)
+							} */
+						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';
 							self.$message({

@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\lib\Aes;
 use app\common\lib\exception\ApiException;
+use app\common\model\Admin;
 use think\Controller;
 use think\Request;
 
@@ -15,7 +16,7 @@ use think\Request;
 class Base extends Common
 {
     /**
-     * 登录账户的基本信息
+     * 登录管理用户的基本信息
      * @var array
      */
     public $adminUser = [];
@@ -28,7 +29,7 @@ class Base extends Common
         parent::_initialize();
 
         // 判断是否登录
-        if (($this->isLogin())) {
+        if (!($this->isLogin())) {
             throw new ApiException('未登录', 401);
             //return show(config('code.error'), '未登录', '', 401);
         }
@@ -47,26 +48,23 @@ class Base extends Common
 
         // 判断 token 合法性
         $aes = new Aes();
-        $companyToken = $aes->adminDecrypt($this->headers['admin-user-token']); // AES解密
-        if (empty($companyToken)) {
+        $adminUserToken = $aes->adminDecrypt($this->headers['admin-user-token']); // AES解密
+        if (empty($adminUserToken)) {
             return false;
         }
 
-        // 查询账户是否存在或启用
-        $adminUser = model('CompanyUser')->loginstatus($companyToken);
-        if(!$adminUser || $adminUser['status'] != config('code.status_enable')){
+        // 查询管理用户是否存在或启用
+        $adminUser = Admin::get(['token' => $adminUserToken]);
+        if (!$adminUser || $adminUser['status'] != config('code.status_enable')) {
             return false;
         }
 
         // 验证 token 过期时间
-        $time = time();
-        if($time - $adminUser['token_time'] > 3600*24){
+        if(time() > $adminUser['token_time']){
             return false;
         }
 
-        // 验证通过，重置过期时间
-        model('CompanyUser')->setlogintime($companyToken);
-        // 赋值登录账户的基本信息
+        // 赋值登录管理用户的基本信息
         $this->adminUser = $adminUser;
         return true;
     }

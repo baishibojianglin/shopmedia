@@ -17,14 +17,14 @@
 					</el-col>
 					<el-col :span="12">
 						<!-- 新增 s -->
-						<router-link to="auth_rule_add"><el-button size="mini" icon="el-icon-plus">新增权限规则</el-button></router-link>
+						<router-link to="auth_rule_create"><el-button size="mini" icon="el-icon-plus">新增权限规则</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
 			</div>
 			<div class="">
 				<!-- 权限规则列表 s -->
-				<el-table :data="authRuleList" height="500" border style="width: 100%">
+				<el-table :data="authRuleList" max-height="500" border empty-text="数据加载中…" style="width: 100%">
 					<el-table-column prop="id" type="" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="title" label="权限规则名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="name" label="权限规则" min-width="180"></el-table-column>
@@ -36,7 +36,8 @@
 					</el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<el-tag :type="scope.row.status === 1 ? 'success' : 'info'" size="mini">{{scope.row.status_msg}}</el-tag>
+							<!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'info'" size="mini">{{scope.row.status_msg}}</el-tag> -->
+							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="sort" label="同级排序" width="90"></el-table-column>
@@ -93,11 +94,11 @@
 						title: this.formInline.title,
 						// page: this.listPagination.current_page,
 						// size: this.listPagination.per_page
-					},
+					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {

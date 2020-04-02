@@ -12,25 +12,51 @@ use think\Model;
 class Admin extends Base
 {
     /**
-     * 表前缀
+     * 获取管理员列表数据（基于paginate()自动化分页）
+     * @param array $map
+     * @param int $size
+     * @return \think\Paginator
      */
-    protected $connection = ['prefix' => 'goodsmedia_'];
-
-    /**
-     * 存入token到管理员表
-     * @param $id
-     * @param $token
-     * @return false|int
-     */
-    public function savetoken($id, $token)
+    public function getAdmin($map = [], $size = 5)
     {
-        $map['id'] = $id;
-        $data['token'] = $token;
-        $data['login_time'] = time(); // 登录时间
-        $data['login_ip'] = request()->ip(); // 登录IP
-        $list = $this->save($data, $map);
-        return $list;
+        if(!isset($map['a.is_delete'])) {
+            $map['a.is_delete'] = ['neq', config('code.is_delete')];
+        }
+
+        $order = ['a.id' => 'asc'];
+
+        $result = $this->alias('a')
+            ->field($this->_getListField())
+            ->join('__ADMIN__ pa', 'a.parent_id = pa.id', 'LEFT') // 上级
+            ->join('__COMPANY__ c', 'a.company_id = c.company_id', 'LEFT') // 分公司
+            ->join('__AUTH_GROUP_ACCESS__ aga', 'a.id = aga.uid', 'LEFT') // 用户组明细
+            ->join('__AUTH_GROUP__ ag', 'aga.group_id = ag.id', 'LEFT') // Auth用户组
+            ->where($map)
+            ->order($order)
+            ->cache(true, 10)
+            ->paginate($size);
+        return $result;
     }
 
-
+    /**
+     * 通用化获取参数的数据字段
+     * @return array
+     */
+    private function _getListField()
+    {
+        return [
+            'a.id',
+            'a.account',
+            'a.parent_id',
+            'a.company_id',
+            'a.create_time',
+            'a.create_ip',
+            'a.login_time',
+            'a.login_ip',
+            'a.status',
+            'pa.account parent_account',
+            'c.company_name',
+            'ag.title auth_group_title'
+        ];
+    }
 }

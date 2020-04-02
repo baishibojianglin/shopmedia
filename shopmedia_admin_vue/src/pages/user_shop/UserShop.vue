@@ -24,7 +24,7 @@
 			</div>
 			<div class="">
 				<!-- 用户列表 s -->
-				<el-table :data="userList" border style="width: 100%">
+				<el-table :data="userList" border empty-text="数据加载中…" style="width: 100%">
 					<el-table-column prop="user_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="avatar" label="头像" width="90">
@@ -98,7 +98,7 @@
 						size: this.listPagination.per_page
 					}/* ,
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})

@@ -24,7 +24,7 @@
 			</div>
 			<div class="">
 				<!-- 传媒设备列表 s -->
-				<el-table :data="deviceList" empty-text=" " border style="width: 100%">
+				<el-table :data="deviceList" empty-text="数据加载中…" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="70"></el-table-column>
 					<el-table-column prop="brand" label="品牌" min-width="120"></el-table-column>
 					<el-table-column prop="model" label="型号" width="120"></el-table-column>
