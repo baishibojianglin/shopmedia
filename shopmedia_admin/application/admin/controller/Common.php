@@ -13,8 +13,19 @@ if (is_file(__DIR__ . '/../autoload.php')) {
 if (is_file(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 }
+
+//对象存储
 use OSS\OssClient;
 use OSS\Core\OssException;
+
+//短信
+use AlibabaCloud\Client\AlibabaCloud;
+use AlibabaCloud\Client\Exception\ClientException;
+use AlibabaCloud\Client\Exception\ServerException;
+
+
+
+
 
 
 /**
@@ -55,6 +66,57 @@ class Common extends Controller
     {
         $this->checkRequestAuth(); // TODO：生产环境必须检查数据的合法性
     }
+
+
+
+    /**
+     * 短信接口
+     */
+
+    public function sendmsg(){
+
+        $value = input();
+        /*设置短信验证码*/
+        $informationcode=session('informationcode');
+        if(empty($informationcode)){
+            $informationcode=mt_rand(1000,9999);
+            session('informationcode',$informationcode);  
+        }else{
+            session('informationcode',null);
+            $informationcode=mt_rand(1000,9999);
+            session('informationcode',$informationcode);  
+        }
+        AlibabaCloud::accessKeyClient('LTAI4Fu2RQ1sZsL55xAgNZhs', 'srZezsN1ZQ1WkP8DFsH6gs09JBXL74')->regionId('cn-hangzhou')->asDefaultClient();
+        try {
+            $result = AlibabaCloud::rpc()
+                                  ->product('Dysmsapi')
+                                  // ->scheme('https') // https | http
+                                  ->version('2017-05-25')
+                                  ->action('SendSms')
+                                  ->method('POST')
+                                  ->host('dysmsapi.aliyuncs.com')
+                                  ->options([
+                                                'query' => [
+                                                  'RegionId' => "cn-hangzhou",
+                                                  'PhoneNumbers' => $value['phone'],
+                                                  'SignName' => "商市通",
+                                                  'TemplateCode' => "SMS_186870504",
+                                                  'TemplateParam' => "{\"code\":\"".$informationcode."\"}",
+                                                ],
+                                            ])
+                                  ->request();
+            //print_r($result->toArray());
+            //return json($informationcode);
+        } catch (ClientException $e) {
+            echo $e->getErrorMessage() . PHP_EOL;
+        } catch (ServerException $e) {
+            echo $e->getErrorMessage() . PHP_EOL;
+        }
+
+    }
+
+
+
 
     /**
      * 检查每次app请求的数据是否合法

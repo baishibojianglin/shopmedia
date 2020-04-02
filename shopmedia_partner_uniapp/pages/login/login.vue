@@ -1,5 +1,10 @@
 <template>
 	<view class="content">
+		<u-row style="margin-bottom: 20px;">
+		    <u-col span="24" class="contain-logo">
+				<image class="logo" mode="aspectFit" :src="logourl"></image>
+			</u-col>
+		</u-row>
 		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">手机号</text>
@@ -11,7 +16,7 @@
 			</view>
 		</view>
 		<view class="btn-row">
-			<button type="primary" class="primary" @tap="bindLogin">登录</button>
+			<button type="primary" style="background-color: #3F44F3;" @tap="bindLogin">登录</button>
 		</view>
 		<view class="action-row">
 			<navigator url="../reg/reg">注册账号</navigator>
@@ -30,6 +35,12 @@
 </template>
 
 <script>
+	import Vue from 'vue'
+	import Row from '@/components/dl-grid/row.vue'
+	import Col from '@/components/dl-grid/col.vue'
+	import uniPopup from "@/components/uni-popup/uni-popup.vue"	
+	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
+	Vue.component('u-col', Col);
 	import {mapState, mapMutations} from 'vuex';
 	import common from '@/common/common.js';
 	import mInput from '../../components/m-input.vue';
@@ -44,6 +55,7 @@
 				password: 'abc123',
 				positionTop: 0,
 				isDevtools: false,
+				logourl:'/static/img/logo.png',
 			}
 		},
 		computed: mapState(['forcedLogin']),
@@ -212,6 +224,17 @@
 </script>
 
 <style>
+	.contain-logo{
+		margin-top: 30px;
+		text-align: center;
+	}
+	 .logo{
+		height: 130px;
+	 }
+	 .logo-text{
+		 font-size: 20px;
+		 font-weight: bold;
+	 }
 	.action-row {
 		display: flex;
 		flex-direction: row;

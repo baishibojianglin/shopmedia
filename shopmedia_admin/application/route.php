@@ -6,7 +6,10 @@ use think\Route;
 Route::POST('login','admin/Login/login');
 //登录验证码
 Route::GET('code','admin/Login/createverifycode');
-// 分公司
+//注册
+Route::POST('sendmsg','admin/Common/sendmsg'); //调用短信接口
+Route::POST('regist','api/Login/regist'); //注册用户
+//分公司
 Route::resource('company', 'admin/company');
 Route::POST('createCompany','admin/Company/createCompany'); // 创建分公司
 Route::POST('getCompany','admin/Company/getCompany'); //获取分公司基本信息
@@ -28,6 +31,10 @@ Route::resource('user_partner', 'admin/UserPartner');
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
+
+
+
+
 
 
 

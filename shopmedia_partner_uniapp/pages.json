@@ -5,23 +5,36 @@
 			"style": {
 				"navigationBarTitleText": "登录模板"
 			}
-		}, {
+		}, 
+		{
 			"path": "pages/login/login",
 			"style": {
-				"navigationBarTitleText": "登录"
+				"app-plus": {"titleNView": false}
+				//"navigationBarTitleText": "登录"
 			}
-		}, {
+		}, 
+		{   //注册
 			"path": "pages/reg/reg",
 			"style": {
 				"app-plus": {"titleNView": false},
 				"backgroundColor":"#fff"
 			}
-		}, {
+		}, 
+		{   //用户协议
+			"path": "pages/reg/book",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"backgroundColor":"#fff",
+				"navigationBarTitleText": "用户协议"
+			}
+		},
+		{
 			"path": "pages/pwd/pwd",
 			"style": {
 				"navigationBarTitleText": "找回密码"
 			}
-		}, {
+		},
+		{
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的"
@@ -46,7 +59,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarBackgroundColor": "#3F45F2",
+		"navigationBarBackgroundColor": "#3F44F3",
 		"backgroundColor": "#fff"
 	}
 }
