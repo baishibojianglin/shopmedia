@@ -1,5 +1,9 @@
 <script>
+	import uniPopup from "@/components/uni-popup/uni-popup.vue"	
 	export default {
+		components: {
+		      uniPopup
+		},
 		// 全局变量
 		globalData: {
 			systemInfo: '', // 设备系统信息

@@ -6,6 +6,12 @@ use think\Route;
 Route::POST('login','admin/Login/login');
 // 登录验证码
 Route::GET('code','admin/Login/createverifycode');
+
+//注册
+Route::POST('sendmsg','admin/Common/sendmsg'); //调用短信接口
+Route::POST('regist','api/Login/regist'); //注册用户
+//分公司
+
 // Auth用户组
 Route::resource('auth_group', 'admin/auth_group');
 Route::get('auth_group_tree', 'admin/auth_group/authGroupTree'); // Auth用户组列表树
@@ -39,7 +45,6 @@ Route::resource('user_partner', 'admin/UserPartner');
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
-
 
 //上传图片
 Route::POST('upload','admin/Common/uploadimg');
