@@ -158,11 +158,16 @@
 					   password:this.password,
 					   verifycode:this.verifycode
 					},
+					header: getApp().globalData.commonHeaders,
 					method: 'POST',
 					success:function(res){
-				
+						console.log(res)
+					},
+					fail:function(error){
+						console.log(error)
+						// console.log('fail' + JSON.stringify(error));
 					}
-				})	
+				})
 			}
 	    }
 	}

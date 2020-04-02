@@ -107,9 +107,9 @@ class Login extends Common
         if (request()->isPost()) {
             // 传入的参数
             $param = input('param.');
+            return show(config('code.success'), 'OK', 123);
             // 实例化Aes
             $aesObj = new Aes();
-
 
             // 判断传入的参数是否存在及合法性
             // 手机号码
