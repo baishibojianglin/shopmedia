@@ -54,7 +54,7 @@ class AuthGroup extends Base
     }
 
     /**
-     * 获取Auth用户组列表树
+     * 获取Auth用户组列表树（以Auth用户组所属分公司ID 作 Select 选择器分组）
      * @return \think\response\Json
      */
     public function authGroupTree()
@@ -62,38 +62,54 @@ class AuthGroup extends Base
         // 传入的参数
         $param = input('param.');
 
-        // 查询条件
-        $map = [];
-        $map['status'] = config('code.status_enable'); // 启用状态
-        // Auth用户组ID集合
-        if ($this->adminUser['company_id'] != config('admin.platform_company_id')) {
-            $authGroupIds = model('AuthGroup')->getAuthGroupIdsByUserId($this->adminUser['id']);
-            if (isset($param['parent_id'])) { // Auth用户组上级ID
-                $param['parent_id'] = intval($param['parent_id']);
-                $authGroupIds[] = $param['parent_id'];
-                $authGroupIds = array_unique($authGroupIds);
-            }
-            $map['id'] = ['in', $authGroupIds];
-        }
+        // 1.获取Auth用户组所属分公司ID集合
+        $map1 = []; // 查询条件
+        $map1['status'] = config('code.status_enable'); // 启用状态
+        $authGroupCompanyIds = model('AuthGroup')->where($map1)->column('company_id');
+        $authGroupCompanyIds = array_keys(array_flip($authGroupCompanyIds)); // 数组去重
+
+        // 2.通过Auth用户组所属分公司ID集合获取分公司列表
+        $map2 = [];
+        $map2['company_id'] = ['in', $authGroupCompanyIds];
         if (isset($param['company_id'])) { // 所属分公司ID
-            $map['company_id'] = intval($param['company_id']);
+            $map2['company_id'] = intval($param['company_id']);
         }
+        $companyList = model('Company')->field('company_id, company_name')->where($map2)->select();
 
-        // 获取商品类别列表树，用于页面下拉框列表
-        try {
-            $data = model('AuthGroup')->field('id, title, type')->where($map)->select(); // TODO：待处理，暂时这样写
-        } catch (\Exception $e) {
-            return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
-        }
-
-        if ($data) {
+        // 3.通过指定的分公司ID获取Auth用户组列表，并组装API接口数据$data
+        $map3 = [];
+        $map3['status'] = config('code.status_enable'); // 启用状态
+        $data = []; // 定义API接口数据
+        // 当Auth用户组属于分公司时
+        if ($companyList && $authGroupCompanyIds) {
             // 处理数据
-            foreach ($data as $key => $value) {
-                //$data[$key]['title'] = $value['title'] . '（' . ($value['type'] == 0 ? '私有角色' : '通用角色') . '）';
-                /*if ($value['level'] != 0) {
-                    // level 用于定义 title 前面的空位符的长度
-                    $data[$key]['title'] = '└' . str_repeat('─', $value['level'] * 1). ' ' . $value['title']; // str_repeat(string,repeat) 函数把字符串重复指定的次数
-                }*/
+            foreach ($companyList as $key => $value) {
+                foreach ($authGroupCompanyIds as $k => $v) {
+                    if ($value['company_id'] == $v) {
+                        // 定义 Select 选择器的分组名 label
+                        $data[$key]['label'] = $value['company_name'];
+
+                        // 通过指定的分公司ID获取Auth用户组列表
+                        $map3['company_id'] = $value['company_id'];
+                        $authGroupList = model('AuthGroup')->field('id, title, company_id')->where($map3)->select();
+                        // 定义 Select 选择器 options
+                        $data[$key]['options'] = $authGroupList;
+                    }
+                }
+            }
+        }
+        // 当Auth用户组属于总平台且总平台管理员登录时
+        if (isset($param['company_id']) && $param['company_id'] == config('admin.platform_company_id')) {
+            if (in_array(config('admin.platform_company_id'), $authGroupCompanyIds) && $this->adminUser['company_id'] == config('admin.platform_company_id')) {
+                // 通过指定的分公司ID获取Auth用户组列表
+                $map3['company_id'] = config('admin.platform_company_id');
+                $authGroupList = model('AuthGroup')->field('id, title, company_id')->where($map3)->select();
+
+                // 向数组 $data 头部追加总平台的 Select 选择器分组属性 label、options 值
+                array_unshift($data, [
+                    'label' => '公司总平台', // 定义 Select 选择器的分组名 label
+                    'options' => $authGroupList // 定义 Select 选择器 options
+                ]);
             }
         }
 
@@ -152,7 +168,8 @@ class AuthGroup extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-                $data = model('AuthGroup')->find($id);
+//                $data = model('AuthGroup')->alias('ag')->field('ag.*, c.company_name')->join('__COMPANY__ c', 'ag.company_id = c.company_id', 'LEFT')->find($id);
+                $data = model('AuthGroup')->alias('ag')->field('ag.*')->find($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -162,6 +179,10 @@ class AuthGroup extends Base
                 // 定义status_msg
                 $status = config('code.status');
                 $data['status_msg'] = $status[$data['status']];
+
+                /*if ($data['company_id'] == config('admin.platform_company_id')) {
+                    $data[''];
+                }*/
 
                 return show(config('code.success'), 'ok', $data);
             }
@@ -202,9 +223,6 @@ class AuthGroup extends Base
         }
         if (isset($param['parent_id'])) { // 上级ID
             $data['parent_id'] = input('param.parent_id', null, 'intval');
-        }
-        if (isset($param['type'])) { // 角色类型
-            $data['type'] = input('param.type', null, 'intval');
         }
         if (isset($param['auth_rules'])) { // 授权配置下级权限
             $data['auth_rules'] = input('param.auth_rules', null, 'intval');

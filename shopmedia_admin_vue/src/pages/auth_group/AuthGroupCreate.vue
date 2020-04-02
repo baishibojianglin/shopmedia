@@ -12,24 +12,32 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item label="上级" prop="parent_id">
+					<el-form-item label="所属分公司" prop="company_id">
+						<el-select v-model="form.company_id" placeholder="请选择…" filterable @change="getAuthGroupTree"><!-- :disabled="companySelectDisabled" -->
+							<el-option-group v-for="group in companyOptions" :key="group.label" :label="group.label">
+								<el-option
+									v-for="item in group.options"
+									:key="item.company_id"
+									:label="item.company_name"
+									:value="item.company_id">
+								</el-option>
+							</el-option-group>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="上级角色" prop="parent_id">
 						<el-select v-model="form.parent_id" placeholder="请选择…" filterable>
-							<el-option
-								v-for="item in authGroupOptions"
-								:key="item.id"
-								:label="item.title"
-								:value="item.id">
-							</el-option>
+							<el-option-group v-for="group in authGroupOptions" :key="group.label" :label="group.label">
+								<el-option
+									v-for="item in group.options"
+									:key="item.id"
+									:label="item.title"
+									:value="item.id">
+								</el-option>
+							</el-option-group>
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="title" label="角色名称">
 						<el-input v-model="form.title" placeholder="输入角色名称" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="type" label="角色类型">
-						<el-radio-group v-model="form.type">
-							<el-radio :label="0">私有角色</el-radio>
-							<el-radio :label="1">通用角色</el-radio>
-						</el-radio-group>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">
@@ -59,10 +67,13 @@
 					title: '', // 角色名称
 					status: '', // 状态
 					parent_id: '', // 上级ID
-					type: 0, // 角色类型
+					company_id: '', // 分公司ID
 					auth_rules: 0 // 授权配置下级权限
 				},
 				rules: { // 验证规则
+					company_id: [
+						{ required: true, message: '请选择平台或分公司', trigger: 'change' }
+					],
 					parent_id: [
 						{ required: true, message: '请选择上级', trigger: 'change' }
 					],
@@ -72,24 +83,66 @@
 					]
 					
 				},
+				
+				companyOptions: [], // 分公司下拉框列表
+				companySelectDisabled: false, // 分公司下拉框禁用状态
 				authGroupOptions: [], // 上级角色下拉框列表
 			}
 		},
 		created() {
-			this.getAuthGroupTree(); // 获取角色列表树
+			this.getCompanyTree(); // 获取分公司列表树
+			// this.getAuthGroupTree(); // 获取角色列表树
+			
+			// 分公司ID
+			let company_id = JSON.parse(localStorage.getItem('admin_user')).company_id;
+			if (company_id != 0) {
+				this.companySelectDisabled = true;
+			}
 		},
 		methods: {
 			/**
-			 * 获取角色列表树
+			 * 获取分公司列表树
 			 */
-			getAuthGroupTree() {
+			getCompanyTree() {
 				let self = this;
-				this.$axios.get(this.$url + 'auth_group_tree', {
-					// 请求头配置
-					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+				this.$axios.get(this.$url + 'company_tree')
+				.then(function(res) {
+					if (res.data.status == 1) {
+						self.companyOptions = [
+							{label: '平台', options: [{company_id: 0, company_name: '公司总平台'}]},
+							{label: '分公司', options: res.data.data},
+						];
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
 					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
+			/**
+			 * 获取角色列表树
+			 * @param {Object} company_id
+			 */
+			getAuthGroupTree(company_id) {
+				let self = this;
+				self.form.parent_id=''; // 清楚上次选择的上级角色数据
+				this.$axios.get(this.$url + 'auth_group_tree', {
+					params: {
+						company_id: company_id
+					}
+					// 请求头配置
+					/* headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+					} */
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -122,14 +175,14 @@
 							title: this.form.title,
 							status: this.form.status,
 							parent_id: this.form.parent_id,
-							type: this.form.type,
+							company_id: this.form.company_id,
 							auth_rules: this.form.auth_rules,
 						}, {
 							// 请求头配置
-							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+							/* headers: {
+								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							} */
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

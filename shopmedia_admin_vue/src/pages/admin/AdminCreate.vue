@@ -156,9 +156,9 @@
 			
 			/**
 			 * 获取角色列表树
+			 * @param {Object} company_id
 			 */
 			getAuthGroupTree(company_id) {
-				console.log('company_id', company_id)
 				let self = this;
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					params: {

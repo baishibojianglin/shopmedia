@@ -12,24 +12,21 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item label="上级" prop="parent_id" v-if="form.id == 1 ? false : true"><!-- 供应商总管理员不更新parent_id、type、status、auth_rules字段 -->
+					<el-form-item label="上级角色" prop="parent_id" v-if="form.id == 1 ? false : true"><!-- 供应商总管理员不更新parent_id、status、auth_rules字段 -->
 						<el-select v-model="form.parent_id" placeholder="请选择…" filterable>
-							<el-option
-								v-for="item in authGroupOptions"
-								:key="item.id"
-								:label="item.title"
-								:value="item.id">
-							</el-option>
+							<el-option-group v-for="group in authGroupOptions" :key="group.label" :label="group.label">
+								<el-option
+									v-for="item in group.options"
+									:key="item.id"
+									:label="item.title"
+									:value="item.id"
+									:disabled="item.id == form.id ? true : false">
+								</el-option>
+							</el-option-group>
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="title" label="角色名称">
 						<el-input v-model="form.title" placeholder="输入角色名称" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="type" label="角色类型">
-						<el-radio-group v-model="form.type" :disabled="form.id == 1 ? true : false">
-							<el-radio :label="0">私有角色</el-radio>
-							<el-radio :label="1">通用角色</el-radio>
-						</el-radio-group>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status" :disabled="form.id == 1 ? true : false">
@@ -60,7 +57,7 @@
 					title: '', // 角色名称
 					status: '', // 状态
 					parent_id: '', // 上级ID
-					type: '', // 角色类型
+					company_id: '', // 分公司ID
 					auth_rules: '' // 授权配置下级权限
 				},
 				rules: { // 验证规则
@@ -86,9 +83,6 @@
 			 */
 			getParams() {
 				this.form.id = this.$route.query.id;
-				this.form.title = this.$route.query.title;
-				this.form.status = this.$route.query.status;
-				this.form.parent_id = this.$route.query.parent_id;
 			},
 			
 			/**
@@ -97,12 +91,12 @@
 			getAuthGroup() {
 				let self = this;
 				this.$axios.get(this.$url + 'auth_group/' + this.form.id, {
-					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+					/* headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
-				.then(function(res) {
+				.then(function(res) {console.log('role', res)
 					if (res.data.status == 1) {
 						// 角色信息
 						self.form = res.data.data;
@@ -126,18 +120,20 @@
 			 */
 			getAuthGroupTree() {
 				let self = this;
+				console.log('pid', this.form.parent_id)
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					params: {
 						parent_id: this.form.parent_id,
-					},
+						company_id: this.form.company_id
+					}/* ,
 					// 请求头配置
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					}
+					} */
 				})
 				.then(function(res) {
-					if (res.data.status == 1) {
+					if (res.data.status == 1) {console.log('pidd', self.form.parent_id)
 						self.authGroupOptions = res.data.data;
 					} else {
 						self.$message({
@@ -167,14 +163,13 @@
 							title: this.form.title,
 							status: this.form.status,
 							parent_id: this.form.parent_id,
-							type: this.form.type,
 							auth_rules: this.form.auth_rules,
 						}, {
 							// 请求头配置
-							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+							/* headers: {
+								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							} */
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

@@ -4,20 +4,23 @@
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
 					<el-col :span="6"><span>角色管理</span></el-col>
-					<el-col :span="6">
+					<el-col :span="12">
 						<!-- 查询 s -->
-						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
+						<el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询角色" v-model="formInline.title" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getAuthGroupList()"></el-button>
+								<el-input placeholder="角色名称" v-model="formInline.title" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getAuthGroupList()">查询</el-button>
+									<el-button slot="append" icon="el-icon-refresh-left" @click="resetForm('formInline')">重置</el-button>
+									<el-button icon="el-icon-refresh-left" @click="resetForm('formInline')">重置</el-button>
 								</el-input>
+								
 							</el-form-item>
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="6">
 						<!-- 新增 s -->
-						<router-link to="auth_group_create"><el-button size="mini" icon="el-icon-plus">新增角色</el-button></router-link>
+						<router-link to="auth_group_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增角色</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
@@ -29,12 +32,17 @@
 					<el-table-column prop="title" label="角色名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="parent_id" type="" label="上级序号" width="90">
 						<template slot-scope="scope">
-							{{scope.row.parent_id == 0 ? '（无）' : scope.row.parent_id}}
+							{{scope.row.parent_id == 0 ? '-' : scope.row.parent_id}}
 						</template>
 					</el-table-column>
 					<el-table-column prop="parent_title" label="上级角色" width="180">
 						<template slot-scope="scope">
-							{{scope.row.parent_id == 0 ? '（无）' : scope.row.parent_title}}
+							{{scope.row.parent_id == 0 ? '-' : scope.row.parent_title}}
+						</template>
+					</el-table-column>
+					<el-table-column prop="company_name" label="所属分公司" width="180">
+						<template slot-scope="scope">
+							{{scope.row.company_id == 0 ? '-' : scope.row.company_name}}
 						</template>
 					</el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
@@ -42,9 +50,6 @@
 							<!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'info'" size="mini">{{scope.row.status_msg}}</el-tag> -->
 							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
 						</template>
-					</el-table-column>
-					<el-table-column prop="type" label="角色类型" width="90">
-						<template slot-scope="scope">{{scope.row.type == 0 ? "私有角色" : "通用角色"}}</template>
 					</el-table-column>
 					<el-table-column prop="auth_rules" label="授权配置下级权限" width="150">
 						<template slot-scope="scope">
@@ -167,6 +172,16 @@
 			 */
 			filterStatus(value, row) {
 				return row.status === value;
+			},
+			
+			/**
+			 * 重置表单
+			 * @param {Object} formName
+			 */
+			resetForm(formName) {
+				// this.$refs[formName].resetFields();
+				this.formInline = {};
+				this.getAuthGroupList();
 			},
 			
 			/**
