@@ -151,7 +151,7 @@
 				}
 				//提交后台
 				uni.request({
-					url: this.$serverUrl +'regist',
+					url: this.$serverUrl +'api/register',
 					data: {
 					   please:this.please,
 					   phone:this.phone,
