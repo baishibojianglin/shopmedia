@@ -10,7 +10,7 @@
 			systemInfo: '', // 设备系统信息
 			version: 1, // 应用大版本号
 			did: '12345dg', // 设备号
-			commonHeaders: '' // 公用请求头
+			commonHeaders: {} // 公用请求头
 		},
 		
 		onLaunch: function() {		
@@ -24,11 +24,12 @@
 			
 			// 公用请求头配置
 			this.globalData.commonHeaders = {
+				'content-type': "application/json; charset=utf-8",
 				'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
 				'version': getApp().globalData.version, // 应用大版本号
 				'model': getApp().globalData.systemInfo.model, // 手机型号
 				'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-				'did': getApp().globalData.did, // 设备号
+				'did': getApp().globalData.did // 设备号
 			}
 		},
 		onShow: function() {

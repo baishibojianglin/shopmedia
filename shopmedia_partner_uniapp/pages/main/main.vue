@@ -40,6 +40,7 @@
 			   let self=this;
 			   uni.request({
 			       url: this.$serverUrl+'getMarkers',
+				   header: getApp().globalData.commonHeaders,
 			       success: (res) => {
 					    res.data.data.forEach((value,index)=>{
 							self.$set(self.markers,index,{

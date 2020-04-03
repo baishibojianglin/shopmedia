@@ -7,6 +7,7 @@ use app\common\lib\exception\ApiException;
 use app\common\lib\IAuth;
 use app\common\model\User;
 use think\Controller;
+use think\Db;
 
 /**
  * api模块客户端登录控制器类
@@ -107,84 +108,147 @@ class Login extends Common
         if (request()->isPost()) {
             // 传入的参数
             $param = input('param.');
-            return show(config('code.success'), 'OK', 123);
+
             // 实例化Aes
             $aesObj = new Aes();
 
             // 判断传入的参数是否存在及合法性
             // 手机号码
             if (empty($param['phone'])) {
-                return show(config('code.error'), '手机号码不能为空', [], 404);
+                return show(config('code.error'), '手机号码不能为空', '', 401);
             }/* else {
             // 客户端需对手机号码AES加密（可以与短信验证码一起加密），服务端对手机号码AES解密
                 $param['phone'] = $aesObj->decrypt($param['phone']);
             }*/
 
             // 手机短信验证码
-            if (empty($param['code'])) {
-                return show(config('code.error'), '短信验证码不能为空', [], 404);
+            if (empty($param['verify_code'])) {
+                return show(config('code.error'), '短信验证码不能为空', '', 401);
             } else {
                 // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
-                //$param['code'] = $aesObj->decrypt($param['code']);
+                //$param['verify_code'] = $aesObj->decrypt($param['verify_code']);
 
                 // 判断短信验证码是否合法
-                $code = '1234'; // TODO：获取 调用阿里云短信服务接口时 生成的session值
-                if ($code != $param['code']) {
-                    return show(config('code.error'), '短信验证码错误', [], 404);
+                $verifyCode = '1234'; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+                if ($verifyCode != $param['verify_code']) {
+                    return show(config('code.error'), '短信验证码错误', '', 401);
                 }
             }
 
             // 密码
             if (empty($param['password'])) {
-                return show(config('code.error'), '密码不能为空', [], 404);
+                return show(config('code.error'), '密码不能为空', '', 401);
             }
             // 确认两次密码一致性
-            if ($param['repassword'] != $param['password']) {
-                return show(config('code.error'), '两次输入密码不一致', [], 404);
-            }
-
+            /*if ($param['repassword'] != $param['password']) {
+                return show(config('code.error'), '两次输入密码不一致', '', 404);
+            }*/
 
             // validate验证 TODO：需做注册场景的验证
             $validate = validate('User');
             if (!$validate->check($param, [], 'login')) {
-                return show(config('code.error'), $validate->getError(), [], 403);
+                return show(config('code.error'), $validate->getError(), '', 403);
             }
+
+            // 根据（目标客户或下级业务员）邀请码获取业务员信息
+            $salesman = Db::name('user_salesman')->where(['invitation_code|son_invitation_code' => $param['invitation_code']])->find();
+            // 判断（目标客户或下级业务员）邀请码对应的业务员是否存在，并且两者的邀请码不能相同
+            if (!$salesman || $salesman['invitation_code'] == $salesman['son_invitation_code']) {
+                return show(config('code.error'), '邀请码错误', '', 401);
+            }
+
+            /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
+            $roleId = '';
+            // 判断为（目标客户）邀请码时
+            if ($salesman['invitation_code'] == $param['invitation_code']) {
+                // 根据业务员类型，获取新增的目标客户的类型
+                switch ($salesman['role_id']) {
+                    case 4: // 广告屏业务员
+                        $roleId = 2; // 广告屏合作者
+                        break;
+                    /*case 5: // 广告业务员 TODO：对应的广告主用户需求（不是功能）待开发
+                        $roleId = ;
+                        break;*/
+                    case 6: // 店铺业务员
+                        $roleId = 3; // 店铺端用户
+                        break;
+                    default:
+                        // 其他情况默认执行代码
+                }
+            }
+            // 判断为（下级业务员）邀请码时 TODO
+            elseif ($salesman['son_invitation_code'] == $param['invitation_code']) {
+                $roleId = $salesman['role_id'];
+            }
+            /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
 
             // 查询该手机号用户是否存在
             $user = User::get(['phone' => $param['phone']]);
             if ($user) { // 用户已存在
-                return show(config('code.error'), '用户已存在', [], 403);
+                return show(config('code.error'), '用户已存在', '', 403);
             } else { // 用户不存在，则注册用户
                 // 设置唯一性token
                 $token = IAuth::setAppLoginToken($param['phone']);
 
+                // 原始用户的新增数据
                 $data['token'] = $token; // token
                 $data['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
                 $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
+                $data['role_ids'] = $roleId; // 用户角色ID
                 $data['phone'] = trim($param['phone']);
                 $data['password'] = IAuth::encrypt($param['password']);
                 $data['status'] = config('code.status_enable');
+                $data['create_time'] = time(); // 创建时间
+                $data['create_ip'] = request()->ip(); // 创建IP
 
-                // 注册用户
-                try { // 捕获异常
-                    $id = model('User')->add($data, 'user_id'); // 新增
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    // 新增原始用户
+                    $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+
+                    // 新增（目标客户或下级业务员）用户角色明细
+                    if ($roleId == 2) { // 广告屏合作者
+                        $data1['user_id'] = $userId;
+                        $data1['salesman_id'] = $salesman['id']; // 业务员ID
+                        $data1['role_id'] = $roleId; // 用户角色ID
+                        $data1['status'] = config('code.status_enable');
+                        $res[1] = Db::name('user_partner')->insert($data1);
+                    } elseif ($roleId == 3) { // 店铺端用户
+                        $data1['user_id'] = $userId;
+                        $data1['salesman_id'] = $salesman['id']; // 业务员ID
+                        $data1['role_id'] = $roleId; // 用户角色ID
+                        $data1['status'] = config('code.status_enable');
+                        $res[1] = Db::name('user_shop')->insert($data1);
+                    } elseif ($roleId == $salesman['role_id']) { // 下级业务员
+                        // TODO：新增下级业务员数据
+                        /*$data1[] = ;
+                        $res[1] = Db::name('user_salesman')->insert($data1);*/
+                    }
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '新增失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+                    // 返回token给客户端
+                    $result = [
+                        'token' => (new Aes())->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
+                    ];
+                    return show(config('code.success'), 'OK', $result, 201);
                 } catch (\Exception $e) {
-                    throw new ApiException($e->getMessage(), 500, config('code.error'));
+                    // 回滚事务
+                    Db::rollback();
+                    return show(config('code.error'), '注册失败，请重试', '', 500);
+                    //throw new ApiException($e->getMessage(), 500, config('code.error'));
                 }
-            }
-
-            // 判断是否注册成功
-            if ($id) {
-                // 返回token给客户端
-                $result = [
-                    'token' => Aes::opensslEncrypt($token . '&' . $id), // AES加密（自定义拼接字符串）
-                ];
-                return show(config('code.success'), 'OK', $result);
-            } else {
-                return show(config('code.error'), '用户注册失败', [], 403);
+                /* 手动控制事务 e */
             }
         } else {
-            return show(config('code.error'), '请求不合法', [], 400);
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 
