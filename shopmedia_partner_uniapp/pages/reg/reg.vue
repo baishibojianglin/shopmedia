@@ -23,8 +23,8 @@
 				</u-col>
 				<u-col span="24" class="input-list">
 					    <text class="iconposition icon color-blue">&#xe7d6;</text>
-						<input name="verifycode" type="number" v-model="verifycode" placeholder="手机验证码" />
-						<button type="primary" @click="getverifycode()"  class="verify-button">获取验证码</button>
+						<input name="verify_code" type="number" v-model="verify_code" placeholder="手机验证码" />
+						<button type="primary" @click="getVerifyCode()"  class="verify-button">获取验证码</button>
 				</u-col>
 				<u-col span="24" class="book">
 						<checkbox-group @change="seevalue">
@@ -58,19 +58,20 @@
 	import Vue from 'vue'
 	import Row from '@/components/dl-grid/row.vue'
 	import Col from '@/components/dl-grid/col.vue'
-	import uniPopup from "@/components/uni-popup/uni-popup.vue"	
+	import uniPopup from "@/components/uni-popup/uni-popup.vue"
 	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
 	Vue.component('u-col', Col);
+	import common from '@/common/common.js';
 	export default {
 		components: {
              uniPopup
 		},
 		data() {
 			return {
-				please:'',//邀请码
+				invitation_code:'',//邀请码
 				phone:'',//手机号
 				password:'',//密码
-				verifycode:'',//验证码
+				verify_code:'',//验证码
 				value:1,//勾选协议状态
                 logourl:'/static/img/logo.png',
 				tipwords:''
@@ -87,7 +88,7 @@
 			seevalue(e){
 				this.value=e.detail.value.length;
 			},
-			getverifycode(){
+			getVerifyCode(){
 					//检查电话
 					if(this.phone==''){
 						this.tipwords='请填写电话号码';
@@ -115,7 +116,7 @@
 			 */
 			submitdata(){	
 				//检查邀请码
-				if(this.please==''){
+				if(this.invitation_code==''){
 					this.tipwords='请填写邀请码';
 					this.$refs.popup.open();
 					return false;
@@ -138,7 +139,7 @@
 					return false; 
 				}
 				//验证码
-				if(this.verifycode==''){
+				if(this.verify_code==''){
 					this.tipwords='请输入验证码';
 					this.$refs.popup.open();
 					return false; 
@@ -153,15 +154,33 @@
 				uni.request({
 					url: this.$serverUrl +'api/register',
 					data: {
-					   please:this.please,
-					   phone:this.phone,
-					   password:this.password,
-					   verifycode:this.verifycode
+					   invitation_code: this.invitation_code,
+					   phone: this.phone,
+					   password: this.password,
+					   verify_code: this.verify_code
 					},
-					header: getApp().globalData.commonHeaders,
+					header: /* getApp().globalData.commonHeaders, */
+					{
+						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+						'version': getApp().globalData.version, // 应用大版本号
+						'model': getApp().globalData.systemInfo.model, // 手机型号
+						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
+						'did': getApp().globalData.did, // 设备号
+					},
 					method: 'POST',
 					success:function(res){
 						console.log(res)
+						if(0 == res.data.status){ // 验证失败
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+							return;
+						}else{ // 验证成功跳转
+							uni.navigateTo({
+								url: '../login/login'
+							});
+						}
 					},
 					fail:function(error){
 						console.log(error)
