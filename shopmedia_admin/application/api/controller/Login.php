@@ -129,9 +129,9 @@ class Login extends Common
                 //$param['verify_code'] = $aesObj->decrypt($param['verify_code']);
 
                 // 判断短信验证码是否合法
-                $verifyCode = session('informationcode'); // TODO：获取 调用阿里云短信服务接口时 生成的session值
-                if ($verifyCode != $param['verify_code']) {
-                    return show(config('code.error'), '短信验证码错误'.session('informationcode'), '', 401);
+                $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+                if (empty($verifyCode) || $verifyCode != $verifyCode) {
+                    return show(config('code.error'), '短信验证码错误'.$verifyCode, '', 401);
                 }
             }
 
@@ -141,7 +141,7 @@ class Login extends Common
             }
             // 确认两次密码一致性
             /*if ($param['repassword'] != $param['password']) {
-                return show(config('code.error'), '两次输入密码不一致', '', 404);
+                return show(config('code.error'), '两次输入密码不一致', '', 401);
             }*/
 
             // validate验证 TODO：需做注册场景的验证
@@ -196,6 +196,7 @@ class Login extends Common
                 $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
                 $data['role_ids'] = $roleId; // 用户角色ID
                 $data['phone'] = trim($param['phone']);
+                $data['phone_verified'] = 1;
                 $data['password'] = IAuth::encrypt($param['password']);
                 $data['status'] = config('code.status_enable');
                 $data['create_time'] = time(); // 创建时间
@@ -223,8 +224,25 @@ class Login extends Common
                         $res[1] = Db::name('user_shop')->insert($data1);
                     } elseif ($roleId == $salesman['role_id']) { // 下级业务员
                         // TODO：新增下级业务员数据
-                        /*$data1[] = ;
-                        $res[1] = Db::name('user_salesman')->insert($data1);*/
+                        $data1['uid'] = $userId;
+                        $data1['role_id'] = $roleId; // 用户角色ID
+                        $data1['company_id'] = $salesman['company_id']; // 分公司ID
+                        $data1['parent_id'] = $salesman['id']; // 上级ID
+                        $data1['status'] = config('code.status_enable');
+
+                        // （下级业务员）邀请码
+                        // 获取（下级业务员）邀请码集合
+                        $sonInvitationCodes = Db::name('user_salesman')->column('son_invitation_code');
+                        // 生成唯一（下级业务员）邀请码，加前缀 S 用于区别于（目标客户）邀请码（两种邀请码也必须不同）
+                        $data1['son_invitation_code'] = 'S' . uniqueRand(10000, 99999, $sonInvitationCodes);
+
+                        // （目标客户）邀请码
+                        // 获取（下级业务员）邀请码集合
+                        $invitationCodes = Db::name('user_salesman')->column('invitation_code');
+                        // 生成唯一（目标客户）邀请码，加前缀 C 用于区别于（下级业务员）邀请码（两种邀请码也必须不同）
+                        $data1['invitation_code'] = 'C' . uniqueRand(10000, 99999, $invitationCodes);
+
+                        $res[1] = Db::name('user_salesman')->insert($data1);
                     }
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
@@ -266,43 +284,43 @@ class Login extends Common
             // 判断传入的参数是否存在及合法性
             // 手机号码
             if (empty($param['phone'])) {
-                return show(config('code.error'), '手机号码不能为空', [], 404);
+                return show(config('code.error'), '手机号码不能为空', '', 401);
             }
 
             // 手机短信验证码
-            if (empty($param['code'])) {
-                return show(config('code.error'), '短信验证码不能为空', [], 404);
+            if (empty($param['verify_code'])) {
+                return show(config('code.error'), '短信验证码不能为空', '', 401);
             } else {
                 // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
                 //$param['code'] = $aesObj->decrypt($param['code']);
 
                 // 判断短信验证码是否合法
-                $code = '1234'; // TODO：获取 调用阿里云短信服务接口时 生成的session值
-                if ($code != $param['code']) {
-                    return show(config('code.error'), '短信验证码错误', [], 404);
+                $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+                if (empty($verifyCode) || $verifyCode != $param['verify_code']) {
+                    return show(config('code.error'), '短信验证码错误', '', 401);
                 }
             }
 
             // 密码
             if (empty($param['password'])) {
-                return show(config('code.error'), '密码不能为空', [], 404);
+                return show(config('code.error'), '密码不能为空', '', 401);
             }
             // 确认两次密码一致性
             if ($param['repassword'] != $param['password']) {
-                return show(config('code.error'), '两次输入密码不一致', [], 404);
+                return show(config('code.error'), '两次输入密码不一致', '', 401);
             }
 
 
             // validate验证 TODO：需做更新密码场景的验证
-            $validate = validate('User');
-            if (!$validate->check($param, [], 'login')) {
-                return show(config('code.error'), $validate->getError(), [], 403);
-            }
+            /*$validate = validate('User');
+            if (!$validate->check($param, '', 'login')) {
+                return show(config('code.error'), $validate->getError(), '', 403);
+            }*/
 
             // 查询该手机号用户是否存在
             $user = User::get(['phone' => $param['phone']]);
             if (!$user) { // 用户不存在
-                return show(config('code.error'), '用户不存在', [], 404);
+                return show(config('code.error'), '用户不存在', '', 404);
             } else { // 用户存在，更新密码
                 $data['password'] = IAuth::encrypt($param['password']);
 
@@ -316,12 +334,12 @@ class Login extends Common
 
             // 判断是否注册成功
             if ($result) {
-                return show(config('code.success'), '密码更新成功', [], 201);
+                return show(config('code.success'), '密码更新成功', '', 201);
             } else {
-                return show(config('code.error'), '密码更新失败', [], 403);
+                return show(config('code.error'), '密码更新失败', '', 403);
             }
         } else {
-            return show(config('code.error'), '请求不合法', [], 400);
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 

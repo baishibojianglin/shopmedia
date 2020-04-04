@@ -65,7 +65,7 @@ Route::post('api/register', 'api/login/register'); // 注册
 Route::put('api/pwd', 'api/login/pwd'); // 找回密码
 Route::put('api/logout', 'api/login/logout'); // 退出登录
 // 调用短信接口
-Route::post('send_sms', 'api/SendSms/sendSms');
+Route::post('api/send_sms', 'api/SendSms/sendSms');
 // 用户
 Route::resource('api/user', 'api/user');
 

@@ -10,48 +10,44 @@
 		<view class="content-view">
 			<u-row>		
 				<u-col span="24" class="input-list">
-					    <text class="iconposition icon color-blue">&#xe7c6;</text>
-					    <input name="please" v-model="please" placeholder="请输邀请码" />
-				</u-col>				
-				<u-col span="24" class="input-list">
-					    <text class="iconposition icon color-blue">&#xe7d5;</text>
-						<input name="phone" type="number" v-model="phone" placeholder="请输手机号" />
+					<text class="iconposition icon color-blue">&#xe7c6;</text>
+					<input name="invitation_code" v-model="invitation_code" placeholder="请输邀请码" />
 				</u-col>
 				<u-col span="24" class="input-list">
-					    <text class="iconposition icon color-blue">&#xe7b8;</text>
-						<input name="password" :password='true' v-model="password" placeholder="请设置密码" />
+					<text class="iconposition icon color-blue">&#xe7d5;</text>
+					<input name="phone" type="number" v-model="phone" placeholder="请输手机号" />
 				</u-col>
 				<u-col span="24" class="input-list">
-					    <text class="iconposition icon color-blue">&#xe7d6;</text>
-						<input name="verify_code" type="number" v-model="verify_code" placeholder="手机验证码" />
-						<button type="primary" @click="getVerifyCode()"  class="verify-button">获取验证码</button>
+					<text class="iconposition icon color-blue">&#xe7b8;</text>
+					<input name="password" :password='true' v-model="password" placeholder="请设置密码" />
+				</u-col>
+				<u-col span="24" class="input-list">
+					<text class="iconposition icon color-blue">&#xe7d6;</text>
+					<input name="verify_code" type="number" v-model="verify_code" placeholder="手机验证码" />
+					<button type="primary" @click="getVerifyCode()"  class="verify-button">获取验证码</button>
 				</u-col>
 				<u-col span="24" class="book">
-						<checkbox-group @change="seevalue">
-							<label>
-								    <checkbox class="checkbox inline" value="1" color="#3F45F2" checked="true" />
-							</label>
-							<navigator class="inline text" url="book">
-										阅读并同意<text class="color-blue">《商市通用户协议》</text>
-							</navigator>												
-							
-						</checkbox-group>
+					<checkbox-group @change="seevalue">
+						<label>
+								<checkbox class="checkbox inline" value="1" color="#3F45F2" checked="true" />
+						</label>
+						<navigator class="inline text" url="book">
+									阅读并同意<text class="color-blue">《商市通用户协议》</text>
+						</navigator>
+						
+					</checkbox-group>
 				</u-col>
 
 				<u-col span="24">
-                     <button @click="submitdata()" type="primary" class="submit">注 册</button>
-				</u-col>					
-	
-			</u-row>	
-							
+					<button @click="submitdata()" type="primary" class="submit">注 册</button>
+				</u-col>
+			</u-row>
+			
             <uni-popup ref="popup" type="center">
 				<text class="tip">{{tipwords}}</text>
-			</uni-popup>					
-					
+			</uni-popup>
 		</view>
-
 	</view>
-	
 </template>
 
 <script>
@@ -64,22 +60,22 @@
 	import common from '@/common/common.js';
 	export default {
 		components: {
-             uniPopup
+			uniPopup
 		},
 		data() {
 			return {
-				invitation_code:'',//邀请码
-				phone:'',//手机号
-				password:'',//密码
-				verify_code:'',//验证码
-				returncode:'',
-				value:1,//勾选协议状态
-                logourl:'/static/img/logo.png',
-				tipwords:''
+				invitation_code: '', // 邀请码
+				phone: '', // 手机号
+				password: '', // 密码
+				verify_code: '', // 验证码
+				return_code: '',
+				value: 1, // 勾选协议状态
+				logourl: '/static/img/logo.png',
+				tipwords: ''
 			}
 		},
 		mounted(){
-
+			
 		},
 		methods: {
 			/**
@@ -89,31 +85,37 @@
 			seevalue(e){
 				this.value=e.detail.value.length;
 			},
+			
+			/**
+			 * 获取短信验证码
+			 */
 			getVerifyCode(){
-					//检查电话
-					if(this.phone==''){
-						this.tipwords='请填写电话号码';
-						this.$refs.popup.open();
-						return false;
+				// 检查电话号码
+				if(this.phone == ''){
+					this.tipwords = '请填写电话号码';
+					this.$refs.popup.open();
+					return false;
+				}
+				if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.phone))){ 
+					this.tipwords = '请填写正确的电话号码';
+					this.$refs.popup.open();
+					return false;
+				}
+				
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/send_sms',
+					data: {
+						phone: this.phone
+					},
+					method: 'POST',
+					success: function(res){
+						// console.log(res.data)
+						self.return_code = res.data  
 					}
-					if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.phone))){ 
-						this.tipwords='请填写正确的电话号码';
-						this.$refs.popup.open();
-						return false; 
-					}
-					let self=this;
-					uni.request({
-						url: this.$serverUrl +'sendmsg',
-						data: {
-						   phone:this.phone
-						},
-						method: 'POST',
-						success:function(res){
-							console.log(res.data)
-							self.returncode=res.data  
-						}
-					})				
+				})
 			},
+			
 			/**
 			 * 提交数据
 			 */
@@ -157,10 +159,11 @@
 				uni.request({
 					url: this.$serverUrl +'api/register',
 					data: {
-					   invitation_code: this.invitation_code,
-					   phone: this.phone,
-					   password: this.password,
-					   verify_code: this.verify_code
+						invitation_code: this.invitation_code,
+						phone: this.phone,
+						password: this.password,
+						verify_code: this.verify_code,
+						return_code: this.return_code
 					},
 					header: /* getApp().globalData.commonHeaders, */
 					{
@@ -172,7 +175,6 @@
 					},
 					method: 'POST',
 					success:function(res){
-						console.log(res)
 						if(0 == res.data.status){ // 验证失败
 							uni.showToast({
 								icon: 'none',
@@ -186,8 +188,7 @@
 						}
 					},
 					fail:function(error){
-						console.log(error)
-						// console.log('fail' + JSON.stringify(error));
+						console.log(error);
 					}
 				})
 			}

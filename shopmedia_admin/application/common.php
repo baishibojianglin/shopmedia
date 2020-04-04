@@ -79,7 +79,7 @@ function uploadimage($info)
     // 存储空间名称
     $bucket = "goodshopimages";
     // 文件名称
-    $object =md5(uniqid(mt_rand(),true)).$info['name'];
+    $object = md5(uniqid(mt_rand(),true)).$info['name'];
     // <yourLocalFile>由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt
     $filePath = $info['tmp_name'];
 
