@@ -82,6 +82,8 @@
 							<span :class="scope.row.auth_open_user === 1 ? 'text-success' : 'text-info'">{{scope.row.auth_open_user_msg}}</span>
 						</template>
 					</el-table-column>
+					<el-table-column prop="invitation_code" label="目标客户邀请码" min-width="90"></el-table-column>
+					<el-table-column prop="son_invitation_code" label="下级业务员邀请码" min-width="90"></el-table-column>
 					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
 					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
@@ -246,7 +248,7 @@
 			 * 合并行
 			 */
 			objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-				let columnIndexArray = [0, 1, 3, 4, 5, 15, 16]; // 列号组成的数组
+				let columnIndexArray = [0, 1, 3, 4, 5, 17, 18]; // 列号组成的数组
 				if (columnIndexArray.includes(columnIndex) === true) { // 即 columnIndex === 0 || columnIndex === 1 …
 					const _row = this.spanArr[rowIndex];
 					const _col = _row > 0 ? 1 : 0;

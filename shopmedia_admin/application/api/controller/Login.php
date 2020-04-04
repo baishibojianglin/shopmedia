@@ -129,9 +129,9 @@ class Login extends Common
                 //$param['verify_code'] = $aesObj->decrypt($param['verify_code']);
 
                 // 判断短信验证码是否合法
-                $verifyCode = '1234'; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+                $verifyCode = session('informationcode'); // TODO：获取 调用阿里云短信服务接口时 生成的session值
                 if ($verifyCode != $param['verify_code']) {
-                    return show(config('code.error'), '短信验证码错误', '', 401);
+                    return show(config('code.error'), '短信验证码错误'.session('informationcode'), '', 401);
                 }
             }
 

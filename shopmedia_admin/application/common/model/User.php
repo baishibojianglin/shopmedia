@@ -47,7 +47,7 @@ class User extends Base
         $order = ['u.user_id' => 'asc', 'us.id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['us.id', 'us.role_id', 'us.company_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.comm_ratio', 'us.parent_comm_ratio', 'us.auth_son_ratio', 'us.auth_open_user', 'us.status us_status', 'c.company_name', 'p.user_name parent_name', 'ur.title']))
+            ->field(array_merge($this->_getListField(), ['us.id', 'us.role_id', 'us.company_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.comm_ratio', 'us.parent_comm_ratio', 'us.auth_son_ratio', 'us.son_invitation_code', 'us.auth_open_user', 'us.invitation_code', 'us.status us_status', 'c.company_name', 'p.user_name parent_name', 'ur.title']))
             ->join('__USER_SALESMAN__ us', 'u.user_id = us.uid') // 业务员
             ->join('__USER_ROLE__ ur', 'us.role_id = ur.id and ur.parent_id = 1') // 角色
             ->join('__COMPANY__ c', 'us.company_id = c.company_id', 'LEFT') // 分公司

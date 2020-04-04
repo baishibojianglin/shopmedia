@@ -146,6 +146,19 @@ class UserSalesman extends Base
                     'role_id' => $data['role_id'],
                     'status' => $data['status']
                 ];
+
+                // （下级业务员）邀请码
+                // 获取（下级业务员）邀请码集合
+                $sonInvitationCodes = Db::name('user_salesman')->column('son_invitation_code');
+                // 生成唯一（下级业务员）邀请码，加前缀 S 用于区别于（目标客户）邀请码（两种邀请码也必须不同）
+                $data1['son_invitation_code'] = 'S' . uniqueRand(10000, 99999, $sonInvitationCodes);
+
+                // （目标客户）邀请码
+                // 获取（下级业务员）邀请码集合
+                $invitationCodes = Db::name('user_salesman')->column('invitation_code');
+                // 生成唯一（目标客户）邀请码，加前缀 C 用于区别于（下级业务员）邀请码（两种邀请码也必须不同）
+                $data1['invitation_code'] = 'C' . uniqueRand(10000, 99999, $invitationCodes);
+
                 // TODO：分公司ID：1.平台登录时，通过下拉框选择获取分公司ID；2.分公司账户登录时，分公司ID为当前登录账户对应的分公司ID
                 /*if ($this->adminUser['company_id'] != config('admin.platform_company_id')) {
                     $data1['company_id'] = $this->adminUser['company_id'];
@@ -163,7 +176,7 @@ class UserSalesman extends Base
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500);
             }
             /* 手动控制事务 e */
         } else {

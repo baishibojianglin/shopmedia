@@ -27,3 +27,27 @@ function show($status, $message, $data = [], $httpCode = 200){
     ];
     return json($data, $httpCode);
 }
+
+/**
+ * 生成唯一随机数
+ * @param $min
+ * @param $max
+ * @param array|int $number 用于比较的值
+ * @return int
+ */
+function uniqueRand($min, $max, $number){
+    // 生成随机数
+    $rand = mt_rand($min, $max);
+
+    // 判断生成的随机数是否唯一，重复时重新生成
+    if (is_array($number)) {
+        $flag = in_array($rand, $number) ? false : true;
+    } else {
+        $flag = $rand == $number ? false : true;
+    }
+    if ($flag == false) {
+        uniqueRand($min, $max, $number);
+    } else {
+        return $rand;
+    }
+}
