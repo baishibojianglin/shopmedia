@@ -72,6 +72,7 @@
 				phone:'',//手机号
 				password:'',//密码
 				verify_code:'',//验证码
+				returncode:'',
 				value:1,//勾选协议状态
                 logourl:'/static/img/logo.png',
 				tipwords:''
@@ -100,6 +101,7 @@
 						this.$refs.popup.open();
 						return false; 
 					}
+					let self=this;
 					uni.request({
 						url: this.$serverUrl +'sendmsg',
 						data: {
@@ -107,7 +109,8 @@
 						},
 						method: 'POST',
 						success:function(res){
-
+							console.log(res.data)
+							self.returncode=res.data  
 						}
 					})				
 			},

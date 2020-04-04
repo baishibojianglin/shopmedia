@@ -6,9 +6,6 @@ use app\common\lib\exception\ApiException;
 use think\Cache;
 use think\Controller;
 
-
-
-
 /**
  * admin模块公共控制器类
  * Class Common
@@ -48,8 +45,6 @@ class Common extends Controller
         $this->checkRequestAuth(); // TODO：生产环境必须检查数据的合法性
     }
 
-
-
     /**
      * 检查每次app请求的数据是否合法
      */
@@ -81,9 +76,4 @@ class Common extends Controller
         $this->size = !empty($params['size']) ? $params['size'] : config('paginate.list_rows');
         $this->from = ($this->page - 1) * $this->size; // 'limit from,size'
     }
-
-
-
-
-
 }

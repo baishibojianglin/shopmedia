@@ -15,9 +15,7 @@ use think\Route;
 // 登录
 Route::post('login','admin/Login/login');
 Route::get('code','admin/Login/createverifycode');
-// 调用短信接口
-Route::post('sendmsg', 'admin/Sendmsg/sendmsg');
-//上传、删除图片
+// 上传、删除图片
 Route::post('upload', 'admin/upload/uploadimg');
 Route::post('deleteimages', 'admin/upload/deleteimg');
 // Auth用户组
@@ -56,16 +54,7 @@ Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
 
-
-
 /* 后台管理系统路由 e */
-
-
-
-
-
-
-
 
 
 /* 客户端路由 s */
@@ -75,6 +64,8 @@ Route::put('api/login', 'api/login/login'); // 登录
 Route::post('api/register', 'api/login/register'); // 注册
 Route::put('api/pwd', 'api/login/pwd'); // 找回密码
 Route::put('api/logout', 'api/login/logout'); // 退出登录
+// 调用短信接口
+Route::post('send_sms', 'api/SendSms/sendSms');
 // 用户
 Route::resource('api/user', 'api/user');
 
