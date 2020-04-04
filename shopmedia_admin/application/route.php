@@ -4,12 +4,8 @@ use think\Route;
 
 /* 公共路由 s */
 
-// 上传图片
-Route::post('upload', 'admin/Common/uploadimg');
-// 删除图片
-Route::post('deleteimages', 'admin/Common/deleteimg');
-// 调用短信接口
-Route::post('sendmsg', 'admin/Common/sendmsg');
+
+
 
 /* 公共路由 e */
 
@@ -18,8 +14,12 @@ Route::post('sendmsg', 'admin/Common/sendmsg');
 
 // 登录
 Route::post('login','admin/Login/login');
-// 登录验证码
 Route::get('code','admin/Login/createverifycode');
+// 调用短信接口
+Route::post('sendmsg', 'admin/Sendmsg/sendmsg');
+//上传、删除图片
+Route::post('upload', 'admin/upload/uploadimg');
+Route::post('deleteimages', 'admin/upload/deleteimg');
 // Auth用户组
 Route::resource('auth_group', 'admin/auth_group');
 Route::get('auth_group_tree', 'admin/auth_group/authGroupTree'); // Auth用户组列表树
@@ -35,11 +35,13 @@ Route::resource('company', 'admin/company');
 Route::get('company_tree', 'admin/company/companyTree'); // 分公司列表树
 Route::post('createCompany','admin/Company/createCompany'); // 创建分公司
 Route::post('getCompany','admin/Company/getCompany'); // 获取分公司基本信息
+Route::post('getzone','admin/Company/getzone');
 // 广告屏管理
 Route::resource('device','admin/Device');
 Route::post('addDevice','admin/Device/addDevice');
 Route::post('getDevice','admin/Device/getDevice');
 Route::get('getMarkers','admin/Device/getMarkers');
+
 // 区域
 Route::resource('region', 'admin/region');
 // 用户角色
@@ -53,23 +55,17 @@ Route::resource('user_partner', 'admin/UserPartner');
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
-//获取地区列表
-Route::post('getzone','admin/Company/getzone');
-//获取供应商销售区域数据
-Route::post('companyarea','admin/Company/getarea_company');
-//插入供应商销售区域数据
-Route::post('submitArea','admin/Company/submitArea');
-//获取供应商销售商品种类
-Route::post('getshopcate','admin/Company/getshopcate_company');
-//插入供应商销售商品种类
-Route::post('shopcateinsert','admin/Company/cate_insert');
-// 商品类别
-Route::resource('goods_cate', 'admin/goods_cate');
-Route::get('goods_cate_tree', 'admin/goods_cate/goodsCateTree'); // 商品类别列表树
-// 商品品牌
-Route::resource('goods_brand', 'admin/goods_brand');
+
+
 
 /* 后台管理系统路由 e */
+
+
+
+
+
+
+
 
 
 /* 客户端路由 s */

@@ -29,7 +29,7 @@
 						latitude:30.547441,
 						longitude: 104.061738,
 						markers:[],			
-					}
+					   }
 		},
 		onLoad() {
               this.getmarkers();
