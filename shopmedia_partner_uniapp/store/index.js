@@ -20,10 +20,10 @@ const store = new Vuex.Store({
 			state.userInfo = userInfo; // 将请求中的如res.data.data对象存入userInfo
 			
 			// 将用户信息保存到本地缓存
-			/* uni.setStorage({
+			uni.setStorage({
 				key: 'userInfo',
 				data: userInfo
-			}) */
+			})
 		},
 		
 		/**
@@ -35,9 +35,9 @@ const store = new Vuex.Store({
 			state.userInfo = {};
 			
 			// 根据键名移除对应位置的缓存数据
-			/* uni.removeStorage({
+			uni.removeStorage({
 				key: 'userInfo',
-			}) */
+			})
 		}
 	}
 })

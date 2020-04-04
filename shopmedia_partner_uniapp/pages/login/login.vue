@@ -118,7 +118,16 @@
 					});
 				    return;
 				}
-				
+				let aa = {
+					'content-type': "application/json; charset=utf-8",
+					'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+					'version': getApp().globalData.version, // 应用大版本号
+					'model': getApp().globalData.systemInfo.model, // 手机型号
+					'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
+					'did': getApp().globalData.did, // 设备号
+				};
+				console.log('commonHeaders：', getApp().globalData.commonHeaders);
+				console.log('commonHeadersaa：', aa);
 				/**
 				 * 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				 */
@@ -126,9 +135,11 @@
 					url: this.$serverUrl + 'api/login',
 					data: {
 						phone: this.account,
-						password: this.password,
+						password: this.password
 					},
-					header: {
+					header: /* getApp().globalData.commonHeaders, */
+					{
+						'content-type': "application/json; charset=utf-8",
 						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
 						'version': getApp().globalData.version, // 应用大版本号
 						'model': getApp().globalData.systemInfo.model, // 手机型号
@@ -137,12 +148,12 @@
 					},
 					method: 'PUT',
 					success: function(res){
-						// console.log('login success', res);
+						console.log('login success', res);
 						if (1 == res.data.status) {
 							let userInfo = res.data.data;
 							self.login(userInfo);
-							self.toMain(userInfo); // 跳转到首页
-							/* uni.reLaunch({url: '../main/main',}); */
+							// self.toMain(userInfo); // 跳转到首页
+							uni.reLaunch({url: '../main/main',});
 						} else {
 						    uni.showToast({
 						        icon: 'none',

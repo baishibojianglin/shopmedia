@@ -75,7 +75,7 @@
 				let self = this
 				if (this.hasLogin) {
 					uni.request({
-						url: this.$serverUrl + 'user/' + this.userInfo.user_id,
+						url: this.$serverUrl + 'api/user/' + this.userInfo.user_id,
 						header: {
 							'sign': common.sign(), // 验签
 							'version': getApp().globalData.version, // 应用大版本号
