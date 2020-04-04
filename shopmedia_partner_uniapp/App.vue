@@ -45,18 +45,17 @@
 	/*阿里图标库*/
 	@font-face {
 	  font-family: 'iconfont';  /* project id 1721327 */
-	  src: url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.eot');
-	  src: url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.eot?#iefix') format('embedded-opentype'),
-	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.woff2') format('woff2'),
-	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.woff') format('woff'),
-	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.ttf') format('truetype'),
-	  url('//at.alicdn.com/t/font_1721327_7lh4sn6zr7.svg#iconfont') format('svg');
+	  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot');
+	  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot?#iefix') format('embedded-opentype'),
+	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff2') format('woff2'),
+	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff') format('woff'),
+	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.ttf') format('truetype'),
+	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.svg#iconfont') format('svg');
 	}	
 	.icon{
 		font-family: iconfont;
 		font-size: 24px;
-	}	
-	
+	}		
 	/*颜色*/
 	.color-blue{
 		color:#3F45F2;

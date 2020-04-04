@@ -30,7 +30,7 @@ class Base extends Common
 
         // 判断是否登录
         if (!($this->isLogin())) {
-            throw new ApiException('未登录', 401);
+            //throw new ApiException('未登录', 401);
             //return show(config('code.error'), '未登录', '', 401);
         }
     }

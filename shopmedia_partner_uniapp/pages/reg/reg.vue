@@ -10,8 +10,8 @@
 		<view class="content-view">
 			<u-row>		
 				<u-col span="24" class="input-list">
-					    <text class="iconposition icon color-blue">&#xe7d5;</text>
-					    <input name="invitation_code" v-model="invitation_code" placeholder="请输邀请码" />
+					    <text class="iconposition icon color-blue">&#xe7c6;</text>
+					    <input name="please" v-model="please" placeholder="请输邀请码" />
 				</u-col>				
 				<u-col span="24" class="input-list">
 					    <text class="iconposition icon color-blue">&#xe7d5;</text>
