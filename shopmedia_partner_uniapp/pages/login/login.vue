@@ -1,28 +1,32 @@
 <template>
 	<view class="content">
 		<u-row style="margin-bottom: 20px;">
-		    <u-col span="24" class="contain-logo">
+			<u-col span="24" class="contain-logo">
 				<image class="logo" mode="aspectFit" :src="logourl"></image>
 			</u-col>
 		</u-row>
+		
 		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">手机号</text>
-				<m-input class="m-input" type="text" clearable focus v-model="account" placeholder="请输入手机号"></m-input>
+				<m-input class="m-input" type="text" clearable focus v-model="phone" placeholder="请输入手机号"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">密码</text>
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
 		</view>
+		
 		<view class="btn-row">
 			<button type="primary" style="background-color: #3F44F3;" @tap="bindLogin">登录</button>
 		</view>
+		
 		<view class="action-row" style="margin-top: 10px;">
 			<navigator style="color: #000;" url="../reg/reg">注册账号</navigator>
 			<text>|</text>
 			<navigator style="color: #000;" url="../pwd/pwd">忘记密码</navigator>
 		</view>
+		
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="oauth(provider.value)"></image>
@@ -38,30 +42,34 @@
 	import Vue from 'vue'
 	import Row from '@/components/dl-grid/row.vue'
 	import Col from '@/components/dl-grid/col.vue'
-	import uniPopup from "@/components/uni-popup/uni-popup.vue"	
 	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
 	Vue.component('u-col', Col);
-	import {mapState, mapMutations} from 'vuex';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
 	import common from '@/common/common.js';
 	import mInput from '../../components/m-input.vue';
 
 	export default {
-		components: {mInput},
+		components: {
+			mInput
+		},
 		data() {
 			return {
 				providerList: [],
 				hasProvider: false,
-				account: '18989898899',
+				phone: '18989898899',
 				password: 'abc123',
 				positionTop: 0,
 				isDevtools: false,
-				logourl:'/static/img/logo.png',
+				logourl: '/static/img/logo.png',
 			}
 		},
 		computed: mapState(['forcedLogin']),
 		methods: {
 			...mapMutations(['login']),
-			
+
 			initProvider() {
 				const filters = ['weixin', 'qq', 'sinaweibo'];
 				uni.getProvider({
@@ -84,7 +92,7 @@
 					}
 				});
 			},
-			
+
 			initPosition() {
 				/**
 				 * 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
@@ -92,31 +100,38 @@
 				 */
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
-			
+
 			/**
 			 * 登录
 			 */
 			bindLogin() {
 				let self = this;
-				
+
 				/**
 				 * 客户端对账号信息进行一些必要的校验。
 				 */
 				// 手机号
-				if (!this.account.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) { /* 或 !(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(this.account) */
+				if (this.phone == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入手机号码'
+					});
+					return false;
+				}
+				if (!this.phone.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) { /* 或 !(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(this.phone) */
 					uni.showToast({
 						icon: 'none',
 						title: '手机号不合法'
 					});
-				    return;
+					return;
 				}
 				// 密码
-				if (!this.password.match(/^[a-zA-Z]\w{5,17}$/)) {
-				    uni.showToast({
+				if (!this.password.match(/^[a-zA-Z]\w{5,19}$/)) {
+					uni.showToast({
 						icon: 'none',
-						title: '密码必须以字母开头，长度在6~18之间，只能包含字母、数字和下划线'
+						title: '密码必须以字母开头，长度在6~20之间，只能包含字母、数字和下划线'
 					});
-				    return;
+					return;
 				}
 				let aa = {
 					'content-type': "application/json; charset=utf-8",
@@ -134,11 +149,10 @@
 				uni.request({
 					url: this.$serverUrl + 'api/login',
 					data: {
-						phone: this.account,
+						phone: this.phone,
 						password: this.password
 					},
-					header: /* getApp().globalData.commonHeaders, */
-					{
+					header: /* getApp().globalData.commonHeaders, */ {
 						'content-type': "application/json; charset=utf-8",
 						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
 						'version': getApp().globalData.version, // 应用大版本号
@@ -147,18 +161,20 @@
 						'did': getApp().globalData.did, // 设备号
 					},
 					method: 'PUT',
-					success: function(res){
+					success: function(res) {
 						console.log('login success', res);
 						if (1 == res.data.status) {
 							let userInfo = res.data.data;
 							self.login(userInfo);
 							// self.toMain(userInfo); // 跳转到首页
-							uni.reLaunch({url: '../main/main',});
+							uni.reLaunch({
+								url: '../main/main',
+							});
 						} else {
-						    uni.showToast({
-						        icon: 'none',
-						        title: res.data.message, // '用户账号或密码不正确'
-						    });
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message, // '用户账号或密码不正确'
+							});
 						}
 					},
 					fail(error) {
@@ -204,7 +220,7 @@
 					});
 				}
 			},
-			
+
 			/**
 			 * 跳转到首页
 			 * @param {Object} userInfo
@@ -235,17 +251,20 @@
 </script>
 
 <style>
-	.contain-logo{
+	.contain-logo {
 		margin-top: 30px;
 		text-align: center;
 	}
-	 .logo{
+
+	.logo {
 		height: 130px;
-	 }
-	 .logo-text{
-		 font-size: 20px;
-		 font-weight: bold;
-	 }
+	}
+
+	.logo-text {
+		font-size: 20px;
+		font-weight: bold;
+	}
+
 	.action-row {
 		display: flex;
 		flex-direction: row;

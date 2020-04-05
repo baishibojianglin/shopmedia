@@ -17,8 +17,8 @@
 		{   //注册
 			"path": "pages/reg/reg",
 			"style": {
-				"app-plus": {"titleNView": false},
-				"backgroundColor":"#fff"
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "注册"
 			}
 		}, 
 		{   //用户协议
