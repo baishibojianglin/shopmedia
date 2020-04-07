@@ -1,7 +1,6 @@
 <template>
 	<view class="content">
-		
-		<view v-if="hasLogin" class="uni-flex uni-row">
+		<view v-if="login_info.has_login" class="uni-flex uni-row"><!-- hasLogin -->
 			<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
 				<image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image>
 			</view>
@@ -17,8 +16,8 @@
 		</view>
 		
 		<view class="btn-row">
-			<button v-if="!hasLogin" type="primary" class="primary" @tap="bindLogin">登录</button>
-			<button v-if="hasLogin" type="default" @tap="bindLogout">退出登录</button>
+			<button v-if="!login_info.has_login" type="primary" class="primary" @tap="bindLogin">登录</button>
+			<button v-if="login_info.has_login" type="default" @tap="bindLogout">退出登录</button>
 		</view>
 	</view>
 </template>
@@ -32,12 +31,14 @@
 		data() {
 			return {
 				userData: {},
+				login_info: {} // 判断是否登录（非vuex管理登录状态）
 			}
 		},
 		computed: {
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo'])
 		},
 		onShow() {
+			this.login_info = global.isLogin(); // 判断是否登录（非vuex管理登录状态）
 			this.getUserInfo(); // 获取用户信息
 		},
 		methods: {
@@ -56,8 +57,20 @@
 			 * 退出登录
 			 */
 			bindLogout() {
-				this.logout();
 				this.userData = {};
+				// this.logout(); // TODO：使用vuex管理登录状态时开启
+				// 根据键名移除对应位置的缓存数据（非vuex管理登录状态）
+				uni.removeStorage({
+					key: 'login_info',
+					success(res) {
+						if (!global.isLogin()) {
+							uni.reLaunch({
+								url: '../login/login',
+							});
+						}
+					}
+				})
+				
 				/**
 				 * 如果需要强制登录跳转回登录页面
 				 */
@@ -73,16 +86,16 @@
 			 */
 			getUserInfo() {
 				let self = this
-				if (this.hasLogin) {
+				if (this.login_info.has_login) { // this.hasLogin
 					uni.request({
-						url: this.$serverUrl + 'api/user/' + this.userInfo.user_id,
+						url: this.$serverUrl + 'api/user/' + this.login_info.user_id, // this.userInfo.user_id
 						header: {
 							'sign': common.sign(), // 验签
 							'version': getApp().globalData.version, // 应用大版本号
 							'model': getApp().globalData.systemInfo.model, // 手机型号
 							'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
 							'did': getApp().globalData.did, // 设备号
-							'access-user-token': this.userInfo.token
+							'access-user-token': this.login_info.user_info.token // this.userInfo.token
 						},
 						method: 'GET',
 						success:function(res){

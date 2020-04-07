@@ -32,7 +32,7 @@
 				<u-col span="24" class="book">
 					<checkbox-group @change="seevalue">
 						<label>
-							<checkbox class="checkbox inline" value="1" color="#3F45F2" checked="true" />
+							<checkbox class="checkbox inline" value="1" color="#504AF2" checked="true" />
 						</label>
 						<navigator class="inline text" url="book">
 							阅读并同意<text class="color-blue">《商市通用户协议》</text>
@@ -244,7 +244,7 @@
 		right: 0;
 		bottom: 3px;
 		font-size: 13px;
-		background-color: #3F45F2;
+		background-color: #504AF2;
 	}
 
 	.contain-checkbox {
@@ -266,7 +266,7 @@
 	}
 
 	.submit {
-		background-color: #3F45F2;
+		background-color: #504AF2;
 		margin-top: 35px;
 	}
 </style>

@@ -39,7 +39,7 @@ class Login extends Common
             return show(config('code.error'), '手机号码不能为空', [], 404);
         }/* else {
             // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
-            $param['phone'] = Aes::opensslDecrypt($param['phone']);
+            $param['phone'] = (new Aes())->decrypt($param['phone']);
         }*/
 
         // 密码
@@ -356,7 +356,7 @@ class Login extends Common
         // 判断为PUT请求
         if (request()->isPut()) {
             // 获取token
-            $accessUserToken = Aes::opensslDecrypt($this->headers['access-user-token']); // AES解密
+            $accessUserToken = (new Aes())->decrypt($this->headers['access-user-token']); // AES解密
             list($token, $id) = explode('&', $accessUserToken); // token
 
             // 清空token或token失效时间
@@ -471,7 +471,7 @@ class Login extends Common
         if ($id) {
             // 返回token给客户端
             $result = [
-                'token' => Aes::opensslEncrypt($token . '&' . $id), // AES加密（自定义拼接字符串）
+                'token' => (new Aes())->encrypt($token . '&' . $id), // AES加密（自定义拼接字符串）
             ];
             return show(config('code.success'), 'OK', $result);
         } else {

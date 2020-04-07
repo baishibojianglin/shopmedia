@@ -1,10 +1,8 @@
 <script>
-	import uniPopup from "@/components/uni-popup/uni-popup.vue"	
 	import common from '@/common/common.js';
+	
 	export default {
-		components: {
-		      uniPopup
-		},
+		components: {},
 		// 全局变量
 		globalData: {
 			systemInfo: '', // 设备系统信息
@@ -12,7 +10,6 @@
 			did: '12345dg', // 设备号
 			commonHeaders: {} // 公用请求头
 		},
-		
 		onLaunch: function() {		
 			let self = this;	
 			// 获取设备系统信息
@@ -37,6 +34,23 @@
 		},
 		onHide: function() {
 			console.log('App Hide');
+		}
+	}
+	
+	/**
+	 * 判断是否登录（非vuex管理登录状态）
+	 */
+	global.isLogin = function() {
+		try{
+			var login_info = uni.getStorageSync('login_info');
+		}catch(e){
+			//TODO handle the exception
+			console.log(e)
+		}
+		if(login_info == ''){
+			return false;
+		}else{
+			return login_info;
 		}
 	}
 </script>
@@ -195,6 +209,6 @@
 	}
 
 	button.primary {
-		background-color: #0faeff;
+		background-color: #504AF2; // #0faeff
 	}
 </style>

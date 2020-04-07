@@ -15,13 +15,10 @@
 	import Vue from 'vue'
 	import Row from '@/components/dl-grid/row.vue'
 	import Col from '@/components/dl-grid/col.vue'
-	import uniPopup from "@/components/uni-popup/uni-popup.vue"	
 	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
 	Vue.component('u-col', Col);
 	export default {
-		components: {
-             uniPopup
-		},
+		components: {},
 		data() {
 			return {
 

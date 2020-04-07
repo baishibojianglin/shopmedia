@@ -5,7 +5,7 @@
 				<image class="logo" mode="aspectFit" :src="logourl"></image>
 			</u-col>
 		</u-row>
-		
+
 		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">手机号</text>
@@ -16,17 +16,17 @@
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
 		</view>
-		
+
 		<view class="btn-row">
-			<button type="primary" style="background-color: #3F44F3;" @tap="bindLogin">登录</button>
+			<button type="primary" style="background-color: #504AF2;" @tap="bindLogin">登录</button>
 		</view>
-		
+
 		<view class="action-row" style="margin-top: 10px;">
 			<navigator style="color: #000;" url="../reg/reg">注册账号</navigator>
 			<text>|</text>
 			<navigator style="color: #000;" url="../pwd/pwd">忘记密码</navigator>
 		</view>
-		
+
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="oauth(provider.value)"></image>
@@ -44,10 +44,7 @@
 	import Col from '@/components/dl-grid/col.vue'
 	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
 	Vue.component('u-col', Col);
-	import {
-		mapState,
-		mapMutations
-	} from 'vuex';
+	import {mapState, mapMutations} from 'vuex';
 	import common from '@/common/common.js';
 	import mInput from '../../components/m-input.vue';
 
@@ -133,16 +130,7 @@
 					});
 					return;
 				}
-				let aa = {
-					'content-type': "application/json; charset=utf-8",
-					'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-					'version': getApp().globalData.version, // 应用大版本号
-					'model': getApp().globalData.systemInfo.model, // 手机型号
-					'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-					'did': getApp().globalData.did, // 设备号
-				};
-				console.log('commonHeaders：', getApp().globalData.commonHeaders);
-				console.log('commonHeadersaa：', aa);
+
 				/**
 				 * 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				 */
@@ -162,10 +150,21 @@
 					},
 					method: 'PUT',
 					success: function(res) {
-						console.log('login success', res);
+						// console.log('login success', res);
 						if (1 == res.data.status) {
 							let userInfo = res.data.data;
-							self.login(userInfo);
+							
+							// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
+							/* 存储的登录状态数据（非vuex管理登录状态） s */
+							uni.setStorage({
+								key: 'login_info',
+								data: {
+									'has_login': true, // 是否登录
+									'user_info': userInfo // 存放用户信息
+								}
+							})
+							/* 存储的登录状态数据（非vuex管理登录状态） e */
+							
 							// self.toMain(userInfo); // 跳转到首页
 							uni.reLaunch({
 								url: '../main/main',
@@ -179,6 +178,10 @@
 					},
 					fail(error) {
 						console.log('bindLogin失败：', error);
+						uni.showToast({
+							icon: 'none',
+							title: '网络忙…'
+						});
 					}
 				})
 			},

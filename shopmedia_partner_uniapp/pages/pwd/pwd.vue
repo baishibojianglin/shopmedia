@@ -30,7 +30,7 @@
 				</u-col>
 
 				<u-col span="24">
-					<button @click="submitForm()" type="primary" class="submit">注 册</button>
+					<button @click="submitForm()" type="primary" class="submit">确 认</button>
 				</u-col>
 			</u-row>
 		</view>
