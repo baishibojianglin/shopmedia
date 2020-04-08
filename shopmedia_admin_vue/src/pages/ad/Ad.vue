@@ -42,7 +42,7 @@
 						<el-table-column prop="advertisers" label="广告主名称" width="120"></el-table-column>
 						<el-table-column prop="phone" label="广告主电话" width="120"></el-table-column>
 					</el-table-column>
-					<el-table-column prop="shop_cate_id" label="投放店铺类别" width="120"></el-table-column>
+					<el-table-column prop="shop_cate_name" label="投放店铺类别" width="120"></el-table-column>
 					<el-table-column label="投放区域">
 						<el-table-column prop="province" label="省份" width="120"></el-table-column>
 						<el-table-column prop="city" label="城市" width="120"></el-table-column>
@@ -113,7 +113,7 @@
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
-				.then(function(res) {console.log('ad', res)
+				.then(function(res) {
 					if (res.data.status == 1) {
 						// 广告列表分页参数
 						self.listPagination = res.data.data;

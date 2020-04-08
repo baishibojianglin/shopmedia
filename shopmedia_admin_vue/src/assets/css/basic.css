@@ -30,7 +30,7 @@ body{margin: 0;padding: 0; font-size:0.95em;overflow: hidden;}
     margin: 0rem 0.5rem 1rem 0.5rem;
 }
 
-/*tag文字颜色*/
+/* 文字颜色 */
 .text-success {color: #67c23a;}
 .text-info {color: #909399;}
 .text-warning {color: #e6a23c;}

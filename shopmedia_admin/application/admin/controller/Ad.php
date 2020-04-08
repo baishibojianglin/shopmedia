@@ -47,9 +47,11 @@ class Ad extends Base
                 // 处理数据
                 $auditStatus = config('code.audit_status'); // 审核状态：0待审核，1通过，2驳回
                 $adCate = config('code.ad_cate'); // 广告类别
+                $shopCate = config('code.shop_cate'); // 店铺类别
                 foreach ($data as $key => $value) {
                     $data[$key]['audit_status_msg'] = $auditStatus[$value['audit_status']]; // 定义审核状态信息
                     $data[$key]['ad_cate_name'] = $adCate[$value['ad_cate_id']]; // 定义广告类别名称
+                    $data[$key]['shop_cate_name'] = $shopCate[$value['shop_cate_id']]; // 定义店铺类别名称
                     $data[$key]['start_datetime'] = $value['start_datetime'] ? date('Y-m-d H:i:s', $value['start_datetime']) : ''; // 投放时间
                     $data[$key]['end_datetime'] = $value['end_datetime'] ? date('Y-m-d H:i:s', $value['end_datetime']) : ''; // 结束时间
                     $data[$key]['audit_time'] = $value['audit_time'] ? date('Y-m-d H:i:s', $value['audit_time']) : ''; // 审核时间
