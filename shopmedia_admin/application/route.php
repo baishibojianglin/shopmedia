@@ -2,14 +2,6 @@
 
 use think\Route;
 
-/* 公共路由 s */
-
-
-
-
-/* 公共路由 e */
-
-
 /* 后台管理系统路由 s */
 
 // 登录
@@ -28,6 +20,8 @@ Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规�
 Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
 // 管理员
 Route::resource('admin', 'admin/admin');
+// 区域
+Route::resource('region', 'admin/region');
 // 分公司
 Route::resource('company', 'admin/company');
 Route::get('company_tree', 'admin/company/companyTree'); // 分公司列表树
@@ -39,9 +33,8 @@ Route::resource('device','admin/Device');
 Route::post('addDevice','admin/Device/addDevice');
 Route::post('getDevice','admin/Device/getDevice');
 Route::get('getMarkers','admin/Device/getMarkers');
-
-// 区域
-Route::resource('region', 'admin/region');
+// 广告
+Route::resource('ad','admin/Ad');
 // 用户角色
 Route::resource('user_role', 'admin/UserRole');
 Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列表（不分页）
