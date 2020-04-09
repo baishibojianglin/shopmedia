@@ -1,5 +1,5 @@
 <template>
-	<el-select v-model="value" placeholder="请选择…" filterable>
+	<el-select v-model="cate_id" placeholder="请选择…" clearable filterable>
 		<el-option
 			v-for="item in shopCateList"
 			:key="item.cate_id"
@@ -11,12 +11,13 @@
 
 <script>
 	export default {
+		props: ['value'],
 		data() {
 			return {
+				cate_id: this.value, // 绑定值
 				shopCateList: [] // 店铺类别列表
 			}
 		},
-		props: ['value'],
 		mounted() {
 			this.getShopCateList(); // 获取店铺类别列表
 		},

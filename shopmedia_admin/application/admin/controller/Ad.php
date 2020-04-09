@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\lib\exception\ApiException;
 use think\Controller;
 use think\Request;
 
@@ -31,6 +32,9 @@ class Ad extends Base
             $map = [];
             if (!empty($param['ad_name'])) { // 广告名称
                 $map['a.ad_name'] = ['like', '%' . trim($param['ad_name']) . '%'];
+            }
+            if (isset($param['is_delete'])) { // 是否删除
+                $map['a.is_delete'] = $param['is_delete'];
             }
 
             // 获取分页page、size
@@ -76,28 +80,37 @@ class Ad extends Base
     {
         // 判断为POST请求
         if(request()->isPost()){
+            // 传入的参数
             $data = input('post.');
-            $data['company_user_id'] = $this->adminUser['user_id']; // 创建者(供应商)ID
+            // 处理数据
+            if (isset($data['ad_datetime']) && !empty($data['ad_datetime'])) {
+                $data['start_datetime'] = strtotime($data['ad_datetime'][0]); // 投放开始时间
+                $data['end_datetime'] = strtotime($data['ad_datetime'][1]); // 投放结束时间
+            }
+            if (isset($data['ad_time']) && !empty($data['ad_time'])) {
+                $data['start_time'] = date('H:i:s', strtotime($data['ad_time'][0])); // 每日播放时间段（开始时间）
+                $data['end_time'] = date('H:i:s', strtotime($data['ad_time'][1])); // 每日播放时间段（结束时间）
+            }
 
             // validate验证数据合法性
-            $validate = validate('GoodsBrand');
+            /*$validate = validate('');
             if (!$validate->check($data)) {
-                return show(config('code.error'), $validate->getError(), [], 403);
-            }
+                return show(config('code.error'), $validate->getError(), '', 403);
+            }*/
 
             // 入库操作
             try {
-                $id = model('GoodsBrand')->add($data, 'brand_id');
+                $id = model('Ad')->add($data, 'ad_id');
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             if ($id) {
-                return show(config('code.success'), '新增成功', ['brand_id' => $id], 201);
+                return show(config('code.success'), '新增成功', '', 201);
             } else {
-                return show(config('code.error'), '新增失败', [], 403);
+                return show(config('code.error'), '新增失败', '', 403);
             }
         } else {
-            return show(config('code.error'), '请求不合法', [], 400);
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 
@@ -112,18 +125,28 @@ class Ad extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-                $data = model('GoodsBrand')->find($id);
+                $data = model('Ad')->find($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
 
             if ($data) {
+                // 处理数据
+                $data['ad_datetime'] = [ // 定义投放时间数组
+                    date('c', $data['start_datetime']), // UNIX 转换成 UTC
+                    date('c', $data['end_datetime'])
+                ];
+                $data['ad_time'] = [ // 定义播放时间段数组
+                    date('c', strtotime($data['start_time'])),
+                    date('c', strtotime($data['end_time']))
+                ];
+
                 return show(config('code.success'), 'ok', $data);
             } else {
                 return show(config('code.error'), 'Not Found', $data, 404);
             }
         } else {
-            return show(config('code.error'), '请求不合法', [], 400);
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 
@@ -142,64 +165,102 @@ class Ad extends Base
             $param = input('param.');
 
             // validate验证数据合法性：判断是审核状态还是更新其他数据
-            $validate = validate('GoodsBrand');
+            /*$validate = validate('');
             $rules = [];
             $scene = 'update';
             if (isset($param['audit_status'])) { // 审核操作
                 $rules = ['audit_status' => 'require'];
                 $scene = [];
             }
-            if (isset($param['is_on_sale'])) { // 是否上架操作
-                $rules = ['is_on_sale' => 'require'];
-                $scene = [];
-            }
             if (!$validate->check($param, $rules, $scene)) {
-                return show(config('code.error'), $validate->getError(), [], 403);
-            }
+                return show(config('code.error'), $validate->getError(), '', 403);
+            }*/
 
             // 判断数据是否存在
             $data = [];
-            if (!empty($param['brand_name'])) { // 广告名称
-                $data['brand_name'] = trim($param['brand_name']);
+            // 当为还原软删除的数据时
+            if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
+                $data['is_delete'] = config('code.not_delete');
+            }
+            if (!empty($param['ad_name'])) { // 广告名称
+                $data['ad_name'] = trim($param['ad_name']);
+            }
+            if (!empty($param['ad_cate_id'])) { // 广告类别ID
+                $data['ad_cate_id'] = intval($param['ad_cate_id']);
+            }
+            if (isset($param['ad_datetime']) && !empty($param['ad_datetime'])) {
+                $data['start_datetime'] = strtotime($param['ad_datetime'][0]); // 投放开始时间
+                $data['end_datetime'] = strtotime($param['ad_datetime'][1]); // 投放结束时间
+            }
+            if (isset($param['ad_time']) && !empty($param['ad_time'])) {
+                $data['start_time'] = date('H:i:s', strtotime($param['ad_time'][0])); // 每日播放时间段（开始时间）
+                $data['end_time'] = date('H:i:s', strtotime($param['ad_time'][1])); // 每日播放时间段（结束时间）
+            }
+            if (isset($param['play_times'])) { // 每日播放次数
+                $data['play_times'] = input('param.play_times', null, 'intval');
+            }
+            if (isset($param['ad_price'])) { // 广告价格
+                $data['ad_price'] = input('param.ad_price', null, 'intval');
+            }
+            if (!empty($param['advertisers'])) { // 广告主名称
+                $data['advertisers'] = trim($param['advertisers']);
+            }
+            if (!empty($param['phone'])) { // 广告主电话
+                $data['phone'] = trim($param['phone']);
+            }
+            if (!empty($param['shop_cate_id'])) { // 投放店铺类别ID
+                $data['shop_cate_id'] = intval($param['shop_cate_id']);
+            }
+            if (isset($param['province_id'])) { // 省份
+                $data['province_id'] = input('param.province_id', null, 'intval');
+            }
+            if (isset($param['city_id'])) { // 城市
+                $data['city_id'] = input('param.city_id', null, 'intval');
+            }
+            if (isset($param['county_id'])) { // 区县
+                $data['county_id'] = input('param.county_id', null, 'intval');
+            }
+            if (isset($param['town_id'])) { // 乡镇街道
+                $data['town_id'] = input('param.town_id', null, 'intval');
+            }
+            if (isset($param['audit_status'])) { // 审核状态
+                $data['audit_status'] = input('param.audit_status', null, 'intval');
+                $data['audit_id'] = $this->adminUser['id'];
+                $data['audit_time'] = time();
+            }
+            if (isset($param['is_show'])) { // 是否显示
+                $data['is_show'] = input('param.is_show', null, 'intval');
             }
             if (isset($param['sort'])) { // 排序
                 $data['sort'] = input('param.sort', null, 'intval');
             }
-            if (isset($param['audit_status'])) { // 审核状态
-                $data['audit_status'] = input('param.audit_status', null, 'intval');
-                $data['audit_id'] = $this->adminUser['user_id'];
-                $data['audit_time'] = time();
-            }
-            if (isset($param['is_on_sale'])) { // 是否上架
-                $data['is_on_sale'] = input('param.is_on_sale', null, 'intval');
-                $data['is_on_sale'] = $data['is_on_sale'] ? 0 : 1;
-            }
 
             if (empty($data)) {
-                return show(config('code.error'), '数据不合法', [], 404);
+                return show(config('code.error'), '数据不合法', '', 404);
             }
 
             // 更新
             try {
-                $result = model('GoodsBrand')->save($data, ['brand_id' => $id]); // 更新
+                $result = model('Ad')->save($data, ['ad_id' => $id]); // 更新
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             if (false === $result) {
-                return show(config('code.error'), '更新失败', [], 403);
+                return show(config('code.error'), '更新失败', '', 403);
             } else {
-                return show(config('code.success'), '更新成功', [], 201);
+                return show(config('code.success'), '更新成功', $data, 201);
             }
         } else {
-            return show(config('code.error'), '请求不合法', [], 400);
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 
     /**
      * 删除指定广告资源
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \think\Response
+     * @throws ApiException
      */
     public function delete($id)
     {
@@ -207,24 +268,40 @@ class Ad extends Base
         if (request()->isDelete()) {
             // 获取指定的广告
             try {
-                $data = model('GoodsBrand')->find($id);
+                $data = model('Ad')->find($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
 
             // 判断数据是否存在
-            if ($data['brand_id'] != $id) {
-                return show(config('code.error'), '数据不存在',[], 404);
+            if ($data['ad_id'] != $id) {
+                return show(config('code.error'), '数据不存在', '', 404);
             }
 
             // 判断删除条件：判断广告审核状态
             if ($data['audit_status'] == config('code.status_enable')) { // 审核通过
-                return show(config('code.error'), '删除失败：广告已审核通过', [], 403);
+                return show(config('code.error'), '删除失败：广告已审核通过', '', 403);
+            }
+
+            // 软删除
+            if ($data['is_delete'] != config('code.is_delete')) {
+                // 捕获异常
+                try {
+                    $result = model('Ad')->softDelete('ad_id', $id);
+                } catch (\Exception $e) {
+                    throw new ApiException($e->getMessage(), 500, config('code.error'));
+                }
+
+                if (!$result) {
+                    return show(config('code.error'), '移除失败', '', 403);
+                } else {
+                    return show(config('code.success'), '移除成功', '');
+                }
             }
 
             // 真删除
             try { // 捕获异常
-                $result = model('GoodsBrand')->destroy($id);
+                $result = model('Ad')->destroy($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
             }

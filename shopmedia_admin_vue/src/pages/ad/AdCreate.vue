@@ -16,7 +16,16 @@
 						<el-input v-model="form.ad_name" placeholder="输入广告名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="ad_cate_id" label="广告类别">
-						<ad-cate-select :value="form.ad_cate_id"></ad-cate-select>
+						<!-- TODO：封装公共 ad-cate-select 组件 -->
+						<!-- <ad-cate-select :value="form.ad_cate_id"></ad-cate-select> -->
+						<el-select v-model="form.ad_cate_id" placeholder="请选择…" clearable filterable>
+							<el-option
+								v-for="item in adCateList"
+								:key="item.cate_id"
+								:label="item.cate_name"
+								:value="item.cate_id">
+							</el-option>
+						</el-select>
 					</el-form-item>
 					<el-form-item prop="ad_price" label="广告价格(元)">
 						<el-input-number v-model="form.ad_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
@@ -50,16 +59,28 @@
 						<el-input v-model="form.phone" placeholder="输入广告主联系电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="shop_cate_id" label="投放店铺类别">
-						<shop-cate-select :value="form.shop_cate_id"></shop-cate-select>
+						<!-- TODO：封装公共 shop-cate-select 组件 -->
+						<!-- <shop-cate-select :value="form.shop_cate_id"></shop-cate-select> -->
+						<el-select v-model="form.shop_cate_id" placeholder="请选择…" clearable filterable>
+							<el-option
+								v-for="item in shopCateList"
+								:key="item.cate_id"
+								:label="item.cate_name"
+								:value="item.cate_id">
+							</el-option>
+						</el-select>
 					</el-form-item>
 					<el-form-item prop="region" label="投放区域">
 						<!-- TODO -->
 					</el-form-item>
-					<el-form-item prop="logo" label="logo">
-						<el-input v-model="form.logo" v-show="false" style="width:350px;"></el-input>
-						<el-upload :action="this.$url+'upload'" name="logo" :on-success="handleUploadSuccess" :limit="1">
-						<el-button size="medium" type="primary" plain icon="el-icon-upload">上传logo</el-button>
-						</el-upload>
+					<el-form-item prop="is_show" label="是否显示">
+						<el-radio-group v-model="form.is_show">
+							<el-radio :label="1">显示</el-radio>
+							<el-radio :label="0">不显示</el-radio>
+						</el-radio-group>
+					</el-form-item>
+					<el-form-item prop="sort" label="排序">
+						<el-input-number v-model="form.sort" :min="0" :step="1" :precision="0" controls-position="right"></el-input-number>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" plain @click="submitForm('ruleForm')">提交</el-button>
@@ -73,34 +94,113 @@
 </template>
 
 <script>
-	import adCateSelect from '@/pages/ad_cate/ad-cate-select.vue';
-	import shopCateSelect from '@/pages/shop_cate/shop-cate-select.vue';
+	// import adCateSelect from '@/pages/ad_cate/ad-cate-select.vue';
+	// import shopCateSelect from '@/pages/shop_cate/shop-cate-select.vue';
 	
 	export default {
 		components: {
-			adCateSelect,
-			shopCateSelect
+			// adCateSelect,
+			// shopCateSelect
 		},
 		data() {
 			return {
 				form: {
 					ad_name: '', // 广告名称
 					ad_cate_id: '', // 广告类别ID
-					ad_price: '',
-					logo: '', // 品牌logo
+					ad_price: '', // 广告价格
+					// …
 				},
 				rules: { // 验证规则
 					ad_name: [
 						{ required: true, message: '请输入广告名称', trigger: 'blur' },
 						{ min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
 					],
-					/* logo: [
-						{ required: true, message: '请上传广告logo', trigger: 'blur' }
-					] */
-				}
+					ad_cate_id: [
+						{ required: true, message: '请选择广告类别', trigger: 'change' }
+					],
+					ad_price: [
+						{ required: true, message: '请输入广告价格', trigger: 'blur' }
+					],
+					ad_datetime: [
+						{ /* type: 'date', */ required: true, message: '请选择投放时间', trigger: 'change' }
+					],
+					ad_time: [
+						{ /* type: 'date', */ required: true, message: '每日播放时间段', trigger: 'change' }
+					],
+					play_times: [
+						{ required: true, message: '请输入每日播放次数', trigger: 'blur' }
+					],
+					advertisers: [
+						{ required: true, message: '请输入广告主名称', trigger: 'blur' },
+						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+					],
+					phone: [
+						{required: true, pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码',trigger: 'blur'},
+					],
+					shop_cate_id: [
+						{ required: true, message: '请选择投放店铺类别', trigger: 'change' }
+					],
+				},
+				
+				adCateList: [], // 广告类别列表
+				shopCateList: [] // 店铺类别列表
 			}
 		},
+		mounted() {
+			this.getAdCateList(); // 获取广告类别列表
+			this.getShopCateList(); // 获取店铺类别列表
+		},
 		methods: {
+			/**
+			 * 获取广告类别列表
+			 */
+			getAdCateList() {
+				let self = this;
+				this.$axios.get(this.$url + 'ad_cate_list')
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 广告类别列表
+						self.adCateList = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
+			/**
+			 * 获取店铺类别列表
+			 */
+			getShopCateList() {
+				let self = this;
+				this.$axios.get(this.$url + 'shop_cate_list')
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 店铺类别列表
+						self.shopCateList = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
 			/**
 			 * 新增广告类别提交表单
 			 * @param {Object} formName
@@ -112,13 +212,20 @@
 						this.$axios.post(this.$url + 'ad', {
 							// 参数
 							ad_name: this.form.ad_name,
-							logo: this.form.logo
-						}, {
-							// 请求头配置
-							headers: {
-								'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
-								'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-							}
+							ad_cate_id: this.form.ad_cate_id,
+							ad_price: this.form.ad_price,
+							ad_datetime: this.form.ad_datetime,
+							ad_time: this.form.ad_time,
+							play_times: this.form.play_times,
+							advertisers: this.form.advertisers,
+							phone: this.form.phone,
+							shop_cate_id: this.form.shop_cate_id,
+							province_id: this.form.province_id,
+							city_id: this.form.city_id,
+							county_id: this.form.county_id,
+							town_id: this.form.town_id,
+							is_show: this.form.is_show,
+							sort: this.form.sort
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';
@@ -157,16 +264,6 @@
 			 */
 			back(){
 				this.$router.go(-1);
-			},
-			
-			/**
-			 * 文件上传成功时的钩子
-			 * @param {Object} response
-			 * @param {Object} file
-			 * @param {Object} fileList
-			 */
-			handleUploadSuccess(response, file, fileList){
-				console.log(file);
 			}
 		}
 	}

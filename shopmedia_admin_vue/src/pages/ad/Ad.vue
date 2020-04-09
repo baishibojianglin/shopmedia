@@ -15,10 +15,14 @@
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="6">
 						<!-- 新增 s -->
 						<router-link to="ad_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告</el-button></router-link>
 						<!-- 新增 e -->
+					</el-col>
+					<el-col :span="6" style="text-align: right;">
+						<el-button size="mini" icon="el-icon-delete" @click="getAdList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="getAdList()" v-if="formInline.is_delete == 1">返回</el-button>
 					</el-col>
 				</el-row>
 			</div>
@@ -54,9 +58,15 @@
 							<span :class="scope.row.audit_status === 0 ? 'text-info' : (scope.row.audit_status === 1 ? 'text-success' : 'text-danger')">{{scope.row.audit_status_msg}}</span>
 						</template>
 					</el-table-column>
+					<el-table-column prop="is_show" label="是否显示" width="90">
+						<template slot-scope="scope">
+							<span :class="scope.row.is_show === 1 ? 'text-success' : 'text-info'">{{scope.row.is_show === 1 ? '显示' : '不显示'}}</span>
+						</template>
+					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toAdEdit(scope.row)">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toAdEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
+							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
 							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteAd(scope)">删除</el-button>
 						</template>
 					</el-table-column>
@@ -87,7 +97,8 @@
 		data() {
 			return {
 				formInline: {
-					ad_name: '' // 分公司名称
+					ad_name: '', // 分公司名称
+					is_delete: '' // 是否删除
 				},
 				adList: [], // 广告列表
 				listPagination: {}, // 列表分页参数
@@ -99,12 +110,14 @@
 		methods: {
 			/**
 			 * 获取广告列表
+			 * @param {Object} is_delete
 			 */
-			getAdList() {
+			getAdList(is_delete) {
 				let self = this;
 				this.$axios.get(this.$url + 'ad', {
 					params: {
 						ad_name: this.formInline.ad_name,
+						is_delete: is_delete,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}/* ,
@@ -129,6 +142,7 @@
 						
 						// 广告列表
 						self.adList = self.listPagination.data;
+						self.formInline.is_delete = is_delete == 1 ? is_delete : '';
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -184,7 +198,8 @@
 			 * @param {Object} scope
 			 */
 			deleteAd(scope) {
-				this.$confirm('此操作将永久删除该广告, 是否继续?', '删除', {
+				let message = scope.row.is_delete == 1 ? '此操作将永久删除该广告，是否继续？' : '移除该分公司，放入回收站？';
+				this.$confirm(message, '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -213,6 +228,38 @@
 						type: 'info',
 						message: '已取消删除'
 					}); */
+				});
+			},
+			
+			/**
+			 * 还原回收站数据
+			 * @param {Object} row
+			 */
+			recover(row) {
+				let self = this;
+				this.$axios.put(this.$url + 'ad/' + row.ad_id, {
+					// 参数
+					is_delete: row.is_delete
+				}/* , {
+					// 请求头配置
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+					}
+				} */)
+				.then(function(res) {
+					let type = res.data.status == 1 ? 'success' : 'warning';
+					self.$message({
+						message: '还原成功',
+						type: type
+					});
+					self.getAdList();
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
 				});
 			}
 		}
