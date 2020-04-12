@@ -158,6 +158,11 @@
 						message: '目前只支持中国大陆的手机号码',
 						trigger: 'blur'
 					}],
+					region_ids: [{
+						required: true,
+						message: '请选择投放区域',
+						trigger: 'change'
+					}],
 					shop_cate_ids: [{
 						required: true,
 						message: '请选择投放店铺类别',
@@ -166,11 +171,6 @@
 					device_ids: [{
 						required: true,
 						message: '请选择投放广告屏',
-						trigger: 'change'
-					}],
-					region_ids: [{
-						required: true,
-						message: '请选择投放区域',
 						trigger: 'change'
 					}]
 				},
@@ -183,7 +183,7 @@
 				props: {
 					label: 'region_name',
 					isLeaf: 'leaf'
-				},
+				}
 			}
 		},
 		mounted() {
@@ -328,7 +328,7 @@
 							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
 						}
 					})
-					.then(function(res) {console.log('devicelist:', res)
+					.then(function(res) {
 						if (res.data.status == 1) {
 							// 设备列表
 							self.deviceList = res.data.data;

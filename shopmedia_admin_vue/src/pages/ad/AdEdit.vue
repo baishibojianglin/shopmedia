@@ -58,6 +58,11 @@
 					<el-form-item prop="phone" label="广告主电话">
 						<el-input v-model="form.phone" placeholder="输入广告主联系电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
+					<el-form-item prop="region_ids" label="投放区域">
+						<!-- Tree 树形控件（可选择层级） s -->
+						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" :default-expanded-keys="opendata" show-checkbox :default-checked-keys="checkdata" lazy @check="handleCheck"></el-tree>
+						<!-- Tree 树形控件 e -->
+					</el-form-item>
 					<el-form-item prop="shop_cate_ids" label="投放店铺类别">
 						<!-- TODO：封装公共 shop-cate-select 组件 -->
 						<!-- <shop-cate-select :value="form.shop_cate_ids"></shop-cate-select> -->
@@ -66,8 +71,10 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item prop="region" label="投放区域">
-						<!-- TODO -->
+					<el-form-item prop="device_ids" label="投放广告屏">
+						<el-checkbox-group v-model="form.device_ids">
+							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}}</el-checkbox>
+						</el-checkbox-group>
 					</el-form-item>
 					<el-form-item prop="is_show" label="是否显示">
 						<el-radio-group v-model="form.is_show">
@@ -111,7 +118,8 @@
 					ad_name: '', // 广告名称
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
-					region_ids: [] // 区域ID集合（数组）
+					region_ids: [], // 区域ID集合（数组）
+					device_ids: [] // 投放广告设备ID集合
 					// …
 				},
 				rules: { // 验证规则
@@ -141,13 +149,29 @@
 					phone: [
 						{required: true, pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码',trigger: 'blur'},
 					],
+					region_ids: [
+						{required: true, message: '请选择投放区域', trigger: 'change'},
+					],
 					shop_cate_ids: [
 						{ required: true, message: '请选择投放店铺类别', trigger: 'change' }
 					],
+					device_ids: [
+						{required: true, message: '请选择投放广告屏', trigger: 'change'}
+					]
 				},
 				
 				adCateList: [], // 广告类别列表
-				shopCateList: [] // 店铺类别列表
+				shopCateList: [], // 店铺类别列表
+				deviceList: [], // 设备列表
+				
+				// 区域 Tree 树形数据
+				props: {
+					label: 'region_name',
+					isLeaf: 'leaf'
+				},
+				
+				opendata:[1], //默认要展开的节点id
+				checkdata:[1,2] //默认要选中的节点id
 			}
 		},
 		mounted() {
@@ -170,7 +194,7 @@
 			getAdCateList() {
 				let self = this;
 				this.$axios.get(this.$url + 'ad_cate_list')
-				.then(function(res) {console.log('adcate', res)
+				.then(function(res) { //console.log('adcate', res)
 					if (res.data.status == 1) {
 						// 广告类别列表
 						self.adCateList = res.data.data;
@@ -215,6 +239,115 @@
 			},
 			
 			/**
+			 * 懒加载（区域） Tree 树形数据
+			 * @param {Object} node
+			 * @param {Object} resolve
+			 */
+			loadNode(node, resolve) {
+				let self = this;
+			
+				// 首次进入查询第一级
+				let parent_id = 0;
+				let level = 1;
+				if (node.data) { // 逐级查询
+					parent_id = node.data.region_id;
+					level = node.data.level + 1;
+				}
+			
+				this.$axios.get(this.$url + 'lazy_load_region_tree', {
+						params: {
+							parent_id: parent_id //父级ID
+						}
+					}).then(function(res) {
+						if (res.data.status == 1) {
+							const data = res.data.data;
+							data.forEach((value, index) => {
+								// 当不存在子级时，指定节点为叶子节点
+								if (value.children_count == 0) {
+									value.leaf = true;
+								}
+							})
+			
+							setTimeout(() => {
+								resolve(data);
+							}, 500);
+						} else {
+							self.$message({
+								message: '网络忙，请重试',
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function(error) {
+						self.$message({
+							message: error.response.data.message,
+							type: 'warning'
+						});
+					});
+			},
+			
+			/**
+			 * 当（区域）复选框被点击的时候触发
+			 * @param {Object} data
+			 * @param {Object} checkedObj
+			 */
+			handleCheck(data, checkedObj) {
+				// console.log('handleCheck: ', data, checkedObj);
+			
+				// 获取投放区域ID集合（含全选与半选）
+				let checkedRegionIds = this.$refs.tree.getCheckedKeys(); // 被选中的节点的 key 所组成的数组
+				let halfCheckedRegionIds = this.$refs.tree.getHalfCheckedKeys(); // 半选中的节点的 key 所组成的数组
+				this.form.region_ids = checkedRegionIds.length != 0 ? [checkedRegionIds, halfCheckedRegionIds] : []; // 判断全选是否为空 checkedRegionIds.length ?= 0，用于验证 Tree 树形在表单中的选中状态
+				
+				// 获取设备列表
+				this.getDeviceList();
+			},
+			
+			/**
+			 * （投放店铺类别）选中值发生变化时触发
+			 */
+			selectShopCateChange(data) {
+				// console.log('shopCateIds:', data)
+				
+				// 获取设备列表
+				this.getDeviceList();
+			},
+			
+			/**
+			 * 获取设备列表
+			 */
+			getDeviceList() {
+				let self = this;
+				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0) {
+					this.$axios.get(this.$url + 'device_list', {
+						params: {
+							region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
+							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
+						}
+					})
+					.then(function(res) {
+						if (res.data.status == 1) {
+							// 设备列表
+							self.deviceList = res.data.data;
+						} else {
+							self.$message({
+								message: '网络忙，请重试',
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function(error) {
+						self.$message({
+							message: error.response.data.message,
+							type: 'warning'
+						});
+					});
+				} else {
+					this.deviceList = []; // 初始化设备列表
+				}
+			},
+			
+			/**
 			 * 获取指定的广告信息
 			 */
 			getAd() {
@@ -225,7 +358,11 @@
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
-				.then(function(res) {console.log('ad', res)
+				.then(function(res) {
+					console.log('ad', res)
+					console.log('region_ids', res.data.data.region_ids)
+					console.log('region_ids_obj', JSON.parse(res.data.data.region_ids))
+					
 					if (res.data.status == 1) {
 						// 供应商账户信息
 						self.form = res.data.data;
