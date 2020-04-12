@@ -25,6 +25,7 @@ Route::resource('admin', 'admin/admin');
 
 // 区域
 Route::resource('region', 'admin/region');
+Route::get('lazy_load_region_tree', 'admin/region/lazyLoadRegionTree'); // 懒加载区域树形数据
 
 // 分公司
 Route::resource('company', 'admin/company');
@@ -48,6 +49,7 @@ Route::resource('user_shop', 'admin/UserShop');
 
 // 广告屏管理
 Route::resource('device','admin/Device');
+Route::get('device_list','admin/Device/deviceList');  // 广告设备列表（不分页）
 Route::post('addDevice','admin/Device/addDevice');
 Route::post('getDevice','admin/Device/getDevice');
 Route::get('getMarkers','admin/Device/getMarkers');

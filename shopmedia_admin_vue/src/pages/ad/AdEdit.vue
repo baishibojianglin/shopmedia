@@ -58,15 +58,11 @@
 					<el-form-item prop="phone" label="广告主电话">
 						<el-input v-model="form.phone" placeholder="输入广告主联系电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="shop_cate_id" label="投放店铺类别">
+					<el-form-item prop="shop_cate_ids" label="投放店铺类别">
 						<!-- TODO：封装公共 shop-cate-select 组件 -->
-						<!-- <shop-cate-select :value="form.shop_cate_id"></shop-cate-select> -->
-						<el-select v-model="form.shop_cate_id" placeholder="请选择…" clearable filterable>
-							<el-option
-								v-for="item in shopCateList"
-								:key="item.cate_id"
-								:label="item.cate_name"
-								:value="item.cate_id">
+						<!-- <shop-cate-select :value="form.shop_cate_ids"></shop-cate-select> -->
+						<el-select v-model="form.shop_cate_ids" multiple placeholder="请选择…" clearable filterable>
+							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -115,6 +111,7 @@
 					ad_name: '', // 广告名称
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
+					region_ids: [] // 区域ID集合（数组）
 					// …
 				},
 				rules: { // 验证规则
@@ -144,7 +141,7 @@
 					phone: [
 						{required: true, pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码',trigger: 'blur'},
 					],
-					shop_cate_id: [
+					shop_cate_ids: [
 						{ required: true, message: '请选择投放店铺类别', trigger: 'change' }
 					],
 				},
@@ -173,7 +170,7 @@
 			getAdCateList() {
 				let self = this;
 				this.$axios.get(this.$url + 'ad_cate_list')
-				.then(function(res) {
+				.then(function(res) {console.log('adcate', res)
 					if (res.data.status == 1) {
 						// 广告类别列表
 						self.adCateList = res.data.data;
@@ -228,7 +225,7 @@
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
-				.then(function(res) {
+				.then(function(res) {console.log('ad', res)
 					if (res.data.status == 1) {
 						// 供应商账户信息
 						self.form = res.data.data;
@@ -265,7 +262,7 @@
 							play_times: this.form.play_times,
 							advertisers: this.form.advertisers,
 							phone: this.form.phone,
-							shop_cate_id: this.form.shop_cate_id,
+							shop_cate_ids: this.form.shop_cate_ids,
 							province_id: this.form.province_id,
 							city_id: this.form.city_id,
 							county_id: this.form.county_id,

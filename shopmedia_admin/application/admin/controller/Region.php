@@ -51,6 +51,43 @@ class Region extends Base
     }
 
     /**
+     * 懒加载区域树形数据
+     * @return \think\response\Json
+     */
+    public function lazyLoadRegionTree()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 查询条件
+        $map['parent_id'] = $param['parent_id'];
+
+        // 查询
+        try {
+            $data = model('Region')->field('region_id, region_name, level, parent_id')->where($map)->cache(true, 10)->select();
+        } catch (\Exception $e) {
+            return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+        }
+
+        if ($data) {
+            foreach ($data as $key => $value) {
+                // 判断是否存在下级区域
+                $sonRegionCount = model('Region')->field('region_id')->where(['parent_id' => $value['region_id']])->count();
+                $data[$key]['children_count'] = $sonRegionCount; // 定义 children_count
+            }
+
+            return show(config('code.success'), 'OK', $data);
+        } else {
+            return show(config('code.error'), 'Not Found', '', 404);
+        }
+    }
+
+    /**
      * 保存新建的区域资源
      *
      * @param  \think\Request  $request

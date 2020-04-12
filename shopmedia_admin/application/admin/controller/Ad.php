@@ -55,7 +55,19 @@ class Ad extends Base
                 foreach ($data as $key => $value) {
                     $data[$key]['audit_status_msg'] = $auditStatus[$value['audit_status']]; // 定义审核状态信息
                     $data[$key]['ad_cate_name'] = $adCate[$value['ad_cate_id']]; // 定义广告类别名称
-                    $data[$key]['shop_cate_name'] = $shopCate[$value['shop_cate_id']]; // 定义店铺类别名称
+
+                    // 定义店铺类别名称集合
+                    $shopCateNames = [];
+                    $shopCateIds = explode(',', $value['shop_cate_ids']);
+                    foreach ($shopCate as $k => $v) {
+                        foreach ($shopCateIds as $k1 => $v1) {
+                            if ($k == $v1) {
+                                $shopCateNames[] = $shopCate[$v1];
+                            }
+                        }
+                    }
+                    $data[$key]['shop_cate_names'] = implode('、', $shopCateNames);
+
                     $data[$key]['start_datetime'] = $value['start_datetime'] ? date('Y-m-d H:i:s', $value['start_datetime']) : ''; // 投放时间
                     $data[$key]['end_datetime'] = $value['end_datetime'] ? date('Y-m-d H:i:s', $value['end_datetime']) : ''; // 结束时间
                     $data[$key]['audit_time'] = $value['audit_time'] ? date('Y-m-d H:i:s', $value['audit_time']) : ''; // 审核时间
@@ -91,6 +103,18 @@ class Ad extends Base
                 $data['start_time'] = date('H:i:s', strtotime($data['ad_time'][0])); // 每日播放时间段（开始时间）
                 $data['end_time'] = date('H:i:s', strtotime($data['ad_time'][1])); // 每日播放时间段（结束时间）
             }
+            if (!empty($data['shop_cate_ids'])) { // 投放店铺类别ID集合
+                $data['shop_cate_ids'] = implode(',', $data['shop_cate_ids']);
+            }
+            if (!empty($data['region_ids'])) { // 投放区域ID集合（含全选与半选）
+                $data['region_ids'] = json_encode([
+                    'checked' => $data['region_ids'][0], // 全选
+                    'half' => $data['region_ids'][1] // 半选
+                ]);
+            }
+            if (!empty($data['device_ids'])) { // 投放广告设备ID集合
+                $data['device_ids'] = implode(',', $data['device_ids']);
+            }
 
             // validate验证数据合法性
             /*$validate = validate('');
@@ -102,7 +126,7 @@ class Ad extends Base
             try {
                 $id = model('Ad')->add($data, 'ad_id');
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
             }
             if ($id) {
                 return show(config('code.success'), '新增成功', '', 201);
@@ -140,6 +164,7 @@ class Ad extends Base
                     date('c', strtotime($data['start_time'])),
                     date('c', strtotime($data['end_time']))
                 ];
+                $data['shop_cate_ids'] = explode(',', $data['shop_cate_ids']); // 投放店铺类别ID集合
 
                 return show(config('code.success'), 'ok', $data);
             } else {
@@ -208,20 +233,11 @@ class Ad extends Base
             if (!empty($param['phone'])) { // 广告主电话
                 $data['phone'] = trim($param['phone']);
             }
-            if (!empty($param['shop_cate_id'])) { // 投放店铺类别ID
-                $data['shop_cate_id'] = intval($param['shop_cate_id']);
+            if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID
+                $data['shop_cate_ids'] = intval($param['shop_cate_ids']);
             }
-            if (isset($param['province_id'])) { // 省份
-                $data['province_id'] = input('param.province_id', null, 'intval');
-            }
-            if (isset($param['city_id'])) { // 城市
-                $data['city_id'] = input('param.city_id', null, 'intval');
-            }
-            if (isset($param['county_id'])) { // 区县
-                $data['county_id'] = input('param.county_id', null, 'intval');
-            }
-            if (isset($param['town_id'])) { // 乡镇街道
-                $data['town_id'] = input('param.town_id', null, 'intval');
+            if (!empty($param['region_ids'])) { // 投放区域ID集合（含全选与半选）
+                $data['region_ids'] = json_encode(trim($param['region_ids']));
             }
             if (isset($param['audit_status'])) { // 审核状态
                 $data['audit_status'] = input('param.audit_status', null, 'intval');
