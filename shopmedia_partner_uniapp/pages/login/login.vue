@@ -27,14 +27,14 @@
 			<navigator style="color: #000;" url="../pwd/pwd">忘记密码</navigator>
 		</view>
 
-		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
+ 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="oauth(provider.value)"></image>
 				<!-- #ifdef MP-WEIXIN -->
 				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
 				<!-- #endif -->
 			</view>
-		</view>
+		</view> 
 	</view>
 </template>
 
@@ -140,48 +140,54 @@
 						phone: this.phone,
 						password: this.password
 					},
-					header: /* getApp().globalData.commonHeaders, */ {
-						'content-type': "application/json; charset=utf-8",
-						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-						'version': getApp().globalData.version, // 应用大版本号
-						'model': getApp().globalData.systemInfo.model, // 手机型号
-						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did, // 设备号
-					},
-					method: 'PUT',
+					// header: /* getApp().globalData.commonHeaders, */ {
+					// 	'content-type': "application/json; charset=utf-8",
+					// 	'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+					// 	'version': getApp().globalData.version, // 应用大版本号
+					// 	'model': getApp().globalData.systemInfo.model, // 手机型号
+					// 	'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
+					// 	'did': getApp().globalData.did, // 设备号
+					// },
+					method: 'POST',
 					success: function(res) {
+uni.showModal({
+    title: '提示',
+    content: res.data,
+    success: function (res) {
+        if (res.confirm) {
+            console.log('用户点击确定');
+        } else if (res.cancel) {
+            console.log('用户点击取消');
+        }
+    }
+});
+						//console.log(res.data);
+						//return false;
 						// console.log('login success', res);
-						if (1 == res.data.status) {
-							let userInfo = res.data.data;
+						// if (1 == res.data.status) {
+						// 	let userInfo = res.data.data;
 							
-							// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
-							/* 存储的登录状态数据（非vuex管理登录状态） s */
-							uni.setStorage({
-								key: 'login_info',
-								data: {
-									'has_login': true, // 是否登录
-									'user_info': userInfo // 存放用户信息
-								}
-							})
-							/* 存储的登录状态数据（非vuex管理登录状态） e */
+						// 	// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
+						// 	/* 存储的登录状态数据（非vuex管理登录状态） s */
+						// 	uni.setStorage({
+						// 		key: 'login_info',
+						// 		data: {
+						// 			'has_login': true, // 是否登录
+						// 			'user_info': userInfo // 存放用户信息
+						// 		}
+						// 	})
+						// 	/* 存储的登录状态数据（非vuex管理登录状态） e */
 							
-							// self.toMain(userInfo); // 跳转到首页
-							uni.reLaunch({
-								url: '../main/main',
-							});
-						} else {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message, // '用户账号或密码不正确'
-							});
-						}
-					},
-					fail(error) {
-						console.log('bindLogin失败：', error);
-						uni.showToast({
-							icon: 'none',
-							title: '网络忙…'
-						});
+						// 	// self.toMain(userInfo); // 跳转到首页
+						// 	uni.reLaunch({
+						// 		url: '../main/main',
+						// 	});
+						// } else {
+						// 	uni.showToast({
+						// 		icon: 'none',
+						// 		title: res.data.message, // '用户账号或密码不正确'
+						// 	});
+						// }
 					}
 				})
 			},
