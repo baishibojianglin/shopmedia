@@ -38,7 +38,7 @@ class Device extends Base
 			// 获取分页page、size
 			$this->getPageAndSize($param);
 
-			// 获取分公司列表数据
+			// 获取广告设备列表数据
 			try {
 				$data = model('Device')->getDevice($map, $this->size);
 			} catch (\Exception $e) {
@@ -60,6 +60,39 @@ class Device extends Base
 		} else {
 			return show(config('code.error'), '请求不合法', [], 400);
 		}
+	}
+
+	/**
+	 * 广告设备列表（不分页，用于 Select 选择器等）
+	 * @return \think\response\Json
+	 */
+	public function deviceList()
+	{
+		// 传入的参数
+		$param = input('param.');
+
+		// 查询条件
+		$map = [];
+		$map['status'] = config('code.status_enable');
+		$map['is_delete'] = config('code.not_delete');
+		if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
+			$map['province_id|city_id|area_id|street_id'] = ['in', $param['region_ids']];
+		}
+		if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
+			$map['shopcate'] = ['in', $param['shop_cate_ids']];
+		}
+
+		// 获取广告设备列表数据
+		$data = model('Device')->field('device_id, brand, model, size, province_id, city_id, area_id, street_id, address, shopname, shopcate')->where($map)->select();
+		if ($data) {
+			// 处理数据
+			$shopCate = config('code.shop_cate'); // 店铺类别
+			foreach ($data as $key => $value) {
+				$data[$key]['shop_cate_name'] = $shopCate[$value['shopcate']] ? : '（其他）';
+			}
+		}
+
+		return show(config('code.success'), 'OK', $data);
 	}
 
 	/**

@@ -22,7 +22,8 @@
 									<router-link to="/home/companycreate"><dd id='menu31' :class="activevalue[31]?activeclass:''" @click="menuactive(31,3,1)">新增分公司</dd></router-link>
 									<router-link to="/home/company"><dd id='menu32' :class="activevalue[32]?activeclass:''" @click="menuactive(32,3,2)">分公司列表</dd></router-link>
 								</div>
-							</el-collapse-transition>																		
+							</el-collapse-transition>
+							
 							
 							<dt @click="menush(1)">
 								<span class="el-icon-mobile" id="menu1"> 广告屏管理</span>
@@ -32,6 +33,17 @@
 								<div v-show="menuvalue[1]">
 									<router-link to="/home/adddevice"><dd id='menu11' :class="activevalue[11]?activeclass:''"  @click="menuactive(11,1,1)">新增广告屏</dd></router-link>
 									<router-link to="/home/device"><dd id='menu12' :class="activevalue[12]?activeclass:''"  @click="menuactive(12,1,2)">广告屏列表</dd></router-link>
+								</div>
+							</el-collapse-transition>
+							
+							
+							<dt @click="menush(6)">
+								<span class="el-icon-wind-power" id="menu6"> 广告管理</span>
+								<span class="fr derection" :class="menuvalue[6]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[6]">
+									<router-link to="/home/ad"><dd id='menu61' :class="activevalue[61]?activeclass:''"  @click="menuactive(61,6,1)">广告</dd></router-link>
 								</div>
 							</el-collapse-transition>
 							
