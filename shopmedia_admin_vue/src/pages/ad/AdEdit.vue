@@ -60,7 +60,7 @@
 					</el-form-item>
 					<el-form-item prop="region_ids" label="投放区域">
 						<!-- Tree 树形控件（可选择层级） s -->
-						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" :default-expanded-keys="opendata" show-checkbox :default-checked-keys="checkdata" lazy @check="handleCheck"></el-tree>
+						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" :default-expanded-keys="expandedKeys" show-checkbox :default-checked-keys="checkedKeys" lazy @check="handleCheck"></el-tree>
 						<!-- Tree 树形控件 e -->
 					</el-form-item>
 					<el-form-item prop="shop_cate_ids" label="投放店铺类别">
@@ -119,6 +119,7 @@
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
 					region_ids: [], // 区域ID集合（数组）
+					shop_cate_ids: [], // 投放店铺类别ID集合
 					device_ids: [] // 投放广告设备ID集合
 					// …
 				},
@@ -169,9 +170,8 @@
 					label: 'region_name',
 					isLeaf: 'leaf'
 				},
-				
-				opendata:[1], //默认要展开的节点id
-				checkdata:[1,2] //默认要选中的节点id
+				expandedKeys: [], // 默认展开的节点的 key 的数组
+				checkedKeys: [] // 默认勾选的节点的 key 的数组
 			}
 		},
 		mounted() {
@@ -359,13 +359,15 @@
 					} */
 				})
 				.then(function(res) {
-					console.log('ad', res)
-					console.log('region_ids', res.data.data.region_ids)
-					console.log('region_ids_obj', JSON.parse(res.data.data.region_ids))
-					
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 广告信息
 						self.form = res.data.data;
+						console.log('shop_cate_ids', self.form.shop_cate_ids)
+						
+						// 广告投放区域
+						self.form.region_ids = JSON.parse(res.data.data.region_ids);
+						self.expandedKeys = self.form.region_ids.half; // 半选时，默认展开
+						self.checkedKeys = self.form.region_ids.checked; // 全选时，默认勾选
 					} else {
 						self.$message({
 							message: '网络忙，请重试',

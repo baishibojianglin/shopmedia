@@ -33,16 +33,16 @@
 					<el-table-column prop="ad_name" label="广告名称" fixed min-width="120"></el-table-column>
 					<el-table-column prop="ad_cate_name" label="广告类别" width="120"></el-table-column>
 					<el-table-column prop="ad_price" label="广告价格(元)" width="120"></el-table-column>
-					<el-table-column label="投放时间">
+					<el-table-column label="投放时间" header-align="center">
 						<el-table-column prop="start_datetime" label="投放开始时间" width="180"></el-table-column>
 						<el-table-column prop="end_datetime" label="投放结束时间" width="180"></el-table-column>
 					</el-table-column>
-					<el-table-column label="每日播放时间段">
+					<el-table-column label="每日播放时间段" header-align="center">
 						<el-table-column prop="start_time" label="播放开始时间" width="120"></el-table-column>
 						<el-table-column prop="end_time" label="播放结束时间" width="120"></el-table-column>
 					</el-table-column>
 					<el-table-column prop="play_times" label="每日播放次数" width="120"></el-table-column>
-					<el-table-column label="广告主">
+					<el-table-column label="广告主" header-align="center">
 						<el-table-column prop="advertisers" label="广告主名称" width="120"></el-table-column>
 						<el-table-column prop="phone" label="广告主电话" width="120"></el-table-column>
 					</el-table-column>

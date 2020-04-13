@@ -43,7 +43,7 @@
 							</dt>
 							<el-collapse-transition>
 								<div v-show="menuvalue[6]">
-									<router-link to="/home/ad"><dd id='menu61' :class="activevalue[61]?activeclass:''"  @click="menuactive(61,1,1)">广告</dd></router-link>
+									<router-link to="/home/ad"><dd id='menu61' :class="activevalue[61]?activeclass:''"  @click="menuactive(61,6,1)">广告</dd></router-link>
 								</div>
 							</el-collapse-transition>
 							

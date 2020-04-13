@@ -83,7 +83,14 @@ class Device extends Base
 		}
 
 		// 获取广告设备列表数据
-		$data = model('Device')->where($map)->select();
+		$data = model('Device')->field('device_id, brand, model, size, province_id, city_id, area_id, street_id, address, shopname, shopcate')->where($map)->select();
+		if ($data) {
+			// 处理数据
+			$shopCate = config('code.shop_cate'); // 店铺类别
+			foreach ($data as $key => $value) {
+				$data[$key]['shop_cate_name'] = $shopCate[$value['shopcate']] ? : '（其他）';
+			}
+		}
 
 		return show(config('code.success'), 'OK', $data);
 	}

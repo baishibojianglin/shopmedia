@@ -59,8 +59,9 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="device_ids" label="投放广告屏">
-						<el-checkbox-group v-model="form.device_ids">
-							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}}</el-checkbox>
+						<el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange" v-if="deviceList.length != 0 ? true : false">全选</el-checkbox>
+						<el-checkbox-group v-model="form.device_ids" @change="handleCheckedDeviceChange">
+							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'店铺类别：' + item.shop_cate_name + '，' + '店铺：' + item.shopname + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
 						</el-checkbox-group>
 					</el-form-item>
 					<el-form-item prop="is_show" label="是否显示">
@@ -99,80 +100,28 @@
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
 					region_ids: [], // 区域ID集合（数组）
+					shop_cate_ids: [], // 投放店铺类别ID集合
 					device_ids: [] // 投放广告设备ID集合
 					// …
 				},
 				rules: { // 验证规则
-					ad_name: [{
-							required: true,
-							message: '请输入广告名称',
-							trigger: 'blur'
-						},
-						{
-							min: 1,
-							max: 20,
-							message: '长度在 1 到 20 个字符',
-							trigger: 'blur'
-						}
+					ad_name: [
+						{required: true, message: '请输入广告名称', trigger: 'blur'},
+						{min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
 					],
-					ad_cate_id: [{
-						required: true,
-						message: '请选择广告类别',
-						trigger: 'change'
-					}],
-					ad_price: [{
-						required: true,
-						message: '请输入广告价格',
-						trigger: 'blur'
-					}],
-					ad_datetime: [{ /* type: 'date', */
-						required: true,
-						message: '请选择投放时间',
-						trigger: 'change'
-					}],
-					ad_time: [{ /* type: 'date', */
-						required: true,
-						message: '每日播放时间段',
-						trigger: 'change'
-					}],
-					play_times: [{
-						required: true,
-						message: '请输入每日播放次数',
-						trigger: 'blur'
-					}],
-					advertisers: [{
-							required: true,
-							message: '请输入广告主名称',
-							trigger: 'blur'
-						},
-						{
-							min: 2,
-							max: 20,
-							message: '长度在 2 到 20 个字符',
-							trigger: 'blur'
-						}
+					ad_cate_id: [{required: true, message: '请选择广告类别', trigger: 'change'}],
+					ad_price: [{required: true, message: '请输入广告价格', trigger: 'blur'}],
+					ad_datetime: [{ /* type: 'date', */ required: true, message: '请选择投放时间',trigger: 'change'}],
+					ad_time: [{ /* type: 'date', */ required: true, message: '每日播放时间段', trigger: 'change'}],
+					play_times: [{required: true, message: '请输入每日播放次数', trigger: 'blur'}],
+					advertisers: [
+						{required: true, message: '请输入广告主名称', trigger: 'blur'},
+						{min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur'}
 					],
-					phone: [{
-						required: true,
-						pattern: /^1[34578]\d{9}$/,
-						message: '目前只支持中国大陆的手机号码',
-						trigger: 'blur'
-					}],
-					region_ids: [{
-						required: true,
-						message: '请选择投放区域',
-						trigger: 'change'
-					}],
-					shop_cate_ids: [{
-						required: true,
-						message: '请选择投放店铺类别',
-						trigger: 'change'
-					}],
-					device_ids: [{
-						required: true,
-						message: '请选择投放广告屏',
-						trigger: 'change'
-					}]
+					phone: [{required: true, pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码', trigger: 'blur'}],
+					region_ids: [{required: true, message: '请选择投放区域', trigger: 'change'}],
+					shop_cate_ids: [{required: true, message: '请选择投放店铺类别', trigger: 'change'}],
+					device_ids: [{required: true, message: '请选择投放广告屏', trigger: 'change'}]
 				},
 
 				adCateList: [], // 广告类别列表
@@ -183,7 +132,11 @@
 				props: {
 					label: 'region_name',
 					isLeaf: 'leaf'
-				}
+				},
+				
+				// 投放广告屏复选框全选效果
+				checkAll: false,
+				isIndeterminate: false
 			}
 		},
 		mounted() {
@@ -348,6 +301,31 @@
 				} else {
 					this.deviceList = []; // 初始化设备列表
 				}
+			},
+
+			/**
+			 * 设备全选效果
+			 * @param {Object} val
+			 */
+			handleCheckAllChange(val) {
+				// 设备ID集合
+				let deviceIds = [];
+				this.deviceList.forEach((item) => {
+					deviceIds.push(item.device_id);
+				})
+				this.form.device_ids = val ? deviceIds : [];
+				
+				this.isIndeterminate = false;
+			},
+
+			/**
+			 * 设备选中状态变化时触发，用于显示全选框效果等
+			 * @param {Object} value
+			 */
+			handleCheckedDeviceChange(value) {
+				let checkedCount = value.length;
+				this.checkAll = checkedCount === this.deviceList.length;
+				this.isIndeterminate = checkedCount > 0 && checkedCount < this.deviceList.length;
 			},
 
 			/**
