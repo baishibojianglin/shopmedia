@@ -14,7 +14,7 @@ use think\Db;
  * Class Login
  * @package app\api\controller
  */
-class Login extends Controller
+class Login extends Base
 {
     /**
      * 用户登录
@@ -25,77 +25,75 @@ class Login extends Controller
      */
     public function login()
     {
-         $test['name']='1213'
-          return json($test);
         // 判断是否为PUT请求
-        // if (!request()->isPut()) {
-        //     return show(config('code.error'), '请求不合法', [], 400);
-        // }
+        if (!request()->isPut()) {
+            return show(config('code.error'), '请求不合法', [], 400);
+        }
 
-        // // 传入的参数
-        // $param = input('param.');
+        // 传入的参数
+        $param = input('param.');
 
-        // // 判断传入的参数是否存在
-        // // 手机号码
-        // if (empty($param['phone'])) {
-        //     return show(config('code.error'), '手机号码不能为空', [], 404);
-        // }/* else {
-        //     // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
-        //     $param['phone'] = (new Aes())->decrypt($param['phone']);
-        // }*/
+        // 判断传入的参数是否存在
+        // 手机号码
+        if (empty($param['phone'])) {
+            return show(config('code.error'), '手机号码不能为空', [], 404);
+        }/* else {
+            // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
+            $param['phone'] = (new Aes())->decrypt($param['phone']);
+        }*/
 
-        // // 密码
-        // if (empty($param['password'])) {
-        //     return show(config('code.error'), '密码不能为空', [], 404);
-        // }
+        // 密码
+        if (empty($param['password'])) {
+            return show(config('code.error'), '密码不能为空', [], 404);
+        }
 
 
-        // // validate验证
-        // $validate = validate('User');
-        // if (!$validate->check($param, [], 'login')) {
-        //     return show(config('code.error'), $validate->getError(), [], 403);
-        // }
+        // validate验证
+        $validate = validate('User');
+        if (!$validate->check($param, [], 'login')) {
+            return show(config('code.error'), $validate->getError(), [], 403);
+        }
 
-        // // 设置登录的唯一性token
-        // $token = IAuth::setAppLoginToken($param['phone']);
-        // $data = [
-        //     'token' => $token, // token
-        //     'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
-        // ];
+        // 设置登录的唯一性token
+        $token = IAuth::setAppLoginToken($param['phone']);
+        $data = [
+            'token' => $token, // token
+            'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+        ];
 
-        // // 查询该手机号用户是否存在
-        // $user = User::get(['phone' => $param['phone']]);
-        // if ($user && $user['status'] == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
-        //     // 当通过密码登录时，判断密码是否正确
-        //     if (!empty($param['password'])) {
-        //         if (IAuth::encrypt($param['password']) != $user['password']) {
-        //             return show(config('code.error'), '密码错误', [], 403);
-        //         }
-        //     }
+        // 查询该手机号用户是否存在
+        $user = User::get(['phone' => $param['phone']]);
+        if ($user && $user['status'] == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
+            // 当通过密码登录时，判断密码是否正确
+            if (!empty($param['password'])) {
+                if (IAuth::encrypt($param['password']) != $user['password']) {
+                    return show(config('code.error'), '密码错误', [], 403);
+                }
+            }
 
-        //     // 更新token和token失效时间
-        //     try { // 捕获异常
-        //         $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
-        //     } catch (\Exception $e) {
-        //         throw new ApiException($e->getMessage(), 500, config('code.error'));
-        //     }
-        // } else {
-        //     return show(config('code.error'), '用户不存在', [], 404);
-        // }
+            // 更新token和token失效时间
+            try { // 捕获异常
+                $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
+            } catch (\Exception $e) {
+                throw new ApiException($e->getMessage(), 500, config('code.error'));
+            }
+        } else {
+            return show(config('code.error'), '用户不存在', [], 404);
+        }
 
-        // // 判断是否登录成功
-        // if ($id) {
-        //     // 返回token给客户端
-        //     $result = [
-        //         'token' => (new Aes())->encrypt($token . '&' . $user['user_id']), // AES加密（自定义拼接字符串）
-        //         'user_id' => $user['user_id'],
-        //         'user_name' => $user['user_name'],
-        //         'phone' => $user['phone'],
-        //     ];
-        //     return show(config('code.success'), 'OK', $result);
-        // } else {
-        //     return show(config('code.error'), '用户登录失败', [], 403);
-        // }
+        // 判断是否登录成功
+        if ($id) {
+            // 返回token给客户端
+            $result = [
+                'token' => (new Aes())->encrypt($token . '&' . $user['user_id']), // AES加密（自定义拼接字符串）
+                'user_id' => $user['user_id'],
+                'user_name' => $user['user_name'],
+                'phone' => $user['phone'],
+            ];
+            return show(config('code.success'), 'OK', $result);
+        } else {
+            return show(config('code.error'), '用户登录失败', [], 403);
+        }
     }
 
     /**

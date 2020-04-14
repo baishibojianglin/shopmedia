@@ -125,8 +125,8 @@ if (typeof plus !== 'undefined') {
 if (uni.restoreGlobal) {
   uni.restoreGlobal(weex, plus, setTimeout, clearTimeout, setInterval, clearInterval);
 }
-__definePage('pages/login/login', function () {return Vue.extend(__webpack_require__(/*! pages/login/login.vue */ 14).default);});
 __definePage('pages/main/main', function () {return Vue.extend(__webpack_require__(/*! pages/main/main.vue */ 2).default);});
+__definePage('pages/login/login', function () {return Vue.extend(__webpack_require__(/*! pages/login/login.vue */ 14).default);});
 __definePage('pages/reg/reg', function () {return Vue.extend(__webpack_require__(/*! pages/reg/reg.vue */ 38).default);});
 __definePage('pages/reg/book', function () {return Vue.extend(__webpack_require__(/*! pages/reg/book.vue */ 46).default);});
 __definePage('pages/pwd/pwd', function () {return Vue.extend(__webpack_require__(/*! pages/pwd/pwd.vue */ 51).default);});
@@ -233,13 +233,16 @@ var render = function() {
                   latitude: _vm._$g(3, "a-latitude"),
                   longitude: _vm._$g(3, "a-longitude"),
                   markers: _vm._$g(3, "a-markers"),
-                  "enable-satellite": true,
+                  "enable-satellite": false,
                   _i: 3
                 }
               })
             ],
             1
-          )
+          ),
+          _c("u-col", { attrs: { _i: 4 } }, [_vm._v("城市：成都")]),
+          _c("u-col", { attrs: { _i: 5 } }, [_vm._v("总数：5023")]),
+          _c("u-col", { attrs: { _i: 6 } }, [_vm._v("可售：37")])
         ],
         1
       )
@@ -336,7 +339,7 @@ exports = module.exports = __webpack_require__(/*! ./node_modules/css-loader/lib
 
 
 // module
-exports.push([module.i, "\n.content{\n\tmargin: 0;\n\tpadding: 0;\n}\n.contain-map{\n\tmargin: 0;\n\tpadding: 0;\n}\n.map{\n   width: 100%;\n   height: 250px;\n   margin: 0;\n   padding: 0;\n}\n", ""]);
+exports.push([module.i, "\n.content{\n\tmargin: 0;\n\tpadding: 0;\t\n\ttext-align: center;\n}\n.contain-map{\n\tmargin: 0;\n\tpadding: 0;\n}\n.map{\n   width: 100%;\n   height: 250px;\n   margin: 0;\n   padding: 0;\n}\n", ""]);
 
 // exports
 
@@ -960,12 +963,16 @@ var render = function() {
         [
           _c(
             "v-uni-view",
-            { staticClass: _vm._$g(5, "sc"), attrs: { _i: 5 } },
+            {
+              staticClass: _vm._$g(5, "sc"),
+              staticStyle: { "line-height": "60px" },
+              attrs: { _i: 5 }
+            },
             [
               _c(
                 "v-uni-text",
                 { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
-                [_vm._v("手机号")]
+                [_vm._v("手机")]
               ),
               _c("m-input", {
                 staticClass: _vm._$g(7, "sc"),
@@ -981,7 +988,11 @@ var render = function() {
           ),
           _c(
             "v-uni-view",
-            { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
+            {
+              staticClass: _vm._$g(8, "sc"),
+              staticStyle: { "line-height": "60px" },
+              attrs: { _i: 8 }
+            },
             [
               _c(
                 "v-uni-text",

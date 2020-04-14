@@ -7,11 +7,11 @@
 		</u-row>
 
 		<view class="input-group">
-			<view class="input-row border">
-				<text class="title">手机号</text>
+			<view class="input-row border" style="line-height: 60px;">
+				<text class="title">手机</text>
 				<m-input class="m-input" type="text" clearable focus v-model="phone" placeholder="请输入手机号"></m-input>
 			</view>
-			<view class="input-row">
+			<view class="input-row" style="line-height: 60px;">
 				<text class="title">密码</text>
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
@@ -140,14 +140,14 @@
 						phone: this.phone,
 						password: this.password
 					},
-					// header: /* getApp().globalData.commonHeaders, */ {
-					// 	'content-type': "application/json; charset=utf-8",
-					// 	'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-					// 	'version': getApp().globalData.version, // 应用大版本号
-					// 	'model': getApp().globalData.systemInfo.model, // 手机型号
-					// 	'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-					// 	'did': getApp().globalData.did, // 设备号
-					// },
+					header: /* getApp().globalData.commonHeaders, */ {
+						'content-type': "application/json; charset=utf-8",
+						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+						'version': getApp().globalData.version, // 应用大版本号
+						'model': getApp().globalData.systemInfo.model, // 手机型号
+						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
+						'did': getApp().globalData.did, // 设备号
+					},
 					method: 'POST',
 					success: function(res) {
 uni.showModal({

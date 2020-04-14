@@ -2,7 +2,7 @@
 
 use think\Route;
 
-/* 后台管理系统路由 s */
+/*------------------------------- 后台管理系统路由 ---------------------------------s */
 
 // 登录
 Route::post('login','admin/Login/login');
@@ -52,7 +52,7 @@ Route::resource('device','admin/Device');
 Route::get('device_list','admin/Device/deviceList');  // 广告设备列表（不分页）
 Route::post('addDevice','admin/Device/addDevice');
 Route::post('getDevice','admin/Device/getDevice');
-Route::get('getMarkers','admin/Device/getMarkers');
+
 
 // 广告
 Route::resource('ad','admin/Ad');
@@ -62,13 +62,20 @@ Route::get('ad_cate_list','admin/AdCate/adCateList'); // 广告类别列表（�
 // 店铺类别
 Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）
 
+
+
+
+
+
+
+
+
 /* 后台管理系统路由 e */
 
-
-/* 客户端路由 s */
+/* -----------------------客户端路由 ------------------------------s */
 
 // 登录与注册
-Route::post('api/login', 'api/login/login'); // 登录
+Route::put('api/login', 'api/login/login'); // 登录
 Route::post('api/register', 'api/login/register'); // 注册
 Route::put('api/pwd', 'api/login/pwd'); // 找回密码
 Route::put('api/logout', 'api/login/logout'); // 退出登录
@@ -78,5 +85,8 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 
 // 用户
 Route::resource('api/user', 'api/user');
+
+//业务员
+Route::get('api/getMarkers','admin/Device/getMarkers');
 
 /* 客户端路由 e */
