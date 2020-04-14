@@ -58,7 +58,7 @@
 			 */
 			bindLogout() {
 				this.userData = {};
-				this.logout(); // TODO：使用vuex管理登录状态时开启
+				// this.logout(); // TODO：使用vuex管理登录状态时开启
 				// 根据键名移除对应位置的缓存数据（非vuex管理登录状态）
 				uni.removeStorage({
 					key: 'login_info',
