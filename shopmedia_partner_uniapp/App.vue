@@ -40,7 +40,7 @@
 	/**
 	 * 判断是否登录（非vuex管理登录状态）
 	 */
-	/* global.isLogin = function() {
+	global.isLogin = function() {
 		try{
 			var login_info = uni.getStorageSync('login_info');
 		}catch(e){
@@ -52,7 +52,7 @@
 		}else{
 			return login_info;
 		}
-	} */
+	}
 </script>
 
 <style>
