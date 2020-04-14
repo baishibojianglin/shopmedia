@@ -14,6 +14,7 @@ use think\Db;
  * Class Login
  * @package app\api\controller
  */
+
 class Login extends Common
 {
     /**
@@ -38,9 +39,9 @@ class Login extends Common
         if (empty($param['phone'])) {
             return show(config('code.error'), '手机号码不能为空', [], 404);
         }/* else {
-             // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
-             $param['phone'] = (new Aes())->decrypt($param['phone']);
-         }*/
+            // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
+            $param['phone'] = (new Aes())->decrypt($param['phone']);
+        }*/
 
         // 密码
         if (empty($param['password'])) {

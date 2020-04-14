@@ -8,10 +8,13 @@
 					:latitude="latitude" 
 					:longitude="longitude" 
 					:markers='markers'
-					:enable-satellite="true"
+					:enable-satellite="false"
 				>	
 				</map>
 			</u-col>
+			<u-col span="8">城市：成都</u-col>
+			<u-col span="8">总数：5023</u-col>
+			<u-col span="8">可售：37</u-col>
         </u-row>         
 	</view>
 </template>
@@ -39,12 +42,12 @@
            getmarkers(){
 			   let self=this;
 			   uni.request({
-			       url: this.$serverUrl+'getMarkers',
+			       url: this.$serverUrl+'api/getMarkers',
 				   header: getApp().globalData.commonHeaders,
 			       success: (res) => {
 					    res.data.data.forEach((value,index)=>{
 							self.$set(self.markers,index,{
-								title:'广告屏：'+value.device_id,
+								title:value.device_id+' '+value.shopname,
 								longitude:value.longitude,
 								latitude:value.latitude
 								});
@@ -61,7 +64,8 @@
 <style>
 	.content{
 		margin: 0;
-		padding: 0;		
+		padding: 0;	
+		text-align: center;
 	}
 	.contain-map{
 		margin: 0;
