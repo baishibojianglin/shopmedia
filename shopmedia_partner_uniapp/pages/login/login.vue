@@ -154,15 +154,15 @@
 						if (1 == res.data.status) {
 							let userInfo = res.data.data;
 							
-							// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
+							self.login(userInfo); // TODO：使用vuex管理登录状态时开启
 							/* 存储的登录状态数据（非vuex管理登录状态） s */
-							uni.setStorage({
+							/* uni.setStorage({
 								key: 'login_info',
 								data: {
 									'has_login': true, // 是否登录
 									'user_info': userInfo // 存放用户信息
 								}
-							})
+							}) */
 							/* 存储的登录状态数据（非vuex管理登录状态） e */
 							
 							// self.toMain(userInfo); // 跳转到首页
