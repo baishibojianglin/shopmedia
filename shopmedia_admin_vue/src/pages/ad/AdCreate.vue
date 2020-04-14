@@ -139,7 +139,7 @@
 				isIndeterminate: false
 			}
 		},
-		mounted() {
+		created() {
 			this.getAdCateList(); // 获取广告类别列表
 			this.getShopCateList(); // 获取店铺类别列表
 		},

@@ -60,7 +60,7 @@
 					</el-form-item>
 					<el-form-item prop="region_ids" label="投放区域">
 						<!-- Tree 树形控件（可选择层级） s -->
-						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" :default-expanded-keys="expandedKeys" show-checkbox :default-checked-keys="checkedKeys" lazy @check="handleCheck"></el-tree>
+						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" :default-expanded-keys="expandedRegionKeys" show-checkbox :default-checked-keys="checkedRegionKeys" lazy @check="handleCheck"></el-tree>
 						<!-- Tree 树形控件 e -->
 					</el-form-item>
 					<el-form-item prop="shop_cate_ids" label="投放店铺类别">
@@ -170,8 +170,8 @@
 					label: 'region_name',
 					isLeaf: 'leaf'
 				},
-				expandedKeys: [], // 默认展开的节点的 key 的数组
-				checkedKeys: [] // 默认勾选的节点的 key 的数组
+				expandedRegionKeys: [], // 默认展开的区域节点的 key 的数组
+				checkedRegionKeys: [] // 默认勾选的区域节点的 key 的数组
 			}
 		},
 		created() {
@@ -318,7 +318,7 @@
 			 */
 			getDeviceList() {
 				let self = this;
-				console.log(11, this.checkedKeys);
+				console.log(11, this.checkedRegionKeys);
 				console.log(12, this.$refs.tree.getCheckedKeys());
 				console.log(2, this.form.shop_cate_ids);
 				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0) {
@@ -376,8 +376,9 @@
 						
 						// 广告投放区域
 						self.form.region_ids = JSON.parse(res.data.data.region_ids);
-						self.expandedKeys = self.form.region_ids.half; // 半选时，默认展开
-						self.checkedKeys = self.form.region_ids.checked; // 全选时，默认勾选
+						self.expandedRegionKeys = self.form.region_ids.half; // 半选时，默认展开
+						self.checkedRegionKeys = self.form.region_ids.checked; // 全选时，默认勾选
+						console.log(self.checkedRegionKeys);
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -394,7 +395,7 @@
 			},
 			
 			/**
-			 * 新增广告类别提交表单
+			 * 编辑广告类别提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
@@ -411,11 +412,9 @@
 							play_times: this.form.play_times,
 							advertisers: this.form.advertisers,
 							phone: this.form.phone,
+							region_ids: this.form.region_ids,
 							shop_cate_ids: this.form.shop_cate_ids,
-							province_id: this.form.province_id,
-							city_id: this.form.city_id,
-							county_id: this.form.county_id,
-							town_id: this.form.town_id,
+							device_ids: this.form.device_ids,
 							is_show: this.form.is_show,
 							audit_status: this.form.audit_status,
 							sort: this.form.sort
