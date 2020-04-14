@@ -148,11 +148,7 @@
 						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
 						'did': getApp().globalData.did, // 设备号
 					},
-<<<<<<< HEAD
-					method: 'POST',
-=======
 					method: 'PUT',
->>>>>>> a8ad617423ea2c09b79c4aceb39954f87e917a9d
 					success: function(res) {
 						// console.log('login success', res);
 						if (1 == res.data.status) {
