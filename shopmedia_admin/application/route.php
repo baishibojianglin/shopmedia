@@ -68,7 +68,7 @@ Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列�
 /* 客户端路由 s */
 
 // 登录与注册
-Route::post('api/login', 'api/login/login'); // 登录
+Route::put('api/login', 'api/login/login'); // 登录
 Route::post('api/register', 'api/login/register'); // 注册
 Route::put('api/pwd', 'api/login/pwd'); // 找回密码
 Route::put('api/logout', 'api/login/logout'); // 退出登录
