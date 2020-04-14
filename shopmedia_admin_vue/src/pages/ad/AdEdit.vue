@@ -174,7 +174,7 @@
 				checkedKeys: [] // 默认勾选的节点的 key 的数组
 			}
 		},
-		mounted() {
+		created() {
 			this.getParams();
 			this.getAdCateList(); // 获取广告类别列表
 			this.getShopCateList(); // 获取店铺类别列表
@@ -318,6 +318,9 @@
 			 */
 			getDeviceList() {
 				let self = this;
+				console.log(11, this.checkedKeys);
+				console.log(12, this.$refs.tree.getCheckedKeys());
+				console.log(2, this.form.shop_cate_ids);
 				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0) {
 					this.$axios.get(this.$url + 'device_list', {
 						params: {
@@ -362,7 +365,14 @@
 					if (res.data.status == 1) {
 						// 广告信息
 						self.form = res.data.data;
-						console.log('shop_cate_ids', self.form.shop_cate_ids)
+						
+						// 广告投放店铺类别
+						let shopCateIds  = self.form.shop_cate_ids;
+						var shopCateIdsArr = new Array();
+						for(var key in shopCateIds){
+							shopCateIdsArr.push(Number(shopCateIds[key])); // 字符串数组转整数数组
+						}
+						self.form.shop_cate_ids = shopCateIdsArr;
 						
 						// 广告投放区域
 						self.form.region_ids = JSON.parse(res.data.data.region_ids);

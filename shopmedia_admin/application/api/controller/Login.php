@@ -14,7 +14,8 @@ use think\Db;
  * Class Login
  * @package app\api\controller
  */
-class Login extends Base
+
+class Login extends Common
 {
     /**
      * 用户登录

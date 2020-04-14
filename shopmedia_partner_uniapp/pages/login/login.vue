@@ -148,46 +148,37 @@
 						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
 						'did': getApp().globalData.did, // 设备号
 					},
+<<<<<<< HEAD
 					method: 'POST',
+=======
+					method: 'PUT',
+>>>>>>> a8ad617423ea2c09b79c4aceb39954f87e917a9d
 					success: function(res) {
-uni.showModal({
-    title: '提示',
-    content: res.data,
-    success: function (res) {
-        if (res.confirm) {
-            console.log('用户点击确定');
-        } else if (res.cancel) {
-            console.log('用户点击取消');
-        }
-    }
-});
-						//console.log(res.data);
-						//return false;
 						// console.log('login success', res);
-						// if (1 == res.data.status) {
-						// 	let userInfo = res.data.data;
-							
-						// 	// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
-						// 	/* 存储的登录状态数据（非vuex管理登录状态） s */
-						// 	uni.setStorage({
-						// 		key: 'login_info',
-						// 		data: {
-						// 			'has_login': true, // 是否登录
-						// 			'user_info': userInfo // 存放用户信息
-						// 		}
-						// 	})
-						// 	/* 存储的登录状态数据（非vuex管理登录状态） e */
-							
-						// 	// self.toMain(userInfo); // 跳转到首页
-						// 	uni.reLaunch({
-						// 		url: '../main/main',
-						// 	});
-						// } else {
-						// 	uni.showToast({
-						// 		icon: 'none',
-						// 		title: res.data.message, // '用户账号或密码不正确'
-						// 	});
-						// }
+						if (1 == res.data.status) {
+							let userInfo = res.data.data;
+
+							self.login(userInfo); // TODO：使用vuex管理登录状态时开启
+							/* 存储的登录状态数据（非vuex管理登录状态） s */
+							/* uni.setStorage({
+								key: 'login_info',
+								data: {
+									'has_login': true, // 是否登录
+									'user_info': userInfo // 存放用户信息
+								}
+							}) */
+							/* 存储的登录状态数据（非vuex管理登录状态） e */
+
+							// self.toMain(userInfo); // 跳转到首页
+							uni.reLaunch({
+								url: '../main/main',
+							});
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message, // '用户账号或密码不正确'
+							});
+						}
 					}
 				})
 			},
