@@ -1,1 +1,0 @@
-<view class="{{['row data-v-d83d40e0',rowClass]}}" style="{{(rowStyle)}}"><slot></slot></view>

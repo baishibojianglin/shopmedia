@@ -1,1 +1,0 @@
-<view class="content"><u-row vue-id="1070c5a9-1" bind:__l="__l" vue-slots="{{['default']}}"><u-col vue-id="{{('1070c5a9-2')+','+('1070c5a9-1')}}" span="24" bind:__l="__l" vue-slots="{{['default']}}"><text>商市通用户协议书</text></u-col></u-row></view>
