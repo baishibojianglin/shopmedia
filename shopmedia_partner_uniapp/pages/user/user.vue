@@ -1,23 +1,29 @@
 <template>
-	<view class="content">
-		<view v-if="login_info.has_login" class="uni-flex uni-row"><!-- hasLogin -->
-			<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
-				<image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image>
-			</view>
-			<view class="uni-flex uni-column" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: space-between;justify-content: space-between;">
-				<view class="text" style="height: 120rpx;text-align: left;padding-left: 20rpx;padding-top: 10rpx;">
-					{{userData.user_name}}
-				</view>
-				<view class="uni-flex uni-row">
-					<view class="text" style="-webkit-flex: 1;flex: 1;">{{userData.phone}}</view>
-					<view class="text" style="-webkit-flex: 1;flex: 1;">（占位）</view>
+	<view class="uni-container">
+		<view class="uni-panel" v-if="login_info.has_login"><!-- hasLogin -->
+			<view class="uni-panel-h">
+				<view class="uni-flex uni-row userData">
+					<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
+						<image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image>
+					</view>
+					<view class="uni-flex uni-column" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: space-between;justify-content: space-between;">
+						<view class="text" style="height: 120rpx;text-align: left;padding-left: 20rpx;padding-top: 10rpx;">
+							{{userData.user_name}}
+						</view>
+						<view class="uni-flex uni-row">
+							<view class="text" style="-webkit-flex: 1;flex: 1;">{{userData.phone}}</view>
+							<view class="text" style="-webkit-flex: 1;flex: 1;">（占位）</view>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
 		
-		<view class="btn-row">
-			<button v-if="!hasLogin" type="primary" class="primary" @tap="bindLogin">登录</button>
-			<button v-if="hasLogin" type="default" @tap="bindLogout">退出登录</button>
+		<view class="uni-panel">
+			<view class="uni-btn-v uni-common-mt">
+				<button v-if="!login_info.has_login" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
+				<button v-if="login_info.has_login" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
+			</view>
 		</view>
 	</view>
 </template>
@@ -115,5 +121,16 @@
 </script>
 
 <style>
-
+	@import '../../common/uni-nvue.css';
+	
+	.userData .text {
+		/* margin: 10upx 5upx; */
+		/* padding: 0 20upx; */
+		/* background-color: #ebebeb; */
+		height: 70upx;
+		line-height: 70upx;
+		text-align: center;
+		color: #777;
+		font-size: 30upx;
+	}
 </style>
