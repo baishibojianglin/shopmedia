@@ -66,14 +66,15 @@
 					<el-form-item prop="shop_cate_ids" label="投放店铺类别">
 						<!-- TODO：封装公共 shop-cate-select 组件 -->
 						<!-- <shop-cate-select :value="form.shop_cate_ids"></shop-cate-select> -->
-						<el-select v-model="form.shop_cate_ids" multiple placeholder="请选择…" clearable filterable>
+						<el-select v-model="form.shop_cate_ids" multiple placeholder="请选择…" clearable filterable @change="selectShopCateChange">
 							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="device_ids" label="投放广告屏">
-						<el-checkbox-group v-model="form.device_ids">
-							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}}</el-checkbox>
+						<el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange" v-if="deviceList.length != 0 ? true : false">全选</el-checkbox>
+						<el-checkbox-group v-model="form.device_ids" @change="handleCheckedDeviceChange">
+							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'店铺类别：' + item.shop_cate_name + '，' + '店铺：' + item.shopname + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
 						</el-checkbox-group>
 					</el-form-item>
 					<el-form-item prop="is_show" label="是否显示">
@@ -171,7 +172,11 @@
 					isLeaf: 'leaf'
 				},
 				expandedRegionKeys: [], // 默认展开的区域节点的 key 的数组
-				checkedRegionKeys: [] // 默认勾选的区域节点的 key 的数组
+				checkedRegionKeys: [], // 默认勾选的区域节点的 key 的数组
+				
+				// 投放广告屏复选框全选效果
+				checkAll: false,
+				isIndeterminate: false
 			}
 		},
 		created() {
@@ -194,7 +199,7 @@
 			getAdCateList() {
 				let self = this;
 				this.$axios.get(this.$url + 'ad_cate_list')
-				.then(function(res) { //console.log('adcate', res)
+				.then(function(res) {
 					if (res.data.status == 1) {
 						// 广告类别列表
 						self.adCateList = res.data.data;
@@ -300,7 +305,8 @@
 				this.form.region_ids = checkedRegionIds.length != 0 ? [checkedRegionIds, halfCheckedRegionIds] : []; // 判断全选是否为空 checkedRegionIds.length ?= 0，用于验证 Tree 树形在表单中的选中状态
 				
 				// 获取设备列表
-				this.getDeviceList();
+				let getDeviceListCondition = this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0;
+				this.getDeviceList(getDeviceListCondition, this.$refs.tree.getCheckedKeys());
 			},
 			
 			/**
@@ -310,21 +316,20 @@
 				// console.log('shopCateIds:', data)
 				
 				// 获取设备列表
-				this.getDeviceList();
+				let getDeviceListCondition = this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0;
+				this.getDeviceList(getDeviceListCondition, this.$refs.tree.getCheckedKeys());
 			},
 			
-			/**
-			 * 获取设备列表
+			/**获取设备列表
+			 * @param {Object} condition 获取条件
+			 * @param {Object} regionIds 投放区域ID集合（只含全选）
 			 */
-			getDeviceList() {
+			getDeviceList(condition, regionIds) {
 				let self = this;
-				console.log(11, this.checkedRegionKeys);
-				console.log(12, this.$refs.tree.getCheckedKeys());
-				console.log(2, this.form.shop_cate_ids);
-				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0) {
+				if (condition) {
 					this.$axios.get(this.$url + 'device_list', {
 						params: {
-							region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
+							region_ids: regionIds, // 投放区域ID集合（只含全选）
 							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
 						}
 					})
@@ -332,6 +337,22 @@
 						if (res.data.status == 1) {
 							// 设备列表
 							self.deviceList = res.data.data;
+							
+							// 获取当前显示设备中的被勾选的设备（两数组求交集）
+							let deviceIds  = self.form.device_ids;
+							var deviceIdsArr = new Array();
+							self.deviceList.forEach((value, index) => {
+								for(var key in deviceIds){
+									if (value['device_id'] == Number(deviceIds[key])) {
+										deviceIdsArr.push(Number(deviceIds[key])); // 字符串数组转整数数组
+									}
+								}
+							})
+							self.form.device_ids = deviceIdsArr;
+							
+							// 全选效果
+							self.checkAll = self.form.device_ids.length === self.deviceList.length;
+							self.isIndeterminate = self.form.device_ids.length > 0 && self.form.device_ids.length < self.deviceList.length;
 						} else {
 							self.$message({
 								message: '网络忙，请重试',
@@ -378,7 +399,25 @@
 						self.form.region_ids = JSON.parse(res.data.data.region_ids);
 						self.expandedRegionKeys = self.form.region_ids.half; // 半选时，默认展开
 						self.checkedRegionKeys = self.form.region_ids.checked; // 全选时，默认勾选
-						console.log(self.checkedRegionKeys);
+						// 处理数据
+						let regionIds  = self.form.region_ids;
+						var regionIdsArr = new Array();
+						for(var key in regionIds){
+							regionIdsArr.push(regionIds[key]); // 关联数组转索引数组
+						}
+						self.form.region_ids = regionIdsArr;
+						
+						// 广告投放设备
+						let deviceIds  = self.form.device_ids;
+						var deviceIdsArr = new Array();
+						for(var key in deviceIds){
+							deviceIdsArr.push(Number(deviceIds[key])); // 字符串数组转整数数组
+						}
+						self.form.device_ids = deviceIdsArr;
+						
+						// 获取设备列表
+						let getDeviceListCondition = self.checkedRegionKeys.length != 0 && self.form.shop_cate_ids.length != 0;
+						self.getDeviceList(getDeviceListCondition, self.checkedRegionKeys);
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -392,6 +431,31 @@
 						type: 'warning'
 					});
 				});
+			},
+
+			/**
+			 * 设备全选效果
+			 * @param {Object} val
+			 */
+			handleCheckAllChange(val) {
+				// 设备ID集合
+				let deviceIds = [];
+				this.deviceList.forEach((item) => {
+					deviceIds.push(item.device_id);
+				})
+				this.form.device_ids = val ? deviceIds : [];
+				
+				this.isIndeterminate = false;
+			},
+			
+			/**
+			 * 设备选中状态变化时触发，用于显示全选框效果等
+			 * @param {Object} value
+			 */
+			handleCheckedDeviceChange(value) {
+				let checkedCount = value.length;
+				this.checkAll = checkedCount === this.deviceList.length;
+				this.isIndeterminate = checkedCount > 0 && checkedCount < this.deviceList.length;
 			},
 			
 			/**

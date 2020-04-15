@@ -165,6 +165,7 @@ class Ad extends Base
                     date('c', strtotime($data['end_time']))
                 ];
                 $data['shop_cate_ids'] = explode(',', $data['shop_cate_ids']); // 投放店铺类别ID集合
+                $data['device_ids'] = explode(',', $data['device_ids']); // 投放广告设备ID集合
 
                 return show(config('code.success'), 'ok', $data);
             } else {
