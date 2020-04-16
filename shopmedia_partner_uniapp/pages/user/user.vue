@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-padding-wrap">
-		<view class="uni-card" v-if="login_info.has_login"><!-- hasLogin -->
-			<view class="">
+		<view class="uni-common-mt" v-if="login_info.has_login"><!-- hasLogin -->
+			<uni-card is-full is-shadow>
 				<view class="uni-flex uni-row userData">
 					<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
 						<image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image>
@@ -17,22 +17,18 @@
 						</view>
 					</view>
 				</view>
-			</view>
+			</uni-card>
 		</view>
 		
-		<view class="uni-card">
-			<view class="uni-common-mt">
-				<uni-grid :column="3" :showBorder="false" :square="true">
-					<uni-grid-item v-for="(item, index) in userData.user_roles" :key="index"><text class="uni-common-pl">{{item}}</text></uni-grid-item>
-				</uni-grid>
-			</view>
+		<view class="uni-common-mt" v-if="login_info.has_login"><!-- hasLogin -->
+			<uni-card title="我的角色" thumbnail="" extra="" note="" is-full is-shadow>
+				<button class="mini-btn" size="mini" plain v-for="(item, index) in userData.user_roles" :key="index" @click="toUserRoleDetails(index)">{{item}}</button>
+			</uni-card>
 		</view>
 		
-		<view class="">
-			<view class="uni-btn-v uni-common-mt">
-				<button v-if="!login_info.has_login" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
-				<button v-if="login_info.has_login" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
-			</view>
+		<view class="uni-btn-v uni-common-mt">
+			<button v-if="!login_info.has_login" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
+			<button v-if="login_info.has_login" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
 		</view>
 	</view>
 </template>
@@ -41,10 +37,7 @@
 	import {mapState, mapMutations} from 'vuex';
 	import common from '@/common/common.js';
 	import Aes from '@/common/Aes.js';
-import uniGrid from "@/components/uni-grid/uni-grid.vue"
-import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue"
 	export default {
-		components: {uniGrid,uniGridItem},
 		data() {
 			return {
 				userData: {},
@@ -127,6 +120,16 @@ import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue"
 						}
 					})
 				}
+			},
+			
+			/**
+			 * 跳转用户角色详情页
+			 */
+			toUserRoleDetails(id) {
+				alert(id);
+				uni.navigateTo({
+					url: ''
+				})
 			}
 		}
 	}
@@ -144,5 +147,9 @@ import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue"
 		text-align: center;
 		color: #777;
 		font-size: 30upx;
+	}
+	
+	.mini-btn {
+	    margin-right: 10rpx;
 	}
 </style>
