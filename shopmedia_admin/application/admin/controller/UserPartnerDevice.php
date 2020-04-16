@@ -33,7 +33,7 @@ class UserPartnerDevice extends Base
 
         // 查询条件
         $map = [];
-        if (!empty($param['keywords'])) { // 用户名称
+        if (!empty($param['keywords'])) { // 查询关键词
             $map['d.brand|d.model'] = ['like', '%' . $param['keywords'] . '%'];
         }
         // 获取传媒设备ID集合
