@@ -1,5 +1,21 @@
 /* 基础样式 */
 
+/* 图标 */
+.icon{
+	font-family: iconfont;
+	font-size: 24px;
+}
+
+/* 颜色 */
+.color-blue{
+	color:#504AF2;
+}
+
+/* 行列转换 */
+.inline{
+	display: inline-block;
+}
+
 /* 按钮 */
 button.primary {
 	background-color: #504AF2;

@@ -1,25 +1,34 @@
 <template>
 	<view class="uni-container">
-		<view class="uni-panel" v-if="login_info.has_login"><!-- hasLogin -->
-			<view class="uni-panel-h">
+		<view class="uni-card" v-if="login_info.has_login"><!-- hasLogin -->
+			<view class="">
 				<view class="uni-flex uni-row userData">
 					<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
 						<image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image>
 					</view>
 					<view class="uni-flex uni-column" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: space-between;justify-content: space-between;">
-						<view class="text" style="height: 120rpx;text-align: left;padding-left: 20rpx;padding-top: 10rpx;">
-							{{userData.user_name}}
+						<view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
+							<view class="text uni-bold">{{userData.user_name}}</view>
+							<!-- <view class="text" @click="goUserInfo()"><text class="uni-icon uni-icon-compose"></text></view> -->
 						</view>
 						<view class="uni-flex uni-row">
 							<view class="text" style="-webkit-flex: 1;flex: 1;">{{userData.phone}}</view>
-							<view class="text" style="-webkit-flex: 1;flex: 1;">（占位）</view>
+							<view class="text" style="-webkit-flex: 1;flex: 1;"><!-- （占位） --></view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
 		
-		<view class="uni-panel">
+		<view class="uni-card">
+			<view class="uni-panel-h">
+				<uni-grid :column="3" :showBorder="true" :square="true">
+					<uni-grid-item v-for="(item, index) in userData.user_roles" :key="index"><text class="uni-common-pl">{{item}}</text></uni-grid-item>
+				</uni-grid>
+			</view>
+		</view>
+		
+		<view class="uni-card">
 			<view class="uni-btn-v uni-common-mt">
 				<button v-if="!login_info.has_login" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
 				<button v-if="login_info.has_login" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
@@ -32,8 +41,10 @@
 	import {mapState, mapMutations} from 'vuex';
 	import common from '@/common/common.js';
 	import Aes from '@/common/Aes.js';
-
+import uniGrid from "@/components/uni-grid/uni-grid.vue"
+import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue"
 	export default {
+		components: {uniGrid,uniGridItem},
 		data() {
 			return {
 				userData: {},
@@ -108,6 +119,7 @@
 							// 用户信息
 							let userData = JSON.parse(Aes.decode(res.data.data));
 							userData.avatar = userData.avatar ? self.$imgServerUrl + userData.avatar.replace(/\\/g, "/") : '../../static/img/userHL.png'; // 用户头像
+							userData.role_ids = userData.role_ids.split(","); // 用户角色ID集合（字符串转数组）
 							self.userData = userData;
 						},
 						fail(error) {
@@ -125,10 +137,10 @@
 	
 	.userData .text {
 		/* margin: 10upx 5upx; */
-		/* padding: 0 20upx; */
+		padding: 0 2upx;
 		/* background-color: #ebebeb; */
-		height: 70upx;
-		line-height: 70upx;
+		height: 100upx;
+		line-height: 100upx;
 		text-align: center;
 		color: #777;
 		font-size: 30upx;
