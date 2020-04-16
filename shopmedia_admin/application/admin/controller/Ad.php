@@ -165,6 +165,7 @@ class Ad extends Base
                     date('c', strtotime($data['end_time']))
                 ];
                 $data['shop_cate_ids'] = explode(',', $data['shop_cate_ids']); // 投放店铺类别ID集合
+                $data['device_ids'] = explode(',', $data['device_ids']); // 投放广告设备ID集合
 
                 return show(config('code.success'), 'ok', $data);
             } else {
@@ -233,11 +234,17 @@ class Ad extends Base
             if (!empty($param['phone'])) { // 广告主电话
                 $data['phone'] = trim($param['phone']);
             }
-            if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID
-                $data['shop_cate_ids'] = intval($param['shop_cate_ids']);
+            if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
+                $data['shop_cate_ids'] = implode(',', $param['shop_cate_ids']);
             }
             if (!empty($param['region_ids'])) { // 投放区域ID集合（含全选与半选）
-                $data['region_ids'] = json_encode(trim($param['region_ids']));
+                $data['region_ids'] = json_encode([
+                    'checked' => $param['region_ids'][0], // 全选
+                    'half' => $param['region_ids'][1] // 半选
+                ]);
+            }
+            if (!empty($param['device_ids'])) { // 投放广告设备ID集合
+                $data['device_ids'] = implode(',', $param['device_ids']);
             }
             if (isset($param['audit_status'])) { // 审核状态
                 $data['audit_status'] = input('param.audit_status', null, 'intval');

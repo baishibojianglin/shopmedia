@@ -31,11 +31,12 @@
 					<el-table-column prop="size" label="尺寸" width="70"></el-table-column>
 					<el-table-column prop="sale_price" label="价格(元)" width="100"></el-table-column>
 					<el-table-column prop="saled_part" label="已售份额" width="100"></el-table-column>
-					<el-table-column prop="company_name" label="所属分公司" width="180"></el-table-column>
+					<el-table-column prop="company_name" label="所属分公司" width="120"></el-table-column>
 					<el-table-column prop="province" label="省份" width="120"></el-table-column>
 					<el-table-column prop="city" label="城市" width="120"></el-table-column>
-					<el-table-column prop="street" label="街道" width="150"></el-table-column>
-					<el-table-column prop="shopname" label="店铺" width="150"></el-table-column>
+					<el-table-column prop="county" label="区县" width="120"></el-table-column>
+					<el-table-column prop="street" label="街道" width="120"></el-table-column>
+					<el-table-column prop="shopname" label="店铺" width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')">{{scope.row.status_msg}}</span>

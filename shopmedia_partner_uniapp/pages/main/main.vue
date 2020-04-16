@@ -66,26 +66,30 @@
               this.getmarkers();
 		},
 		methods: {
-		   //获取广告屏位置
-           getmarkers(){
-			   let self=this;
-			   uni.request({
-			       url: this.$serverUrl+'api/getMarkers',
-				   header: getApp().globalData.commonHeaders,
-			       success: (res) => {
-					    self.devicelist=res.data.data;
-					    self.salecount=res.data.data.length;
-					    res.data.data.forEach((value,index)=>{
+			//获取广告屏位置
+			getmarkers(){
+				let self=this;
+				uni.request({
+					url: this.$serverUrl+'api/getMarkers',
+					header: /* getApp().globalData.commonHeaders */{
+						'content-type': "application/json; charset=utf-8",
+						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+						'version': getApp().globalData.version, // 应用大版本号
+						'model': getApp().globalData.systemInfo.model, // 手机型号
+						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
+						'did': getApp().globalData.did // 设备号
+					},
+					success: (res) => {
+						res.data.data.forEach((value,index)=>{
 							self.$set(self.markers,index,{
 								title:value.device_id+' '+value.shopname,
 								longitude:value.longitude,
 								latitude:value.latitude
-							});
-						})					
-			       }
-			   });
-		   }
-
+								});
+						})
+					}
+				});
+			}
 		}
 	}
 </script>

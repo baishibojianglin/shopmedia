@@ -6,6 +6,7 @@ use app\common\lib\Aes;
 use app\common\lib\exception\ApiException;
 use app\common\lib\IAuth;
 use think\Controller;
+use think\Model;
 use think\Request;
 
 /**
@@ -24,6 +25,12 @@ class User extends AuthBase
      */
     public function read($id = 0)
     {
+        // 处理数据
+        // 用户角色
+        $roleIds = $this->user['role_ids'];
+        $userRole = model('UserRole')->where(['id' => ['in', $roleIds]])->column('id, title');
+        $this->user['user_roles'] = $userRole;
+
         // AES加密
         $aes = new Aes(); // 实例化Aes
         $data = $aes->encrypt($this->user);

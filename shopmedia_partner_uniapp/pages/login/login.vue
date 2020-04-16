@@ -1,12 +1,14 @@
 <template>
-	<view class="content">
-		<u-row style="margin-bottom: 20px;">
-			<u-col span="24" class="contain-logo">
-				<image class="logo" mode="aspectFit" :src="logourl"></image>
-			</u-col>
-		</u-row>
+	<view class="uni-padding-wrap">
+		<view class="uni-common-mt">
+			<u-row style="margin-bottom: 20px;">
+				<u-col span="24" class="contain-logo">
+					<image class="logo" mode="aspectFit" :src="logourl"></image>
+				</u-col>
+			</u-row>
+		</view>
 
-		<view class="input-group">
+		<view class="input-group uni-common-pl">
 			<view class="input-row border" style="line-height: 60px;">
 				<text class="title">手机</text>
 				<m-input class="m-input" type="text" clearable focus v-model="phone" placeholder="请输入手机号"></m-input>
@@ -154,15 +156,15 @@
 						if (1 == res.data.status) {
 							let userInfo = res.data.data;
 
-							self.login(userInfo); // TODO：使用vuex管理登录状态时开启
+							// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
 							/* 存储的登录状态数据（非vuex管理登录状态） s */
-							/* uni.setStorage({
+							uni.setStorage({
 								key: 'login_info',
 								data: {
 									'has_login': true, // 是否登录
 									'user_info': userInfo // 存放用户信息
 								}
-							}) */
+							})
 							/* 存储的登录状态数据（非vuex管理登录状态） e */
 
 							// self.toMain(userInfo); // 跳转到首页
