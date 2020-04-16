@@ -219,32 +219,133 @@ var render = function() {
     { staticClass: _vm._$g(0, "sc"), attrs: { _i: 0 } },
     [
       _c(
-        "u-row",
+        "v-uni-view",
         { attrs: { _i: 1 } },
         [
+          _c("v-uni-map", {
+            staticClass: _vm._$g(2, "sc"),
+            attrs: {
+              scale: 9,
+              latitude: _vm._$g(2, "a-latitude"),
+              longitude: _vm._$g(2, "a-longitude"),
+              markers: _vm._$g(2, "a-markers"),
+              "enable-satellite": false,
+              _i: 2
+            }
+          })
+        ],
+        1
+      ),
+      _c(
+        "v-uni-view",
+        { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
+        [
           _c(
-            "u-col",
-            { staticClass: _vm._$g(2, "sc"), attrs: { _i: 2 } },
+            "v-uni-view",
+            { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
             [
-              _c("v-uni-map", {
-                staticClass: _vm._$g(3, "sc"),
-                attrs: {
-                  scale: 10,
-                  latitude: _vm._$g(3, "a-latitude"),
-                  longitude: _vm._$g(3, "a-longitude"),
-                  markers: _vm._$g(3, "a-markers"),
-                  "enable-satellite": false,
-                  _i: 3
-                }
-              })
+              _c("v-uni-text", { attrs: { _i: 5 } }, [
+                _vm._v("自营：" + _vm._$g(5, "t0-0") + " 台")
+              ])
             ],
             1
           ),
-          _c("u-col", { attrs: { _i: 4 } }, [_vm._v("城市：成都")]),
-          _c("u-col", { attrs: { _i: 5 } }, [_vm._v("总数：5023")]),
-          _c("u-col", { attrs: { _i: 6 } }, [_vm._v("可售：37")])
+          _c(
+            "v-uni-view",
+            { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
+            [
+              _c("v-uni-text", { attrs: { _i: 7 } }, [
+                _vm._v("可合作：" + _vm._$g(7, "t0-0") + " 台")
+              ])
+            ],
+            1
+          )
         ],
         1
+      ),
+      _c(
+        "v-uni-view",
+        { attrs: { _i: 8 } },
+        [
+          _c(
+            "v-uni-view",
+            { staticClass: _vm._$g(9, "sc"), attrs: { _i: 9 } },
+            [
+              _c(
+                "v-uni-view",
+                { staticClass: _vm._$g(10, "sc"), attrs: { _i: 10 } },
+                [_c("v-uni-text", { attrs: { _i: 11 } }, [_vm._v("屏号")])],
+                1
+              ),
+              _c(
+                "v-uni-view",
+                { staticClass: _vm._$g(12, "sc"), attrs: { _i: 12 } },
+                [_c("v-uni-text", { attrs: { _i: 13 } }, [_vm._v("店名")])],
+                1
+              ),
+              _c(
+                "v-uni-view",
+                { staticClass: _vm._$g(14, "sc"), attrs: { _i: 14 } },
+                [_c("v-uni-text", { attrs: { _i: 15 } }, [_vm._v("合作价")])],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._l(_vm._$g(16, "f"), function(value, $10, $20, $30) {
+            return _c(
+              "v-uni-view",
+              {
+                key: value,
+                staticClass: _vm._$g("16-" + $30, "sc"),
+                attrs: { _i: "16-" + $30 }
+              },
+              [
+                _c(
+                  "v-uni-view",
+                  {
+                    staticClass: _vm._$g("17-" + $30, "sc"),
+                    attrs: { _i: "17-" + $30 }
+                  },
+                  [
+                    _c("v-uni-text", { attrs: { _i: "18-" + $30 } }, [
+                      _vm._v(_vm._$g("18-" + $30, "t0-0"))
+                    ])
+                  ],
+                  1
+                ),
+                _c(
+                  "v-uni-view",
+                  {
+                    staticClass: _vm._$g("19-" + $30, "sc"),
+                    attrs: { _i: "19-" + $30 }
+                  },
+                  [
+                    _c("v-uni-text", { attrs: { _i: "20-" + $30 } }, [
+                      _vm._v(_vm._$g("20-" + $30, "t0-0"))
+                    ])
+                  ],
+                  1
+                ),
+                _c(
+                  "v-uni-view",
+                  {
+                    staticClass: _vm._$g("21-" + $30, "sc"),
+                    attrs: { _i: "21-" + $30 }
+                  },
+                  [
+                    _c("v-uni-text", { attrs: { _i: "22-" + $30 } }, [
+                      _vm._v("¥" + _vm._$g("22-" + $30, "t0-0"))
+                    ])
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          })
+        ],
+        2
       )
     ],
     1
@@ -339,7 +440,7 @@ exports = module.exports = __webpack_require__(/*! ./node_modules/css-loader/lib
 
 
 // module
-exports.push([module.i, "\n.content{\n\tmargin: 0;\n\tpadding: 0;\t\n\ttext-align: center;\n}\n.contain-map{\n\tmargin: 0;\n\tpadding: 0;\n}\n.map{\n   width: 100%;\n   height: 250px;\n   margin: 0;\n   padding: 0;\n}\n", ""]);
+exports.push([module.i, "\n.content{\r\n\tdisplay: -webkit-box;\r\n\tdisplay: -webkit-flex;\r\n\tdisplay: flex;\r\n\tmargin: 0;\r\n\tpadding: 0;\n}\n.map{\r\n\twidth: 100%;\r\n\theight: 250px;\n}\n.countcon{\r\n\tdisplay: -webkit-box;\r\n\tdisplay: -webkit-flex;\r\n\tdisplay: flex;\r\n\t-webkit-box-orient:horizontal;\r\n\t-webkit-box-direction:normal;\r\n\t-webkit-flex-direction:row;\r\n\t        flex-direction:row;\r\n\t-webkit-box-pack:center;\r\n\t-webkit-justify-content:center;\r\n\t        justify-content:center;\r\n\tborder-bottom: 1px solid #E7E6DF;\n}\n.countcon-item{\r\n    -webkit-box-flex: 1;\r\n    -webkit-flex: 1;\r\n            flex: 1;\r\n\tline-height: 40px;\n}\n.listcon{\r\n\tdisplay: -webkit-box;\r\n\tdisplay: -webkit-flex;\r\n\tdisplay: flex;\r\n\t-webkit-box-orient:horizontal;\r\n\t-webkit-box-direction:normal;\r\n\t-webkit-flex-direction:row;\r\n\t        flex-direction:row;\r\n\t-webkit-box-pack:center;\r\n\t-webkit-justify-content:center;\r\n\t        justify-content:center;\r\n\tborder-bottom: 1px solid #E7E6DF;\n}\n.listcon-item-1{\r\n    -webkit-box-flex: 1;\r\n    -webkit-flex: 1;\r\n            flex: 1;\r\n\tline-height: 40px;\n}\n.listcon-item-2{\r\n    -webkit-box-flex: 2;\r\n    -webkit-flex: 2;\r\n            flex: 2;\r\n\tline-height: 40px;\n}\r\n", ""]);
 
 // exports
 
@@ -2838,7 +2939,7 @@ exports = module.exports = __webpack_require__(/*! ./node_modules/css-loader/lib
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/*阿里图标库*/\n@font-face {\n  font-family: 'iconfont';  /* project id 1721327 */\n  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot');\n  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot?#iefix') format('embedded-opentype'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff2') format('woff2'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff') format('woff'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.ttf') format('truetype'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.svg#iconfont') format('svg');\n}\n.icon{\n\tfont-family: iconfont;\n\tfont-size: 24px;\n}\n/*颜色*/\n.color-blue{\n\tcolor:#3F45F2;\n}\n/*行列转换*/\n.inline{\n\tdisplay: inline-block;\n}\n/* 头条小程序需要把 iconfont 样式放到组件外 */\n/*每个页面公共css */\n/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */\nbody {\n\tmin-height: 100%;\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\tfont-size: 16px;\n}\n\n\n/* 原生组件模式下需要注意组件外部样式 */\nm-input {\n\twidth: 100%;\n\t/* min-height: 100%; */\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\t-webkit-box-flex: 1;\n\t-webkit-flex: 1;\n\t        flex: 1;\n}\n.content {\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\t-webkit-box-flex: 1;\n\t-webkit-flex: 1;\n\t        flex: 1;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t-webkit-flex-direction: column;\n\t        flex-direction: column;\n\tbackground-color: #fff;\n\tpadding: 10px;\n\ttext-align: center;\n}\n.input-group {\n\tbackground-color: #ffffff;\n\tmargin-top: 20px;\n\tposition: relative;\n}\n.input-group::before {\n\tposition: absolute;\n\tright: 0;\n\ttop: 0;\n\tleft: 0;\n\theight: 1px;\n\tcontent: '';\n\t-webkit-transform: scaleY(.5);\n\ttransform: scaleY(.5);\n\tbackground-color: #c8c7cc;\n}\n.input-group::after {\n\tposition: absolute;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\theight: 1px;\n\tcontent: '';\n\t-webkit-transform: scaleY(.5);\n\ttransform: scaleY(.5);\n\tbackground-color: #c8c7cc;\n}\n.input-row {\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t-webkit-flex-direction: row;\n\t        flex-direction: row;\n\tposition: relative;\n\tfont-size: 18px;\n\tline-height: 40px;\n}\n.input-row .title {\n\twidth: 72px;\n\tpadding-left: 15px;\n}\n.input-row.border::after {\n\tposition: absolute;\n\tright: 0;\n\tbottom: 0;\n\tleft: 8px;\n\theight: 1px;\n\tcontent: '';\n\t-webkit-transform: scaleY(.5);\n\ttransform: scaleY(.5);\n\tbackground-color: #c8c7cc;\n}\n.btn-row {\n\tmargin-top: 25px;\n\tpadding: 10px;\n}\nuni-button.primary {\n\tbackground-color: #504AF2; /* #0faeff */\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/*阿里图标库*/\n@font-face {\n  font-family: 'iconfont';  /* project id 1721327 */\n  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot');\n  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot?#iefix') format('embedded-opentype'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff2') format('woff2'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff') format('woff'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.ttf') format('truetype'),\n  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.svg#iconfont') format('svg');\n}\n.icon{\n\tfont-family: iconfont;\n\tfont-size: 24px;\n}\n/*颜色*/\n.color-blue{\n\tcolor:#3F45F2;\n}\n/*行列转换*/\n.inline{\n\tdisplay: inline-block;\n}\n/*对齐*/\n.text-right{\n\ttext-align: right;\n}\n.text-left{\n\ttext-align: left;\n}\n/*加粗*/\n.weight{\n\tfont-weight: bold;\n}\n/* 头条小程序需要把 iconfont 样式放到组件外 */\n/*每个页面公共css */\n/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */\nbody {\n\tmin-height: 100%;\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\tfont-size: 16px;\n}\n\n\n/* 原生组件模式下需要注意组件外部样式 */\nm-input {\n\twidth: 100%;\n\t/* min-height: 100%; */\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\t-webkit-box-flex: 1;\n\t-webkit-flex: 1;\n\t        flex: 1;\n}\n.content {\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\t-webkit-box-flex: 1;\n\t-webkit-flex: 1;\n\t        flex: 1;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t-webkit-flex-direction: column;\n\t        flex-direction: column;\n\tbackground-color: #fff;\n\tpadding: 10px;\n\ttext-align: center;\n}\n.input-group {\n\tbackground-color: #ffffff;\n\tmargin-top: 20px;\n\tposition: relative;\n}\n.input-group::before {\n\tposition: absolute;\n\tright: 0;\n\ttop: 0;\n\tleft: 0;\n\theight: 1px;\n\tcontent: '';\n\t-webkit-transform: scaleY(.5);\n\ttransform: scaleY(.5);\n\tbackground-color: #c8c7cc;\n}\n.input-group::after {\n\tposition: absolute;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\theight: 1px;\n\tcontent: '';\n\t-webkit-transform: scaleY(.5);\n\ttransform: scaleY(.5);\n\tbackground-color: #c8c7cc;\n}\n.input-row {\n\tdisplay: -webkit-box;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t-webkit-flex-direction: row;\n\t        flex-direction: row;\n\tposition: relative;\n\tfont-size: 18px;\n\tline-height: 40px;\n}\n.input-row .title {\n\twidth: 72px;\n\tpadding-left: 15px;\n}\n.input-row.border::after {\n\tposition: absolute;\n\tright: 0;\n\tbottom: 0;\n\tleft: 8px;\n\theight: 1px;\n\tcontent: '';\n\t-webkit-transform: scaleY(.5);\n\ttransform: scaleY(.5);\n\tbackground-color: #c8c7cc;\n}\n.btn-row {\n\tmargin-top: 25px;\n\tpadding: 10px;\n}\nuni-button.primary {\n\tbackground-color: #504AF2; /* #0faeff */\n}\n", ""]);
 
 // exports
 

@@ -80,6 +80,17 @@
 		display: inline-block;
 	}
 	
+	/*对齐*/
+	.text-right{
+		text-align: right;
+	}
+	.text-left{
+		text-align: left;
+	}
+	/*加粗*/
+	.weight{
+		font-weight: bold;
+	}
 	
 	
 	
