@@ -10,6 +10,7 @@ Vue.prototype.$serverUrl = 'http://www.shopmedia.com/index.php/'
 // Vue.prototype.$serverUrl = 'http://pet.dilinsat.com/index.php/'
 Vue.prototype.$imgServerUrl = ''
 
+
 App.mpType = 'app'
 
 const app = new Vue({
