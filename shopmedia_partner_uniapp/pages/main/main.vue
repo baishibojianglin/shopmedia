@@ -1,37 +1,65 @@
 <template>
 	<view class="content">
-        <u-row>
-            <u-col span="24" class="contain-map">
+		   <view>
 				<map 
 					class="map"
-					:scale='10'
+					:scale='9'
 					:latitude="latitude" 
 					:longitude="longitude" 
 					:markers='markers'
 					:enable-satellite="false"
 				>	
-				</map>
-			</u-col>
-			<u-col span="8">城市：成都</u-col>
-			<u-col span="8">总数：5023</u-col>
-			<u-col span="8">可售：37</u-col>
-        </u-row>         
+				</map>	
+			</view>
+							
+			<view class="countcon">
+				<view class="countcon-item">
+					<text>自营：{{5040+salecount}} 台</text>
+				</view>
+				<view class="countcon-item">
+					<text>可合作：{{salecount}} 台</text>
+				</view>
+			</view>	
+            <view>
+				<view class="listcon">
+					<view class="listcon-item-1">
+						<text>屏号</text>
+					</view>
+					<view class="listcon-item-2">
+						<text>店名</text>
+					</view>
+					<view class="listcon-item-1">
+						<text>合作价</text>
+					</view>
+				</view>	 
+				<view class="listcon" v-for="value in devicelist">
+					<view class="listcon-item-1">
+						<text>{{value.device_id}}</text>
+					</view>
+					<view class="listcon-item-2">
+						<text>{{value.shopname}}</text>
+					</view>
+					<view class="listcon-item-1">
+						<text>¥{{value.sale_price}}</text>
+					</view>
+				</view>	
+			</view>
+                					
+						
+							
 	</view>
 </template>
 
 <script>
-	import Vue from 'vue'
-	import Row from '@/components/dl-grid/row.vue'
-	import Col from '@/components/dl-grid/col.vue'	
-	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
-	Vue.component('u-col', Col);
 
 	export default {
 		data() {
 				return {
-						latitude:30.547441,
-						longitude: 104.061738,
-						markers:[],			
+						latitude:30.657420,//纬度
+						longitude: 104.065840,//经度
+						markers:[],	//地图图标
+						salecount:0,//合作屏数量
+						devicelist:[] //设备列表
 					   }
 		},
 		onLoad() {
@@ -45,14 +73,15 @@
 			       url: this.$serverUrl+'api/getMarkers',
 				   header: getApp().globalData.commonHeaders,
 			       success: (res) => {
+					    self.devicelist=res.data.data;
+					    self.salecount=res.data.data.length;
 					    res.data.data.forEach((value,index)=>{
 							self.$set(self.markers,index,{
 								title:value.device_id+' '+value.shopname,
 								longitude:value.longitude,
 								latitude:value.latitude
-								});
-						})
-						
+							});
+						})					
 			       }
 			   });
 		   }
@@ -62,19 +91,38 @@
 </script>
 
 <style>
-	.content{
-		margin: 0;
-		padding: 0;	
-		text-align: center;
-	}
-	.contain-map{
-		margin: 0;
-		padding: 0;
-	}
-	.map{
-	   width: 100%;
-	   height: 250px;
-	   margin: 0;
-	   padding: 0;
-	}
+.content{
+	display: flex;
+	margin: 0;
+	padding: 0;
+}
+.map{
+	width: 100%;
+	height: 250px;
+}
+.countcon{
+	display: flex;
+	flex-direction:row;
+	justify-content:center;
+	border-bottom: 1px solid #E7E6DF;
+
+}
+.countcon-item{
+    flex: 1;
+	line-height: 40px;
+}
+.listcon{
+	display: flex;
+	flex-direction:row;
+	justify-content:center;
+	border-bottom: 1px solid #E7E6DF;
+}
+.listcon-item-1{
+    flex: 1;
+	line-height: 40px;
+}
+.listcon-item-2{
+    flex: 2;
+	line-height: 40px;
+}
 </style>
