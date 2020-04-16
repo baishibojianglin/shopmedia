@@ -1,12 +1,14 @@
 <template>
-	<view class="content">
-		<u-row style="margin-bottom: 20px;">
-			<u-col span="24" class="contain-logo">
-				<image class="logo" mode="aspectFit" :src="logourl"></image>
-			</u-col>
-		</u-row>
+	<view class="uni-padding-wrap">
+		<view class="uni-common-mt">
+			<u-row style="margin-bottom: 20px;">
+				<u-col span="24" class="contain-logo">
+					<image class="logo" mode="aspectFit" :src="logourl"></image>
+				</u-col>
+			</u-row>
+		</view>
 
-		<view class="input-group">
+		<view class="input-group uni-common-pl">
 			<view class="input-row border" style="line-height: 60px;">
 				<text class="title">手机</text>
 				<m-input class="m-input" type="text" clearable focus v-model="phone" placeholder="请输入手机号"></m-input>

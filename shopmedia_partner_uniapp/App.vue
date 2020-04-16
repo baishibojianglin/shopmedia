@@ -62,15 +62,4 @@
 	/* 每个页面公共css */
 	@import './common/uni.css'; /* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
 	@import './common/base.css'; /* 导入基础样式 */
-	
-	/* 阿里图标库 */
-	@font-face {
-	  font-family: 'iconfont';  /* project id 1721327 */
-	  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot');
-	  src: url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.eot?#iefix') format('embedded-opentype'),
-	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff2') format('woff2'),
-	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.woff') format('woff'),
-	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.ttf') format('truetype'),
-	  url('//at.alicdn.com/t/font_1721327_ri7fc55t8l.svg#iconfont') format('svg');
-	}
 </style>
