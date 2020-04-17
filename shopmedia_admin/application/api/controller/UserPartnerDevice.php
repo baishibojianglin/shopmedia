@@ -19,19 +19,15 @@ class UserPartnerDevice extends AuthBase
     public function index()
     {
         // 判断为GET请求
-        if (request()->isGet()) {
+        if (!request()->isGet()) {
             return show(config('code.error'), '请求不合法', '', 400);
         }
-        return show(config('code.success'), 'OK', 123);
+
         // 传入的参数
         $param = input('param.');
 
         // 查询条件
         $map = [];
-        if (isset($param['user_id']) && isset($param['role_id'])) { // 用户ID、用户角色ID
-            $map['user_id'] = intval($param['user_id']);
-            $map['role_id'] = intval($param['role_id']);
-        }
         // 获取广告设备ID集合
         $userPartner = Db::name('user_partner')->field('device_ids')->where(['user_id' => intval($param['user_id']), 'role_id' => intval($param['role_id'])])->find();
         $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
