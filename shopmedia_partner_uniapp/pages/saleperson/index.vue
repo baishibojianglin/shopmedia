@@ -35,19 +35,19 @@
 						<text v-show="false">详情</text>
 					</view>
 				</view>	 
-				<view class="listcon" v-for="value in devicelist">
-					<view class="listcon-item-1">
-						<text>{{value.device_id}}</text>
-					</view>
-					<view class="listcon-item-2">
-						<text>{{value.shopname}}</text>
-					</view>
-					<view class="listcon-item-1">
-						<text class="">¥{{value.sale_price}}</text>
-					</view>
-					<view class="listcon-item-3">
-						<text class="icon icon-size">&#xe6b7;</text>
-					</view>
+				<view class="listcon" v-for="value in devicelist" @click="toDevice(value.device_id)">
+						<view class="listcon-item-1">
+							<text>{{value.device_id}}</text>
+						</view>
+						<view class="listcon-item-2">
+							<text>{{value.shopname}}</text>
+						</view>
+						<view class="listcon-item-1">
+							<text class="">¥{{value.sale_price}}</text>
+						</view>
+						<view class="listcon-item-3">
+							<text class="icon icon-size">&#xe6b7;</text>
+						</view>
 				</view>	
 			</view>
                 					
@@ -96,6 +96,13 @@
 								});
 						})
 					}
+				});
+			},
+			
+			//跳转到设备详情
+			toDevice(device_id){
+				uni.navigateTo({
+				    url:'device?device_id='+device_id
 				});
 			}
 		}

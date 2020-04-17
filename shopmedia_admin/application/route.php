@@ -87,6 +87,7 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 Route::resource('api/user', 'api/user');
 
 //业务员
-Route::get('api/getMarkers','admin/Device/getMarkers');
+Route::get('api/getMarkers','api/Saleperson/getMarkers');
+Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
 
 /* 客户端路由 e */

@@ -1,6 +1,5 @@
 <script>
-	import common from '@/common/common.js';
-	
+    import common from '@/common/common.js';
 	export default {
 		components: {},
 		// 全局变量

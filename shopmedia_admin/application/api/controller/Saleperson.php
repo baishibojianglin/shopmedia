@@ -14,14 +14,14 @@ use think\Db;
  * Class User
  * @package app\api\controller\v1
  */
-class User extends AuthBase
+
+class Saleperson extends AuthBase
 {
     /**
      * 获取广告屏位置信息
      * @return \think\response\Json
      */
     public function getMarkers(){
-        $form=input();
         $devicelist=Db::name('device')->select();
         
         if(!empty($devicelist)){
@@ -34,4 +34,27 @@ class User extends AuthBase
         }
         return json($message);
     }
+
+    /**
+     * 获取广告屏详细信息
+     * @return \think\response\Json
+     */
+    public function DeviceDetail(){
+        $form=input();
+        $match['device_id']=$form['device_id'];
+        $devicelist=Db::name('device')->where($match)->find();
+        
+        if(!empty($devicelist)){
+            $message['data']=$devicelist;
+            $message['status']=1;
+            $message['words']='获取成功';
+        }else{
+            $message['status']=0;
+            $message['words']='获取失败';
+        }
+        return json($message);
+    }
+
+
+
 }
