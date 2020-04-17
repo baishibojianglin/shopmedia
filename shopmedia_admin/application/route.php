@@ -40,9 +40,9 @@ Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列�
 
 // 用户（业务员）
 Route::resource('user_salesman', 'admin/UserSalesman');
-// 用户（传媒设备合作者）
+// 用户（广告设备合作者）
 Route::resource('user_partner', 'admin/UserPartner');
-// 用户（传媒设备合作者）拥有的设备
+// 用户（广告设备合作者）拥有的设备
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
@@ -75,19 +75,22 @@ Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列�
 /* -----------------------客户端路由 ------------------------------s */
 
 // 登录与注册
-Route::put('api/login', 'api/login/login'); // 登录
-Route::post('api/register', 'api/login/register'); // 注册
-Route::put('api/pwd', 'api/login/pwd'); // 找回密码
-Route::put('api/logout', 'api/login/logout'); // 退出登录
+Route::put('api/login', 'api/Login/login'); // 登录
+Route::post('api/register', 'api/Login/register'); // 注册
+Route::put('api/pwd', 'api/Login/pwd'); // 找回密码
+Route::put('api/logout', 'api/Login/logout'); // 退出登录
 
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
 
 // 用户
-Route::resource('api/user', 'api/user');
+Route::resource('api/user', 'api/User');
 
 //业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
+
+// 用户（广告设备合作者）拥有的设备
+Route::resource('api/user_partner_device', 'api/UserPartnerDevice');
 
 /* 客户端路由 e */
