@@ -226,7 +226,10 @@ class Ad extends Base
                 $data['play_times'] = input('param.play_times', null, 'intval');
             }
             if (isset($param['ad_price'])) { // 广告价格
-                $data['ad_price'] = input('param.ad_price', null, 'intval');
+                $data['ad_price'] = input('param.ad_price', null, 'float');
+            }
+            if (isset($param['discount_ratio'])) { // 广告折扣率
+                $data['discount_ratio'] = input('param.discount_ratio/f');
             }
             if (!empty($param['advertisers'])) { // 广告主名称
                 $data['advertisers'] = trim($param['advertisers']);

@@ -23,9 +23,6 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item prop="ad_price" label="广告价格(元)">
-						<el-input-number v-model="form.ad_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
-					</el-form-item>
 					<el-form-item prop="ad_datetime" label="投放时间">
 						<el-date-picker v-model="form.ad_datetime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
 						 end-placeholder="结束日期">
@@ -64,6 +61,12 @@
 							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'店铺类别：' + item.shop_cate_name + '，' + '店铺：' + item.shopname + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
 						</el-checkbox-group>
 					</el-form-item>
+					<el-form-item prop="ad_price" label="广告价格(元)">
+						<el-input-number v-model="form.ad_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
+					</el-form-item>
+					<el-form-item prop="discount_ratio" label="广告折扣率">
+						<el-input-number v-model="form.discount_ratio" :min="0" :max="1" :step="0.1" :precision="2" controls-position="right"></el-input-number>（设置为1时表示无折扣）
+					</el-form-item>
 					<el-form-item prop="is_show" label="是否显示">
 						<el-radio-group v-model="form.is_show">
 							<el-radio :label="1">显示</el-radio>
@@ -99,6 +102,7 @@
 					ad_name: '', // 广告名称
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
+					discount_ratio: '', // 广告折扣率
 					region_ids: [], // 区域ID集合（数组）
 					shop_cate_ids: [], // 投放店铺类别ID集合
 					device_ids: [] // 投放广告设备ID集合
@@ -341,6 +345,7 @@
 								ad_name: this.form.ad_name,
 								ad_cate_id: this.form.ad_cate_id,
 								ad_price: this.form.ad_price,
+								discount_ratio: this.form.discount_ratio,
 								ad_datetime: this.form.ad_datetime,
 								ad_time: this.form.ad_time,
 								play_times: this.form.play_times,
