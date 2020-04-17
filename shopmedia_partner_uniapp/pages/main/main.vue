@@ -83,7 +83,8 @@
 						'version': getApp().globalData.version, // 应用大版本号
 						'model': getApp().globalData.systemInfo.model, // 手机型号
 						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did // 设备号
+						'did': getApp().globalData.did, // 设备号
+						'access-user-token': global.isLogin().user_info.token
 					},
 					success: (res) => {
 						self.salecount=res.data.data.length;//可合作数量

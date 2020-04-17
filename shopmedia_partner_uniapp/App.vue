@@ -10,7 +10,7 @@
 			commonHeaders: {} // 公用请求头
 		},
 		onLaunch: function() {		
-			let self = this;	
+			let self = this;
 			// 获取设备系统信息
 			uni.getSystemInfo({
 				success: function (res) {
