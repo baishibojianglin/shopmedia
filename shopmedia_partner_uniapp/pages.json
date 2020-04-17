@@ -1,5 +1,19 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页,
+		{   //业务员首页
+			"path": "pages/saleperson/index",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "店通智能屏分布"
+			}
+		},
+		{   //业务员设备详情
+		 	"path": "pages/saleperson/device",
+		 	"style": {
+		 		"app-plus": {"titleNView": true},
+		 		"navigationBarTitleText": "智能屏详情"
+		 	}
+		 }, 
 		{
 			"path": "pages/main/main",
 			"style": {
@@ -55,9 +69,9 @@
         }
     ],
 	"tabBar": {
-		"color": "#7a7e83",
-		"selectedColor": "#0faeff",
-		"backgroundColor": "#ffffff",
+		"color": "#808080",
+		"selectedColor": "#000",
+		"backgroundColor": "#fff",
 		"list": [{
 			"pagePath": "pages/main/main",
 			"text": "首页",
