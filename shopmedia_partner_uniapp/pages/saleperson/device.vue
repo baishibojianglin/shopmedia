@@ -10,6 +10,55 @@
 				</swiper-item>
 			</swiper>
 		</view>
+		
+        <view>
+			<view class="datalist">
+				<text class="datalist-title">屏编号：</text>
+				<text class="datalist-content">{{datalist.device_id}}</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">合作价：</text>
+				<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">屏尺寸：</text>
+				<text class="datalist-content">{{datalist.size}} 寸</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">数据系统：</text>
+				<text class="datalist-content">店通智能大数据系统</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">店铺：</text>
+				<text class="datalist-content">{{datalist.shopname}}</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">店铺面积：</text>
+				<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">所属行业：</text>
+				<text class="datalist-content">{{datalist.shopcate}}</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">位置：</text>
+				<text class="datalist-content">{{datalist.address}}</text>
+			</view>
+			<view class="datalist">
+				<text class="datalist-title">周围环境：</text>
+				<text class="datalist-content">{{datalist.environment}}</text>
+			</view>
+		</view>
+		
+		<view class="ordercon">
+			<button  class="ordercon-item">导航实地查看</button>
+		</view>
+		
+
+		
+
+		
+
                 					
 						
 							
@@ -23,16 +72,31 @@
 				return {
                      device_id:0 ,//设备id
 					 datalist:{}, //设备信息列表
-					 imglist:[] //实景图列表
+					 imglist:[] ,//实景图列表
+					 shopcatelist:{} //店铺行业列表
 				}
 		},
 		onLoad(options) {
            //获取设备id
            this.device_id=options.device_id;
+		   //获取店铺行业配置信息
+		   this.getCate()
 		   //获取设备信息
 		   this.deviceDetail();
 		},
 		methods: {
+			//获取行业配置信息
+			getCate(){
+			  let self=this;
+			  uni.request({
+			  	url: this.$serverUrl+'api/shopCateList',
+			  	method:'GET',
+			  	header:  getApp().globalData.commonHeaders,
+			  	success: (res) => {
+					 self.shopcatelist=res.data.data;
+			  	}
+			  });
+			},
 			//获取设备详细信息
 			deviceDetail(){
 				let self=this;
@@ -40,17 +104,10 @@
 					url: this.$serverUrl+'api/DeviceDetail',
 					data:{device_id:self.device_id},
 					method:'POST',
-					header: /* getApp().globalData.commonHeaders */{
-						'content-type': "application/json; charset=utf-8",
-						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-						'version': getApp().globalData.version, // 应用大版本号
-						'model': getApp().globalData.systemInfo.model, // 手机型号
-						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did // 设备号
-					},
+					header:getApp().globalData.commonHeaders,
 					success: (res) => {
-                       console.log(res.data)
 					   self.datalist=res.data.data; //赋值
+					   self.datalist.shopcate=self.shopcatelist[self.datalist.shopcate].cate_name; //展示店铺行业
 					   //取实景图
 					   let str_image=res.data.data.url_image;
 					   if(str_image.indexOf(',')==-1){
@@ -61,10 +118,13 @@
 						  	self.$set(self.imglist,index,value);
 						  })
 					   }				   
-					}
+					},					
 				});
 			}
+			
+			
 		}
+
 	}
 </script>
 
@@ -86,4 +146,34 @@
 	width: 100%;
 	height: 100%;
 }
+.datalist{
+	display: flex;
+	flex-direction:row;
+	padding: 0 20rpx;
+	line-height: 40px;
+	border-bottom: 1px solid #E5E2DF;
+}
+.datalist-title{
+	flex-basis: 80px;
+	text-align: right;
+}
+.datalist-content{
+	flex: 1;
+	text-align: right;
+}
+.color-red{
+	color:#FF6633;
+}
+.ordercon{
+	display: flex;
+	flex-direction:row;
+}
+.ordercon-item{
+	flex: 1;
+	text-align: center;
+	margin: 10rpx 15rpx;
+	background-color: #3339F1;
+	color:#ffffff;
+}
+
 </style>

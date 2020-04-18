@@ -89,6 +89,7 @@ Route::resource('api/user', 'api/User');
 //业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
+Route::get('api/shopCateList','api/Saleperson/shopCateList');
 
 // 用户（广告设备合作者）拥有的设备
 Route::resource('api/user_partner_device', 'api/UserPartnerDevice');
