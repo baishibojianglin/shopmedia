@@ -90,6 +90,7 @@ class Login extends Common
                 'user_id' => $user['user_id'],
                 'user_name' => $user['user_name'],
                 'phone' => $user['phone'],
+                "role_ids"=>$user['role_ids']
             ];
             return show(config('code.success'), 'OK', $result);
         } else {

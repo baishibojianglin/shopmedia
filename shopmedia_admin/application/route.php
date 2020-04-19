@@ -63,6 +63,7 @@ Route::get('ad_cate_list','admin/AdCate/adCateList'); // 广告类别列表（�
 Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）
 
 
+/* ------------------------  后台管理系统路由 --------------------------------e */
 
 
 
@@ -70,7 +71,11 @@ Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列�
 
 
 
-/* 后台管理系统路由 e */
+
+
+
+
+
 
 /* -----------------------客户端路由 ------------------------------s */
 
@@ -94,4 +99,4 @@ Route::get('api/shopCateList','api/Saleperson/shopCateList');
 // 用户（广告设备合作者）拥有的设备
 Route::resource('api/user_partner_device', 'api/UserPartnerDevice');
 
-/* 客户端路由 e */
+/* -------------------------- 客户端路由 -----------------------------e */
