@@ -2,7 +2,6 @@
 	export default {
 		components: {},
 		onLaunch: function() {		
-             
 		},
 		onShow: function() {
 

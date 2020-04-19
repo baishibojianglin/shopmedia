@@ -13,7 +13,7 @@
 				"app-plus": {"titleNView": false}
 				//"navigationBarTitleText": "登录"
 			}
-		}, 
+		},
 		{   //业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
