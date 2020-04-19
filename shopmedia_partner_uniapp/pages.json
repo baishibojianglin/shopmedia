@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页,
+	"pages": [ //pages数组中第一项表示应用启动页
 		{
 			"path": "pages/login/login",
 			"style": {
@@ -27,7 +27,7 @@
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "店通智能屏分布"
 			}
-		},  
+		},
 		{   //注册
 			"path": "pages/reg/reg",
 			"style": {
@@ -73,7 +73,7 @@
 		"selectedColor": "#000",
 		"backgroundColor": "#fff",
 		"list": [{
-			"pagePath": "pages/main/main",
+			"pagePath": "pages/saleperson/index",
 			"text": "首页",
 			"iconPath": "static/img/home.png",
 			"selectedIconPath": "static/img/homeHL.png"

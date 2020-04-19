@@ -1,11 +1,7 @@
 <template>
 	<view class="uni-padding-wrap">
 		<view class="uni-common-mt">
-			<u-row style="margin-bottom: 20px;">
-				<u-col span="24" class="contain-logo">
-					<image class="logo" mode="aspectFit" :src="logourl"></image>
-				</u-col>
-			</u-row>
+			<image class="logo" mode="aspectFit" :src="logourl"></image>
 		</view>
 
 		<view class="input-group uni-common-pl">
@@ -41,11 +37,6 @@
 </template>
 
 <script>
-	import Vue from 'vue'
-	import Row from '@/components/dl-grid/row.vue'
-	import Col from '@/components/dl-grid/col.vue'
-	Vue.component('u-row', Row); //<row>和<col>为H5原生标签, 不能直接用, 可起名<u-row>或者其他的
-	Vue.component('u-col', Col);
 	import {mapState, mapMutations} from 'vuex';
 	import common from '@/common/common.js';
 	import mInput from '../../components/m-input.vue';

@@ -4,7 +4,7 @@
 		components: {},
 		// 全局变量
 		globalData: {
-			systemInfo: '', // 设备系统信息
+			systemInfo: {}, // 设备系统信息
 			version: 1, // 应用大版本号
 			did: '12345dg', // 设备号
 			commonHeaders: {} // 公用请求头
@@ -25,14 +25,15 @@
 				'version': getApp().globalData.version, // 应用大版本号
 				'model': getApp().globalData.systemInfo.model, // 手机型号
 				'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-				'did': getApp().globalData.did // 设备号
+				'did': getApp().globalData.did ,// 设备号
+				'access-user-token': global.isLogin().user_info.token
 			}
 		},
 		onShow: function() {
-			console.log('App Show');
+			//console.log('App Show');
 		},
 		onHide: function() {
-			console.log('App Hide');
+			//console.log('App Hide');
 		}
 	}
 	

@@ -77,14 +77,7 @@
 				let self=this;
 				uni.request({
 					url: this.$serverUrl+'api/getMarkers',
-					header: /* getApp().globalData.commonHeaders */{
-						'content-type': "application/json; charset=utf-8",
-						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-						'version': getApp().globalData.version, // 应用大版本号
-						'model': getApp().globalData.systemInfo.model, // 手机型号
-						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did // 设备号
-					},
+					header:  getApp().globalData.commonHeaders,
 					success: (res) => {
 						self.salecount=res.data.data.length;//可合作数量
 						self.devicelist=res.data.data; //可合作设备列表

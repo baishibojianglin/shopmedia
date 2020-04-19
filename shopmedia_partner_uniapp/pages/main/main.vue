@@ -69,6 +69,7 @@
 					   }
 		},
 		onLoad() {
+			console.log(global.isLogin())
               this.getmarkers();
 		},
 		methods: {

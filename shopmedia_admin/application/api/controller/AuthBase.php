@@ -29,12 +29,18 @@ class AuthBase extends Common
      */
     public function _initialize()
     {
-        parent::_initialize();
+       // parent::_initialize();
 
         // 判断是否登录
+<<<<<<< HEAD
         if (!($this->isLogin())) {
             throw new ApiException('未登录', 401);
         }
+=======
+        //if (!($this->isLogin())) {
+            //throw new ApiException('未登录', 401);
+       // }
+>>>>>>> e82221ef9f18aeeadc9453f2e8cb4ccc4d93b05e
     }
 
     /**
