@@ -127,11 +127,11 @@ class Login extends Common
                 return show(config('code.error'), '短信验证码不能为空', '', 401);
             } else {
                 // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
-                //$param['verify_code'] = $aesObj->decrypt($param['verify_code']);
+                $param['verify_code'] = $aesObj->decrypt($param['verify_code']);
 
                 // 判断短信验证码是否合法
                 $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
-                if (empty($verifyCode) || $verifyCode != $verifyCode) {
+                if (empty($verifyCode) || $verifyCode != $param['verify_code']) {
                     return show(config('code.error'), '短信验证码错误'.$verifyCode, '', 401);
                 }
             }
