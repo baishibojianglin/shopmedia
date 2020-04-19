@@ -1,106 +1,56 @@
 <template>
 	<view class="uni-padding-wrap">
-		<view class="uni-common-mt">
+		<view class="contain-logo">
 			<image class="logo" mode="aspectFit" :src="logourl"></image>
 		</view>
 
-		<view class="input-group uni-common-pl">
-			<view class="input-row border" style="line-height: 60px;">
-				<text class="title">手机</text>
-				<m-input class="m-input" type="text" clearable focus v-model="phone" placeholder="请输入手机号"></m-input>
+		<view>
+			<view class="input-line-height">
+				<text class="input-line-height-1">手机</text>
+				<input class="input-line-height-2" type="text" v-model="phone" placeholder="请输手机号" />
 			</view>
-			<view class="input-row" style="line-height: 60px;">
-				<text class="title">密码</text>
-				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
+			<view class="input-line-height">
+				<text class="input-line-height-1">密码</text>
+				<input class="input-line-height-2" type="password"  v-model="password" placeholder="请输入密码" />
 			</view>
 		</view>
 
-		<view class="btn-row">
-			<button type="primary" style="background-color: #504AF2;" @tap="bindLogin">登录</button>
+		<view>
+			<button class="login-button" @click="bindLogin">登 录</button>
 		</view>
 
-		<view class="action-row" style="margin-top: 10px;">
-			<navigator style="color: #000;" url="../reg/reg">注册账号</navigator>
-			<text>|</text>
-			<navigator style="color: #000;" url="../pwd/pwd">忘记密码</navigator>
+		<view class="bottom-con">
+			<navigator url="../reg/reg">注册账号</navigator>
+			<text class="bottom-con-1">|</text>
+			<navigator url="../pwd/pwd">忘记密码</navigator>
 		</view>
-
- 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
-			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
-				<image :src="provider.image" @tap="oauth(provider.value)"></image>
-				<!-- #ifdef MP-WEIXIN -->
-				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
-				<!-- #endif -->
-			</view>
-		</view> 
+ 
 	</view>
 </template>
 
 <script>
-	import {mapState, mapMutations} from 'vuex';
 	import common from '@/common/common.js';
-	import mInput from '../../components/m-input.vue';
+	//import {mapState, mapMutations} from 'vuex';
 
 	export default {
-		components: {
-			mInput
-		},
+		components: {},
 		data() {
 			return {
-				providerList: [],
-				hasProvider: false,
 				phone: '18989898899',
 				password: 'abc123',
-				positionTop: 0,
-				isDevtools: false,
 				logourl: '/static/img/logo.png',
 			}
 		},
-		computed: mapState(['forcedLogin']),
+		//computed: mapState(['forcedLogin']),
 		methods: {
-			...mapMutations(['login']),
-
-			initProvider() {
-				const filters = ['weixin', 'qq', 'sinaweibo'];
-				uni.getProvider({
-					service: 'oauth',
-					success: (res) => {
-						if (res.provider && res.provider.length) {
-							for (let i = 0; i < res.provider.length; i++) {
-								if (~filters.indexOf(res.provider[i])) {
-									this.providerList.push({
-										value: res.provider[i],
-										image: '../../static/img/' + res.provider[i] + '.png'
-									});
-								}
-							}
-							this.hasProvider = true;
-						}
-					},
-					fail: (err) => {
-						console.error('获取服务供应商失败：' + JSON.stringify(err));
-					}
-				});
-			},
-
-			initPosition() {
-				/**
-				 * 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
-				 * 反向使用 top 进行定位，可以避免此问题。
-				 */
-				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
-			},
+			//...mapMutations(['login']),
 
 			/**
 			 * 登录
 			 */
-			bindLogin() {
+			bindLogin(){
 				let self = this;
-
-				/**
-				 * 客户端对账号信息进行一些必要的校验。
-				 */
-				// 手机号
+				//验证电话
 				if (this.phone == '') {
 					uni.showToast({
 						icon: 'none',
@@ -111,192 +61,96 @@
 				if (!this.phone.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) { /* 或 !(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(this.phone) */
 					uni.showToast({
 						icon: 'none',
-						title: '手机号不合法'
+						title: '手机号不正确'
 					});
-					return;
+					return false;
 				}
 				// 密码
-				if (!this.password.match(/^[a-zA-Z]\w{5,19}$/)) {
+				if (!this.password.match(/^[a-zA-Z]\w{5,19}$/)) {   
 					uni.showToast({
 						icon: 'none',
-						title: '密码必须以字母开头，长度在6~20之间，只能包含字母、数字和下划线'
+						duration:2500,
+						title: '字母开头，长度在6~20之间，只能包含字母、数字和下划线'
 					});
-					return;
+					return false;
 				}
 
-				/**
-				 * 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
-				 */
+				//使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				uni.request({
 					url: this.$serverUrl + 'api/login',
 					data: {
 						phone: this.phone,
 						password: this.password
 					},
-					header: /* getApp().globalData.commonHeaders, */ {
-						'content-type': "application/json; charset=utf-8",
-						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-						'version': getApp().globalData.version, // 应用大版本号
-						'model': getApp().globalData.systemInfo.model, // 手机型号
-						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did, // 设备号
-					},
 					method: 'PUT',
 					success: function(res) {
-						// console.log('login success', res);
-						if (1 == res.data.status) {
-							let userInfo = res.data.data;
+							if (res.data.status == 1) {
+								let userInfo = res.data.data;
+								// self.login(userInfo); 
+								// TODO：使用vuex管理登录状态时开启
+								/* 存储的登录状态数据（非vuex管理登录状态） s */
+								uni.setStorage({
+									key: 'login_info',
+									data: {
+										'has_login': true, // 是否登录
+										'user_info': userInfo // 存放用户信息
+									}
+								})
+								/* 存储的登录状态数据（非vuex管理登录状态） e */
 
-							// self.login(userInfo); // TODO：使用vuex管理登录状态时开启
-							/* 存储的登录状态数据（非vuex管理登录状态） s */
-							uni.setStorage({
-								key: 'login_info',
-								data: {
-									'has_login': true, // 是否登录
-									'user_info': userInfo // 存放用户信息
-								}
-							})
-							/* 存储的登录状态数据（非vuex管理登录状态） e */
+								//跳转到首页
+								uni.reLaunch({
+									url: '../main/main',
+								});
 
-							// self.toMain(userInfo); // 跳转到首页
-							uni.reLaunch({
-								url: '../main/main',
-							});
-						} else {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message, // '用户账号或密码不正确'
-							});
-						}
+							} 
 					}
 				})
-			},
-			oauth(value) {
-				uni.login({
-					provider: value,
-					success: (res) => {
-						uni.getUserInfo({
-							provider: value,
-							success: (infoRes) => {
-								/**
-								 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-								 */
-								this.toMain(infoRes.userInfo.nickName);
-							},
-							fail() {
-								uni.showToast({
-									icon: 'none',
-									title: '登陆失败'
-								});
-							}
-						});
-					},
-					fail: (err) => {
-						console.error('授权登录失败：' + JSON.stringify(err));
-					}
-				});
-			},
-			getUserInfo({
-				detail
-			}) {
-				if (detail.userInfo) {
-					this.toMain(detail.userInfo.nickName);
-				} else {
-					uni.showToast({
-						icon: 'none',
-						title: '登陆失败'
-					});
-				}
-			},
-
-			/**
-			 * 跳转到首页
-			 * @param {Object} userInfo
-			 */
-			toMain(userInfo) {
-				this.login(userInfo);
-				/**
-				 * 强制登录时使用reLaunch方式跳转过来
-				 * 返回首页也使用reLaunch方式
-				 */
-				if (this.forcedLogin) {
-					uni.reLaunch({
-						url: '../main/main',
-					});
-				} else {
-					uni.navigateBack();
-				}
 			}
-		},
-		onReady() {
-			this.initPosition();
-			this.initProvider();
-			// #ifdef MP-WEIXIN
-			this.isDevtools = uni.getSystemInfoSync().platform === 'devtools';
-			// #endif
+				
 		}
 	}
 </script>
 
 <style>
 	.contain-logo {
-		margin-top: 30px;
+		margin-top: 50px;
+		margin-bottom: 20px;
 		text-align: center;
 	}
-
 	.logo {
-		height: 130px;
+		height: 140px;
 	}
-
-	.logo-text {
-		font-size: 20px;
-		font-weight: bold;
-	}
-
-	.action-row {
+	.input-line-height{
 		display: flex;
-		flex-direction: row;
-		justify-content: center;
+		align-items:center;
+		line-height: 50px;
+		border-bottom:1px solid #ECECEC; 
+		font-size:16px;
 	}
-
-	.action-row navigator {
-		color: #007aff;
-		padding: 0 10px;
+	.input-line-height-1{
+		flex:1;
+		padding-left: 5px;
 	}
-
-	.oauth-row {
+	.input-line-height-2{
+		flex:3;
+		font-size: 16px;
+		text-align: left;
+	}
+	.login-button{
+		background-color: #504AF2;
+		color:#fff;
+		margin-top: 20px;
+	}
+	.bottom-con{
 		display: flex;
+		margin-top: 10px;
 		flex-direction: row;
-		justify-content: center;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
+		justify-content:center;
+		font-size: 14px;
+	}
+	.bottom-con-1{
+		padding: 0 8px;
 	}
 
-	.oauth-image {
-		position: relative;
-		width: 50px;
-		height: 50px;
-		border: 1px solid #dddddd;
-		border-radius: 50px;
-		margin: 0 20px;
-		background-color: #ffffff;
-	}
-
-	.oauth-image image {
-		width: 30px;
-		height: 30px;
-		margin: 10px;
-	}
-
-	.oauth-image button {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
-	}
 </style>

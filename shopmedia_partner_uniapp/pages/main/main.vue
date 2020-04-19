@@ -1,58 +1,27 @@
 <template>
 	<view class="content">
 		   <view>
-				<map 
-					class="map"
-					:scale='9'
-					:latitude="latitude" 
-					:longitude="longitude" 
-					:markers='markers'
-					:enable-satellite="false"
-				>	
-				</map>	
+                 <video class="vedio-con"  autoplay="true" loop="false" controls="true" src="https://sustock-app.oss-cn-chengdu.aliyuncs.com/sustock-logo.mp4"></video>
+		   </view>
+			   
+           <view >
+			   <uni-grid  class="view-grid-con" :column="3">
+			       <uni-grid-item>
+			           <text>屏总量</text>
+					   <text class="text-grid">50000+</text>
+			       </uni-grid-item>
+			       <uni-grid-item>
+			           <text class="text">覆盖城市</text>
+					   <text class="text-grid">7</text>
+			       </uni-grid-item>
+			       <uni-grid-item>
+			           <text class="text">服务商家</text>
+					   <text class="text-grid">80000+</text>
+			       </uni-grid-item>
+			   </uni-grid>
 			</view>
-							
-			<view class="countcon">
-				<view class="countcon-item">
-					<text>屏总数：{{5040+salecount}} 台</text>
-				</view>
-				<view class="countcon-item">
-					<text>可合作：{{salecount}} 台</text>
-				</view>
-			</view>	
-            <view>
-				<view class="listcon">
-					<view class="listcon-item-1">
-						<text>屏号</text>
-					</view>
-					<view class="listcon-item-2">
-						<text>店名</text>
-					</view>
-					<view class="listcon-item-1">
-						<text>合作价</text>
-					</view>
-					<view class="listcon-item-3">
-						<text v-show="false">详情</text>
-					</view>
-				</view>	 
-				<view class="listcon" v-for="value in devicelist">
-					<view class="listcon-item-1">
-						<text>{{value.device_id}}</text>
-					</view>
-					<view class="listcon-item-2">
-						<text>{{value.shopname}}</text>
-					</view>
-					<view class="listcon-item-1">
-						<text class="">¥{{value.sale_price}}</text>
-					</view>
-					<view class="listcon-item-3">
-						<text class="icon icon-size">&#xe6b7;</text>
-					</view>
-				</view>	
-			</view>
-                					
-						
-							
+
+																					  
 	</view>
 </template>
 
@@ -60,47 +29,17 @@
 	import common from '@/common/common.js';
 	export default {
 		data() {
-				return {
-						latitude:30.657420,//纬度
-						longitude: 104.065840,//经度
-						markers:[],	//地图图标
-						salecount:0,//合作屏数量
-						devicelist:[] //设备列表
-					   }
+			return {
+
+				}
 		},
 		onLoad() {
-			console.log(global.isLogin())
-              this.getmarkers();
+
 		},
 		methods: {
-			//获取广告屏位置
-			getmarkers(){
-				let self=this;
-				uni.request({
-					url: this.$serverUrl+'api/getMarkers',
-					header: /* getApp().globalData.commonHeaders */{
-						'content-type': "application/json; charset=utf-8",
-						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-						'version': getApp().globalData.version, // 应用大版本号
-						'model': getApp().globalData.systemInfo.model, // 手机型号
-						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did ,// 设备号
-						//'access-user-token': global.isLogin().user_info.token
-					},
-					success: (res) => {
-						self.salecount=res.data.data.length;//可合作数量
-						self.devicelist=res.data.data; //可合作设备列表
-						res.data.data.forEach((value,index)=>{
-							self.$set(self.markers,index,{
-								title:value.device_id+' '+value.shopname,
-								longitude:value.longitude,
-								latitude:value.latitude
-								});
-						})
-					}
-				});
-			}
+			
 		}
+
 	}
 </script>
 
@@ -110,40 +49,16 @@
 	padding: 0;
 	text-align: center;
 }
-.map{
+.vedio-con{
 	width: 100%;
-	height: 250px;
 }
-.countcon{
-	display: flex;
-	flex-direction:row;
-	justify-content:center;
-	border-bottom: 1px solid #E7E6DF;
-	font-weight: bold;
+.view-grid-con{
+	margin: 0px 5px;
 }
-.countcon-item{
-    flex: 1;
-	line-height: 40px;
-}
-.listcon{
-	display: flex;
-	flex-direction:row;
-	justify-content:center;
-	border-bottom: 1px solid #E7E6DF;
-}
-.listcon-item-1{
-	line-height: 40px;
-	flex-basis: 70px;
-}
-.listcon-item-2{
-	flex: 1;
-	line-height: 40px;
-}
-.listcon-item-3{
-	line-height: 40px;
-	flex-basis: 30px;
-}
-.icon-size{
-	font-size: 16px;
+.text-grid{
+	line-height: 80px;
+	font-weight: bolder;
+	font-size: 17px;
+	color:#504AF2;
 }
 </style>

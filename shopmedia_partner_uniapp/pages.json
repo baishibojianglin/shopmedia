@@ -1,6 +1,13 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页
 		{
+			"path": "pages/main/main",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "商市通店通传媒"
+			}
+		},
+		{
 			"path": "pages/login/login",
 			"style": {
 				"app-plus": {"titleNView": false}
@@ -21,13 +28,6 @@
 		 		"navigationBarTitleText": "智能屏详情"
 		 	}
 		 }, 
-		{
-			"path": "pages/main/main",
-			"style": {
-				"app-plus": {"titleNView": true},
-				"navigationBarTitleText": "店通智能屏分布"
-			}
-		},
 		{   //注册
 			"path": "pages/reg/reg",
 			"style": {
