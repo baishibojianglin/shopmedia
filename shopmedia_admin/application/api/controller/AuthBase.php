@@ -29,7 +29,7 @@ class AuthBase extends Common
      */
     public function _initialize()
     {
-       // parent::_initialize();
+        parent::_initialize();
 
         // 判断是否登录
         if (!($this->isLogin())) {
@@ -66,8 +66,11 @@ class AuthBase extends Common
         }
 
         // 判断时间是否过期
-        if (time() > $user->token_time) {
+        if (time() > $user->token_time) { // 登录过期
             return false;
+        } else { // 当登录未过期时，为避免客户端登录后的操作中断，更新token失效时间
+            $data = ['token_time' => strtotime('+' . config('app.login_time_out'))]; // token失效时间
+            model('User')->save($data, ['token' => $token]);
         }
 
         // 赋值登录用户的基本信息

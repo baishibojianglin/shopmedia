@@ -33,7 +33,7 @@ class IAuth
         // 2.以&符号拼接字符串数据
         $string = http_build_query($data); // 生成 URL-encode 之后的请求字符串
         // 3.通过AES来加密
-        $string = (new Aes)->encrypt($string); //$string = (new Aes())->encrypt($string);
+        $string = (new Aes)->encrypt($string);
         /*// 4.所有字符转化大写（该步骤不要，因为不能转大写，否则解密时不知道那些字符是小写）
         $string = strtoupper($string);*/
 
@@ -48,7 +48,7 @@ class IAuth
     public static function checkSignPass($data)
     {
         // AES解密
-        $str = (new Aes)->decrypt($data['sign']); //$str = (new Aes())->decrypt($data['sign']);
+        $str = (new Aes)->decrypt($data['sign']);
         if(empty($str)) {
             return false;
         }
