@@ -43,7 +43,7 @@ class Common extends Controller
      */
     public function _initialize()
     {
-        //$this->checkRequestAuth(); // TODO：生产环境必须检查数据的合法性
+        $this->checkRequestAuth(); // TODO：生产环境必须检查数据的合法性
     }
 
     /**
@@ -73,7 +73,7 @@ class Common extends Controller
         }
 
         // 当sign校验成功时，存入缓存
-        // sign唯一性请求处理：1.文件缓存，第一次请求后写标识（一台服务器） 2.写入mysql（分布式） 3.写入redis（分布式、数据量大）
+        // sign唯一性请求处理：①文件缓存，第一次请求后写标识（一台服务器） ②写入mysql（分布式） ③写入redis（分布式、数据量大）
         Cache::set($headers['sign'], 1, config('app.app_sign_cache_time'));
 
         $this->headers = $headers; // headers信息校验成功后，便以其他继承该类的子类使用headers数据

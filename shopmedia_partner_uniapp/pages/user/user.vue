@@ -48,7 +48,7 @@
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo'])
 		},
 		onShow() {
-			this.login_info = global.isLogin(); // 判断是否登录（非vuex管理登录状态）
+			this.login_info = uni.getStorageSync('login_info'); // 判断是否登录（非vuex管理登录状态）
 			this.getUserInfo(); // 获取用户信息
 		},
 		methods: {

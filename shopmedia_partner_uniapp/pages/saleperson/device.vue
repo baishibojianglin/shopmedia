@@ -1,11 +1,11 @@
 <template>
 	<view class="content">
-				
+		
         <view>
 			<swiper class="swiper" :autoplay="true" :interval="3000" :circular="true" :indicator-dots="true" indicator-active-color="#fff">
-				<swiper-item v-for="value in imglist">
+				<swiper-item v-for="(value, key) in imglist" :key="key">
 					<view class="swiper-item">
-			           <image :src="value"></image>						
+			           <image :src="value"></image>
 					</view>
 				</swiper-item>
 			</swiper>
@@ -51,17 +51,9 @@
 		</view>
 		
 		<view class="ordercon">
-			<button  class="ordercon-item">导航实地查看</button>
+			<button  class="ordercon-item" @click="openLocation()">导航实地查看</button>
 		</view>
 		
-
-		
-
-		
-
-                					
-						
-							
 	</view>
 </template>
 
@@ -117,14 +109,22 @@
 						  str_image_array.forEach((value,index)=>{
 						  	self.$set(self.imglist,index,value);
 						  })
-					   }				   
-					},					
+					   }
+					},
+				});
+			},
+			
+			/**
+			 * 查看位置
+			 */
+			openLocation() {
+				// 使用应用内置地图查看位置
+				uni.openLocation({
+					latitude: Number(this.datalist.latitude),
+					longitude: Number(this.datalist.longitude)
 				});
 			}
-			
-			
 		}
-
 	}
 </script>
 

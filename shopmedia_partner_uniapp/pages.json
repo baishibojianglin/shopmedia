@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页
+	"pages": [ // pages数组中第一项表示应用启动页
 		{
 			"path": "pages/login/login",
 			"style": {
@@ -15,32 +15,40 @@
 			}
 		},
 
-		{   //业务员首页
+		{ // 业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
-				"app-plus": {"titleNView": true},
+				"app-plus": {
+					"titleNView": true
+				},
 				"navigationBarTitleText": "店通智能屏分布"
 			}
 		},
-		{   //业务员设备详情
-		 	"path": "pages/saleperson/device",
-		 	"style": {
-		 		"app-plus": {"titleNView": true},
-		 		"navigationBarTitleText": "智能屏详情"
-		 	}
-		 }, 
+		{  // 业务员设备详情
+			"path": "pages/saleperson/device",
+			"style": {
+				"app-plus": {
+					"titleNView": true
+				},
+				"navigationBarTitleText": "智能屏详情"
+			}
+		}, 
 		{   //注册
 			"path": "pages/reg/reg",
 			"style": {
-				"app-plus": {"titleNView": true},
+				"app-plus": {
+					"titleNView": true
+				},
 				"navigationBarTitleText": "注册"
 			}
-		}, 
-		{   //用户协议
+		},
+		{ // 用户协议
 			"path": "pages/reg/book",
 			"style": {
-				"app-plus": {"titleNView": true},
-				"backgroundColor":"#fff",
+				"app-plus": {
+					"titleNView": true
+				},
+				"backgroundColor": "#fff",
 				"navigationBarTitleText": "用户协议"
 			}
 		},
@@ -55,20 +63,20 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
-		}
-	    ,{
-            "path" : "pages/user-partner/user-partner",
-            "style" : {
+		},
+		{
+			"path": "pages/user-partner/user-partner",
+			"style": {
 				"navigationBarTitleText": "广告屏合作者"
 			}
-        }
-        ,{
-            "path" : "pages/user-shop/user-shop",
-            "style" : {
+		},
+		{
+			"path": "pages/user-shop/user-shop",
+			"style": {
 				"navigationBarTitleText": "店家"
 			}
-        }
-    ],
+		}
+	],
 	"tabBar": {
 		"color": "#808080",
 		"selectedColor": "#504AF2",
