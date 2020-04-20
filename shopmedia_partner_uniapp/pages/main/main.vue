@@ -7,19 +7,20 @@
            <view >
 			   <uni-grid  class="view-grid-con" :column="3">
 			       <uni-grid-item>
-			           <text>屏总量</text>
+			           <text class="text-grid-title">屏总量</text>
 					   <text class="text-grid">50000+</text>
 			       </uni-grid-item>
 			       <uni-grid-item>
-			           <text class="text">覆盖城市</text>
+			           <text class="text-grid-title">覆盖城市</text>
 					   <text class="text-grid">7</text>
 			       </uni-grid-item>
 			       <uni-grid-item>
-			           <text class="text">服务商家</text>
+			           <text class="text-grid-title">服务商家</text>
 					   <text class="text-grid">80000+</text>
 			       </uni-grid-item>
 			   </uni-grid>
 			</view>
+			<view @click="test()">test</view>
 
 																					  
 	</view>
@@ -27,21 +28,44 @@
 
 <script>
 	import common from '@/common/common.js';
+	import {mapState, mapMutations} from 'vuex';
 	export default {
 		data() {
-			return {
-
-				}
+			return {}
 		},
+		computed: mapState(['forcedLogin','hasLogin','userInfo','header']),
 		onLoad() {
-
+          console.log(this.$store.state.header)
 		},
 		methods: {
+			test(){
+				uni.request({
+					url: this.$serverUrl + 'api/login',
+					data: {
+						phone: this.phone,
+						password: this.password
+					},
+					method: 'PUT',
+					success: function(res) {
+							if (res.data.status == 1) {
+								let userInfo = res.data.data;
+								// TODO：使用vuex管理登录状态时开启
+								self.login(userInfo); 
+								localStorage.setItem("admin_user",JSON.stringify(res.data.data));
+								//跳转到首页
+								uni.reLaunch({
+									url: '../main/main',
+								});
+
+							} 
+					}
+				})
+			}
+			
 
 			
 
 		}
-
 	}
 </script>
 
@@ -56,6 +80,9 @@
 }
 .view-grid-con{
 	margin: 0px 5px;
+}
+.text-grid-title{
+	margin-top: 10px;
 }
 .text-grid{
 	line-height: 80px;

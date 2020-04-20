@@ -1,19 +1,20 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页
 		{
-			"path": "pages/main/main",
-			"style": {
-				"app-plus": {"titleNView": true},
-				"navigationBarTitleText": "商市通店通传媒"
-			}
-		},
-		{
 			"path": "pages/login/login",
 			"style": {
 				"app-plus": {"titleNView": false}
 				//"navigationBarTitleText": "登录"
 			}
 		},
+		{
+			"path": "pages/main/main",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "商市通店通传媒"
+			}
+		},
+
 		{   //业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
@@ -70,10 +71,10 @@
     ],
 	"tabBar": {
 		"color": "#808080",
-		"selectedColor": "#000",
+		"selectedColor": "#504AF2",
 		"backgroundColor": "#fff",
 		"list": [{
-			"pagePath": "pages/saleperson/index",
+			"pagePath": "pages/main/main",
 			"text": "首页",
 			"iconPath": "static/img/home.png",
 			"selectedIconPath": "static/img/homeHL.png"

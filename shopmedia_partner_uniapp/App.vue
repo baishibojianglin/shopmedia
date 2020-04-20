@@ -1,13 +1,28 @@
 <script>
+	import common from '@/common/common.js';
 	export default {
 		components: {},
-		onLaunch: function() {		
+		// 全局变量
+		globalData: {
+			version: 1, // 应用大版本号
+			did: 'sustock'+Math.random()*10 // 设备号
+		},
+		onLaunch: function(){
+			let self=this;
+			//设置header基本信息
+			// 获取设备系统信息
+			uni.getSystemInfo({
+				success: function (res) {
+					uni.setStorageSync('model',res.model); //手机型号
+					uni.setStorageSync('apptype',res.platform);//客户端平台
+				}
+			});
+			uni.setStorageSync('sign', common.sign());  // 验签，TODO：对参数如did、version进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
+			uni.setStorageSync('version',self.globalData.version);
 		},
 		onShow: function() {
-
 		},
 		onHide: function() {
-
 		}
 	}
 </script>

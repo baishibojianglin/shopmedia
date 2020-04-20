@@ -7,7 +7,14 @@ const store = new Vuex.Store({
 	state: {
 		forcedLogin: false, // 是否需要强制登录
 		hasLogin: false, // 是否登录
-		userInfo: {} // 存放用户信息
+		userInfo: {},// 存放用户信息
+		header:{
+			sign:uni.getStorageSync('sign'),
+			version:uni.getStorageSync('version'),
+			model:uni.getStorageSync('model'),
+			apptype:uni.getStorageSync('apptype')
+			
+		}
 	},
 	mutations: {
 		/**
@@ -17,8 +24,7 @@ const store = new Vuex.Store({
 		 */
 		login(state, userInfo) {
 			state.hasLogin = true;
-			state.userInfo = userInfo; // 将请求中的如res.data.data对象存入userInfo
-			
+			state.userInfo = userInfo; // 将请求中的如res.data.data对象存入userInfo		
 			// 将用户信息保存到本地缓存
 			uni.setStorage({
 				key: 'userInfo',

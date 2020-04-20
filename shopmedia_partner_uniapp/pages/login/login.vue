@@ -30,7 +30,7 @@
 
 <script>
 	import common from '@/common/common.js';
-	//import {mapState, mapMutations} from 'vuex';
+	import {mapState, mapMutations} from 'vuex';
 
 	export default {
 		components: {},
@@ -41,9 +41,10 @@
 				logourl: '/static/img/logo.png',
 			}
 		},
-		//computed: mapState(['forcedLogin']),
+		computed: mapState(['forcedLogin','hasLogin','userInfo']),
 		methods: {
-			//...mapMutations(['login']),
+			//映射vuex的login方法
+			...mapMutations(['login']),
 
 			/**
 			 * 登录
@@ -86,18 +87,9 @@
 					success: function(res) {
 							if (res.data.status == 1) {
 								let userInfo = res.data.data;
-								// self.login(userInfo); 
 								// TODO：使用vuex管理登录状态时开启
-								/* 存储的登录状态数据（非vuex管理登录状态） s */
-								uni.setStorage({
-									key: 'login_info',
-									data: {
-										'has_login': true, // 是否登录
-										'user_info': userInfo // 存放用户信息
-									}
-								})
-								/* 存储的登录状态数据（非vuex管理登录状态） e */
-
+								self.login(userInfo); 
+								localStorage.setItem("admin_user",JSON.stringify(res.data.data));
 								//跳转到首页
 								uni.reLaunch({
 									url: '../main/main',
