@@ -44,7 +44,7 @@
 			}
 		},
 		computed: {
-			...mapState(['hasLogin', 'forcedLogin', 'userInfo'])
+			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onShow() {
 			this.getUserInfo(); // 获取用户信息
@@ -87,11 +87,7 @@
 					uni.request({
 						url: this.$serverUrl + 'api/user/' + this.userInfo.user_id,
 						header: {
-							/* 'sign': common.sign(), // 验签
-							'version': getApp().globalData.version, // 应用大版本号
-							'model': getApp().globalData.systemInfo.model, // 手机型号
-							'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-							'did': getApp().globalData.did, // 设备号 */
+							'commonheader': this.commonheader,
 							'access-user-token': this.userInfo.token
 						},
 						method: 'GET',
