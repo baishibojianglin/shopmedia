@@ -1,4 +1,6 @@
 <script>
+
+	import {mapMutations} from 'vuex';
 	export default {
 		components: {},
 		// 全局变量
@@ -16,10 +18,23 @@
 					uni.setStorageSync('apptype',res.platform);//客户端平台
 				}
 			});
+			
+			// 获取用户信息缓存（异步）
+			uni.getStorage({
+				key: 'userInfo',
+				success:(res) => {
+					self.login(res.data);
+				}
+			});
+
 		},
 		onShow: function() {
 		},
 		onHide: function() {
+		},
+		
+		methods: {
+			...mapMutations(['login'])
 		}
 	}
 </script>

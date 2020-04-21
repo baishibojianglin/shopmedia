@@ -58,11 +58,11 @@ class IAuth
         if(!is_array($arr) || empty($arr['did']) || $arr['did'] != $data['did']) { // 其他headers信息如version、apptype、model等都要做类似判断
             return false;
         }
-        if(config('app_debug')==true) { // TODO：生产环境关闭应用调试模式
+        if(config('app_debug') == false) { // TODO：生产环境关闭应用调试模式
             // sign有效时间判定(该验证存在客户端和服务端时间不统一的bug,先不做验证)
-            // if ((time() - ceil($arr['time'] / 1000)) > config('app.app_sign_time')) {
-            //     return false;
-            // }
+            if ((time() - ceil($arr['time'] / 1000)) > config('app.app_sign_time')) {
+                return false;
+            }
 
             // sign唯一性判定
             //echo Cache::get($data['sign']);exit;
