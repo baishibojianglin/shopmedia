@@ -27,7 +27,6 @@ class Login extends Common
      */
     public function login()
     {
-//        return show(config('code.error'), 'OK', json_decode($this->headers['commonheader']));
         // 判断是否为PUT请求
         if (!request()->isPut()) {
             return show(config('code.error'), '请求不合法', [], 400);
