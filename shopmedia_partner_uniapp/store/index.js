@@ -9,7 +9,6 @@ const store = new Vuex.Store({
 		hasLogin: false, // 是否登录
 		userInfo: {},// 存放用户信息
 		commonheader: JSON.stringify({
-			// 'content-type':'application/json',
 			'sign':uni.getStorageSync('sign'),
 			'version':uni.getStorageSync('version'),
 			'model':uni.getStorageSync('model'),
