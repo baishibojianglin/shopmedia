@@ -87,7 +87,7 @@
 					uni.request({
 						url: this.$serverUrl + 'api/user/' + this.userInfo.user_id,
 						header: {
-							'commonheader': this.commonheader,
+							'commonheader': this.$store.state.commonheader,
 							'access-user-token': this.userInfo.token
 						},
 						method: 'GET',
