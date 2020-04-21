@@ -41,7 +41,10 @@
 				logourl: '/static/img/logo.png',
 			}
 		},
-		computed: mapState(['forcedLogin','hasLogin','userInfo']),
+		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
+		onLoad(){
+
+		},
 		methods: {
 			//映射vuex的login方法
 			...mapMutations(['login']),
@@ -75,7 +78,6 @@
 					});
 					return false;
 				}
-
 				//使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				uni.request({
 					url: this.$serverUrl + 'api/login',
@@ -83,13 +85,16 @@
 						phone: this.phone,
 						password: this.password
 					},
+					header:{
+						commonheader:self.$store.state.commonheader
+					},
 					method: 'PUT',
 					success: function(res) {
+
 							if (res.data.status == 1) {
 								let userInfo = res.data.data;
 								// TODO：使用vuex管理登录状态时开启
 								self.login(userInfo); 
-								localStorage.setItem("admin_user",JSON.stringify(res.data.data));
 								//跳转到首页
 								uni.reLaunch({
 									url: '../main/main',

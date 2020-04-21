@@ -8,12 +8,13 @@ const store = new Vuex.Store({
 		forcedLogin: false, // 是否需要强制登录
 		hasLogin: false, // 是否登录
 		userInfo: {},// 存放用户信息
-		header:{
-			sign:uni.getStorageSync('sign'),
-			version:uni.getStorageSync('version'),
-			model:uni.getStorageSync('model'),
-			apptype:uni.getStorageSync('apptype')
-			
+		commonheader:{
+			'content-type':'application/json',
+			'sign':uni.getStorageSync('sign'),
+			'version':uni.getStorageSync('version'),
+			'model':uni.getStorageSync('model'),
+			'apptype':uni.getStorageSync('apptype'),
+			'did':uni.getStorageSync('did')
 		}
 	},
 	mutations: {
