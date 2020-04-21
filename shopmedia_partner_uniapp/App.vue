@@ -1,12 +1,9 @@
 <script>
-
 	import {mapMutations} from 'vuex';
 	export default {
 		components: {},
 		// 全局变量
 		globalData: {
-			version: 1, // 应用大版本号
-			did: 'sustock' + Math.random()*10 // 设备号
 		},
 		onLaunch: function(){
 			let self=this;
