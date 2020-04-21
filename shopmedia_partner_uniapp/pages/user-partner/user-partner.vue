@@ -8,11 +8,15 @@
 		</view>
 		
 		<view class="uni-common-mt">
-			<uni-card title="拥有广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-shadow>
+			<uni-card title="合作广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-shadow>
 				<uni-list>
 					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 				</uni-list>
 			</uni-card>
+		</view>
+		
+		<view class="uni-padding-wrap uni-common-mt uni-common-mb btn-bottom">
+			<button class="primary" type="primary" @click="toCooperation">合作</button>
 		</view>
 	</view>
 </template>
@@ -75,6 +79,15 @@
 						console.log('error', error)
 					}
 				});
+			},
+			
+			/**
+			 * 合作
+			 */
+			toCooperation() {
+				uni.navigateTo({
+					url: '../device/device'
+				})
 			}
 		}
 	}

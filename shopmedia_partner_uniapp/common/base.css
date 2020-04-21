@@ -33,3 +33,10 @@
 button.primary {
 	background-color: #504AF2;
 }
+/* 底部按钮 */
+.btn-bottom {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}

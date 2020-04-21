@@ -9,13 +9,11 @@ use app\common\model\User;
 use think\Controller;
 use think\Db;
 
-
 /**
  * api模块客户端登录控制器类
  * Class Login
  * @package app\api\controller
  */
-
 class Login extends Common
 {
     /**
@@ -69,7 +67,7 @@ class Login extends Common
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
                 if (IAuth::encrypt($param['password']) != $user['password']) {
-                    return show(config('code.error'), '密码错误', [], 403);
+                    return show(config('code.error'), '密码错误', [], 401);
                 }
             }
 
