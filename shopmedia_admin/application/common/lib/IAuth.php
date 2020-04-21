@@ -48,14 +48,19 @@ class IAuth
     public static function checkSignPass($data)
     {
         // AES解密
-        $str = (new Aes)->decrypt($data['sign']);
+        $str = (new Aes)->decrypt($data['commonheader']['sign']);
         if(empty($str)) {
             return false;
         }
         
         // did=xx&app_type=3
         parse_str($str, $arr); // parse_str() 函数把查询字符串解析到变量中 //halt($arr);
-        if(!is_array($arr) || empty($arr['did']) || $arr['did'] != $data['did']) { // 其他headers信息如version、apptype、model等都要做类似判断
+        if(
+            !is_array($arr)
+            || empty($arr['did'])
+            || $arr['did'] != $data['commonheader']['did']
+            || $arr['did'] != config('app.did')
+        ) { // 其他headers信息如version、apptype、model等都要做类似判断
             return false;
         }
         if(config('app_debug') == false) { // TODO：生产环境关闭应用调试模式
@@ -65,8 +70,7 @@ class IAuth
             }
 
             // sign唯一性判定
-            //echo Cache::get($data['sign']);exit;
-            if (Cache::get($data['sign'])) {
+            if (Cache::get($data['commonheader']['sign'])) {
                 return false; // 表示sign只能请求一次
             }
          }
