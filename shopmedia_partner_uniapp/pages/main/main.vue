@@ -20,7 +20,7 @@
 			       </uni-grid-item>
 			   </uni-grid>
 			</view>
-			<view @click="test()">test</view>
+
 
 																					  
 	</view>
@@ -60,10 +60,6 @@
 					}
 				})
 			}
-			
-
-			
-
 		}
 	}
 </script>

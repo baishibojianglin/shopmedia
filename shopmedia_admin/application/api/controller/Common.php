@@ -7,6 +7,7 @@ use app\common\lib\IAuth;
 use think\Cache;
 use think\Controller;
 
+
 /**
  * api模块公共控制器类
  * Class Common
