@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-padding-wrap">
-		<view class="uni-common-mt" v-if="login_info.has_login"><!-- hasLogin -->
+		<view class="uni-common-mt" v-if="hasLogin">
 			<uni-card is-full is-shadow>
 				<view class="uni-flex uni-row userData">
 					<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
@@ -20,15 +20,15 @@
 			</uni-card>
 		</view>
 		
-		<view class="uni-common-mt" v-if="login_info.has_login"><!-- hasLogin -->
+		<view class="uni-common-mt" v-if="hasLogin">
 			<uni-card title="我的角色" thumbnail="" extra="" note="" is-full is-shadow>
 				<button class="mini-btn" size="mini" v-for="(item, index) in userData.user_roles" :key="index" @click="toUserRoleDetails(index)">{{item}}</button>
 			</uni-card>
 		</view>
 		
 		<view class="uni-btn-v uni-common-mt">
-			<button v-if="!login_info.has_login" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
-			<button v-if="login_info.has_login" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
+			<button v-if="!hasLogin" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
+			<button v-if="hasLogin" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
 		</view>
 	</view>
 </template>
@@ -40,15 +40,13 @@
 	export default {
 		data() {
 			return {
-				userData: {},
-				login_info: {} // 判断是否登录（非vuex管理登录状态）
+				userData: {}
 			}
 		},
 		computed: {
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo'])
 		},
 		onShow() {
-			this.login_info = uni.getStorageSync('login_info'); // 判断是否登录（非vuex管理登录状态）
 			this.getUserInfo(); // 获取用户信息
 		},
 		methods: {
@@ -68,18 +66,7 @@
 			 */
 			bindLogout() {
 				this.userData = {};
-				// this.logout(); // TODO：使用vuex管理登录状态时开启
-				// 根据键名移除对应位置的缓存数据（非vuex管理登录状态）
-				uni.removeStorage({
-					key: 'login_info',
-					success(res) {
-						if (!global.isLogin()) {
-							uni.reLaunch({
-								url: '../login/login',
-							});
-						}
-					}
-				})
+				this.logout(); // TODO：使用vuex管理登录状态时开启
 				
 				/**
 				 * 如果需要强制登录跳转回登录页面
@@ -96,16 +83,16 @@
 			 */
 			getUserInfo() {
 				let self = this
-				if (this.login_info.has_login) { // this.hasLogin
+				if (this.hasLogin) {
 					uni.request({
-						url: this.$serverUrl + 'api/user/' + this.login_info.user_info.user_id, // this.userInfo.user_id
+						url: this.$serverUrl + 'api/user/' + this.userInfo.user_id,
 						header: {
-							'sign': common.sign(), // 验签
+							/* 'sign': common.sign(), // 验签
 							'version': getApp().globalData.version, // 应用大版本号
 							'model': getApp().globalData.systemInfo.model, // 手机型号
 							'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-							'did': getApp().globalData.did, // 设备号
-							'access-user-token': this.login_info.user_info.token // this.userInfo.token
+							'did': getApp().globalData.did, // 设备号 */
+							'access-user-token': this.userInfo.token
 						},
 						method: 'GET',
 						success:function(res){
@@ -137,10 +124,10 @@
 					let url;
 					switch (role_id){
 						case '2':
-							url = '/pages/user-partner/user-partner?user_id=' + this.login_info.user_info.user_id + '&role_id=' + role_id;
+							url = '/pages/user-partner/user-partner?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
 							break;
 						case '3':
-							url = '/pages/user-shop/user-shop?user_id=' + this.login_info.user_info.user_id + '&role_id=' + role_id;
+							url = '/pages/user-shop/user-shop?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
 							break;
 						default:
 							break;

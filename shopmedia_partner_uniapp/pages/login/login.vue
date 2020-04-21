@@ -87,9 +87,10 @@
 					success: function(res) {
 							if (res.data.status == 1) {
 								let userInfo = res.data.data;
-								// TODO：使用vuex管理登录状态时开启
-								self.login(userInfo); 
-								localStorage.setItem("admin_user",JSON.stringify(res.data.data));
+								
+								// 使用vuex管理登录状态时开启
+								self.login(userInfo);
+								
 								//跳转到首页
 								uni.reLaunch({
 									url: '../main/main',
