@@ -8,15 +8,15 @@
 			   <uni-grid  class="view-grid-con" :column="3">
 			       <uni-grid-item>
 			           <text class="text-grid-title">屏总量</text>
-					   <text class="text-grid">50000+</text>
+					   <text class="text-grid">5000+</text>
 			       </uni-grid-item>
 			       <uni-grid-item>
 			           <text class="text-grid-title">覆盖城市</text>
-					   <text class="text-grid">7</text>
+					   <text class="text-grid">3</text>
 			       </uni-grid-item>
 			       <uni-grid-item>
 			           <text class="text-grid-title">服务商家</text>
-					   <text class="text-grid">80000+</text>
+					   <text class="text-grid">20000+</text>
 			       </uni-grid-item>
 			   </uni-grid>
 			</view>
@@ -33,7 +33,7 @@
 		data() {
 			return {}
 		},
-		computed: mapState(['forcedLogin','hasLogin','userInfo','header']),
+		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
 		},
 		methods: {

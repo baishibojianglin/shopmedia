@@ -90,7 +90,6 @@
 					},
 					method: 'PUT',
 					success: function(res) {
-						console.log(222, res);
 						if (res.data.status == 1) {
 							let userInfo = res.data.data;
 							

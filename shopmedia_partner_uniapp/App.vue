@@ -1,5 +1,4 @@
 <script>
-	import common from '@/common/common.js';
 	export default {
 		components: {},
 		// 全局变量
@@ -17,9 +16,6 @@
 					uni.setStorageSync('apptype',res.platform);//客户端平台
 				}
 			});
-			uni.setStorageSync('sign', common.sign());  // 验签，TODO：对参数如did、version进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-			uni.setStorageSync('version',self.globalData.version); //版本
-			uni.setStorageSync('did',self.globalData.did); //设备号
 		},
 		onShow: function() {
 		},

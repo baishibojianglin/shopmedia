@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import common from '@/common/common.js';
 
 Vue.use(Vuex)
 
@@ -9,11 +10,11 @@ const store = new Vuex.Store({
 		hasLogin: false, // 是否登录
 		userInfo: {},// 存放用户信息
 		commonheader: JSON.stringify({
-			'sign':uni.getStorageSync('sign'),
-			'version':uni.getStorageSync('version'),
+			'sign':common.sign(),
+			'version':1,
 			'model':uni.getStorageSync('model'),
 			'apptype':uni.getStorageSync('apptype'),
-			'did':uni.getStorageSync('did')
+			'did':'sustock2020'
 		})
 	},
 	mutations: {
