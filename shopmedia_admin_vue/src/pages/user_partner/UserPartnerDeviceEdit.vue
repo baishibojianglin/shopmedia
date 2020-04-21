@@ -40,6 +40,7 @@
 		data() {
 			return {
 				form: {
+					partner_device_id: '',
 					user_id: '',
 					user_name: '',
 					device_id: '',
@@ -61,6 +62,7 @@
 			 * 获取路由带过来的参数
 			 */
 			getParams() {
+				this.form.partner_device_id = this.$route.query.partner_device_id;
 				this.form.user_id = this.$route.query.user_id;
 				this.form.user_name = this.$route.query.user_name;
 				this.form.device_id = this.$route.query.device_id;
@@ -75,7 +77,7 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_partner_device/' + this.form.user_id, {
+						this.$axios.put(this.$url + 'user_partner_device/' + this.form.partner_device_id, {
 							// 参数
 							device_id: this.form.device_id,
 							share: this.form.share

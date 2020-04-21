@@ -1,6 +1,6 @@
 <script>
-
 	import {mapMutations} from 'vuex';
+	
 	export default {
 		components: {},
 		// 全局变量

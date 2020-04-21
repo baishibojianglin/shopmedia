@@ -44,19 +44,26 @@
 						</template>
 					</el-table-column>
 					<el-table-column prop="company_name" label="设备分公司" width="120"></el-table-column>
-					<el-table-column prop="province" label="省份" width="120"></el-table-column>
-					<el-table-column prop="city" label="城市" width="120"></el-table-column>
-					<el-table-column prop="street" label="街道" width="120"></el-table-column>
+					<el-table-column label="设备区域" header-align="center">
+						<el-table-column prop="province" label="省份" width="120"></el-table-column>
+						<el-table-column prop="city" label="城市" width="120"></el-table-column>
+						<el-table-column prop="county" label="区县" width="120"></el-table-column>
+						<el-table-column prop="street" label="街道" width="120"></el-table-column>
+					</el-table-column>
 					<el-table-column prop="shopname" label="店铺" width="120"></el-table-column>
+					<el-table-column label="广告收益(元)" header-align="center">
+						<el-table-column prop="today_income" label="今日收益" width="120"></el-table-column>
+						<el-table-column prop="total_income" label="累计收益" width="120"></el-table-column>
+					</el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'" size="mini">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="200">
+					<el-table-column label="操作" fixed="right" min-width="130">
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toUserDeviceEdit(scope.row)">编辑用户份额</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
+							<!-- <el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button> -->
 						</template>
 					</el-table-column>
 				</el-table>
@@ -185,6 +192,7 @@
 				this.$router.push({
 					path: "user_partner_device_edit",
 					query: {
+						partner_device_id: row.partner_device_id,
 						user_id: this.user_id,
 						user_name: this.user_name,
 						device_id: row.device_id,

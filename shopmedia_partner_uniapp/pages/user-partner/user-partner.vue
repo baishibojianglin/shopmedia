@@ -10,7 +10,7 @@
 		<view class="uni-common-mt">
 			<uni-card title="拥有广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-shadow>
 				<uni-list>
-					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + 123 + '，累计￥' + 999" :note="'店铺：' + item.shopname">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
+					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 				</uni-list>
 			</uni-card>
 		</view>
@@ -19,6 +19,7 @@
 
 <script>
 	import common from '@/common/common.js';
+	import {mapState} from 'vuex';
 	
 	export default {
 		data() {
@@ -32,6 +33,9 @@
 				salecount: 0, //合作屏数量
 				deviceList: [] //设备列表
 			}
+		},
+		computed: {
+			...mapState(['userInfo', 'commonheader'])
 		},
 		onLoad(event) {
 			// 获取参数
@@ -53,12 +57,8 @@
 						role_id: this.roleId
 					},
 					header: {
-						'sign': common.sign(), // 验签，TODO：对参数如did等进行AES加密，生成sign如：'6IpZZyb4DOmjTaPBGZtufjnSS4HScjAhL49NFjE6AJyVdsVtoHEoIXUsjrwu6m+o'
-						'version': getApp().globalData.version, // 应用大版本号
-						'model': getApp().globalData.systemInfo.model, // 手机型号
-						'apptype': getApp().globalData.systemInfo.platform, // 客户端平台
-						'did': getApp().globalData.did, // 设备号
-						'access-user-token': global.isLogin().user_info.token
+						'commonheader': this.$store.state.commonheader,
+						'access-user-token': this.userInfo.token
 					},
 					success: (res) => {
 						self.salecount = res.data.data.total;
