@@ -18,9 +18,6 @@ use think\Db;
 
 class Login extends Common
 {
-     //$a=[1,2,3];
-    //$headers = request()->header();
-   //return json($a);
     /**
      * 用户登录
      * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 短信验证码（或密码） 登录
@@ -30,7 +27,7 @@ class Login extends Common
      */
     public function login()
     {
-
+//        return show(config('code.error'), 'OK', json_decode($this->headers['commonheader']));
         // 判断是否为PUT请求
         if (!request()->isPut()) {
             return show(config('code.error'), '请求不合法', [], 400);

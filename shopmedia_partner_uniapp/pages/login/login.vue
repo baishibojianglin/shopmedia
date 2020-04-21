@@ -86,23 +86,23 @@
 						password: this.password
 					},
 					header:{
-						commonheader:self.$store.state.commonheader
+						commonheader: self.$store.state.commonheader
 					},
 					method: 'PUT',
 					success: function(res) {
+						console.log(222, res);
+						if (res.data.status == 1) {
+							let userInfo = res.data.data;
+							
+							// 使用vuex管理登录状态时开启
+							self.login(userInfo);
+							
+							//跳转到首页
+							uni.reLaunch({
+								url: '../main/main',
+							});
 
-							if (res.data.status == 1) {
-								let userInfo = res.data.data;
-								
-								// 使用vuex管理登录状态时开启
-								self.login(userInfo);
-								
-								//跳转到首页
-								uni.reLaunch({
-									url: '../main/main',
-								});
-
-							} 
+						}
 					}
 				})
 			}
