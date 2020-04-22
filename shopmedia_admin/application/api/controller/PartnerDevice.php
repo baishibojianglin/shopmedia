@@ -6,14 +6,14 @@ use think\Controller;
 use think\Db;
 
 /**
- * api模块用户（广告屏合作商）拥有的设备控制器类
- * Class UserPartnerDevice
+ * api模块用户（广告屏合作商）拥有的广告屏控制器类
+ * Class PartnerDevice
  * @package app\api\controller
  */
-class UserPartnerDevice extends AuthBase
+class PartnerDevice extends AuthBase
 {
     /**
-     * 获取用户（广告屏合作商）拥有的设备列表
+     * 获取用户（广告屏合作商）拥有的广告屏列表
      * @return \think\response\Json
      */
     public function index()

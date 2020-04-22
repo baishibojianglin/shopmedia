@@ -94,6 +94,12 @@
 				"navigationBarTitleText": "智能广告屏详情"
 			}
         }
+        ,{
+            "path" : "pages/partner-order/partner-order",
+            "style" : {
+				"navigationBarTitleText": "广告屏合作签约"
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

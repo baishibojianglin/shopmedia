@@ -167,8 +167,12 @@
 			 * @param {Object} e
 			 */
 			buttonClick (e) {
-				console.log(e)
-				this.options[1].info++
+				// 立即合作
+				if (e.index == 0) {
+					uni.navigateTo({
+						url: '../partner-order/partner-order'
+					})
+				}
 			},
 			/* GoodsNav 商品导航 e */
 			

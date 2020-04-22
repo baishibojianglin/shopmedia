@@ -2,7 +2,7 @@
 
 use think\Route;
 
-/*------------------------------- 后台管理系统路由 ---------------------------------s */
+/* -------------------- 后台管理系统路由 -------------------- s */
 
 // 登录
 Route::post('login','admin/Login/login');
@@ -42,7 +42,7 @@ Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列�
 Route::resource('user_salesman', 'admin/UserSalesman');
 // 用户（广告屏合作商）
 Route::resource('user_partner', 'admin/UserPartner');
-// 用户（广告屏合作商）拥有的设备
+// 用户（广告屏合作商）合作的广告屏
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
@@ -63,7 +63,7 @@ Route::get('ad_cate_list','admin/AdCate/adCateList'); // 广告类别列表（�
 Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）
 
 
-/* ------------------------  后台管理系统路由 --------------------------------e */
+/* -------------------- 后台管理系统路由 -------------------- e */
 
 
 
@@ -74,17 +74,7 @@ Route::get('shop_cate_list','admin/ShopCate/shopCateList'); // 店铺类别列�
 
 
 
-
-
-
-/* -----------------------客户端路由 ------------------------------s */
-
-
-
-
- 
-
-
+/* -------------------- 客户端路由 -------------------- s */
 
 // 登录与注册
 Route::put('api/login', 'api/Login/login'); // 登录
@@ -98,12 +88,15 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 // 用户
 Route::resource('api/user', 'api/User');
 
-//业务员
+// 业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
 Route::get('api/shopCateList','api/Saleperson/shopCateList');
 
-// 用户（广告屏合作商）拥有的设备
-Route::resource('api/user_partner_device', 'api/UserPartnerDevice');
+// 用户（广告屏合作商）合作的广告屏
+Route::resource('api/partner_device', 'api/PartnerDevice');
+// 用户（广告屏合作商）订单
+Route::resource('api/partner_order', 'api/PartnerOrder');
 
-/* -------------------------- 客户端路由 -----------------------------e */
+
+/* -------------------- 客户端路由 -------------------- e */
