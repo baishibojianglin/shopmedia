@@ -1,9 +1,7 @@
 <template>
-	<view class="content">
-
+	<view class="uni-page-body">
 		<view>
-			<swiper class="swiper" :autoplay="true" :interval="3000" :circular="true" :indicator-dots="true"
-			 indicator-active-color="#fff">
+			<swiper class="swiper" :autoplay="true" :interval="3000" :circular="true" :indicator-dots="true" indicator-active-color="#fff">
 				<swiper-item v-for="(value, key) in imglist" :key="key">
 					<view class="swiper-item">
 						<image :src="value"></image>
@@ -12,7 +10,7 @@
 			</swiper>
 		</view>
 
-		<view>
+		<view class="uni-padding-wrap uni-common-mt mb">
 			<view class="datalist">
 				<text class="datalist-title">屏编号：</text>
 				<text class="datalist-content">{{datalist.device_id}}</text>
@@ -50,24 +48,46 @@
 				<text class="datalist-content">{{datalist.environment}}</text>
 			</view>
 		</view>
-
-		<view class="ordercon">
-			<button class="ordercon-item" @click="openLocation()">导航实地查看</button>
+		
+		<view class="goods-carts">
+			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
 		</view>
-
 	</view>
 </template>
 
 <script>
-	import common from '@/common/common.js';
+	import {mapState} from 'vuex';
+	
 	export default {
 		data() {
 			return {
 				device_id: 0, //设备id
 				datalist: {}, //设备信息列表
 				imglist: [], //实景图列表
-				shopcatelist: {} //店铺行业列表
+				shopcatelist: {}, //店铺行业列表
+				
+				/* GoodsNav 商品导航 s */
+				options: [{
+					icon: 'headphones',
+					text: '联系客服'
+				}, {
+					icon: 'location-filled',
+					text: '位置导航'
+				}/* , {
+					icon: 'cart',
+					text: '购物车',
+					info: 2
+				} */],
+				buttonGroup: [{
+					text: '立即合作',
+					backgroundColor: '#504AF2',
+					color: '#fff'
+				}]
+				/* GoodsNav 商品导航 e */
 			}
+		},
+		computed: {
+			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad(options) {
 			//获取设备id
@@ -83,8 +103,11 @@
 				let self = this;
 				uni.request({
 					url: this.$serverUrl + 'api/shopCateList',
+					header: {
+						'commonheader': this.$store.state.commonheader,
+						'access-user-token': this.userInfo.token
+					},
 					method: 'GET',
-					header: getApp().globalData.commonHeaders,
 					success: (res) => {
 						self.shopcatelist = res.data.data;
 					}
@@ -98,8 +121,11 @@
 					data: {
 						device_id: self.device_id
 					},
+					header: {
+						'commonheader': this.$store.state.commonheader,
+						'access-user-token': this.userInfo.token
+					},
 					method: 'POST',
-					header: getApp().globalData.commonHeaders,
 					success: (res) => {
 						self.datalist = res.data.data; //赋值
 						self.datalist.shopcate = self.shopcatelist[self.datalist.shopcate].cate_name; //展示店铺行业
@@ -116,7 +142,46 @@
 					},
 				});
 			},
-
+			
+			/* GoodsNav 商品导航 s */
+			/**
+			 * GoodsNav 左侧点击事件
+			 * @param {Object} e
+			 */
+			onClick (e) {
+				/* uni.showToast({
+					title: `点击${e.content.text}`,
+					icon: 'none'
+				}) */
+				// 联系客服
+				if (e.index == 0) {
+					this.callPhone('114');
+				}
+				// 位置导航
+				if (e.index == 1) {
+					this.openLocation();
+				}
+			},
+			/**
+			 * GoodsNav 右侧按钮组点击事件
+			 * @param {Object} e
+			 */
+			buttonClick (e) {
+				console.log(e)
+				this.options[1].info++
+			},
+			/* GoodsNav 商品导航 e */
+			
+			/**
+			 * 拨打电话
+			 * @param {Object} phone
+			 */
+			callPhone(phone){
+				uni.makePhoneCall({
+					phoneNumber: phone 
+				});
+			},
+			
 			/**
 			 * 查看位置
 			 */
@@ -132,12 +197,6 @@
 </script>
 
 <style>
-	.content {
-		margin: 0;
-		padding: 0;
-		text-align: center;
-	}
-
 	.swiper {
 		width: 100%;
 		height: 250px;
@@ -161,30 +220,29 @@
 		border-bottom: 1px solid #E5E2DF;
 	}
 
-	.datalist-title {
-		flex-basis: 80px;
+	/* .datalist-title {
+		flex-basis: 70px;
 		text-align: right;
-	}
+	} */
 
 	.datalist-content {
 		flex: 1;
 		text-align: right;
 	}
-
-	.color-red {
-		color: #FF6633;
+	
+	.mb {
+		margin-bottom: 150upx;
 	}
-
-	.ordercon {
+	
+	/* GoodsNav 商品导航 */
+	.goods-carts {
+		/* #ifndef APP-NVUE */
 		display: flex;
-		flex-direction: row;
-	}
-
-	.ordercon-item {
-		flex: 1;
-		text-align: center;
-		margin: 10rpx 15rpx;
-		background-color: #3339F1;
-		color: #ffffff;
+		/* #endif */
+		flex-direction: column;
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
 	}
 </style>

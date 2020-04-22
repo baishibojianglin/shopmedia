@@ -21,7 +21,7 @@
 				"app-plus": {
 					"titleNView": true
 				},
-				"navigationBarTitleText": "店通智能屏分布"
+				"navigationBarTitleText": "智能广告屏分布"
 			}
 		},
 		{  // 业务员设备详情
@@ -30,7 +30,7 @@
 				"app-plus": {
 					"titleNView": true
 				},
-				"navigationBarTitleText": "智能屏详情"
+				"navigationBarTitleText": "智能广告屏详情"
 			}
 		}, 
 		{   //注册
@@ -67,7 +67,7 @@
 		{
 			"path": "pages/user-partner/user-partner",
 			"style": {
-				"navigationBarTitleText": "广告屏合作者"
+				"navigationBarTitleText": "智能广告屏合作商"
 			}
 		},
 		{
@@ -79,13 +79,13 @@
 	    ,{
             "path" : "pages/device/device",
             "style" : {
-				"navigationBarTitleText": "广告屏市场"
+				"navigationBarTitleText": "智能广告屏分布"
 			}
         }
         ,{
             "path" : "pages/device/device-detail",
             "style" : {
-				"navigationBarTitleText": "广告屏详情"
+				"navigationBarTitleText": "智能广告屏详情"
 			}
         }
     ],

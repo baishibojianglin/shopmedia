@@ -17,12 +17,9 @@
 }
 
 /* 颜色 */
-.color-blue{
-	color:#504AF2;
-}
-.color-black{
-	color:#474443;
-}
+.color-blue {color: #504AF2;}
+.color-black {color: #474443;}
+.color-red {color: #ff0000;/* #FF6633 */}
 
 /* 行列转换 */
 .inline{

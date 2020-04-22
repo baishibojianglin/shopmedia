@@ -1,12 +1,9 @@
 import Aes from './Aes.js';
 
-
-
 /**
  * 公共函数类
  */
 const common = class{
-	
 	/**
 	 * JavaScript将字典序升序排列(类似PHP中的ksort函数)
 	 * @param {Object} jsonData
@@ -41,7 +38,7 @@ const common = class{
 	}
 
 	/**
-	 * 生成每次请求的sign验签算法
+	 * 生成每次请求的签名 sign 算法
 	 * @param {Object} jsonObj 此处为json对象，不是json字符串
 	 */
 	setSign(jsonObj) {
@@ -65,7 +62,7 @@ const common = class{
 	sign() {
 		/* 生成签名 sign s */
 		let get13Timestamp = (new Date()).getTime(); // 获取13位的时间戳
-		let jsonObj = {"did":'sustock2020', "version": 1, "time": get13Timestamp}; // 注意：此处为json对象，不是json字符串
+		let jsonObj = {"did": 'sustock2020', "version": 1, "time": get13Timestamp}; // 注意：此处为json对象，不是json字符串
 		let sign = this.setSign(jsonObj); //console.log('sign', sign);
 		return sign;
 		/* 生成签名 sign e */
@@ -91,4 +88,4 @@ const common = class{
 	}
 }
 
-export default new common
+export default new common;

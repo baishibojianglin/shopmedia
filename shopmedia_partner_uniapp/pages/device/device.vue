@@ -48,6 +48,7 @@
 
 <script>
 	import {mapState} from 'vuex';
+	
 	export default {
 		data() {
 			return {
@@ -59,7 +60,7 @@
 			}
 		},
 		computed: {
-			...mapState(['userInfo', 'commonheader'])
+			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad() {
 			this.getmarkers();

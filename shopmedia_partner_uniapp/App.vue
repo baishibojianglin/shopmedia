@@ -2,7 +2,6 @@
 	import {mapMutations} from 'vuex';
 	
 	export default {
-		components: {},
 		// 全局变量
 		globalData: {
 			version: 1, // 应用大版本号
@@ -10,7 +9,8 @@
 		},
 		onLaunch: function(){
 			let self=this;
-			//设置header基本信息
+			
+			// 设置请求头 header 基本信息
 			// 获取设备系统信息
 			uni.getSystemInfo({
 				success: function (res) {
@@ -19,14 +19,13 @@
 				}
 			});
 			
-			// 获取用户信息缓存（异步）
+			// 获取用户登录信息缓存（异步）
 			uni.getStorage({
 				key: 'userInfo',
 				success:(res) => {
 					self.login(res.data);
 				}
 			});
-
 		},
 		onShow: function() {
 		},
