@@ -27,7 +27,7 @@
 		</view>
 		
 		<view class="uni-btn-v uni-common-mt">
-			<button v-if="!hasLogin" type="primary" class="primary" @tap="bindLogin">登录</button><!-- hasLogin -->
+			<button v-if="!hasLogin" type="primary" class="primary" @tap="bindLogin">登 录</button><!-- hasLogin -->
 			<button v-if="hasLogin" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
 		</view>
 	</view>

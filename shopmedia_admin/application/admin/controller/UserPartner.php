@@ -8,7 +8,7 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户（传媒设备合作者）控制器类
+ * admin模块用户（广告屏合作商）控制器类
  * Class UserPartner
  * @package app\admin\controller
  */
@@ -148,7 +148,7 @@ class UserPartner extends Base
             // 获取原始用户信息
             $user = model('User')->field('password', true)->find($id);
 
-            // 获取设备合作者信息
+            // 获取广告屏合作商信息
             try {
                 $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.role_id' => ['in', $user['role_ids']]])->find();
             } catch (\Exception $e) {
@@ -232,7 +232,7 @@ class UserPartner extends Base
     {
         // 判断为DELETE请求
         if (request()->isDelete()) {
-            // 显示指定的设备合作者
+            // 显示指定的广告屏合作商
             try {
                 $data = Db::name('user_partner')->where(['user_id' => $id])->find();
             } catch (\Exception $e) {
@@ -248,10 +248,10 @@ class UserPartner extends Base
             // 判断删除条件
             // 判断是否存在下级供应商账户
             if ($data['status'] == config('code.status_enable')) { // 启用
-                return show(config('code.error'), '删除失败：设备合作者已启用', '', 403);
+                return show(config('code.error'), '删除失败：广告屏合作商已启用', '', 403);
             }
-            if (!empty($data['device_ids'])) { // 拥有的设备、份额及协议
-                return show(config('code.error'), '删除失败：设备合作者拥有传媒设备', '', 403);
+            if (!empty($data['device_ids'])) { // 已合作的广告屏、份额及协议
+                return show(config('code.error'), '删除失败：广告屏合作商已合作广告屏', '', 403);
             }
 
             // 软删除

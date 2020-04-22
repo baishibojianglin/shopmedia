@@ -8,14 +8,14 @@ use think\Request;
 use think\Db;
 
 /**
- * admin模块媒体设备管理控制器类
+ * admin模块广告屏管理控制器类
  * Class Device
  * @package app\admin\controller
  */
 class Device extends Base
 {
 	/**
-	 * 显示传媒设备资源列表
+	 * 显示广告屏资源列表
 	 * @return \think\Response
 	 * @throws ApiException
 	 */
@@ -38,7 +38,7 @@ class Device extends Base
 			// 获取分页page、size
 			$this->getPageAndSize($param);
 
-			// 获取广告设备列表数据
+			// 获取广告屏列表数据
 			try {
 				$data = model('Device')->getDevice($map, $this->size);
 			} catch (\Exception $e) {
@@ -63,7 +63,7 @@ class Device extends Base
 	}
 
 	/**
-	 * 广告设备列表（不分页，用于 Select 选择器等）
+	 * 广告屏列表（不分页，用于 Select 选择器等）
 	 * @return \think\response\Json
 	 */
 	public function deviceList()
@@ -82,7 +82,7 @@ class Device extends Base
 			$map['shopcate'] = ['in', $param['shop_cate_ids']];
 		}
 
-		// 获取广告设备列表数据
+		// 获取广告屏列表数据
 		$data = model('Device')->field('device_id, brand, model, size, province_id, city_id, area_id, street_id, address, shopname, shopcate')->where($map)->select();
 		if ($data) {
 			// 处理数据
@@ -96,7 +96,7 @@ class Device extends Base
 	}
 
 	/**
-	 * 新增（更新）广告设备
+	 * 新增（更新）广告屏
 	 * @return \think\Response
 	 * @throws ApiException
 	 */

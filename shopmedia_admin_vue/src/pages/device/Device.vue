@@ -23,7 +23,7 @@
 				</el-row>
 			</div>
 			<div class="">
-				<!-- 传媒设备列表 s -->
+				<!-- 广告屏列表 s -->
 				<el-table :data="deviceList" empty-text="数据加载中…" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="70"></el-table-column>
 					<el-table-column prop="brand" label="品牌" min-width="120"></el-table-column>
@@ -49,7 +49,7 @@
 						</template>
 					</el-table-column>
 				</el-table>
-				<!-- 传媒设备列表 e -->
+				<!-- 广告屏列表 e -->
 				
 				<!-- 分页 s -->
 				<div>
@@ -77,16 +77,16 @@
 				formInline: {
 					company_name: '' // 分公司名称
 				},
-				deviceList: [], // 传媒设备列表
+				deviceList: [], // 广告屏列表
 				listPagination: {}, // 列表分页参数
 			}
 		},
 		mounted() {
-			this.getDeviceList(); // 获取传媒设备列表
+			this.getDeviceList(); // 获取广告屏列表
 		},
 		methods: {
 			/**
-			 * 获取传媒设备列表
+			 * 获取广告屏列表
 			 */
 			getDeviceList() {
 				let self = this;
@@ -103,7 +103,7 @@
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 传媒设备列表分页参数
+						// 广告屏列表分页参数
 						self.listPagination = res.data.data;
 						
 						// 当数据为空时
@@ -115,7 +115,7 @@
 							return;
 						}
 						
-						// 传媒设备列表
+						// 广告屏列表
 						self.deviceList = self.listPagination.data;
 					} else {
 						self.$message({
@@ -151,7 +151,7 @@
 			},
 			
 			/**
-			 * 筛选传媒设备状态
+			 * 筛选广告屏状态
 			 * @param {Object} value
 			 * @param {Object} row
 			 */
@@ -160,18 +160,18 @@
 			},
 			
 			/**
-			 * 跳转传媒设备编辑页
+			 * 跳转广告屏编辑页
 			 * @param {Object} row
 			 */
 			toDeviceEdit(row) {
 				this.$router.push({path: "editdevice", query: {device_id: row.device_id,city_id:row.city_id,area_id:row.area_id}});
 			},
 			/**
-			 * 删除传媒设备
+			 * 删除广告屏
 			 * @param {Object} scope
 			 */
 			deleteDevice(scope) {
-				this.$confirm('此操作将永久删除该传媒设备, 是否继续?', '删除', {
+				this.$confirm('此操作将永久删除该广告屏, 是否继续?', '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'

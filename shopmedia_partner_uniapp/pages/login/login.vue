@@ -74,7 +74,7 @@
 					uni.showToast({
 						icon: 'none',
 						duration:2500,
-						title: '字母开头，长度在6~20之间，只能包含字母、数字和下划线'
+						title: '密码必须以字母开头，长度在6~20之间，只能包含字母、数字和下划线'
 					});
 					return false;
 				}
@@ -100,7 +100,11 @@
 							uni.reLaunch({
 								url: '../main/main',
 							});
-
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
 						}
 					}
 				})

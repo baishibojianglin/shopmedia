@@ -17,6 +17,7 @@
 }
 
 /* 颜色 */
+
 .color-blue{
 	color:#504AF2;
 }
@@ -34,8 +35,6 @@
 	font-weight: bold;
 }
 
-
-
 /* 行列转换 */
 .inline{
 	display: inline-block;
@@ -44,4 +43,11 @@
 /* 按钮 */
 button.primary {
 	background-color: #504AF2;
+}
+/* 底部按钮 */
+.btn-bottom {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }

@@ -40,16 +40,16 @@ Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列�
 
 // 用户（业务员）
 Route::resource('user_salesman', 'admin/UserSalesman');
-// 用户（广告设备合作者）
+// 用户（广告屏合作商）
 Route::resource('user_partner', 'admin/UserPartner');
-// 用户（广告设备合作者）拥有的设备
+// 用户（广告屏合作商）拥有的设备
 Route::resource('user_partner_device', 'admin/UserPartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
 
 // 广告屏管理
 Route::resource('device','admin/Device');
-Route::get('device_list','admin/Device/deviceList');  // 广告设备列表（不分页）
+Route::get('device_list','admin/Device/deviceList');  // 广告屏列表（不分页）
 Route::post('addDevice','admin/Device/addDevice');
 Route::post('getDevice','admin/Device/getDevice');
 
@@ -103,7 +103,7 @@ Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
 Route::get('api/shopCateList','api/Saleperson/shopCateList');
 
-// 用户（广告设备合作者）拥有的设备
+// 用户（广告屏合作商）拥有的设备
 Route::resource('api/user_partner_device', 'api/UserPartnerDevice');
 
 /* -------------------------- 客户端路由 -----------------------------e */

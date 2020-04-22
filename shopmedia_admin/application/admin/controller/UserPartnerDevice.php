@@ -8,14 +8,14 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户（传媒设备合作者）拥有的设备控制器类
+ * admin模块用户（广告屏合作商）拥有的设备控制器类
  * Class UserPartnerDevice
  * @package app\admin\controller
  */
 class UserPartnerDevice extends Base
 {
     /**
-     * 获取用户（传媒设备合作者）拥有的设备列表
+     * 获取用户（广告屏合作商）拥有的设备列表
      * @return \think\response\Json
      */
     public function index()
@@ -36,11 +36,10 @@ class UserPartnerDevice extends Base
         if (!empty($param['keywords'])) { // 查询关键词
             $map['d.brand|d.model'] = ['like', '%' . $param['keywords'] . '%'];
         }
-        // 获取传媒设备ID集合
-        $userPartner = Db::name('user_partner')->field('device_ids')->where(['user_id' => $param['user_id']])->find();
-        $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
+        // 获取广告屏ID集合
+        $partnerDevice = Db::name('partner_device')->field('id, device_id, share, today_income, total_income')->where(['user_id' => intval($param['user_id'])])->select();
         $deviceIds = [];
-        foreach ($deviceIdsAndShare as $key => $value) {
+        foreach ($partnerDevice as $key => $value) {
             $deviceIds[] = $value['device_id'];
         }
         $map['d.device_id'] = ['in', $deviceIds];
@@ -48,7 +47,7 @@ class UserPartnerDevice extends Base
         // 获取分页page、size
         $this->getPageAndSize($param);
 
-        // 获取用户（传媒设备合作者）拥有的传媒设备分页列表数据 模式一：基于paginate()自动化分页
+        // 获取用户（广告屏合作商）拥有的广告屏分页列表数据 模式一：基于paginate()自动化分页
         try {
             $data = model('Device')->getDevice($map, $this->size);
         } catch (\Exception $e) {
@@ -60,10 +59,12 @@ class UserPartnerDevice extends Base
         foreach($data as $key1 => $value1) {
             $data[$key1]['status_msg'] = $status[$value1['status']]; // 定义状态信息
 
-            foreach ($deviceIdsAndShare as $key2 => $value2) {
+            foreach ($partnerDevice as $key2 => $value2) {
                 if ($value1['device_id'] == $value2['device_id']) {
+                    $data[$key1]['partner_device_id'] = $value2['id']; // 定义合作商-设备ID
                     $data[$key1]['share'] = $value2['share']; // 定义share
-                    //$data[$key1]['agreement'] = $value2['agreement']; // 定义agreement
+                    $data[$key1]['today_income'] = $value2['today_income']; // 定义今日收益
+                    $data[$key1]['total_income'] = $value2['total_income']; // 定义累计收益
                 }
             }
         }
@@ -72,7 +73,7 @@ class UserPartnerDevice extends Base
     }
 
     /**
-     * 更新传媒设备合作者拥有的设备所占份额
+     * 更新广告屏合作商拥有的设备所占份额
      * @param Request $request
      * @param $id
      * @return \think\response\Json
@@ -90,17 +91,8 @@ class UserPartnerDevice extends Base
 
         // 判断数据是否存在
         $data = [];
-        if (isset($param['device_id']) && isset($param['share'])) {
-            // 获取用户（传媒设备合作者）信息
-            $userPartner = DB::name('user_partner')->where(['user_id' => $id])->find();
-            $deviceIdsAndShare = json_decode($userPartner['device_ids'], true);
-            foreach ($deviceIdsAndShare as $key => $value) {
-                if ($param['device_id'] == $value['device_id']) {
-                    $deviceIdsAndShare[$key]['share'] = trim($param['share']);
-                }
-            }
-
-            $data['device_ids'] = json_encode($deviceIdsAndShare);
+        if (isset($param['share'])) { // 合作商广告屏占股
+            $data['share'] = trim($param['share']);
         }
 
         if (empty($data)) {
@@ -108,7 +100,7 @@ class UserPartnerDevice extends Base
         }
 
         try {
-            $result = Db::name('user_partner')->where(['user_id' => $id])->update($data);
+            $result = Db::name('partner_device')->where(['id' => $id])->update($data);
         } catch(\Exception $e) {
             throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }
