@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>设备合作者拥有的设备</span></el-col>
+					<el-col :span="6"><span>广告屏合作商拥有的设备</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
@@ -26,12 +26,12 @@
 				</el-row>
 				<!-- 用户信息 s -->
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="24"><el-tag type="" effect="plain">设备合作者：{{user_name}}</el-tag></el-col>
+					<el-col :span="24"><el-tag type="" effect="plain">广告屏合作商：{{user_name}}</el-tag></el-col>
 				</el-row>
 				<!-- 用户信息 e -->
 			</div>
 			<div class="">
-				<!-- 用户（传媒设备合作者）设备列表 s -->
+				<!-- 用户（广告屏合作商）设备列表 s -->
 				<el-table :data="userDeviceList" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="brand" label="品牌" min-width="120"></el-table-column>
@@ -67,7 +67,7 @@
 						</template>
 					</el-table-column>
 				</el-table>
-				<!-- 用户（传媒设备合作者）设备列表 e -->
+				<!-- 用户（广告屏合作商）设备列表 e -->
 
 				<!-- 分页 s -->
 				<div>
@@ -89,7 +89,7 @@
 				formInline: {
 					keywords: '' // 查询关键词
 				},
-				userDeviceList: [], // 用户（传媒设备合作者）设备列表
+				userDeviceList: [], // 用户（广告屏合作商）设备列表
 				listPagination: {} ,// 列表分页参数
 				
 				user_id: '',
@@ -98,7 +98,7 @@
 		},
 		mounted() {
 			this.getParams();
-			this.getUserDeviceList(); // 获取用户（传媒设备合作者）设备列表
+			this.getUserDeviceList(); // 获取用户（广告屏合作商）设备列表
 		},
 		methods: {
 			/**
@@ -110,7 +110,7 @@
 			},
 			
 			/**
-			 * 获取用户（传媒设备合作者）设备列表
+			 * 获取用户（广告屏合作商）设备列表
 			 */
 			getUserDeviceList() {
 				let self = this;
@@ -128,7 +128,7 @@
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 用户（传媒设备合作者）设备列表分页参数
+						// 用户（广告屏合作商）设备列表分页参数
 						self.listPagination = res.data.data;
 
 						// 当数据为空时
@@ -140,7 +140,7 @@
 							return;
 						}
 
-						// 用户（传媒设备合作者）设备列表
+						// 用户（广告屏合作商）设备列表
 						self.userDeviceList = self.listPagination.data;
 					} else {
 						self.$message({

@@ -6,14 +6,14 @@ use think\Controller;
 use think\Db;
 
 /**
- * api模块用户（广告设备合作者）拥有的设备控制器类
+ * api模块用户（广告屏合作商）拥有的设备控制器类
  * Class UserPartnerDevice
  * @package app\api\controller
  */
 class UserPartnerDevice extends AuthBase
 {
     /**
-     * 获取用户（广告设备合作者）拥有的设备列表
+     * 获取用户（广告屏合作商）拥有的设备列表
      * @return \think\response\Json
      */
     public function index()
@@ -28,7 +28,7 @@ class UserPartnerDevice extends AuthBase
 
         // 查询条件
         $map = [];
-        // 获取广告设备ID集合
+        // 获取广告屏ID集合
         $partnerDevice = Db::name('partner_device')->field('id, device_id, share, today_income, total_income')->where(['user_id' => intval($param['user_id']), 'role_id' => intval($param['role_id'])])->select();
         $deviceIds = [];
         foreach ($partnerDevice as $key => $value) {
@@ -39,7 +39,7 @@ class UserPartnerDevice extends AuthBase
         // 获取分页page、size
         $this->getPageAndSize($param);
 
-        // 获取用户（广告设备合作者）拥有的广告设备分页列表数据 模式一：基于paginate()自动化分页
+        // 获取用户（广告屏合作商）拥有的广告屏分页列表数据 模式一：基于paginate()自动化分页
         try {
             $data = model('Device')->getDevice($map, $this->size);
         } catch (\Exception $e) {

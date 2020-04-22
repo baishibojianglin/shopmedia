@@ -40,17 +40,6 @@ class User extends AuthBase
     }
 
     /**
-     * 显示编辑资源表单页.
-     *
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * 保存更新的用户资源
      *
      * @param Request $request

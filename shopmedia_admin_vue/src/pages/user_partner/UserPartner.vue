@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>设备合作者{{formInline.is_delete == 1 ? '（回收站）' : ''}}</span></el-col>
+					<el-col :span="6"><span>广告屏合作商{{formInline.is_delete == 1 ? '（回收站）' : ''}}</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
@@ -252,7 +252,7 @@
 			},
 			
 			/**
-			 * 跳转用户（传媒设备合作者）拥有设备列表页
+			 * 跳转用户（广告屏合作商）拥有设备列表页
 			 * @param {Object} row
 			 */
 			toUserDevice(row) {

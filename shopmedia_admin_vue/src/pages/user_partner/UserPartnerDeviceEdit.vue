@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑设备合作者份额</span></el-col>
+					<el-col :span="6"><span>编辑广告屏合作商份额</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -12,7 +12,7 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item prop="user_name" label="设备合作者">
+					<el-form-item prop="user_name" label="广告屏合作商">
 						<el-input v-model="form.user_name" readonly style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="device_id" label="设备编号">
@@ -70,7 +70,7 @@
 			},
 			
 			/**
-			 * 编辑设备合作者份额提交表单
+			 * 编辑广告屏合作商份额提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {

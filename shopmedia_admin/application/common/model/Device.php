@@ -5,14 +5,14 @@ namespace app\common\model;
 use think\Model;
 
 /**
- * 传媒设备模型类
+ * 广告屏模型类
  * Class Device
  * @package app\common\model
  */
 class Device extends Base
 {
     /**
-     * 获取传媒设备列表数据（基于paginate()自动化分页）
+     * 获取广告屏列表数据（基于paginate()自动化分页）
      * @param array $map
      * @param int $size
      * @return \think\Paginator

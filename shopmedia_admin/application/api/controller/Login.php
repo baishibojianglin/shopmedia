@@ -165,7 +165,7 @@ class Login extends Common
                 // 根据业务员类型，获取新增的目标客户的类型
                 switch ($salesman['role_id']) {
                     case 4: // 广告屏业务员
-                        $roleId = 2; // 广告屏合作者
+                        $roleId = 2; // 广告屏合作商
                         break;
                     /*case 5: // 广告业务员 TODO：对应的广告主用户需求（不是功能）待开发
                         $roleId = ;
@@ -211,7 +211,7 @@ class Login extends Common
                     $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
 
                     // 新增（目标客户或下级业务员）用户角色明细
-                    if ($roleId == 2) { // 广告屏合作者
+                    if ($roleId == 2) { // 广告屏合作商
                         $data1['user_id'] = $userId;
                         $data1['salesman_id'] = $salesman['id']; // 业务员ID
                         $data1['role_id'] = $roleId; // 用户角色ID
