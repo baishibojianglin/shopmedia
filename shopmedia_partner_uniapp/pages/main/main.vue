@@ -20,7 +20,51 @@
 			       </uni-grid-item>
 			   </uni-grid>
 			</view>
+			
+			<view>
+				<text class="user-title"> <text class="color-blue">—</text> 我与店通 <text class="color-blue">—</text></text>
+			</view>
 
+            <view class="navcon">
+						<view class="navcon-item">
+							<text class="iconposition icon color-blue iconbg">&#xe636;</text>
+							<br/>
+							<text>投放广告</text>
+						</view>
+						<view @click="toRole(2)" class="navcon-item">
+							<text class="iconposition icon color-red iconbg">&#xe637;</text>
+							<br/>
+							<text>合作广告屏</text>
+						</view>
+					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
+						<view>
+							<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
+							<br/>
+							<text>我的店铺</text>
+						</view>
+					</navigator>
+					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
+						<view>
+							<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
+							<br/>
+							<text>业务参与</text>
+						</view>
+					</navigator>
+					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
+						<view>
+							<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
+							<br/>
+							<text>店通快讯</text>
+						</view>
+					</navigator>
+					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
+						<view>
+							<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
+							<br/>
+							<text>投诉建议</text>
+						</view>
+					</navigator>
+			</view>
 
 																					  
 	</view>
@@ -31,34 +75,47 @@
 	import {mapState, mapMutations} from 'vuex';
 	export default {
 		data() {
-			return {}
+			return {
+				role:{
+					device:false, //广告屏合作者
+					shop:false, //店铺
+					saleperson:false //业务员
+				}
+			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
+			//调用-判断用户角色
+            this.is_role();
 		},
 		methods: {
-			test(){
-				uni.request({
-					url: this.$serverUrl + 'api/login',
-					data: {
-						phone: this.phone,
-						password: this.password
-					},
-					method: 'PUT',
-					success: function(res) {
-							if (res.data.status == 1) {
-								let userInfo = res.data.data;
-								// TODO：使用vuex管理登录状态时开启
-								self.login(userInfo);
-								//跳转到首页
-								uni.reLaunch({
-									url: '../main/main',
-								});
-
-							} 
-					}
+			//指定角色跳转
+			toRole(role_ids){
+				if( (role_ids==2)&&(this.role.device==true)){
+					uni.navigateTo({
+					    url: '../user-partner/user-partner'
+					});
+				}
+			},
+			//判断用户角色
+			is_role(){
+				let self=this;
+				let role_str=this.$store.state.userInfo.role_ids;
+				let role_array=role_str.split(',');
+				role_array.forEach((value,index)=>{
+					 switch(parseInt(value)) {
+					      case 2:
+					         self.role.device=true;
+					         break;
+					      case 3:
+					         self.role.shop=true;
+					         break;
+					      default:
+					         self.role.saleperson=true;
+					 } 
 				})
 			}
+	
 		}
 	}
 </script>
@@ -83,5 +140,27 @@
 	font-weight: bolder;
 	font-size: 17px;
 	color:#504AF2;
+}
+.user-title{
+	line-height: 50px;
+	font-size:16px;
+}
+.iconbg{
+    height: 50px;
+	width: 50px;
+	border-radius: 50px;
+	border:1px solid #F3F3F3;
+	line-height: 50px;
+	display: inline-block;
+}
+.navcon{
+	display: flex;
+	 flex-flow: row wrap;
+	justify-content: left;
+    text-align: center;
+}
+.navcon-item{
+	flex: 0 0 33%;
+	padding: 10px 0;
 }
 </style>

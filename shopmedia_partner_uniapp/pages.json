@@ -4,7 +4,13 @@
 			"path": "pages/login/login",
 			"style": {
 				"app-plus": {"titleNView": false}
-				//"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/main/main",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "商市通店通传媒"
 			}
 		},
 		{
@@ -67,7 +73,7 @@
 		{
 			"path": "pages/user-partner/user-partner",
 			"style": {
-				"navigationBarTitleText": "广告屏合作者"
+				"navigationBarTitleText": "合作广告屏"
 			}
 		},
 		{
