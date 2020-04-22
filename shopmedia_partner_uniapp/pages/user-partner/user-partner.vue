@@ -55,7 +55,7 @@
 			getUserPartnerDevice() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/user_partner_device',
+					url: this.$serverUrl + 'api/partner_device',
 					data: {
 						user_id: this.userId,
 						role_id: this.roleId
