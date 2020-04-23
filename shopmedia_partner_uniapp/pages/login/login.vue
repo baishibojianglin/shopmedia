@@ -43,7 +43,7 @@
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
-            console.log(this.$store.state)
+			// console.log(this.$store.state)
 		},
 		methods: {
 			//映射vuex的login方法

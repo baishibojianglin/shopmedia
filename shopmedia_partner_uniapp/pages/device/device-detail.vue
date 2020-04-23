@@ -233,20 +233,4 @@
 		flex: 1;
 		text-align: right;
 	}
-	
-	.mb {
-		margin-bottom: 150upx;
-	}
-	
-	/* GoodsNav 商品导航 */
-	.goods-carts {
-		/* #ifndef APP-NVUE */
-		display: flex;
-		/* #endif */
-		flex-direction: column;
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-	}
 </style>

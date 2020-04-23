@@ -1,12 +1,22 @@
 <script>
-	import {mapMutations} from 'vuex';
+	import {mapState, mapMutations} from 'vuex';
 	
 	export default {
 		// 全局变量
 		globalData: {
 		},
-		onLaunch: function(){
-			let self=this;
+		computed: {
+			...mapState(['hasLogin', 'forcedLogin'])
+		},
+		onLaunch: function(event){
+			let self = this;
+			
+			// 跳转登录页
+			if (!this.hasLogin && event.path != 'pages/main/main') {
+				uni.reLaunch({
+					url: './pages/login/login',
+				});
+			}
 			
 			// 设置请求头 header 基本信息
 			// 获取设备系统信息
@@ -28,6 +38,9 @@
 		onShow: function() {
 		},
 		onHide: function() {
+		},
+		onError:function(event){
+			console.log('onError', event)
 		},
 		
 		methods: {

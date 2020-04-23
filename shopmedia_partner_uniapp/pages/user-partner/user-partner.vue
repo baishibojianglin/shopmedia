@@ -98,8 +98,4 @@
 		width: 100%;
 		height: 320rpx;
 	}
-	
-	.mb {
-		margin-bottom: 150upx;
-	}
 </style>
