@@ -65,6 +65,7 @@
 				datalist: {}, //设备信息列表
 				imglist: [], //实景图列表
 				shopcatelist: {}, //店铺行业列表
+				phone: '', // 客服电话
 				
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -96,6 +97,8 @@
 			this.getCate()
 			//获取设备信息
 			this.deviceDetail();
+			// 获取广告屏合作商业务员信息
+			this.getPartnerSalesman();
 		},
 		methods: {
 			//获取行业配置信息
@@ -143,6 +146,28 @@
 				});
 			},
 			
+			/**
+			 * 获取广告屏合作商业务员信息
+			 */
+			getPartnerSalesman() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/partner_salesman',
+					data: {
+						user_id: this.userInfo.user_id,
+						role_id: uni.getStorageSync('role_id')
+					},
+					header: {
+						'commonheader': this.$store.state.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: (res) => {
+						self.phone = res.data.data.phone;
+					}
+				})
+			},
+			
 			/* GoodsNav 商品导航 s */
 			/**
 			 * GoodsNav 左侧点击事件
@@ -155,7 +180,7 @@
 				}) */
 				// 联系客服
 				if (e.index == 0) {
-					this.callPhone('114');
+					this.callPhone(this.phone);
 				}
 				// 位置导航
 				if (e.index == 1) {
@@ -170,7 +195,7 @@
 				// 立即合作
 				if (e.index == 0) {
 					uni.navigateTo({
-						url: '../partner-order/partner-order'
+						url: '../partner-order/partner-order?phone=' + this.phone
 					})
 				}
 			},

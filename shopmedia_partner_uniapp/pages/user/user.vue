@@ -109,6 +109,13 @@
 			 * 跳转用户角色详情页
 			 */
 			toUserRoleDetails(role_id) {
+				// 将用户角色 role_id 存储在本地缓存中（同步）
+				try {
+					uni.setStorageSync('role_id', role_id);
+				} catch (e) {
+					// error
+				}
+				
 				// 业务员角色
 				let salesman = ['4', '5', '6']
 				if (salesman.indexOf(role_id) != -1) {

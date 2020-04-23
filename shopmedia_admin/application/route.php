@@ -92,6 +92,7 @@ Route::resource('api/user', 'api/User');
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
 Route::get('api/shopCateList','api/Saleperson/shopCateList');
+Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
 
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');

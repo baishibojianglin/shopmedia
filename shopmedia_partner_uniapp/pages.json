@@ -1,26 +1,18 @@
 {
 	"pages": [ // pages数组中第一项表示应用启动页
-		{
+		{ // 登录
 			"path": "pages/login/login",
 			"style": {
 				"app-plus": {"titleNView": false}
 			}
 		},
-		{
+		{ // 首页
 			"path": "pages/main/main",
 			"style": {
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "商市通店通传媒"
 			}
 		},
-		{
-			"path": "pages/main/main",
-			"style": {
-				"app-plus": {"titleNView": true},
-				"navigationBarTitleText": "商市通店通传媒"
-			}
-		},
-
 		{ // 业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
@@ -30,7 +22,7 @@
 				"navigationBarTitleText": "智能广告屏分布"
 			}
 		},
-		{  // 业务员设备详情
+		{ // 业务员设备详情
 			"path": "pages/saleperson/device",
 			"style": {
 				"app-plus": {
@@ -39,7 +31,7 @@
 				"navigationBarTitleText": "智能广告屏详情"
 			}
 		}, 
-		{   //注册
+		{ // 注册
 			"path": "pages/reg/reg",
 			"style": {
 				"app-plus": {
@@ -58,43 +50,43 @@
 				"navigationBarTitleText": "用户协议"
 			}
 		},
-		{
+		{ // 找回密码
 			"path": "pages/pwd/pwd",
 			"style": {
 				"navigationBarTitleText": "找回密码"
 			}
 		},
-		{
+		{ // 用户个人中心
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "个人中心"
 			}
 		},
-		{
+		{ // 用户（智能广告屏合作商）角色
 			"path": "pages/user-partner/user-partner",
 			"style": {
 				"navigationBarTitleText": "智能广告屏合作商"
 			}
 		},
-		{
+		{ // 用户（店家）角色
 			"path": "pages/user-shop/user-shop",
 			"style": {
 				"navigationBarTitleText": "店家"
 			}
 		}
-	    ,{
+	    ,{ // 智能广告屏列表
             "path" : "pages/device/device",
             "style" : {
-				"navigationBarTitleText": "智能广告屏分布"
+				"navigationBarTitleText": "智能广告屏市场"
 			}
         }
-        ,{
+        ,{ // 智能广告屏详情
             "path" : "pages/device/device-detail",
             "style" : {
 				"navigationBarTitleText": "智能广告屏详情"
 			}
         }
-        ,{
+        ,{ // 智能广告屏订单合作签约
             "path" : "pages/partner-order/partner-order",
             "style" : {
 				"navigationBarTitleText": "广告屏合作签约"

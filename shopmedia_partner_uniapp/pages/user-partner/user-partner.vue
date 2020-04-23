@@ -16,13 +16,12 @@
 		</view>
 		
 		<view class="uni-padding-wrap uni-common-mt uni-common-mb btn-bottom">
-			<button class="primary" type="primary" @click="toCooperation">合 作</button>
+			<button class="primary" type="primary" @click="toCooperation">发现广告屏</button>
 		</view>
 	</view>
 </template>
 
 <script>
-	import common from '@/common/common.js';
 	import {mapState} from 'vuex';
 	
 	export default {
