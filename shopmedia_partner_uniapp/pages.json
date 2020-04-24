@@ -89,7 +89,15 @@
         ,{ // 智能广告屏订单合作签约
             "path" : "pages/partner-order/partner-order",
             "style" : {
-				"navigationBarTitleText": "广告屏合作签约"
+				"navigationBarTitleText": "广告屏合作签约",
+				"app-plus": {
+					"titleNView": {
+						// "type": "default",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
         }
     ],
