@@ -26,9 +26,19 @@ class PartnerOrder extends AuthBase
         if(request()->isPost()){
             $data = input('post.');
 
-            // 生成唯一订单编号 order_sn
-            $data['order_sn'] = $this->_getOrderSn();
+            $data['order_sn'] = $this->_getOrderSn(); // 生成唯一订单编号 order_sn
             $data['order_time'] = time();
+            //$data['order_status'] = 0;
+            $data['order_price'] = $data['device_price'];
+
+            // 获取广告屏合作商信息
+            $partnerMap = []; // 查询条件
+            if (isset($data['user_id']) && isset($data['role_id']) && intval($data['role_id']) == 2) {
+                $partnerMap['user_id'] = intval($data['user_id']);
+                $partnerMap['role_id'] = intval($data['role_id']);
+                $partner = Db::name('user_partner')->field('id')->where($partnerMap)->find();
+                $data['partner_id'] = $partner['id'];
+            }
 
             // validate验证数据合法性
             $validate = validate('PartnerOrder');
@@ -38,14 +48,14 @@ class PartnerOrder extends AuthBase
 
             // 入库操作
             try {
-                $id = Db::name('partner_order')->insertGetId($data);
+                $id = Db::name('partner_order')->strict(false)->insertGetId($data);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             if ($id) {
-                return show(config('code.success'), '新增成功', ['order_id' => $id], 201);
+                return show(config('code.success'), '下单成功', ['order_id' => $id], 201);
             } else {
-                return show(config('code.error'), '新增失败', '', 403);
+                return show(config('code.error'), '下单失败', '', 403);
             }
         } else {
             return show(config('code.error'), '请求不合法', '', 400);

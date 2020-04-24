@@ -65,7 +65,7 @@
 				datalist: {}, //设备信息列表
 				imglist: [], //实景图列表
 				shopcatelist: {}, //店铺行业列表
-				phone: '', // 客服电话
+				csPhone: '', // 客服电话
 				
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -163,7 +163,7 @@
 					},
 					method: 'GET',
 					success: (res) => {
-						self.phone = res.data.data.phone;
+						self.csPhone = res.data.data.phone;
 					}
 				})
 			},
@@ -180,7 +180,7 @@
 				}) */
 				// 联系客服
 				if (e.index == 0) {
-					this.callPhone(this.phone);
+					this.callPhone(this.csPhone);
 				}
 				// 位置导航
 				if (e.index == 1) {
@@ -195,7 +195,7 @@
 				// 立即合作
 				if (e.index == 0) {
 					uni.navigateTo({
-						url: '../partner-order/partner-order?phone=' + this.phone
+						url: '../partner-order/partner-order?cs_phone=' + this.csPhone + '&device=' + encodeURIComponent(JSON.stringify(this.datalist))
 					})
 				}
 			},

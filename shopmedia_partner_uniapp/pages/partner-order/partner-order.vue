@@ -19,7 +19,8 @@
 	export default {
 		data() {
 			return {
-				phone: '', // 客服电话
+				csPhone: '', // 客服电话
+				device: '', // 广告屏信息
 				
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -38,7 +39,8 @@
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad(event) {
-			this.phone = event.phone;
+			this.csPhone = event.cs_phone;
+			this.device = JSON.parse(decodeURIComponent(event.device));
 		},
 		methods: {
 			/* GoodsNav 商品导航 s */
@@ -49,7 +51,7 @@
 			onClick (e) {
 				// 联系客服
 				if (e.index == 0) {
-					this.callPhone(this.phone);
+					this.callPhone(this.csPhone);
 				}
 			},
 			/**
@@ -69,7 +71,7 @@
 								self.createOrder();
 							}
 							if (res.cancel) {
-								self.callPhone(self.phone);
+								self.callPhone(self.csPhone);
 							}
 						}
 					});
@@ -94,7 +96,11 @@
 				uni.request({
 					url: this.$serverUrl + 'api/partner_order',
 					data: {
-						
+						user_id: this.userInfo.user_id,
+						role_id: uni.getStorageSync('role_id'),
+						phone: this.userInfo.phone,
+						device_id: this.device.device_id,
+						device_price: this.device.sale_price
 					},
 					header:{
 						'commonheader': this.commonheader,
@@ -102,7 +108,7 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(132, res)
+						console.log('order', res)
 						if (res.data.status == 1) {
 							
 						} else {
