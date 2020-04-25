@@ -127,12 +127,12 @@ class Login extends Common
                 return show(config('code.error'), '短信验证码不能为空', '', 401);
             } else {
                 // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
-                $param['verify_code'] = $aesObj->decrypt($param['verify_code']);
+                //$param['verify_code'] = $aesObj->decrypt($param['verify_code']);
 
                 // 判断短信验证码是否合法
                 $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
                 if (empty($verifyCode) || $verifyCode != $param['verify_code']) {
-                    return show(config('code.error'), '短信验证码错误'.$verifyCode, '', 401);
+                    return show(config('code.error'), '短信验证码错误', '', 401);
                 }
             }
 
@@ -186,7 +186,7 @@ class Login extends Common
             // 查询该手机号用户是否存在
             $user = User::get(['phone' => $param['phone']]);
             if ($user) { // 用户已存在
-                return show(config('code.error'), '用户已存在', '', 403);
+                return show(config('code.error'), '该手机号已注册', '', 403);
             } else { // 用户不存在，则注册用户
                 // 设置唯一性token
                 $token = IAuth::setAppLoginToken($param['phone']);
