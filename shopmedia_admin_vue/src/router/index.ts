@@ -50,6 +50,9 @@ import UserShopEdit from '@/pages/user_shop/UserShopEdit.vue'
 import Ad from '@/pages/ad/Ad.vue'
 import AdCreate from '@/pages/ad/AdCreate.vue'
 import AdEdit from '@/pages/ad/AdEdit.vue'
+// 订单管理·用户（广告屏合作商）订单
+import PartnerOrder from '@/pages/partner_order/PartnerOrder.vue'
+import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
 
 
 Vue.use(VueRouter)
@@ -115,6 +118,9 @@ const routes = [
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告
 			{path: 'ad_edit', name: 'ad_edit', component: AdEdit}, // 编辑广告
+			// 2--订单管理·用户（广告屏合作商）订单
+			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告屏合作商订单
+			{path: 'partner_order_edit', name: 'partner_order_edit', component: PartnerOrderEdit}, // 编辑广告屏合作商订单
 		]
 	}
 ]

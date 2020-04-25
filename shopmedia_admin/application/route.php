@@ -44,6 +44,8 @@ Route::resource('user_salesman', 'admin/UserSalesman');
 Route::resource('user_partner', 'admin/UserPartner');
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('partner_device', 'admin/PartnerDevice');
+// 用户（广告屏合作商）订单
+Route::resource('partner_order', 'admin/PartnerOrder');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
 
