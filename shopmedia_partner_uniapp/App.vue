@@ -4,9 +4,10 @@
 	export default {
 		// 全局变量
 		globalData: {
+			
 		},
-		onLaunch: function(){
-			let self=this;
+		onLaunch: function(event){
+			let self = this;
 			
 			// 设置请求头 header 基本信息
 			// 获取设备系统信息
@@ -26,10 +27,14 @@
 			});
 		},
 		onShow: function() {
+			
 		},
 		onHide: function() {
+			
 		},
-		
+		onError:function(event){
+			console.log('onError', event)
+		},
 		methods: {
 			...mapMutations(['login'])
 		}

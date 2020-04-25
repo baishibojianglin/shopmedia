@@ -17,7 +17,6 @@
 }
 
 /* 颜色 */
-
 .color-blue{
 	color:#504AF2;
 }
@@ -30,6 +29,7 @@
 .color-red{
 	color:#EB795B;
 }
+
 /* 加粗 */
 .blod{
 	font-weight: bold;
@@ -40,12 +40,29 @@
 	display: inline-block;
 }
 
+/* 边距 */
+.mb {
+	margin-bottom: 150upx;
+}
+
 /* 按钮 */
 button.primary {
 	background-color: #504AF2;
 }
 /* 底部按钮 */
 .btn-bottom {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+/* GoodsNav 商品导航 */
+.goods-carts {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
 	position: fixed;
 	left: 0;
 	right: 0;

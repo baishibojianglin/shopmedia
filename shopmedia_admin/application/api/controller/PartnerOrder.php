@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use think\Controller;
+use think\Db;
 use think\Model;
 use think\Request;
 
@@ -24,27 +25,56 @@ class PartnerOrder extends AuthBase
         // 判断为POST请求
         if(request()->isPost()){
             $data = input('post.');
-            $data['company_user_id'] = $this->adminUser['user_id']; // 创建者(平台管理员)ID
+
+            $data['order_sn'] = $this->_getOrderSn(); // 生成唯一订单编号 order_sn
+            $data['order_time'] = time();
+            //$data['order_status'] = 0;
+            $data['order_price'] = $data['device_price'];
+
+            // 获取广告屏合作商信息
+            $partnerMap = []; // 查询条件
+            if (isset($data['user_id']) && isset($data['role_id']) && intval($data['role_id']) == 2) {
+                $partnerMap['user_id'] = intval($data['user_id']);
+                $partnerMap['role_id'] = intval($data['role_id']);
+                $partner = Db::name('user_partner')->field('id')->where($partnerMap)->find();
+                $data['partner_id'] = $partner['id'];
+            }
 
             // validate验证数据合法性
-            $validate = validate('GoodsCate');
+            $validate = validate('PartnerOrder');
             if (!$validate->check($data)) {
-                return show(config('code.error'), $validate->getError(), [], 403);
+                return show(config('code.error'), $validate->getError(), '', 403);
             }
 
             // 入库操作
             try {
-                $id = model('GoodsCate')->add($data, 'cate_id');
+                $id = Db::name('partner_order')->strict(false)->insertGetId($data);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             if ($id) {
-                return show(config('code.success'), '新增成功', ['cate_id' => $id], 201);
+                return show(config('code.success'), '下单成功', ['order_id' => $id], 201);
             } else {
-                return show(config('code.error'), '新增失败', [], 403);
+                return show(config('code.error'), '下单失败', '', 403);
             }
         } else {
-            return show(config('code.error'), '请求不合法', [], 400);
+            return show(config('code.error'), '请求不合法', '', 400);
         }
+    }
+
+    /**
+     * 生成唯一订单编号 order_sn
+     * @return string
+     */
+    private function _getOrderSn()
+    {
+        // 保证不会有重复订单号存在
+        while(true){
+            $order_sn = date('YmdHis').rand(1000,9999); // 订单编号
+            $order_sn_count = Db::name('partner_order')->where("order_sn = '$order_sn'")->count();
+            if($order_sn_count == 0)
+                break;
+        }
+        return $order_sn;
     }
 }

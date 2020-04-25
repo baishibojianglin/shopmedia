@@ -65,6 +65,7 @@
 				datalist: {}, //设备信息列表
 				imglist: [], //实景图列表
 				shopcatelist: {}, //店铺行业列表
+				csPhone: '', // 客服电话
 				
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -96,6 +97,8 @@
 			this.getCate()
 			//获取设备信息
 			this.deviceDetail();
+			// 获取广告屏合作商业务员信息
+			this.getPartnerSalesman();
 		},
 		methods: {
 			//获取行业配置信息
@@ -143,6 +146,28 @@
 				});
 			},
 			
+			/**
+			 * 获取广告屏合作商业务员信息
+			 */
+			getPartnerSalesman() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/partner_salesman',
+					data: {
+						user_id: this.userInfo.user_id,
+						role_id: uni.getStorageSync('role_id')
+					},
+					header: {
+						'commonheader': this.$store.state.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: (res) => {
+						self.csPhone = res.data.data.phone;
+					}
+				})
+			},
+			
 			/* GoodsNav 商品导航 s */
 			/**
 			 * GoodsNav 左侧点击事件
@@ -155,7 +180,7 @@
 				}) */
 				// 联系客服
 				if (e.index == 0) {
-					this.callPhone('114');
+					this.callPhone(this.csPhone);
 				}
 				// 位置导航
 				if (e.index == 1) {
@@ -170,7 +195,7 @@
 				// 立即合作
 				if (e.index == 0) {
 					uni.navigateTo({
-						url: '../partner-order/partner-order'
+						url: '../partner-order/partner-order?cs_phone=' + this.csPhone + '&device=' + encodeURIComponent(JSON.stringify(this.datalist))
 					})
 				}
 			},
@@ -232,21 +257,5 @@
 	.datalist-content {
 		flex: 1;
 		text-align: right;
-	}
-	
-	.mb {
-		margin-bottom: 150upx;
-	}
-	
-	/* GoodsNav 商品导航 */
-	.goods-carts {
-		/* #ifndef APP-NVUE */
-		display: flex;
-		/* #endif */
-		flex-direction: column;
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
 	}
 </style>

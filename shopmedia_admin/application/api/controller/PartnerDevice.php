@@ -6,14 +6,14 @@ use think\Controller;
 use think\Db;
 
 /**
- * api模块用户（广告屏合作商）拥有的广告屏控制器类
+ * api模块用户（广告屏合作商）合作的广告屏控制器类
  * Class PartnerDevice
  * @package app\api\controller
  */
 class PartnerDevice extends AuthBase
 {
     /**
-     * 获取用户（广告屏合作商）拥有的广告屏列表
+     * 获取用户（广告屏合作商）合作的广告屏列表
      * @return \think\response\Json
      */
     public function index()
@@ -39,7 +39,7 @@ class PartnerDevice extends AuthBase
         // 获取分页page、size
         $this->getPageAndSize($param);
 
-        // 获取用户（广告屏合作商）拥有的广告屏分页列表数据 模式一：基于paginate()自动化分页
+        // 获取用户（广告屏合作商）合作的广告屏分页列表数据 模式一：基于paginate()自动化分页
         try {
             $data = model('Device')->getDevice($map, $this->size);
         } catch (\Exception $e) {
