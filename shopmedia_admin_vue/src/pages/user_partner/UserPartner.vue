@@ -252,12 +252,12 @@
 			},
 			
 			/**
-			 * 跳转用户（广告屏合作商）拥有设备列表页
+			 * 跳转用户（广告屏合作商）合作的设备列表页
 			 * @param {Object} row
 			 */
 			toUserDevice(row) {
 				this.$router.push({
-					path: "user_partner_device",
+					path: "partner_device",
 					query: {
 						user_id: row.user_id,
 						user_name: row.user_name

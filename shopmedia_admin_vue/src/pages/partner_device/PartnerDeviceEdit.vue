@@ -1,5 +1,5 @@
 <template>
-	<div class="user_partner_device_edit">
+	<div class="partner_device_edit">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
@@ -77,7 +77,7 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_partner_device/' + this.form.partner_device_id, {
+						this.$axios.put(this.$url + 'partner_device/' + this.form.partner_device_id, {
 							// 参数
 							device_id: this.form.device_id,
 							share: this.form.share
