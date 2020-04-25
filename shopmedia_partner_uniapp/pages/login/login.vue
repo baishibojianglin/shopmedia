@@ -146,7 +146,7 @@
 	}
 	.bottom-con{
 		display: flex;
-		margin-top: 10px;
+		margin-top: 20px;
 		flex-direction: row;
 		justify-content:center;
 		font-size: 14px;
