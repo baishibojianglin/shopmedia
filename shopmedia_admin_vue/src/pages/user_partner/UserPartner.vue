@@ -257,7 +257,7 @@
 			 */
 			toUserDevice(row) {
 				this.$router.push({
-					path: "user_partner_device",
+					path: "partner_device",
 					query: {
 						user_id: row.user_id,
 						user_name: row.user_name

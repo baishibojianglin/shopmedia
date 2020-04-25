@@ -63,6 +63,17 @@
 							</el-collapse-transition>
 
 
+							<dt @click="menush(7)">
+								<span class="el-icon-notebook-2" id="menu7"> 订单管理</span>
+								<span class="fr derection" :class="menuvalue[7]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[7]">
+									<router-link to="/home/partner_order"><dd id='menu71' :class="activevalue[71]?activeclass:''"  @click="menuactive(71,7,1)">合作商订单</dd></router-link>
+								</div>
+							</el-collapse-transition>
+							
+
 							<dt @click="menush(4)">
 								<span class="el-icon-user-solid" id="menu4"> 系统管理员</span>
 								<span class="fr derection" :class="menuvalue[4]?derectionup:derectiondown"></span>

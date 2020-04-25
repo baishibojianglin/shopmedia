@@ -8,14 +8,14 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户（广告屏合作商）拥有的设备控制器类
- * Class UserPartnerDevice
+ * admin模块用户（广告屏合作商）合作的设备控制器类
+ * Class PartnerDevice
  * @package app\admin\controller
  */
-class UserPartnerDevice extends Base
+class PartnerDevice extends Base
 {
     /**
-     * 获取用户（广告屏合作商）拥有的设备列表
+     * 获取用户（广告屏合作商）合作的设备列表
      * @return \think\response\Json
      */
     public function index()
@@ -47,7 +47,7 @@ class UserPartnerDevice extends Base
         // 获取分页page、size
         $this->getPageAndSize($param);
 
-        // 获取用户（广告屏合作商）拥有的广告屏分页列表数据 模式一：基于paginate()自动化分页
+        // 获取用户（广告屏合作商）合作的广告屏分页列表数据 模式一：基于paginate()自动化分页
         try {
             $data = model('Device')->getDevice($map, $this->size);
         } catch (\Exception $e) {
@@ -73,7 +73,7 @@ class UserPartnerDevice extends Base
     }
 
     /**
-     * 更新广告屏合作商拥有的设备所占份额
+     * 更新广告屏合作商合作的设备所占份额
      * @param Request $request
      * @param $id
      * @return \think\response\Json

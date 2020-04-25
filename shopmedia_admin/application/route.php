@@ -43,7 +43,7 @@ Route::resource('user_salesman', 'admin/UserSalesman');
 // 用户（广告屏合作商）
 Route::resource('user_partner', 'admin/UserPartner');
 // 用户（广告屏合作商）合作的广告屏
-Route::resource('user_partner_device', 'admin/UserPartnerDevice');
+Route::resource('partner_device', 'admin/PartnerDevice');
 // 用户（店铺端用户）
 Route::resource('user_shop', 'admin/UserShop');
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="user_partner_device">
+	<div class="partner_device">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
@@ -114,7 +114,7 @@
 			 */
 			getUserDeviceList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_partner_device', {
+				this.$axios.get(this.$url + 'partner_device', {
 					params: {
 						user_id: this.user_id,
 						keywords: this.formInline.keywords,
@@ -190,7 +190,7 @@
 			 */
 			toUserDeviceEdit(row) {
 				this.$router.push({
-					path: "user_partner_device_edit",
+					path: "partner_device_edit",
 					query: {
 						partner_device_id: row.partner_device_id,
 						user_id: this.user_id,

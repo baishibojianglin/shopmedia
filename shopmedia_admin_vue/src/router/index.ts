@@ -105,8 +105,8 @@ const routes = [
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_create', name: 'user_partner_create', component: UserPartnerCreate}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
-			{path: 'user_partner_device', name: 'user_partner_device', component: UserPartnerDevice}, // 用户拥有的设备
-			{path: 'user_partner_device_edit', name: 'user_partner_device_edit', component: UserPartnerDeviceEdit}, // 编辑用户拥有的设备
+			{path: 'partner_device', name: 'partner_device', component: UserPartnerDevice}, // 用户拥有的设备
+			{path: 'partner_device_edit', name: 'partner_device_edit', component: UserPartnerDeviceEdit}, // 编辑用户拥有的设备
 			// 2--用户（店铺端用户）管理
 			{path: 'user_shop', name: 'user_shop', component: UserShop}, // 用户列表
 			{path: 'user_shop_edit', name: 'user_shop_edit', component: UserShopEdit}, // 编辑用户
