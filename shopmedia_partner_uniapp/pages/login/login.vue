@@ -43,10 +43,11 @@
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
-			// console.log(this.$store.state)
 		},
 		methods: {
-			//映射vuex的login方法
+			/**
+			 * 映射vuex的login方法
+			 */
 			...mapMutations(['login']),
 
 			/**
@@ -86,7 +87,7 @@
 						password: this.password
 					},
 					header:{
-						commonheader: self.$store.state.commonheader
+						commonheader: this.commonheader
 					},
 					method: 'PUT',
 					success: function(res) {

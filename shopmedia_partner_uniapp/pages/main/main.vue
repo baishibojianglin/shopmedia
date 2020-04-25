@@ -36,34 +36,26 @@
 							<br/>
 							<text>合作广告屏</text>
 						</view>
-					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
-						<view>
+						<view class="navcon-item">
 							<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
 							<br/>
 							<text>我的店铺</text>
 						</view>
-					</navigator>
-					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
-						<view>
+						<view class="navcon-item">
 							<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
 							<br/>
 							<text>业务参与</text>
 						</view>
-					</navigator>
-					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
-						<view>
+						<view class="navcon-item">
 							<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
 							<br/>
 							<text>店通快讯</text>
 						</view>
-					</navigator>
-					<navigator url="../saleperson/index" class="navcon-item" v-if="this.role.device">
-						<view>
+						<view class="navcon-item">
 							<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
 							<br/>
 							<text>投诉建议</text>
 						</view>
-					</navigator>
 			</view>
 
 																					  
@@ -89,15 +81,38 @@
             this.is_role();
 		},
 		methods: {
-			//指定角色跳转
+			/**
+			 * 指定角色跳转
+			 * @param {Object} role_ids
+			 */
 			toRole(role_ids){
-				if( (role_ids==2)&&(this.role.device==true)){
+				
+				//广告屏合作商
+				if( (role_ids==3)&&(this.role.device==true)){  
 					uni.navigateTo({
 					    url: '../user-partner/user-partner'
 					});
+				}else{
+					uni.showModal({
+					    title: '提示',
+					    content: '您还不是广告屏合作商,申请加入？',
+					    success: function (res) {
+					        if (res.confirm) {
+					          uni.navigateTo({
+					              url: "../user/apply-partner"
+					          });  
+					        } else if (res.cancel) {
+					          
+					        }
+					    }
+					});
 				}
+				
+				
 			},
-			//判断用户角色
+			/**
+			 * 判断用户角色
+			 */
 			is_role(){
 				let self=this;
 				let role_str=this.$store.state.userInfo.role_ids;

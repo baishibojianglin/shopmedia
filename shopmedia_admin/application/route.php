@@ -85,8 +85,9 @@ Route::put('api/logout', 'api/Login/logout'); // 退出登录
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
 
-// 用户
+// 用户个人中心
 Route::resource('api/user', 'api/User');
+Route::post('api/applyPartner', 'api/User/applyPartner');
 
 // 业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');

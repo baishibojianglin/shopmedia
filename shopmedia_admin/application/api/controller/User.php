@@ -8,6 +8,7 @@ use app\common\lib\IAuth;
 use think\Controller;
 use think\Model;
 use think\Request;
+use think\Db;
 
 /**
  * api模块客户端用户控制器类
@@ -16,10 +17,58 @@ use think\Request;
  */
 class User extends AuthBase
 {
+
+    /**
+     * 获取用户对应的业务员信息
+     */
+    public function applyPartner()
+    {
+         $form=input();
+       
+        //通过邀请码查询业务员id
+        $matchcode['invitation_code']=$form['invitation_code'];
+        $salesmanlist=Db::name('user_salesman')->where($matchcode)->find();
+        //验证邀请码是否存在
+        if(!empty($salesmanlist)){
+            $data['salesman_id']=$salesmanlist['id'];
+        }else{
+            $message['status']=0;
+            $message['words']='认证码不正确';
+            return json($message);
+        }
+
+         //判断是否重复申请
+         $matchuserid['user_id']=$form['user_id'];
+         $partnerlist=Db::name('user_partner')->where($matchuserid)->find();
+         if(!empty($partnerlist)){
+            $message['status']=0;
+            $message['words']='已完成申请';
+            return json($message);
+        } 
+
+        //入库
+        $data['user_id']=$form['user_id'];
+        $data['create_time']=time();
+        $id=Db::name('user_partner')->insert($data); 
+
+        if($id>0){
+            $message['status']=1;
+            $message['words']='申请成功';
+        }else{
+            $message['status']=0;
+            $message['words']='申请失败';
+        }
+        return json($message);
+
+
+
+    }
+
+
+
     /**
      * 显示指定的用户资源
      * 用户的基本信息非常隐私，需要加密处理
-     *
      * @param int $id
      * @return \think\Response
      */
