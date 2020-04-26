@@ -33,9 +33,9 @@
 					</el-table-column>
 					<el-table-column label="广告屏" header-align="center">
 						<el-table-column prop="shopname" label="店铺名称" width="120"></el-table-column>
-						<el-table-column prop="device_price" label="广告屏总价(元)" width="120"></el-table-column>
+						<el-table-column prop="device_price" label="广告屏总价/元" width="120"></el-table-column>
 					</el-table-column>
-					<el-table-column prop="order_price" label="订单价格" width="100"></el-table-column>
+					<el-table-column prop="order_price" label="订单价格/元" width="120"></el-table-column>
 					<el-table-column prop="order_status" label="订单状态" width="90" :filters="[{ text: '未付款', value: 0 }, { text: '已完成', value: 1 }, { text: '已取消', value: 2 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.order_status === 0 ? 'text-info' : (scope.row.order_status === 1 ? 'text-success' : 'text-danger')">{{scope.row.order_status_msg}}</span>
