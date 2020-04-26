@@ -13,13 +13,13 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '127.0.0.1', // 101.132.78.50
+    'hostname'        => '101.132.78.50',//'127.0.0.1', 
     // 数据库名
     'database'        => 'goodsmedia',
     // 用户名
-    'username'        => 'root', // goodsmedia
+    'username'        => 'goodsmedia', // goodsmedia
     // 密码
-    'password'        => 'root', // 200316goodsmedia@goodsmedia
+    'password'        => '200316goodsmedia@goodsmedia', // 200316goodsmedia@goodsmedia
     // 端口
     'hostport'        => '',
     // 连接dsn
