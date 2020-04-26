@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>广告屏合作商合作的设备</span></el-col>
+					<el-col :span="6"><span>合作广告屏</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
@@ -51,7 +51,7 @@
 						<el-table-column prop="street" label="街道" width="120"></el-table-column>
 					</el-table-column>
 					<el-table-column prop="shopname" label="店铺" width="120"></el-table-column>
-					<el-table-column label="广告收益(元)" header-align="center">
+					<el-table-column label="广告收益/元" header-align="center">
 						<el-table-column prop="today_income" label="今日收益" width="120"></el-table-column>
 						<el-table-column prop="total_income" label="累计收益" width="120"></el-table-column>
 					</el-table-column>

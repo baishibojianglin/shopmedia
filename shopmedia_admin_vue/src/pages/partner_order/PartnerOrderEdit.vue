@@ -15,7 +15,7 @@
 					<el-form-item prop="order_sn" label="订单编号">
 						<el-input v-model="form.order_sn" disabled style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="order_price" label="订单价格(元)">
+					<el-form-item prop="order_price" label="订单价格/元">
 						<el-input-number v-model="form.order_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
 					</el-form-item>
 					<el-form-item prop="order_status" label="订单状态">

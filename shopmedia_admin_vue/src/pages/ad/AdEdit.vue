@@ -74,7 +74,7 @@
 							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'店铺类别：' + item.shop_cate_name + '，' + '店铺：' + item.shopname + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
 						</el-checkbox-group>
 					</el-form-item>
-					<el-form-item prop="ad_price" label="广告价格(元)">
+					<el-form-item prop="ad_price" label="广告价格/元">
 						<el-input-number v-model="form.ad_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
 					</el-form-item>
 					<el-form-item prop="discount_ratio" label="广告折扣率">

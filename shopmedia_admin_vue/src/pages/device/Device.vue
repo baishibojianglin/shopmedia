@@ -29,7 +29,7 @@
 					<el-table-column prop="brand" label="品牌" min-width="120"></el-table-column>
 					<el-table-column prop="model" label="型号" width="120"></el-table-column>
 					<el-table-column prop="size" label="尺寸" width="70"></el-table-column>
-					<el-table-column prop="sale_price" label="价格(元)" width="100"></el-table-column>
+					<el-table-column prop="sale_price" label="价格/元" width="100"></el-table-column>
 					<el-table-column prop="saled_part" label="已售份额" width="100"></el-table-column>
 					<el-table-column prop="company_name" label="所属分公司" width="120"></el-table-column>
 					<el-table-column prop="province" label="省份" width="120"></el-table-column>
