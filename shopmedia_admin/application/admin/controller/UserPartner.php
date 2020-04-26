@@ -62,6 +62,23 @@ class UserPartner extends Base
     }
 
     /**
+     * 广告屏合作商列表（不分页，用于 Select 选择器等）
+     * @return \think\response\Json
+     */
+    public function userPartnerList()
+    {
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        $data = Db::name('user_partner')->alias('up')
+            ->field('up.id partner_id, up.user_id, u.user_name, u.phone')
+            ->join('__USER__ u', 'up.user_id = u.user_id')
+            ->select();
+        return show(config('code.success'), 'OK', $data);
+    }
+
+    /**
      * 保存新建的用户资源
      * @param Request $request
      * @return \think\response\Json

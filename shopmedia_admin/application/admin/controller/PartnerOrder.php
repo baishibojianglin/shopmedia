@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\lib\exception\ApiException;
 use think\Controller;
+use think\Db;
 use think\Request;
 
 /**
@@ -81,24 +82,87 @@ class PartnerOrder extends Base
         // 判断为POST请求
         if(request()->isPost()){
             $data = input('post.');
-            $data['company_user_id'] = $this->adminUser['user_id']; // 创建者(供应商)ID
+
+            $data['order_sn'] = model('PartnerOrder')->getOrderSn(); // 生成唯一订单编号 order_sn
+            $data['order_time'] = time();
+            //$data['order_status'] = 0;
+            $data['order_price'] = (isset($data['order_price']) && $data['order_price'] != 0) ? $data['order_price'] : $data['device_price'];
+
+            // 获取广告屏合作商对应用户信息
+            $userPartner = Db::name('user_partner')->alias('up')
+                ->field('up.id partner_id, up.user_id, u.user_name, u.phone')
+                ->join('__USER__ u', 'up.user_id = u.user_id')
+                ->where(['up.id' => $data['partner_id']])
+                ->find();
+            if (!$userPartner) {
+                return show(config('code.error'), '广告屏合作商不存在', '', 404);
+            }
+            $data['user_id'] = $userPartner['user_id'];
+            $data['phone'] = $userPartner['phone'];
+
+            // 获取广告屏信息
+            $device = model('Device')->field('device_id, sale_price')->find($data['device_id']);
+            if (!$device) {
+                return show(config('code.error'), '广告屏不存在', '', 404);
+            }
+            $data['device_price'] = $device['sale_price'];
 
             // validate验证数据合法性
-            $validate = validate('GoodsBrand');
+            $validate = validate('PartnerOrder');
             if (!$validate->check($data)) {
-                return show(config('code.error'), $validate->getError(), [], 403);
+                return show(config('code.error'), $validate->getError(), '', 403);
+            }
+
+            $data1 = [
+                'device_id' => $data['device_id'],
+                'partner_id' => $data['partner_id'],
+                'user_id' => $data['user_id']
+            ];
+            // validate验证数据合法性
+            $validate1 = validate('PartnerDevice');
+            if (!$validate1->check($data1)) {
+                return show(config('code.error'), $validate1->getError(), '', 403);
             }
 
             // 入库操作
-            try {
-                $id = model('GoodsBrand')->add($data, 'brand_id');
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
-            }
-            if ($id) {
-                return show(config('code.success'), '新增成功', ['brand_id' => $id], 201);
+            // 当订单已支付完成时，同时新增该订单对应的合作商广告屏数据
+            if (isset($data['order_status']) && $data['order_status'] == 1 && isset($data['pay_status']) &&  $data['pay_status'] == 1) {
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    // 更新支付状态和订单状态
+                    $data['pay_time'] = time();
+                    $res[0] = Db::name('partner_order')->insert($data);
+
+                    // 新增该订单对应的合作商广告屏数据
+                    $res[1] = Db::name('partner_device')->insert($data1);
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '订单新增失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+                    return show(config('code.success'), '订单已支付完成，合作商广告屏新增成功', $data['order_sn'], 201);
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    return show(config('code.error'), '网络忙，请重试', '', 500);
+                }
+                /* 手动控制事务 e */
             } else {
-                return show(config('code.error'), '新增失败', [], 403);
+                try {
+                    $id = model('PartnerOrder')->add($data, 'order_id');
+                } catch (\Exception $e) {
+                    return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                }
+                if ($id) {
+                    return show(config('code.success'), '订单新增成功', $data['order_sn'], 201);
+                } else {
+                    return show(config('code.error'), '订单新增失败', [], 403);
+                }
             }
         } else {
             return show(config('code.error'), '请求不合法', [], 400);
@@ -172,16 +236,56 @@ class PartnerOrder extends Base
                 return show(config('code.error'), '数据不合法', [], 404);
             }
 
-            // 更新
-            try {
-                $result = model('PartnerOrder')->save($data, ['order_id' => $id]); // 更新
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+            // 获取指定的合作商订单
+            $partnerOrder = model('PartnerOrder')->find($id);
+            $data1 = [
+                'device_id' => $partnerOrder['device_id'],
+                'partner_id' => $partnerOrder['partner_id'],
+                'user_id' => $partnerOrder['user_id']
+            ];
+            // validate验证数据合法性
+            $validate = validate('PartnerDevice');
+            if (!$validate->check($data1)) {
+                return show(config('code.error'), $validate->getError(), '', 403);
             }
-            if (false === $result) {
-                return show(config('code.error'), '更新失败', [], 403);
+
+            // 当订单已支付完成时，同时新增该订单对应的合作商广告屏数据
+            if ($data['order_status'] == 1 && $data['pay_status'] == 1) {
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    // 更新支付状态和订单状态
+                    $res[0] = Db::name('partner_order')->where(['order_id' => $id])->update($data);
+
+                    // 新增该订单对应的合作商广告屏数据
+                    $res[1] = Db::name('partner_device')->insert($data1);
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '订单状态更新失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+                    return show(config('code.success'), '订单已支付完成，合作商广告屏新增成功', '', 201);
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    return show(config('code.error'), '网络忙，请重试', '', 500);
+                }
+                /* 手动控制事务 e */
             } else {
-                return show(config('code.success'), '更新成功', [], 201);
+                try {
+                    $result = model('PartnerOrder')->save($data, ['order_id' => $id]); // 更新
+                } catch (\Exception $e) {
+                    return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                }
+                if (false === $result) {
+                    return show(config('code.error'), '更新失败', [], 403);
+                } else {
+                    return show(config('code.success'), '更新成功', [], 201);
+                }
             }
         } else {
             return show(config('code.error'), '请求不合法', [], 400);
@@ -191,8 +295,9 @@ class PartnerOrder extends Base
     /**
      * 删除指定订单资源
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \think\Response
+     * @throws ApiException
      */
     public function delete($id)
     {

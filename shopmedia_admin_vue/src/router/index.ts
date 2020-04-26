@@ -52,6 +52,7 @@ import AdCreate from '@/pages/ad/AdCreate.vue'
 import AdEdit from '@/pages/ad/AdEdit.vue'
 // 订单管理·用户（广告屏合作商）订单
 import PartnerOrder from '@/pages/partner_order/PartnerOrder.vue'
+import PartnerOrderCreate from '@/pages/partner_order/PartnerOrderCreate.vue'
 import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
 
 
@@ -120,6 +121,7 @@ const routes = [
 			{path: 'ad_edit', name: 'ad_edit', component: AdEdit}, // 编辑广告
 			// 2--订单管理·用户（广告屏合作商）订单
 			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告屏合作商订单
+			{path: 'partner_order_create', name: 'partner_order_create', component: PartnerOrderCreate}, // 创建广告屏合作商订单
 			{path: 'partner_order_edit', name: 'partner_order_edit', component: PartnerOrderEdit}, // 编辑广告屏合作商订单
 		]
 	}

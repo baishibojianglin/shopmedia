@@ -42,6 +42,7 @@ Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列�
 Route::resource('user_salesman', 'admin/UserSalesman');
 // 用户（广告屏合作商）
 Route::resource('user_partner', 'admin/UserPartner');
+Route::get('user_partner_list','admin/UserPartner/userPartnerList');  // 广告屏合作商列表（不分页）
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('partner_device', 'admin/PartnerDevice');
 // 用户（广告屏合作商）订单
