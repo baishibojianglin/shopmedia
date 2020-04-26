@@ -16,6 +16,32 @@ use think\Db;
  */
 class Login extends Common
 {
+   /**
+   *检查电话是否存在
+   */
+   public function hasphone(){
+     $form=input();
+     $match['phone']=$form['phone'];
+     $userlist=Db::name('user')->where($match)->find();
+     if(empty($userlist)){
+        //用户不存在
+        $message['status']=0;
+        $message['words']='该用户不存在';
+        return json($message);
+     }
+     if($userlist['status']==0){
+         //用户被禁用
+        $message['status']=0;
+        $message['words']='该账号被冻结';
+        return json($message);       
+     }
+     $message['status']=1;
+     return json($message);
+     
+   }
+
+
+
     /**
      * 用户登录
      * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 短信验证码（或密码） 登录
@@ -63,6 +89,7 @@ class Login extends Common
 
         // 查询该手机号用户是否存在
         $user = User::get(['phone' => $param['phone']]);
+
         if ($user && $user['status'] == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
@@ -78,7 +105,7 @@ class Login extends Common
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
         } else {
-            return show(config('code.error'), '用户不存在', [], 404);
+            return show(config('code.error'), '用户不存在或冻结', [], 404);
         }
 
         // 判断是否登录成功

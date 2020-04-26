@@ -71,11 +71,11 @@
 					return false;
 				}
 				// 密码
-				if (!this.password.match(/^[a-zA-Z]\w{5,19}$/)) {   
+				if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {   
 					uni.showToast({
 						icon: 'none',
 						duration:2500,
-						title: '密码必须以字母开头，长度在6~20之间，只能包含字母、数字和下划线'
+						title: '由6-20位数字或字母组成'
 					});
 					return false;
 				}
@@ -91,6 +91,7 @@
 					},
 					method: 'PUT',
 					success: function(res) {
+             
 						if (res.data.status == 1) {
 							let userInfo = res.data.data;
 							
@@ -107,6 +108,8 @@
 								title: res.data.message
 							});
 						}
+						
+						
 					}
 				})
 			}

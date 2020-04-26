@@ -1,7 +1,7 @@
 <template>
 
 	<view class="content">
-		<view class="center title">《商市通用户及隐私协议》</view>
+		<view class="center title blod">《商市通用户及隐私协议》</view>
 		<view>您好！欢迎您使用商市通应用。</view>
 
 		<view class="blod dec-title">1.特别提示</view>
@@ -125,7 +125,7 @@
 <style>
 .content{
 	line-height: 30px;
-	padding:10px 5px;
+	padding:0px 5px 0 5px;
 }
 .view-con{
 	text-indent: 10px;

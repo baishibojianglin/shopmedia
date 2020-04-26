@@ -83,6 +83,7 @@ Route::put('api/login', 'api/Login/login'); // 登录
 Route::post('api/register', 'api/Login/register'); // 注册
 Route::put('api/pwd', 'api/Login/pwd'); // 找回密码
 Route::put('api/logout', 'api/Login/logout'); // 退出登录
+Route::post('api/hasphone', 'api/Login/hasphone'); // 检查电话是否存在
 
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');

@@ -28,7 +28,7 @@
 				</view>
 
 				<view>
-					<button @click="submitForm()" type="primary" class="submit">确 认</button>
+					<button @click="submitForm()" type="primary" class="submit">确认修改</button>
 				</view>
 		</view>
 	</view>
@@ -49,7 +49,9 @@
 				logourl: '/static/img/logo.png',
 				seconds:120 ,//倒计时秒数
 				showseconds:false ,//显示倒计时
-				timesign:'' //定时器标志
+				timesign:'' ,//定时器标志
+				hasuser:true,
+				hasuserwords:''
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
@@ -76,9 +78,39 @@
 				   }
 			},
 			/**
+			 * 检查用户是否存在
+			 */
+			hasphone(){
+				        let self=this;
+               			return new Promise((resolve, reject) => {
+               				uni.request({ 
+               					url : this.$serverUrl + 'api/hasphone',
+               					method : "POST",
+               					data : {
+									phone:this.phone
+								},
+								header:{
+									commonheader: this.commonheader
+								},
+               					success: (res) => {
+               						if(res.data.status==0){
+										self.hasuser=false;
+										self.hasuserwords=res.data.words;
+									}else{
+										self.hasuser=true;
+									}
+                           			resolve('suc');  
+               					},
+               					fail:(err)=>{
+               						reject('err')
+               					}
+               				})
+               			})				
+			},
+			/**
 			 * 获取短信验证码
 			 */
-			getVerifyCode() {
+			async getVerifyCode() {
 				// 检查手机号码
 				if (this.phone == '') {
 					uni.showToast({
@@ -94,7 +126,16 @@
 					});
 					return false;
 				}
-
+                
+				await this.hasphone();
+				if(this.hasuser==false){
+					uni.showToast({
+						icon: 'none',
+						title: this.hasuserwords
+					});
+					return false;
+				}
+				
                 //控制倒计时显示
 				this.showseconds=true;
 				this.countseconds();
@@ -106,13 +147,16 @@
 					data: {
 						phone: this.phone
 					},
+					header:{
+						commonheader: this.commonheader
+					},
 					method: 'POST',
 					success: function(res) {
 						self.return_code = res.data
 					}
 				})
 			},
-
+			
 			/**
 			 * 找回密码提交表单
 			 */
@@ -133,10 +177,10 @@
 					return false;
 				}
 				// 检查密码
-				if (!this.password.match(/^[a-zA-Z]\w{5,19}$/)) {
+				if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {
 					uni.showToast({
-						icon: 'none',
-						title: '密码必须以字母开头，长度在6~20之间，只能包含字母、数字和下划线'
+						icon:'none',
+						title:'由6-20位数字或字母组成'
 					});
 					return false;
 				}
@@ -172,18 +216,17 @@
 					},
 					method: 'PUT',
 					success: function(res) {
-						console.log(res.data)
-						// if (0 == res.data.status) { // 验证失败
-						// 	uni.showToast({
-						// 		icon: 'none',
-						// 		title: res.data.message
-						// 	});
-						// 	return;
-						// } else { // 验证成功跳转
-						// 	uni.navigateTo({
-						// 		url: '../login/login'
-						// 	});
-						// }
+						if (0 == res.data.status) { // 验证失败
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+							return false;
+						} else { // 验证成功跳转
+							uni.navigateTo({
+								url: '../login/login'
+							});
+						}
 					},
 					fail: function(error) {
 					}
@@ -233,6 +276,7 @@
 		bottom: 3px;
 		font-size: 13px;
 		background-color: #3F45F2;
+		width: 100px;
 	}
 
 	.contain-checkbox {
