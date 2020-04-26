@@ -248,7 +248,7 @@
 	.iconposition {
 		position: absolute;
 		left: 20px;
-		bottom:-5px;
+		bottom:-4px;
 	}
 
 	.input-list {

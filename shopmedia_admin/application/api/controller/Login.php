@@ -282,6 +282,7 @@ class Login extends Common
             // 传入的参数
             $param = input('param.');
 
+
             // 判断传入的参数是否存在及合法性
             // 手机号码
             if (empty($param['phone'])) {
@@ -324,7 +325,6 @@ class Login extends Common
                 return show(config('code.error'), '用户不存在', '', 404);
             } else { // 用户存在，更新密码
                 $data['password'] = IAuth::encrypt($param['password']);
-
                 // 更新密码
                 try { // 捕获异常
                     $result = model('User')->save($data, ['phone' => $param['phone']]); // 更新
@@ -333,7 +333,7 @@ class Login extends Common
                 }
             }
 
-            // 判断是否注册成功
+            // 判断是否成功
             if ($result) {
                 return show(config('code.success'), '密码更新成功', '', 201);
             } else {
