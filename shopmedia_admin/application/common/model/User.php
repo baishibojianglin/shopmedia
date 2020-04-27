@@ -82,12 +82,12 @@ class User extends Base
     }
 
     /**
-     * 获取用户（店铺端用户）列表数据（基于paginate()自动化分页）
+     * 获取用户（店家）列表数据（基于paginate()自动化分页）
      * @param array $map
      * @param int $size
      * @return \think\Paginator
      */
-    public function getUserShop($map = [], $size = 5)
+    public function getUserShopkeeper($map = [], $size = 5)
     {
         if(!isset($map['u.is_delete'])) {
             $map['u.is_delete'] = ['neq', config('code.is_delete')];
@@ -97,7 +97,7 @@ class User extends Base
 
         $result = $this->alias('u')
             ->field(array_merge($this->_getListField(), ['us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'p.user_name parent_name']))
-            ->join('__USER_SHOP__ us', 'u.user_id = us.user_id') // 店铺端业务员
+            ->join('__USER_SHOPKEEPER__ us', 'u.user_id = us.user_id') // 店铺端业务员
             ->join('__USER__ p', 'us.parent_id = p.user_id', 'LEFT') // 上级
             ->where($map)
             ->order($order)

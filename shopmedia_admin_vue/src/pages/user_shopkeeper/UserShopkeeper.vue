@@ -1,9 +1,9 @@
 <template>
-	<div class="user">
+	<div class="user_shopkeeper">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>店铺端用户</span></el-col>
+					<el-col :span="6"><span>店家</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
@@ -91,7 +91,7 @@
 			 */
 			getUserList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_shop', {
+				this.$axios.get(this.$url + 'user_shopkeeper', {
 					params: {
 						user_name: this.formInline.user_name,
 						page: this.listPagination.current_page,
@@ -166,7 +166,7 @@
 			 */
 			toUserEdit(row) {
 				this.$router.push({
-					path: "user_shop_edit",
+					path: "user_shopkeeper_edit",
 					query: {
 						user_id: row.user_id
 					}
@@ -185,7 +185,7 @@
 				}).then(() => {
 					// 调用删除接口
 					let self = this;
-					this.$axios.delete(this.$url + 'user_shop/' + scope.row.user_id)
+					this.$axios.delete(this.$url + 'user_shopkeeper/' + scope.row.user_id)
 						.then(function(res) {
 							// 移除元素
 							self.userList.splice(scope.$index, 1);

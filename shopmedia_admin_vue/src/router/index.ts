@@ -43,9 +43,9 @@ import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
 // 用户（广告屏合作商）合作的广告屏
 import PartnerDevice from '@/pages/partner_device/PartnerDevice.vue'
 import PartnerDeviceEdit from '@/pages/partner_device/PartnerDeviceEdit.vue'
-// 用户（店铺端用户）管理
-import UserShop from '@/pages/user_shop/UserShop.vue'
-import UserShopEdit from '@/pages/user_shop/UserShopEdit.vue'
+// 用户（店家）管理
+import UserShopkeeper from '@/pages/user_shopkeeper/UserShopkeeper.vue'
+import UserShopkeeperEdit from '@/pages/user_shopkeeper/UserShopkeeperEdit.vue'
 // 广告管理
 import Ad from '@/pages/ad/Ad.vue'
 import AdCreate from '@/pages/ad/AdCreate.vue'
@@ -112,9 +112,9 @@ const routes = [
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
 			{path: 'partner_device', name: 'partner_device', component: PartnerDevice}, // 用户合作的设备
 			{path: 'partner_device_edit', name: 'partner_device_edit', component: PartnerDeviceEdit}, // 编辑用户合作的设备
-			// 2--用户（店铺端用户）管理
-			{path: 'user_shop', name: 'user_shop', component: UserShop}, // 用户列表
-			{path: 'user_shop_edit', name: 'user_shop_edit', component: UserShopEdit}, // 编辑用户
+			// 2--用户（店家）管理
+			{path: 'user_shopkeeper', name: 'user_shopkeeper', component: UserShopkeeper}, // 用户列表
+			{path: 'user_shopkeeper_edit', name: 'user_shopkeeper_edit', component: UserShopkeeperEdit}, // 编辑用户
 			// 2--广告管理
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告

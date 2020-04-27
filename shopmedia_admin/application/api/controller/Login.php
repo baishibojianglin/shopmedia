@@ -198,7 +198,7 @@ class Login extends Common
                         $roleId = ;
                         break;*/
                     case 6: // 店铺业务员
-                        $roleId = 3; // 店铺端用户
+                        $roleId = 3; // 店家
                         break;
                     default:
                         // 其他情况默认执行代码
@@ -244,12 +244,12 @@ class Login extends Common
                         $data1['role_id'] = $roleId; // 用户角色ID
                         $data1['status'] = config('code.status_enable');
                         $res[1] = Db::name('user_partner')->insert($data1);
-                    } elseif ($roleId == 3) { // 店铺端用户
+                    } elseif ($roleId == 3) { // 店家
                         $data1['user_id'] = $userId;
                         $data1['salesman_id'] = $salesman['id']; // 业务员ID
                         $data1['role_id'] = $roleId; // 用户角色ID
                         $data1['status'] = config('code.status_enable');
-                        $res[1] = Db::name('user_shop')->insert($data1);
+                        $res[1] = Db::name('user_shopkeeper')->insert($data1);
                     } elseif ($roleId == $salesman['role_id']) { // 下级业务员
                         // TODO：新增下级业务员数据
                         $data1['uid'] = $userId;

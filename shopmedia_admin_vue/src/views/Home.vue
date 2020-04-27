@@ -58,7 +58,7 @@
 									<!-- <router-link to="/home/user"><dd id='menu52' :class="activevalue[52]?activeclass:''"  @click="menuactive(52,5,2)">全部用户</dd></router-link> -->
 									<router-link to="/home/user_salesman"><dd id='menu53' :class="activevalue[53]?activeclass:''"  @click="menuactive(53,5,3)">业务员</dd></router-link>
 									<router-link to="/home/user_partner"><dd id='menu54' :class="activevalue[54]?activeclass:''"  @click="menuactive(54,5,4)">广告屏合作商</dd></router-link>
-									<router-link to="/home/user_shop"><dd id='menu55' :class="activevalue[55]?activeclass:''"  @click="menuactive(55,5,5)">店铺端用户</dd></router-link>
+									<router-link to="/home/user_shopkeeper"><dd id='menu55' :class="activevalue[55]?activeclass:''"  @click="menuactive(55,5,5)">店家</dd></router-link>
 								</div>
 							</el-collapse-transition>
 

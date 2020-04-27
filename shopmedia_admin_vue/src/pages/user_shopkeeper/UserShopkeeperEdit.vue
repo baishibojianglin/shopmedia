@@ -1,9 +1,9 @@
 <template>
-	<div class="user_shop_edit">
+	<div class="user_shopkeeper_edit">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑店铺端用户</span></el-col>
+					<el-col :span="6"><span>编辑店家</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -94,7 +94,7 @@
 			 */
 			getUser() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_shop/' + this.form.user_id, {
+				this.$axios.get(this.$url + 'user_shopkeeper/' + this.form.user_id, {
 					/* headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
@@ -127,7 +127,7 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'user_shop/' + this.form.user_id, {
+						this.$axios.put(this.$url + 'user_shopkeeper/' + this.form.user_id, {
 							// 参数
 							money: this.form.money,
 							income: this.form.income,
