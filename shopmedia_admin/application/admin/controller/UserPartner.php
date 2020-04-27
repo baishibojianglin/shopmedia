@@ -167,7 +167,7 @@ class UserPartner extends Base
 
             // 获取广告屏合作商信息
             try {
-                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.role_id' => ['in', $user['role_ids']]])->find();
+                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.audit_status, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.role_id' => ['in', $user['role_ids']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -214,6 +214,9 @@ class UserPartner extends Base
         }
         if (isset($param['cash'])) { // 提现
             $data['cash'] = trim($param['cash']);
+        }
+        if (isset($param['audit_status'])) { // 审核状态
+            $data['audit_status'] = $param['audit_status'];
         }
         if (isset($param['status'])) { // 状态
             $data['status'] = $param['status'];

@@ -12,7 +12,7 @@ return [
     'error' => 0,
     'success' => 1,
 
-    // 账户状态
+    // 账户启用状态
     'status' => [
         0 => '禁用',
         1 => '启用'
@@ -20,7 +20,7 @@ return [
 
     'status_disable' => 0, // 关闭/停用
     'status_enable' => 1, // 开启/启用
-    'status_pending' => 2, // 待审核
+    //'status_pending' => 2, // 待审核
 
     // 是否删除
     'not_delete' => 0, // 未删除

@@ -21,8 +21,8 @@
 						<!-- 新增 e -->
 					</el-col>
 					<el-col :span="3" :offset="3">
-						<el-button size="mini" icon="el-icon-delete" @click="getUserList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
-						<el-button size="mini" icon="el-icon-back" title="返回" @click="getUserList()" v-if="formInline.is_delete == 1">返回</el-button>
+						<!-- <el-button size="mini" icon="el-icon-delete" @click="getUserList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="getUserList()" v-if="formInline.is_delete == 1">返回</el-button> -->
 					</el-col>
 				</el-row>
 			</div>

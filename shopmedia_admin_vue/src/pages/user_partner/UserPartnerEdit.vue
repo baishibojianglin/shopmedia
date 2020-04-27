@@ -31,7 +31,14 @@
 					<el-form-item prop="cash" label="累计提现/元">
 						<el-input v-model="form.cash" placeholder="请输入累计提现金额" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="status" label="状态">
+					<el-form-item prop="status" label="审核状态">
+						<el-radio-group v-model="form.audit_status">
+							<el-radio :label="0">待审核</el-radio>
+							<el-radio :label="1">正常</el-radio>
+							<el-radio :label="2">驳回</el-radio>
+						</el-radio-group>
+					</el-form-item>
+					<el-form-item prop="status" label="角色状态">
 						<el-radio-group v-model="form.status">
 							<el-radio :label="1">启用</el-radio>
 							<el-radio :label="0">禁用</el-radio>
@@ -126,7 +133,8 @@
 							money: this.form.money,
 							income: this.form.income,
 							cash: this.form.cash,
-							status: this.form.status,
+							audit_status: this.form.audit_status,
+							status: this.form.status
 						}, {
 							// 请求头配置
 							/* headers: {
