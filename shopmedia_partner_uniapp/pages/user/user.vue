@@ -22,7 +22,7 @@
 		
 		<view class="uni-common-mt" v-if="hasLogin">
 			<uni-card title="我的角色" thumbnail="" extra="" note="" is-full is-shadow>
-				<button class="mini-btn" size="mini" v-for="(item, index) in userData.user_roles" :key="index" @click="toUserRoleDetails(index)">{{item}}</button>
+				<button v-for="(item, index) in userData.user_roles" :key="index" class="mini-btn" :class="item.user_role.status != 1 ? 'color-disable' : ''" size="mini" @click="toUserRoleDetails(item)">{{item.role_title}}</button>
 			</uni-card>
 		</view>
 		
@@ -99,7 +99,10 @@
 							self.userData = userData;
 						},
 						fail(error) {
-							console.log('getUserInfo失败：', error);
+							uni.showToast({
+								icon: 'none',
+								title: '请求异常'
+							});
 						}
 					})
 				}
@@ -108,7 +111,16 @@
 			/**
 			 * 跳转用户角色详情页
 			 */
-			toUserRoleDetails(role_id) {
+			toUserRoleDetails(item) {
+				// 判断用户角色状态
+				if (item.user_role.status != 1) {
+					uni.showToast({
+						icon: 'none',
+						title: '角色状态异常'
+					});
+					return;
+				}
+				let role_id = item.role_id;
 				// 将用户角色 role_id 存储在本地缓存中（同步）
 				try {
 					uni.setStorageSync('role_id', role_id);
@@ -117,7 +129,7 @@
 				}
 				
 				// 业务员角色
-				let salesman = ['4', '5', '6']
+				let salesman = [4, 5, 6]
 				if (salesman.indexOf(role_id) != -1) {
 					uni.switchTab({
 						url: '/pages/main/main'
@@ -126,10 +138,10 @@
 					// 非业务员角色
 					let url;
 					switch (role_id){
-						case '2':
+						case 2:
 							url = '/pages/user-partner/user-partner?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
 							break;
-						case '3':
+						case 3:
 							url = '/pages/user-shopkeeper/user-shopkeeper?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
 							break;
 						default:
@@ -144,7 +156,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/* @import '../../common/uni-nvue.css'; */
 	
 	.userData .text {

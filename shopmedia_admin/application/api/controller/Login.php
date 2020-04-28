@@ -118,8 +118,7 @@ class Login extends Common
                 'token' => (new Aes())->encrypt($token . '&' . $user['user_id']), // AES加密（自定义拼接字符串）
                 'user_id' => $user['user_id'],
                 'user_name' => $user['user_name'],
-                'phone' => $user['phone'],
-                "role_ids"=>$user['role_ids']
+                'phone' => $user['phone']
             ];
             return show(config('code.success'), 'OK', $result);
         } else {

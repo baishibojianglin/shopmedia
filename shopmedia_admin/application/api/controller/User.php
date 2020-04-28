@@ -118,10 +118,32 @@ class User extends AuthBase
      */
     public function read($id = 0)
     {
-        // 处理数据
-        // 用户角色
-        $roleIds = $this->user['role_ids'];
-        $userRole = model('UserRole')->where(['id' => ['in', $roleIds]])->column('id, title');
+        // 处理数据：获取用户角色集合
+        $roleIds = $this->user['role_ids']; // 用户角色ID集合
+        // 查询条件
+        $map = [
+            'id' => ['in', $roleIds],
+            'status' => config('code.status_enable')
+        ];
+        $userRole = model('UserRole')->field('id role_id, title role_title')->where($map)->select();
+        foreach($userRole as $key => $value) {
+            switch($value['role_id']){
+                case 2: // 广告屏合作商
+                    $userPartner = Db::name('user_partner')->where(['user_id' => $this->user['user_id']])->find();
+                    $userRole[$key]['user_role'] = $userPartner;
+                    break;
+                case 3: // 店家
+                    $userShopkeeper = Db::name('user_shopkeeper')->where(['user_id' => $this->user['user_id']])->find();
+                    $userRole[$key]['user_role'] = $userShopkeeper;
+                    break;
+                case 4 || 5 || 6: // 业务员
+                    $userSalesman = Db::name('user_salesman')->where(['uid' => $this->user['user_id'], 'role_id' => $value['role_id']])->find();
+                    $userRole[$key]['user_role'] = $userSalesman;
+                    break;
+                default:
+                    // 其他情况默认执行代码
+            }
+        }
         $this->user['user_roles'] = $userRole;
 
         // AES加密
