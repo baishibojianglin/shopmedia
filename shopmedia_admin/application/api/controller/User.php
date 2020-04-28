@@ -41,7 +41,7 @@ class User extends AuthBase
 
 
     /**
-     * 获取用户对应的业务员信息
+     * 申请成为广告屏合作者
      */
     public function applyPartner(){
          $form=input();
@@ -62,28 +62,29 @@ class User extends AuthBase
          $matchuserid['user_id']=$form['user_id'];
          $partnerlist=Db::name('user_partner')->where($matchuserid)->find();
 
-         if( !empty($partnerlist) && ($partnerlist['audit_status']==2) ){
-            $message['status']=0;
-            $message['words']='该账号此业务被冻结';
-            return json($message);
-         } 
 
          if( !empty($partnerlist) && ($partnerlist['status']==0) ){
             $message['status']=0;
-            $message['words']='该账号此业务被禁用';
+            $message['words']='该账号被禁用';
             return json($message);
          } 
 
 
-         if( !empty($partnerlist) && ($partnerlist['audit_status']==1) ){
+         if( !empty($partnerlist) && ($partnerlist['status']==1) ){
             $message['status']=0;
-            $message['words']='已完成申请';
+            $message['words']='已经是合作者';
             return json($message);
          } 
 
-         if( !empty($partnerlist) && ($partnerlist['audit_status']==0) ){
+         if( !empty($partnerlist) && ($partnerlist['status']==2) ){
             $message['status']=0;
             $message['words']='已申请，正在审核中...';
+            return json($message);
+         } 
+
+         if( !empty($partnerlist) && ($partnerlist['status']==3) ){
+            $message['status']=0;
+            $message['words']='该账号不支持该业务';
             return json($message);
          } 
 
@@ -91,8 +92,7 @@ class User extends AuthBase
         //入库
         $data['user_id']=$form['user_id'];
         $data['create_time']=time();
-        $data['status']=1;
-        $data['audit_status']=0;
+        $data['status']=2;
         $id=Db::name('user_partner')->insert($data); 
 
 
@@ -104,7 +104,6 @@ class User extends AuthBase
             $message['words']='申请失败';
         }
         return json($message);
-
 
 
     }
