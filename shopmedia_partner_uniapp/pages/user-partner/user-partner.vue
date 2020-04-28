@@ -75,7 +75,10 @@
 						})
 					},
 					fail(error) {
-						console.log('error', error)
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
 					}
 				});
 			},
