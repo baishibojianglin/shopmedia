@@ -73,8 +73,9 @@ class User extends Base
         $order = ['u.user_id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['up.role_id', 'up.money', 'up.income', 'up.cash', 'up.audit_status', 'up.status partner_status', 'up.is_delete']))
+            ->field(array_merge($this->_getListField(), ['up.role_id', 'up.money', 'up.income', 'up.cash', 'up.status partner_status', 'up.is_delete']))
             ->join('__USER_PARTNER__ up', 'u.user_id = up.user_id') // 广告屏合作商
+            ->join('__USER_ROLE__ ur', 'up.role_id = ur.id and up.role_id = 2') // 角色
             ->where($map)
             ->order($order)
             ->paginate($size);

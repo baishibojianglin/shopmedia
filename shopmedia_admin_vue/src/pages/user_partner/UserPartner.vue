@@ -4,22 +4,33 @@
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
 					<el-col :span="6"><span>广告屏合作商{{formInline.is_delete == 1 ? '（回收站）' : ''}}</span></el-col>
-					<el-col :span="6">
+				</el-row>
+				<el-row :gutter="20" type="flex" justify="space-between" style="margin-top: 1rem;">
+					<el-col :span="18">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
+							<el-form-item label="">
+								<el-select v-model="formInline.status" placeholder="状态">
+									<el-option v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :label="item" :value="Number(index)"></el-option>
+								</el-select>
+							</el-form-item>
 							<el-form-item label="">
 								<el-input placeholder="用户名称" v-model="formInline.user_name" clearable>
 									<el-button slot="append" icon="el-icon-search" @click="getUserList()">查询</el-button>
 								</el-input>
 							</el-form-item>
+							<el-form-item>
+								<!-- <el-button type="primary" icon="el-icon-search" @click="getUserList()">查询</el-button> -->
+								<el-button icon="el-icon-refresh-left" @click="resetForm('formInline')">重置</el-button>
+							</el-form-item>
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="6">
+					<!-- <el-col :span="6"> -->
 						<!-- 新增 s -->
 						<!-- <router-link to="user_add"><el-button size="mini" icon="el-icon-plus">新增用户</el-button></router-link> -->
 						<!-- 新增 e -->
-					</el-col>
+					<!-- </el-col> -->
 					<el-col :span="3" :offset="3">
 						<!-- <el-button size="mini" icon="el-icon-delete" @click="getUserList(1)" v-if="formInline.is_delete != 1">回收站</el-button>
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="getUserList()" v-if="formInline.is_delete == 1">返回</el-button> -->
@@ -44,14 +55,9 @@
 					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
 					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
-					<el-table-column prop="audit_status" label="审核状态" width="90" :filters="[{ text: '待审核', value: 0 }, { text: '正常', value: 1 }, { text: '驳回', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span :class="scope.row.audit_status === 0 ? 'text-info' : (scope.row.audit_status === 1 ? 'text-success' : 'text-danger')">{{scope.row.audit_status_msg}}</span>
-						</template>
-					</el-table-column>
-					<el-table-column prop="status" label="启用状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
-						<template slot-scope="scope">
-							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
@@ -105,6 +111,7 @@
 				this.$axios.get(this.$url + 'user_partner', {
 						params: {
 							user_name: this.formInline.user_name,
+							status: this.formInline.status,
 							is_delete: is_delete,
 							page: this.listPagination.current_page,
 							size: this.listPagination.per_page
@@ -171,6 +178,16 @@
 			 */
 			filterStatus(value, row) {
 				return row.status === value;
+			},
+
+			/**
+			 * 重置表单
+			 * @param {Object} formName
+			 */
+			resetForm(formName) {
+				// this.$refs[formName].resetFields();
+				this.formInline = {};
+				this.getUserList();
 			},
 
 			/**
