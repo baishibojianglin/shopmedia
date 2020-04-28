@@ -92,7 +92,7 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 // 用户个人中心
 Route::resource('api/user', 'api/User');
 Route::post('api/applyPartner', 'api/User/applyPartner');
-
+Route::post('api/getRole', 'api/User/getRole');
 // 业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
@@ -101,6 +101,7 @@ Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获�
 
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
+Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');
 // 用户（广告屏合作商）订单
 Route::resource('api/partner_order', 'api/PartnerOrder');
 

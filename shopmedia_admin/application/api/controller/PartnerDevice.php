@@ -12,6 +12,30 @@ use think\Db;
  */
 class PartnerDevice extends AuthBase
 {
+
+   
+
+    /**
+     * 获取账号广告屏合作角色是否可用
+     * @return \think\response\Json
+     */
+    public function partnerRole(){
+        $form=input();
+        $match['user_id']=$form['user_id'];
+        $userlist=Db::name('user_partner')->where($match)->field('status')->find();
+        if(!empty($userlist)){
+            $message['status']=1;
+            $message['data']=$userlist;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='获取失败';
+            return json($message);
+        }
+    }
+
+
+
     /**
      * 获取用户（广告屏合作商）合作的广告屏列表
      * @return \think\response\Json
