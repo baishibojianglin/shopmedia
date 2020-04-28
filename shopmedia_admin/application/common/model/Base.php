@@ -55,4 +55,21 @@ class Base extends Model
         $max = $this->where($map)->max($field);
         return $max;
     }
+
+    /**
+     * 生成唯一订单编号 order_sn
+     * @return string
+     * @throws \think\Exception
+     */
+    public function getOrderSn()
+    {
+        // 保证不会有重复订单号存在
+        while(true){
+            $order_sn = date('YmdHis').rand(1000, 9999); // 订单编号
+            $order_sn_count = $this->where("order_sn = '$order_sn'")->count();
+            if($order_sn_count == 0)
+                break;
+        }
+        return $order_sn;
+    }
 }

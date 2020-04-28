@@ -12,15 +12,17 @@ return [
     'error' => 0,
     'success' => 1,
 
-    // 账户状态
+    // 审核与启用状态
     'status' => [
         0 => '禁用',
-        1 => '启用'
+        1 => '启用',
+        2 => '待审核',
+        3 => '驳回'
     ],
-
-    'status_disable' => 0, // 关闭/停用
-    'status_enable' => 1, // 开启/启用
+    'status_disable' => 0, // 禁用
+    'status_enable' => 1, // 启用
     'status_pending' => 2, // 待审核
+    'status_reject' => 3, // 驳回
 
     // 是否删除
     'not_delete' => 0, // 未删除

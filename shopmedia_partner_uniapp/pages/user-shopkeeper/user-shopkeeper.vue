@@ -1,6 +1,6 @@
 <template>
 	<view>
-		user-shop
+		user-shopkeeper
 	</view>
 </template>
 

@@ -30,11 +30,15 @@ class UserPartner extends Base
 
             // 查询条件
             $map = [];
+            $map['ur.status'] = config('code.status_enable'); // 启用角色
             /*if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有账户，供应商只能查看自有账户
                 $map['cu.company_id'] = $this->adminUser['company_id'];
             }*/
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
+            }
+            if (isset($param['status'])) { // 状态
+                $map['up.status'] = intval($param['status']);
             }
             if (isset($param['is_delete'])) { // 是否删除
                 $map['up.is_delete'] = $param['is_delete'];
@@ -51,14 +55,31 @@ class UserPartner extends Base
             }
             $status = config('code.status');
             foreach ($data as $key => $value) {
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['partner_status'] : config('code.status_disable'); // 状态
-                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['partner_status'] : config('code.status_disable'); // 启用状态
+                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义启用状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }
+    }
+
+    /**
+     * 广告屏合作商列表（不分页，用于 Select 选择器等）
+     * @return \think\response\Json
+     */
+    public function userPartnerList()
+    {
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        $data = Db::name('user_partner')->alias('up')
+            ->field('up.id partner_id, up.user_id, u.user_name, u.phone')
+            ->join('__USER__ u', 'up.user_id = u.user_id')
+            ->select();
+        return show(config('code.success'), 'OK', $data);
     }
 
     /**

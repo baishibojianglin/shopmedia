@@ -8,11 +8,11 @@ use think\Db;
 use think\Request;
 
 /**
- * admin模块用户（店铺端用户）控制器类
- * Class UserShop
+ * admin模块用户（店家）控制器类
+ * Class UserShopkeeper
  * @package app\admin\controller
  */
-class UserShop extends Base
+class UserShopkeeper extends Base
 {
     /**
      * 显示用户资源列表
@@ -42,7 +42,7 @@ class UserShop extends Base
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
             try {
-                $data = model('User')->getUserShop($map, $this->size);
+                $data = model('User')->getUserShopkeeper($map, $this->size);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
@@ -145,9 +145,9 @@ class UserShop extends Base
             // 获取原始用户信息
             $user = model('User')->field('password', true)->find($id);
 
-            // 获取店铺端用户信息
+            // 获取店家信息
             try {
-                $data = Db::name('user_shop')->alias('us')->field('us.user_id, us.role_id, us.money, us.income, us.cash, us.status, us.parent_comm_ratio, us.comm_ratio, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'us.user_id = u.user_id', 'INNER')->where(['us.user_id' => $id, 'us.role_id' => ['in', $user['role_ids']]])->find();
+                $data = Db::name('user_shopkeeper')->alias('us')->field('us.user_id, us.role_id, us.money, us.income, us.cash, us.status, us.parent_comm_ratio, us.comm_ratio, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'us.user_id = u.user_id', 'INNER')->where(['us.user_id' => $id, 'us.role_id' => ['in', $user['role_ids']]])->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
@@ -218,7 +218,7 @@ class UserShop extends Base
         }
 
         try {
-            $result = Db::name('user_shop')->where(['user_id' => $id])->update($data);
+            $result = Db::name('user_shopkeeper')->where(['user_id' => $id])->update($data);
         } catch(\Exception $e) {
             throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }

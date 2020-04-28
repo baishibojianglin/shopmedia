@@ -77,7 +77,7 @@
 			}
 		},
 		{ // 用户（店家）角色
-			"path": "pages/user-shop/user-shop",
+			"path": "pages/user-shopkeeper/user-shopkeeper",
 			"style": {
 				"navigationBarTitleText": "店家"
 			}

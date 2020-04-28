@@ -73,17 +73,17 @@ class Device extends Base
 
 		// 查询条件
 		$map = [];
-		$map['status'] = config('code.status_enable');
-		$map['is_delete'] = config('code.not_delete');
+		$map['d.status'] = config('code.status_enable');
+		$map['d.is_delete'] = config('code.not_delete');
 		if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
-			$map['province_id|city_id|area_id|street_id'] = ['in', $param['region_ids']];
+			$map['d.province_id|d.city_id|d.area_id|d.street_id'] = ['in', $param['region_ids']];
 		}
 		if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
-			$map['shopcate'] = ['in', $param['shop_cate_ids']];
+			$map['d.shopcate'] = ['in', $param['shop_cate_ids']];
 		}
 
 		// 获取广告屏列表数据
-		$data = model('Device')->field('device_id, brand, model, size, province_id, city_id, area_id, street_id, address, shopname, shopcate')->where($map)->select();
+		$data = model('Device')->getDeviceList($map);
 		if ($data) {
 			// 处理数据
 			$shopCate = config('code.shop_cate'); // 店铺类别

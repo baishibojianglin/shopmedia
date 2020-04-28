@@ -16,31 +16,29 @@ use think\Db;
  */
 class Login extends Common
 {
-   /**
-   *检查电话是否存在
-   */
-   public function hasphone(){
-     $form=input();
-     $match['phone']=$form['phone'];
-     $userlist=Db::name('user')->where($match)->find();
-     if(empty($userlist)){
-        //用户不存在
-        $message['status']=0;
-        $message['words']='该用户不存在';
+    /**
+     * 检查电话是否存在
+     * @return \think\response\Json
+     */
+    public function hasphone(){
+        $form=input();
+        $match['phone']=$form['phone'];
+        $userlist=Db::name('user')->where($match)->find();
+        if(empty($userlist)){
+            //用户不存在
+            $message['status']=0;
+            $message['words']='该用户不存在';
+            return json($message);
+        }
+        if($userlist['status']==0){
+            //用户被禁用
+            $message['status']=0;
+            $message['words']='该账号被冻结';
+            return json($message);
+        }
+        $message['status']=1;
         return json($message);
-     }
-     if($userlist['status']==0){
-         //用户被禁用
-        $message['status']=0;
-        $message['words']='该账号被冻结';
-        return json($message);       
-     }
-     $message['status']=1;
-     return json($message);
-     
-   }
-
-
+    }
 
     /**
      * 用户登录
@@ -73,7 +71,6 @@ class Login extends Common
             return show(config('code.error'), '密码不能为空', [], 404);
         }
 
-
         // validate验证
         $validate = validate('User');
         if (!$validate->check($param, [], 'login')) {
@@ -85,12 +82,13 @@ class Login extends Common
         $data = [
             'token' => $token, // token
             'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+            'login_time' => time(), // 登录时间
+            'login_ip' => request()->ip() // 登录IP
         ];
 
         // 查询该手机号用户是否存在
         $user = User::get(['phone' => $param['phone']]);
-
-        if ($user && $user['status'] == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
+        if ($user && $user['status'] == config('code.status_enable')) { // 用户存在且已启用，则登录并更新token和token失效时间
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
                 if (IAuth::encrypt($param['password']) != $user['password']) {
@@ -105,7 +103,12 @@ class Login extends Common
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
         } else {
-            return show(config('code.error'), '用户不存在或冻结', [], 404);
+            if (!$user) {
+                return show(config('code.error'), '用户不存在', '', 404);
+            }
+            if ($user['status'] == config('code.status_disable')) {
+                return show(config('code.error'), '用户被冻结', '', 401);
+            }
         }
 
         // 判断是否登录成功
@@ -198,7 +201,7 @@ class Login extends Common
                         $roleId = ;
                         break;*/
                     case 6: // 店铺业务员
-                        $roleId = 3; // 店铺端用户
+                        $roleId = 3; // 店家
                         break;
                     default:
                         // 其他情况默认执行代码
@@ -244,12 +247,12 @@ class Login extends Common
                         $data1['role_id'] = $roleId; // 用户角色ID
                         $data1['status'] = config('code.status_enable');
                         $res[1] = Db::name('user_partner')->insert($data1);
-                    } elseif ($roleId == 3) { // 店铺端用户
+                    } elseif ($roleId == 3) { // 店家
                         $data1['user_id'] = $userId;
                         $data1['salesman_id'] = $salesman['id']; // 业务员ID
                         $data1['role_id'] = $roleId; // 用户角色ID
                         $data1['status'] = config('code.status_enable');
-                        $res[1] = Db::name('user_shop')->insert($data1);
+                        $res[1] = Db::name('user_shopkeeper')->insert($data1);
                     } elseif ($roleId == $salesman['role_id']) { // 下级业务员
                         // TODO：新增下级业务员数据
                         $data1['uid'] = $userId;

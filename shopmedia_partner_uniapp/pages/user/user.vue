@@ -130,7 +130,7 @@
 							url = '/pages/user-partner/user-partner?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
 							break;
 						case '3':
-							url = '/pages/user-shop/user-shop?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
+							url = '/pages/user-shopkeeper/user-shopkeeper?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;
 							break;
 						default:
 							break;

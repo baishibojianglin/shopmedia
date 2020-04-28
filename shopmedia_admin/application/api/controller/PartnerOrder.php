@@ -26,7 +26,7 @@ class PartnerOrder extends AuthBase
         if(request()->isPost()){
             $data = input('post.');
 
-            $data['order_sn'] = $this->_getOrderSn(); // 生成唯一订单编号 order_sn
+            $data['order_sn'] = model('PartnerOrder')->getOrderSn(); // 生成唯一订单编号 order_sn
             $data['order_time'] = time();
             //$data['order_status'] = 0;
             $data['order_price'] = $data['device_price'];
@@ -53,28 +53,12 @@ class PartnerOrder extends AuthBase
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             if ($id) {
-                return show(config('code.success'), '下单成功', ['order_id' => $id], 201);
+                return show(config('code.success'), '下单成功', $data['order_sn'], 201);
             } else {
                 return show(config('code.error'), '下单失败', '', 403);
             }
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }
-    }
-
-    /**
-     * 生成唯一订单编号 order_sn
-     * @return string
-     */
-    private function _getOrderSn()
-    {
-        // 保证不会有重复订单号存在
-        while(true){
-            $order_sn = date('YmdHis').rand(1000,9999); // 订单编号
-            $order_sn_count = Db::name('partner_order')->where("order_sn = '$order_sn'")->count();
-            if($order_sn_count == 0)
-                break;
-        }
-        return $order_sn;
     }
 }
