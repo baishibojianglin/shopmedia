@@ -7,8 +7,8 @@
            <view >
 			   <uni-grid  class="view-grid-con" :column="3">
 			       <uni-grid-item>
-			           <text class="text-grid-title">屏总量</text>
-					   <text class="text-grid">5000+</text>
+			           <text class="text-grid-title">广告屏</text>
+					   <text class="text-grid">20000+</text>
 			       </uni-grid-item>
 			       <uni-grid-item>
 			           <text class="text-grid-title">覆盖城市</text>
@@ -16,20 +16,20 @@
 			       </uni-grid-item>
 			       <uni-grid-item>
 			           <text class="text-grid-title">服务商家</text>
-					   <text class="text-grid">20000+</text>
+					   <text class="text-grid">5000+</text>
 			       </uni-grid-item>
 			   </uni-grid>
 			</view>
 			
 			<view>
-				<text class="user-title"> <text class="color-blue">—</text> 我与店通 <text class="color-blue">—</text></text>
+				<text class="user-title"> <text class="color-blue">—</text> 店通服务 <text class="color-blue">—</text></text>
 			</view>
 
             <view class="navcon">
-						<view class="navcon-item">
+						<view class="navcon-item" @click="usead()">
 							<text class="iconposition icon color-blue iconbg">&#xe636;</text>
 							<br/>
-							<text>投放广告</text>
+							<text>广告咨询</text>
 						</view>
 						<view @click="toRole(2)" class="navcon-item">
 							<text class="iconposition icon color-red iconbg">&#xe637;</text>
@@ -77,35 +77,91 @@
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
+		},
+		onShow() {
 			//调用-判断用户角色
             this.is_role();
 		},
 		methods: {
 			/**
+			 * 投放广告
+			 */
+			usead(){
+				uni.makePhoneCall({
+				    phoneNumber: '02865272616' 
+				});
+			},
+			/**
 			 * 指定角色跳转
 			 * @param {Object} role_ids
 			 */
-			toRole(role_ids){
+			toRole(role_ids){	
 				
 				//广告屏合作商
-				if( (role_ids==3)&&(this.role.device==true)){  
-					uni.navigateTo({
-					    url: '../user-partner/user-partner'
-					});
-				}else{
-					uni.showModal({
-					    title: '提示',
-					    content: '您还不是广告屏合作商,申请加入？',
-					    success: function (res) {
-					        if (res.confirm) {
-					          uni.navigateTo({
-					              url: "../user/apply-partner"
-					          });  
-					        } else if (res.cancel) {
-					          
-					        }
-					    }
-					});
+				if(role_ids==2){
+					if(this.role.device==true){		//已经是广告屏合作者			
+						//账号该角色是否可用
+						uni.request({
+							url: this.$serverUrl + 'api/partnerRole',
+							data: {
+								user_id:this.userInfo.user_id,
+							},
+							header: {
+								'commonheader': this.commonheader,
+								'access-user-token':this.userInfo.token
+							},
+							method: 'PUT',
+							success: function(res) {
+								if(res.data.status==1){
+									if(res.data.data.status==0){ //禁用
+										  uni.showToast({
+											icon:'none',
+											  title: '账号该功能被禁用',
+											  duration: 2000
+										  });
+										  return false;
+									}
+									if(res.data.data.status==2){ //待审核
+										  uni.showToast({
+											icon:'none',
+											  title: '申请审核中...',
+											  duration: 2000
+										  });
+										  return false;
+									}									
+									if(res.data.data.status==3){ //驳回
+										  uni.showToast({
+											icon:'none',
+											  title: '该账号不支持该申请',
+											  duration: 2000
+										  });
+										  return false;
+									}
+									//进入申请页
+									uni.navigateTo({
+										url: '../user-partner/user-partner'
+									});
+																
+								}
+							}
+						})
+						
+					
+					}else{  //还不是广告屏合作者
+						uni.showModal({
+							title: '提示',
+							content: '您还不是广告屏合作者,申请加入？',
+							success: function (res) {
+								if (res.confirm) {
+								  uni.navigateTo({
+									  url: "../user/apply-partner"
+								  });  
+								} else if (res.cancel) {
+								  
+								}
+							}
+						});
+					}				
 				}
 				
 				
@@ -115,20 +171,44 @@
 			 */
 			is_role(){
 				let self=this;
-				let role_str=this.$store.state.userInfo.role_ids;
-				let role_array=role_str.split(',');
-				role_array.forEach((value,index)=>{
-					 switch(parseInt(value)) {
-					      case 2:
-					         self.role.device=true;
-					         break;
-					      case 3:
-					         self.role.shop=true;
-					         break;
-					      default:
-					         self.role.saleperson=true;
-					 } 
-				})
+				//获取角色信息
+				uni.request({
+					url: this.$serverUrl + 'api/getRole',
+					data: {
+						user_id:this.userInfo.user_id,
+					},
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
+					method: 'POST',
+					success: function(res) {
+						if(res.data.status==1){
+							//处理角色信息										
+							let role_str=res.data.data.role_ids;
+							let role_array=role_str.split(',');		
+							role_array.forEach((value,index)=>{
+								 switch(parseInt(value)) {
+									  case 2:
+										 self.role.device=true;
+										 break;
+									  case 3:
+										 self.role.shop=true;
+										 break;
+									  default:
+										 self.role.saleperson=true;
+								 } 
+							})
+						}else{
+							uni.showToast({
+								icon:'none',
+							    title: '网络繁忙，稍后重试',
+							    duration: 2000
+							});
+						}
+					}
+				})				
+
 			}
 	
 		}

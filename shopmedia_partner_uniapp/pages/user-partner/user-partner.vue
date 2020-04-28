@@ -12,9 +12,9 @@
 				<uni-list>
 					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 				</uni-list>
-			</uni-card>
+			</uni-card>	
 		</view>
-		
+		<view v-if="!this.deviceList.length" class="uni-center notdevice">您还没有合作的广告屏，去寻找发现吧！</view>
 		<view class="uni-padding-wrap uni-common-mt uni-common-mb btn-bottom">
 			<button class="primary" type="primary" @click="toCooperation">发现广告屏</button>
 		</view>
@@ -28,8 +28,7 @@
 		data() {
 			return {
 				userId: '', // 用户ID
-				roleId: '', // 用户角色ID
-				
+				roleId: '', // 用户角色ID			
 				latitude: 30.657420, //纬度
 				longitude: 104.065840, //经度
 				markers: [], //地图图标
@@ -96,5 +95,8 @@
 	.map {
 		width: 100%;
 		height: 320rpx;
+	}
+	.notdevice{
+		font-size:16px;
 	}
 </style>

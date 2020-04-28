@@ -18,11 +18,32 @@ use think\Db;
 class User extends AuthBase
 {
 
+
+    /**
+     * 获取用户角色信息
+     */
+    public function getRole(){
+        $form=input();
+        $match['user_id']=$form['user_id'];
+        $userlist=Db::name('user')->where($match)->field('role_ids')->find();
+        if(!empty($userlist)){
+            $message['status']=1;
+            $message['data']=$userlist;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='角色获取失败';
+            return json($message);
+        }
+    }
+
+
+
+
     /**
      * 获取用户对应的业务员信息
      */
-    public function applyPartner()
-    {
+    public function applyPartner(){
          $form=input();
        
         //通过邀请码查询业务员id
@@ -40,16 +61,40 @@ class User extends AuthBase
          //判断是否重复申请
          $matchuserid['user_id']=$form['user_id'];
          $partnerlist=Db::name('user_partner')->where($matchuserid)->find();
-         if(!empty($partnerlist)){
+
+         if( !empty($partnerlist) && ($partnerlist['audit_status']==2) ){
+            $message['status']=0;
+            $message['words']='该账号此业务被冻结';
+            return json($message);
+         } 
+
+         if( !empty($partnerlist) && ($partnerlist['status']==0) ){
+            $message['status']=0;
+            $message['words']='该账号此业务被禁用';
+            return json($message);
+         } 
+
+
+         if( !empty($partnerlist) && ($partnerlist['audit_status']==1) ){
             $message['status']=0;
             $message['words']='已完成申请';
             return json($message);
-        } 
+         } 
+
+         if( !empty($partnerlist) && ($partnerlist['audit_status']==0) ){
+            $message['status']=0;
+            $message['words']='已申请，正在审核中...';
+            return json($message);
+         } 
+
 
         //入库
         $data['user_id']=$form['user_id'];
         $data['create_time']=time();
+        $data['status']=1;
+        $data['audit_status']=0;
         $id=Db::name('user_partner')->insert($data); 
+
 
         if($id>0){
             $message['status']=1;
