@@ -44,7 +44,12 @@
 					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
 					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
-					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="audit_status" label="审核状态" width="90" :filters="[{ text: '待审核', value: 0 }, { text: '正常', value: 1 }, { text: '驳回', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+						<template slot-scope="scope">
+							<span :class="scope.row.audit_status === 0 ? 'text-info' : (scope.row.audit_status === 1 ? 'text-success' : 'text-danger')">{{scope.row.audit_status_msg}}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="status" label="启用状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
 						</template>

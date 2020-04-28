@@ -49,10 +49,12 @@ class UserPartner extends Base
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
+            $auditStatus = config('code.audit_status');
             $status = config('code.status');
             foreach ($data as $key => $value) {
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['partner_status'] : config('code.status_disable'); // 状态
-                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
+                $data[$key]['audit_status_msg'] = $auditStatus[$data[$key]['audit_status']]; // 定义审核状态信息
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['partner_status'] : config('code.status_disable'); // 启用状态
+                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义启用状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
             return show(config('code.success'), 'OK', $data);
