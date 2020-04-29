@@ -73,7 +73,15 @@
 		{ // 用户（智能广告屏合作商）角色
 			"path": "pages/user-partner/user-partner",
 			"style": {
-				"navigationBarTitleText": "智能广告屏合作商"
+				"navigationBarTitleText": "智能广告屏合作商",
+				"app-plus": {
+					"titleNView": {
+						// "type": "default",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
 		},
 		{ // 用户（店家）角色
@@ -85,13 +93,27 @@
 	    ,{ // 智能广告屏列表
             "path" : "pages/device/device",
             "style" : {
-				"navigationBarTitleText": "智能广告屏市场"
+				"navigationBarTitleText": "智能广告屏市场",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
         }
         ,{ // 智能广告屏详情
             "path" : "pages/device/device-detail",
             "style" : {
-				"navigationBarTitleText": "智能广告屏详情"
+				"navigationBarTitleText": "智能广告屏详情",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
         }
         ,{ // 智能广告屏订单合作签约
@@ -100,7 +122,19 @@
 				"navigationBarTitleText": "广告屏合作签约",
 				"app-plus": {
 					"titleNView": {
-						// "type": "default",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+        ,{ // 广告屏合作商合作的广告屏详情页
+            "path" : "pages/partner-device/partner-device-detail",
+            "style" : {
+				"navigationBarTitleText": "合作广告屏详情",
+				"app-plus": {
+					"titleNView": {
 						"buttons": [{
 							"type": "menu"
 						}]

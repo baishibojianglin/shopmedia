@@ -119,7 +119,7 @@ class User extends AuthBase
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
-            return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500);
+            return show(config('code.error'), '网络忙，请重试', '', 500);
         }
         /* 手动控制事务 e */
     }

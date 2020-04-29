@@ -48,10 +48,6 @@
 				<text class="datalist-content">{{datalist.environment}}</text>
 			</view>
 		</view>
-		
-		<view class="goods-carts">
-			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
-		</view>
 	</view>
 </template>
 
@@ -66,25 +62,6 @@
 				imglist: [], //实景图列表
 				shopcatelist: {}, //店铺行业列表
 				csPhone: '', // 客服电话
-				
-				/* GoodsNav 商品导航 s */
-				options: [{
-					icon: 'headphones',
-					text: '联系客服'
-				}, {
-					icon: 'location-filled',
-					text: '位置导航'
-				}/* , {
-					icon: 'cart',
-					text: '购物车',
-					info: 2
-				} */],
-				buttonGroup: [{
-					text: '立即合作',
-					backgroundColor: '#504AF2',
-					color: '#fff'
-				}]
-				/* GoodsNav 商品导航 e */
 			}
 		},
 		computed: {
@@ -169,60 +146,6 @@
 						self.csPhone = res.data.data.phone;
 					}
 				})
-			},
-			
-			/* GoodsNav 商品导航 s */
-			/**
-			 * GoodsNav 左侧点击事件
-			 * @param {Object} e
-			 */
-			onClick (e) {
-				/* uni.showToast({
-					title: `点击${e.content.text}`,
-					icon: 'none'
-				}) */
-				// 联系客服
-				if (e.index == 0) {
-					this.callPhone(this.csPhone);
-				}
-				// 位置导航
-				if (e.index == 1) {
-					this.openLocation();
-				}
-			},
-			/**
-			 * GoodsNav 右侧按钮组点击事件
-			 * @param {Object} e
-			 */
-			buttonClick (e) {
-				// 立即合作
-				if (e.index == 0) {
-					uni.navigateTo({
-						url: '../partner-order/partner-order?cs_phone=' + this.csPhone + '&device=' + encodeURIComponent(JSON.stringify(this.datalist))
-					})
-				}
-			},
-			/* GoodsNav 商品导航 e */
-			
-			/**
-			 * 拨打电话
-			 * @param {Object} phone
-			 */
-			callPhone(phone){
-				uni.makePhoneCall({
-					phoneNumber: phone 
-				});
-			},
-			
-			/**
-			 * 查看位置
-			 */
-			openLocation() {
-				// 使用应用内置地图查看位置
-				uni.openLocation({
-					latitude: Number(this.datalist.latitude),
-					longitude: Number(this.datalist.longitude)
-				});
 			}
 		}
 	}

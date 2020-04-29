@@ -43,33 +43,9 @@
 			this.device = JSON.parse(decodeURIComponent(event.device));
 		},
 		onNavigationBarButtonTap(e) {
-			this.actionSheetTap();
+			this.$common.actionSheetTap();
 		},
 		methods: {
-			actionSheetTap() {
-				// 显示操作菜单
-				uni.showActionSheet({
-					// title:'标题',
-					itemList: ['首页', '个人中心'],
-					success: (e) => {
-						let url;
-						switch (e.tapIndex){
-							case 0:
-								url = '../main/main'; // 跳转首页
-								break;
-							case 1:
-								url = '../user/user'; // 跳转个人中心
-								break;
-							default:
-								break;
-						}
-						uni.switchTab({
-							url: url
-						})
-					}
-				})
-			},
-			
 			/* GoodsNav 商品导航 s */
 			/**
 			 * GoodsNav 左侧点击事件

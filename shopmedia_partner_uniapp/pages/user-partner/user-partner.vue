@@ -4,19 +4,19 @@
 			<uni-card is-shadow>
 				<map class="map" :longitude="longitude" :latitude="latitude" :scale="9" :markers="markers" :enable-satellite="false"></map>
 			</uni-card>
-			<!-- <map class="map" :longitude="longitude" :latitude="latitude" :scale="9" :markers="markers" :enable-satellite="false"></map> -->
 		</view>
 		
 		<view class="uni-common-mt mb">
 			<uni-card title="合作广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-shadow>
 				<uni-list>
-					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
+					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname" @click="toPartnerDeviceDetail(item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 				</uni-list>
-			</uni-card>	
+			</uni-card>
+			<view v-if="this.deviceList.length == 0" class="uni-center notdevice">您还没有合作的广告屏，去寻找发现吧！</view>
 		</view>
-		<view v-if="!this.deviceList.length" class="uni-center notdevice">您还没有合作的广告屏，去寻找发现吧！</view>
+		
 		<view class="uni-padding-wrap uni-common-mt uni-common-mb btn-bottom">
-			<button class="primary" type="primary" @click="toCooperation">发现广告屏</button>
+			<button class="primary" type="primary" @click="toDeviceList">发现广告屏</button>
 		</view>
 	</view>
 </template>
@@ -46,9 +46,12 @@
 			
 			this.getUserPartnerDevice();
 		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
+		},
 		methods: {
 			/**
-			 * 获取广告设备合作商拥有的设备
+			 * 获取广告屏合作商合作的广告屏列表
 			 */
 			getUserPartnerDevice() {
 				let self = this;
@@ -83,9 +86,19 @@
 			},
 			
 			/**
-			 * 合作
+			 * 跳转广告屏合作商合作的广告屏详情页
+			 * @param {Object} asd
 			 */
-			toCooperation() {
+			toPartnerDeviceDetail(device_id) {
+				uni.navigateTo({
+					url: '../partner-device/partner-device-detail?device_id=' + device_id
+				})
+			},
+			
+			/**
+			 * 跳转广告屏列表页
+			 */
+			toDeviceList() {
 				uni.navigateTo({
 					url: '../device/device'
 				})
