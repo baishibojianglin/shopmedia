@@ -169,9 +169,15 @@ class UserPartner extends Base
             // 获取原始用户信息
             $user = model('User')->field('password', true)->find($id);
 
+            // 查询条件
+            $map = [
+                'up.user_id' => $id,
+                'up.role_id' => ['in', $user['role_ids']]
+            ];
+
             // 获取广告屏合作商信息
             try {
-                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where(['up.user_id' => $id, 'up.role_id' => ['in', $user['role_ids']]])->find();
+                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where($map)->find();
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
