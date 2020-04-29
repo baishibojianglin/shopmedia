@@ -65,17 +65,14 @@
                                         if(res.data.status==1){  //申请成功
 											uni.showModal({
 											    title: '恭喜',
-											    content: '申请成功！去寻找合作',
+											    content: '申请已提交,请等待审核...',
+												showCancel:false,
 											    success: function (res) {
-											        if (res.confirm) {
-											          uni.navigateTo({
-											              url:"../user-partner/user-partner"
-											          });  
-											        } else if (res.cancel) {
-											          uni.navigateTo({
-											              url:"../main/main"
-											          }); 
-											        }
+											        if (res.confirm) { //申请成功跳转首页
+														uni.reLaunch({
+															url: '../main/main'
+														});
+											        } 
 											    }
 											});
 										}else{ //失败
