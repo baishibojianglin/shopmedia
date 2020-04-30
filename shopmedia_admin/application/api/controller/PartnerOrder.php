@@ -8,7 +8,7 @@ use think\Model;
 use think\Request;
 
 /**
- * api模块客户端广告屏合作商订单控制器类
+ * api模块客户端用户（广告屏合作商）订单控制器类
  * Class PartnerOrder
  * @package app\api\controller
  */
@@ -56,6 +56,51 @@ class PartnerOrder extends AuthBase
                 return show(config('code.success'), '下单成功', $data['order_sn'], 201);
             } else {
                 return show(config('code.error'), '下单失败', '', 403);
+            }
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+    }
+
+    /**
+     * 显示指定的订单资源
+     *
+     * @param  int  $id
+     * @return \think\Response
+     */
+    public function read($id)
+    {
+        // 判断为GET请求
+        if (request()->isGet()) {
+            // 传入的参数
+            $param = input('param.');
+
+            // 查询条件
+            $map = [];
+            if (
+                isset($param['partner_id']) && $param['partner_id'] != 0
+                && isset($param['device_id']) && $param['device_id'] != 0
+            ) {
+                $map['partner_id'] = intval($param['partner_id']);
+                $map['device_id'] = intval($param['device_id']);
+            }
+
+            try {
+                if (!empty($id)) {
+                    $data = Db::name('partner_order')->find($id);
+                } elseif ($map) {
+                    $data = Db::name('partner_order')->where($map)->find();
+                }
+            } catch (\Exception $e) {
+                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+            }
+
+            if ($data) {
+                // 处理数据
+                $data['order_time'] = date('Y-m-d H:i:s'); // 下单时间
+                return show(config('code.success'), 'ok', $data);
+            } else {
+                return show(config('code.error'), 'Not Found', $data, 404);
             }
         } else {
             return show(config('code.error'), '请求不合法', '', 400);

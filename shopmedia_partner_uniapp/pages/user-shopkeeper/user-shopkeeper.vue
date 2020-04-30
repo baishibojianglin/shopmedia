@@ -4,7 +4,6 @@
 			<uni-card is-shadow>
 				<map class="map" :longitude="longitude" :latitude="latitude" :scale="9" :markers="markers" :enable-satellite="false"></map>
 			</uni-card>
-			<!-- <map class="map" :longitude="longitude" :latitude="latitude" :scale="9" :markers="markers" :enable-satellite="false"></map> -->
 		</view>
 		
 		<view class="uni-common-mt mb">
@@ -16,10 +15,10 @@
 							<text class="">广告屏编号</text>
 						</uni-grid-item>
 						<uni-grid-item>
-							<text class="">累计收入/￥</text>
+							<text class="">累计收入(￥)</text>
 						</uni-grid-item>
 						<uni-grid-item>
-							<text class="">今日收入/￥</text>
+							<text class="">今日收入(￥)</text>
 						</uni-grid-item>
 					</uni-grid>
 					<uni-grid v-if="item.device_list.length != 0" v-for="(value, key) in item.device_list" :key="key" class="uni-center" :column="3" :showBorder="true" :square="false">
@@ -56,9 +55,7 @@
 				longitude: 104.065840, //经度
 				markers: [], //地图图标
 				shopCount: 0, // 店家店铺数量
-				shopList: [], // 店家店铺列表
-				deviceCount: 0, // 广告屏数量
-				deviceList: [] // 广告屏列表
+				shopList: [] // 店家店铺列表
 			}
 		},
 		computed: {
@@ -115,41 +112,6 @@
 					longitude: Number(longitude),
 					latitude: Number(latitude)
 				});
-			},
-			
-			/**
-			 * 获取店家拥有的店铺列表
-			 */
-			getDeviceList() {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/partner_device',
-					data: {
-						user_id: this.userId,
-						role_id: this.roleId
-					},
-					header: {
-						'commonheader': this.$store.state.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					success: (res) => {
-						self.salecount = res.data.data.total;
-						self.deviceList = res.data.data.data;
-						self.deviceList.forEach((value, index) => {
-							self.$set(self.markers, index, {
-								title: value.device_id + ' ' + value.shopname,
-								longitude: value.longitude,
-								latitude: value.latitude
-							});
-						})
-					},
-					fail(error) {
-						uni.showToast({
-							icon: 'none',
-							title: '请求异常'
-						});
-					}
-				});
 			}
 		}
 	}
@@ -159,8 +121,5 @@
 	.map {
 		width: 100%;
 		height: 320rpx;
-	}
-	.notdevice{
-		font-size:16px;
 	}
 </style>

@@ -9,7 +9,7 @@
 		<view class="uni-common-mt mb">
 			<uni-card title="合作广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-shadow>
 				<uni-list>
-					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname" @click="toPartnerDeviceDetail(item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
+					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname" @click="toPartnerDeviceDetail(item.partner_device_id, item.partner_id, item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 				</uni-list>
 			</uni-card>
 			<view v-if="this.deviceList.length == 0" class="uni-center notdevice">您还没有合作的广告屏，去寻找发现吧！</view>
@@ -44,7 +44,7 @@
 			this.userId = event.user_id;
 			this.roleId = event.role_id;
 			
-			this.getUserPartnerDevice();
+			this.getPartnerDeviceList();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
@@ -53,7 +53,7 @@
 			/**
 			 * 获取广告屏合作商合作的广告屏列表
 			 */
-			getUserPartnerDevice() {
+			getPartnerDeviceList() {
 				let self = this;
 				uni.request({
 					url: this.$serverUrl + 'api/partner_device',
@@ -87,11 +87,13 @@
 			
 			/**
 			 * 跳转广告屏合作商合作的广告屏详情页
-			 * @param {Object} asd
+			 * @param {Object} partner_device_id
+			 * @param {Object} partner_id
+			 * @param {Object} device_id
 			 */
-			toPartnerDeviceDetail(device_id) {
+			toPartnerDeviceDetail(partner_device_id, partner_id, device_id) {
 				uni.navigateTo({
-					url: '../partner-device/partner-device-detail?device_id=' + device_id
+					url: '../partner-device/partner-device-detail?partner_device_id=' + partner_device_id + '&partner_id=' + partner_id + '&device_id=' + device_id
 				})
 			},
 			
