@@ -24,12 +24,22 @@ class PartnerOrder extends AuthBase
     {
         // 判断为POST请求
         if(request()->isPost()){
+            // 传入的参数
             $data = input('post.');
 
+            // 判断数据是否存在
+            if (empty($data['user_name'])) {
+                return show(config('code.error'), '乙方名称不能为空', '', 401);
+            }
+
+            // 处理数据
             $data['order_sn'] = model('PartnerOrder')->getOrderSn(); // 生成唯一订单编号 order_sn
             $data['order_time'] = time();
             //$data['order_status'] = 0;
-            $data['order_price'] = $data['device_price'];
+            $data['order_price'] = $data['party_b_investment']; // 订单价格 == 乙方出资金额
+            $data['party_b_name'] = trim($data['user_name']); // 合同乙方名称
+            $data['party_a_share'] = $data['party_a_share'] / 100; // 广告屏甲方占股
+            $data['party_b_share'] = $data['party_b_share'] / 100; // 广告屏乙方占股
 
             // 获取广告屏合作商信息
             $partnerMap = []; // 查询条件
@@ -48,9 +58,12 @@ class PartnerOrder extends AuthBase
 
             // 入库操作
             try {
+                // 新增订单
                 $id = Db::name('partner_order')->strict(false)->insertGetId($data);
+                // 更新用户名称为签约名称
+                @model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => intval($data['user_id'])]);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+                return show(config('code.error'), $e->getCode().'网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
             }
             if ($id) {
                 return show(config('code.success'), '下单成功', $data['order_sn'], 201);

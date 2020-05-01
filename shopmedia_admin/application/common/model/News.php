@@ -54,4 +54,20 @@ class News extends Base
         //echo $this->getLastSql();
         return $result;
     }
+
+    /**
+     * 根据条件获取新闻列表数据的总数
+     * @param array $map
+     * @return int|string
+     * @throws \think\Exception
+     */
+    public function getNewsCountByCondition($map = [])
+    {
+        if(!isset($map['is_delete'])) {
+            $map['is_delete'] = ['neq', config('code.is_delete')];
+        }
+
+        $count = $this->where($map)->count();
+        return $count;
+    }
 }
