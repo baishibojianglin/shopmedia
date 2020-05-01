@@ -100,6 +100,9 @@
 			// 获取广告屏合作商业务员信息
 			this.getPartnerSalesman();
 		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
+		},
 		methods: {
 			//获取行业配置信息
 			getCate() {

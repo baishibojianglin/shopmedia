@@ -28,7 +28,7 @@
 					<text v-show="false">详情</text>
 				</view>
 			</view>
-			<view class="listcon" v-for="(value, key) in devicelist" :key="key" @click="toDevice(value.device_id)">
+			<view class="listcon" v-for="(value, key) in devicelist" :key="key" @click="toDeviceDetail(value.device_id)">
 				<view class="listcon-item-1">
 					<text>{{value.device_id}}</text>
 				</view>
@@ -65,6 +65,9 @@
 		onLoad() {
 			this.getmarkers();
 		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
+		},
 		methods: {
 			//获取广告屏位置
 			getmarkers() {
@@ -90,7 +93,7 @@
 			},
 
 			//跳转到设备详情
-			toDevice(device_id) {
+			toDeviceDetail(device_id) {
 				uni.navigateTo({
 					url: './device-detail?device_id=' + device_id
 				});

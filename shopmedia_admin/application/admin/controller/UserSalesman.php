@@ -39,7 +39,7 @@ class UserSalesman extends Base
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
             }
             if (!empty($param['parent_name'])) { // 上级用户名称
-                $map['p.user_name'] = ['like', '%' . $param['parent_name'] . '%'];
+                $map['pu.user_name'] = ['like', '%' . $param['parent_name'] . '%'];
             }
             if (isset($param['role_id']) && $param['role_id'] != null) { // 用户角色ID
                 // 如果必须满足同时存在多个角色，下面两个条件缺一不可

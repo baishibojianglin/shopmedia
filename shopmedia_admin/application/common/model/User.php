@@ -47,11 +47,12 @@ class User extends Base
         $order = ['u.user_id' => 'asc', 'us.id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['us.id', 'us.role_id', 'us.company_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.comm_ratio', 'us.parent_comm_ratio', 'us.auth_son_ratio', 'us.son_invitation_code', 'us.auth_open_user', 'us.invitation_code', 'us.status us_status', 'c.company_name', 'p.user_name parent_name', 'ur.title']))
+            ->field(array_merge($this->_getListField(), ['us.id', 'us.role_id', 'us.company_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.comm_ratio', 'us.parent_comm_ratio', 'us.auth_son_ratio', 'us.son_invitation_code', 'us.auth_open_user', 'us.invitation_code', 'us.status us_status', 'c.company_name', 'pu.user_name parent_name', 'ur.title']))
             ->join('__USER_SALESMAN__ us', 'u.user_id = us.uid') // 业务员
             ->join('__USER_ROLE__ ur', 'us.role_id = ur.id and ur.parent_id = 1') // 角色
             ->join('__COMPANY__ c', 'us.company_id = c.company_id', 'LEFT') // 分公司
-            ->join('__USER__ p', 'us.parent_id = p.user_id', 'LEFT') // 上级
+            ->join('__USER_SALESMAN__ p', 'us.parent_id = p.id', 'LEFT') // 上级用户角色
+            ->join('__USER__ pu', 'p.uid = pu.user_id', 'LEFT') // 上级用户
             ->where($map)
             ->order($order)
             ->paginate($size);
@@ -97,9 +98,12 @@ class User extends Base
         $order = ['u.user_id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'p.user_name parent_name']))
-            ->join('__USER_SHOPKEEPER__ us', 'u.user_id = us.user_id') // 店铺端业务员
-            ->join('__USER__ p', 'us.parent_id = p.user_id', 'LEFT') // 上级
+            ->field(array_merge($this->_getListField(), ['us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'pu.user_name parent_name']))
+            ->join('__USER_SHOPKEEPER__ us', 'u.user_id = us.user_id') // 店家
+            ->join('__USER_ROLE__ ur', 'us.role_id = ur.id and us.role_id = 3') // 角色
+            ->join('__USER_SALESMAN__ usm', 'us.salesman_id = usm.id', 'LEFT') // 店家业务员
+            ->join('__USER_SHOPKEEPER__ p', 'us.parent_id = p.id', 'LEFT') // 上级用户角色
+            ->join('__USER__ pu', 'p.user_id = pu.user_id', 'LEFT') // 上级用户
             ->where($map)
             ->order($order)
             ->paginate($size);

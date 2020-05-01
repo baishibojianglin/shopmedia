@@ -40,12 +40,14 @@ class Device extends Base
     public function getDeviceList($map)
     {
         $result = $this->alias('d')
-            ->field('d.device_id, d.brand, d.model, d.size, d.province_id, d.city_id, d.area_id, d.street_id, d.address, d.shopname, d.shopcate, rp.region_name province, rc.region_name city, ra.region_name county, rs.region_name street, c.company_name')
+            ->field('d.device_id, d.brand, d.model, d.size, d.province_id, d.city_id, d.area_id, d.street_id, d.address, d.shop_id, d.shopname, d.shopcate, rp.region_name province, rc.region_name city, ra.region_name county, rs.region_name street, c.company_name, sd.today_income, sd.total_income')
             ->join('__REGION__ rp', 'd.province_id = rp.region_id', 'LEFT') // 区域（省份）
             ->join('__REGION__ rc', 'd.city_id = rc.region_id', 'LEFT') // 区域（城市）
             ->join('__REGION__ ra', 'd.area_id = ra.region_id', 'LEFT') // 区域（区县）
             ->join('__REGION__ rs', 'd.street_id = rs.region_id', 'LEFT') // 区域（街道）
             ->join('__COMPANY__ c', 'd.company_id = c.company_id', 'LEFT') // 分公司
+            ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
+            ->join('__SHOP_DEVICE__ sd', 'd.device_id = sd.device_id', 'LEFT') // 店铺
             ->where($map)
             ->cache(true, 10)
             ->select();

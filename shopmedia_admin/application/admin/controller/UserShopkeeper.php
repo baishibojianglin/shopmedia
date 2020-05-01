@@ -30,11 +30,15 @@ class UserShopkeeper extends Base
 
             // 查询条件
             $map = [];
+            $map['ur.status'] = config('code.status_enable'); // 启用角色
             /*if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有账户，供应商只能查看自有账户
                 $map['cu.company_id'] = $this->adminUser['company_id'];
             }*/
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
+            }
+            if (isset($param['status'])) { // 状态
+                $map['us.status'] = intval($param['status']);
             }
 
             // 获取分页page、size

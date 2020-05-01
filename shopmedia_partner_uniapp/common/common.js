@@ -86,6 +86,33 @@ const common = class{
 		s = Math.round(s * 10000) / 10000;
 		return s;
 	}
+	
+	/**
+	 * 显示操作菜单
+	 */
+	actionSheetTap() {
+		// 显示操作菜单
+		uni.showActionSheet({
+			// title:'标题',
+			itemList: ['首页', '个人中心'],
+			success: (e) => {
+				let url;
+				switch (e.tapIndex){
+					case 0:
+						url = '/pages/main/main'; // 跳转首页
+						break;
+					case 1:
+						url = '/pages/user/user'; // 跳转个人中心
+						break;
+					default:
+						break;
+				}
+				uni.switchTab({
+					url: url
+				})
+			}
+		})
+	}
 }
 
 export default new common;

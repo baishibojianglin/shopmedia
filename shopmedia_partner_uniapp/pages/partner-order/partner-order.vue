@@ -121,6 +121,7 @@
 </template>
 
 <script>
+
 import {mapState} from 'vuex';
 import Handwriting from "../../static/js/signature.js"
 export default {
@@ -158,6 +159,9 @@ export default {
 	computed: {
 		...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 	},
+	// onNavigationBarButtonTap(e) {
+	// 	this.$common.actionSheetTap();
+	// },
 	onLoad(event) {
         //电子签名
 		this.$nextTick(function(){ 

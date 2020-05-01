@@ -86,26 +86,42 @@ class User extends AuthBase
             $message['status']=0;
             $message['words']='该账号不支持该业务';
             return json($message);
-         } 
+         }
 
+        // 入库操作
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
+        try {
+            // 新增广告屏合作商
+            $data['user_id'] = $form['user_id'];
+            $data['create_time'] = time();
+            $data['status'] = 2;
+            $res[0] = $id = Db::name('user_partner')->insert($data);
 
-        //入库
-        $data['user_id']=$form['user_id'];
-        $data['create_time']=time();
-        $data['status']=2;
-        $id=Db::name('user_partner')->insert($data); 
+            // 更新用户角色集合role_ids
+            $user = model('User')->field('role_ids')->find($form['user_id']);
+            $roleIds = explode(',', $user['role_ids']);
+            if (!in_array(2, $roleIds)) {
+                array_push($roleIds, 2); // 新增广告屏合作商角色
+            }
+            $data1['role_ids'] = implode(',', $roleIds);
+            $res[1] = Db::name('user')->where(['user_id' => $form['user_id']])->update($data1);
 
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return show(config('code.error'), '申请失败', '', 403);
+            }
 
-        if($id>0){
-            $message['status']=1;
-            $message['words']='申请成功';
-        }else{
-            $message['status']=0;
-            $message['words']='申请失败';
+            // 提交事务
+            Db::commit();
+            return show(config('code.success'), '申请成功', '', 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return show(config('code.error'), '网络忙，请重试', '', 500);
         }
-        return json($message);
-
-
+        /* 手动控制事务 e */
     }
 
 
