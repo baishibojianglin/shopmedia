@@ -89,19 +89,19 @@
 						<uni-list-item :showArrow="false">
 							<view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
 								<view class="">广告屏总价格</view>
-								<view class="color-red">￥{{partnerOrder.order_price}}</view>
+								<view class="color-red">￥{{partnerOrder.device_price}}</view>
 							</view>
 						</uni-list-item>
 						<uni-list-item :showArrow="false">
 							<view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
 								<view class="">广告屏合作金额</view>
-								<view class="color-red uni-bold">￥{{partnerOrder.device_price}}</view>
+								<view class="color-red uni-bold">￥{{partnerOrder.order_price}}</view>
 							</view>
 						</uni-list-item>
 						<uni-list-item :showArrow="false">
 							<view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
 								<view class="">广告屏占股比例</view>
-								<view class="uni-bold">{{partnerOrder.share * 100}}%</view>
+								<view class="uni-bold">{{partnerOrder.party_b_share * 100}}%</view>
 							</view>
 						</uni-list-item>
 					</uni-list>
