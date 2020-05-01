@@ -282,6 +282,7 @@
 			 * 创建广告屏合作商订单
 			 */
 			createOrder() {
+				let self = this;
 				uni.request({
 					url: this.$serverUrl + 'api/partner_order',
 					data: {
@@ -309,9 +310,15 @@
 								title: res.data.message
 							});
 						} else {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message
+							uni.showModal({
+								title: '提交失败',
+								content: res.data.message,
+								confirmText: '联系客服',
+								success: function(res) {
+									if (res.confirm) {
+										self.callPhone(self.csPhone);
+									}
+								}
 							});
 						}
 					}
