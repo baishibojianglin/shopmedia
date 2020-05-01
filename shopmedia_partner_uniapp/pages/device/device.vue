@@ -22,7 +22,7 @@
 					<text>店名</text>
 				</view>
 				<view class="listcon-item-1">
-					<text>合作价</text>
+					<text>总价</text>
 				</view>
 				<view class="listcon-item-3">
 					<text v-show="false">详情</text>

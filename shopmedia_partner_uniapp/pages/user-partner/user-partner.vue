@@ -59,7 +59,7 @@
 						role_id: this.roleId
 					},
 					header: {
-						'commonheader': this.$store.state.commonheader,
+						'commonheader': this.commonheader,
 						'access-user-token': this.userInfo.token
 					},
 					success: (res) => {

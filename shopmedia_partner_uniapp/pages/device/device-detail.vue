@@ -16,8 +16,12 @@
 				<text class="datalist-content">{{datalist.device_id}}</text>
 			</view>
 			<view class="datalist">
-				<text class="datalist-title">合作价：</text>
+				<text class="datalist-title">总价：</text>
 				<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
+			</view>
+			<view class="datalist" v-if="datalist.sale_price">
+				<text class="datalist-title">合作价：</text>
+				<text class="datalist-content color-red">{{(datalist.sale_price/2).toFixed(2)}} 元</text>
 			</view>
 			<view class="datalist">
 				<text class="datalist-title">屏尺寸：</text>
@@ -65,7 +69,7 @@
 				datalist: {}, //设备信息列表
 				imglist: [], //实景图列表
 				shopcatelist: {}, //店铺行业列表
-				csPhone: '', // 客服电话
+				csPhone: '02865272616', // 客服电话
 				
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -74,11 +78,7 @@
 				}, {
 					icon: 'location-filled',
 					text: '位置导航'
-				}/* , {
-					icon: 'cart',
-					text: '购物车',
-					info: 2
-				} */],
+				}],
 				buttonGroup: [{
 					text: '立即合作',
 					backgroundColor: '#504AF2',

@@ -76,6 +76,20 @@
 				"navigationBarTitleText": "智能广告屏合作商"
 			}
 		},
+		{ // 智能广告屏订单合作签约
+		    "path" : "pages/partner-order/partner-order",
+		    "style" : {
+				"navigationBarTitleText": "广告屏合作",
+				"app-plus": {
+					"titleNView": {
+						// "type": "default",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
 		{ // 用户（店家）角色
 			"path": "pages/user-shopkeeper/user-shopkeeper",
 			"style": {
@@ -92,20 +106,6 @@
             "path" : "pages/device/device-detail",
             "style" : {
 				"navigationBarTitleText": "智能广告屏详情"
-			}
-        }
-        ,{ // 智能广告屏订单合作签约
-            "path" : "pages/partner-order/partner-order",
-            "style" : {
-				"navigationBarTitleText": "广告屏合作签约",
-				"app-plus": {
-					"titleNView": {
-						// "type": "default",
-						"buttons": [{
-							"type": "menu"
-						}]
-					}
-				}
 			}
         }
     ],
