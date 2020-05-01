@@ -57,6 +57,21 @@ class Base extends Model
     }
 
     /**
+     * 获取最小值
+     * @param array $map
+     * @param string $field
+     * @return mixed
+     */
+    public function getMin($map = [], $field = 'id')
+    {
+        if(!isset($map['is_delete'])) {
+            $map['is_delete'] = ['neq', config('code.is_delete')];
+        }
+        $max = $this->where($map)->min($field);
+        return $max;
+    }
+
+    /**
      * 生成唯一订单编号 order_sn
      * @return string
      * @throws \think\Exception
