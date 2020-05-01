@@ -109,5 +109,7 @@ Route::resource('api/partner_order', 'api/PartnerOrder');
 // 用户（店家）
 Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
 
+// 新闻
+Route::resource('api/news', 'api/News');
 
 /* -------------------- 客户端路由 -------------------- e */

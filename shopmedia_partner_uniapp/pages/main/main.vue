@@ -47,9 +47,11 @@
 							<text>业务参与</text>
 						</view>
 						<view class="navcon-item">
-							<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
-							<br/>
-							<text>店通快讯</text>
+							<navigator url="/pages/news/news">
+								<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
+								<br/>
+								<text>店通快讯</text>
+							</navigator>
 						</view>
 						<view class="navcon-item">
 							<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
@@ -96,6 +98,7 @@
 			 * @param {Object} role_ids
 			 */
 			toRole(role_ids){	
+				let self = this;
 				
 				//广告屏合作商
 				if(role_ids==2){
@@ -139,7 +142,7 @@
 									}
 									//进入申请页
 									uni.navigateTo({
-										url: '../user-partner/user-partner'
+										url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
 									});
 																
 								}
