@@ -45,13 +45,13 @@ class News extends Base
             $map['is_delete'] = ['neq', config('code.is_delete')];
         }
 
-        $order = ['news_id' => 'asc'];
+        $order = ['news_id' => 'desc'];
 
-        $result = $this->where($map)
+        $result = $this->field('content', true)
+            ->where($map)
             ->limit($from, $size)
             ->order($order)
             ->select();
-        //echo $this->getLastSql();
         return $result;
     }
 

@@ -83,7 +83,7 @@ export default {
 				this.status = 'loading';
 				data.minId = this.last_id;
 				// data.time = new Date().getTime() + '';
-				data.pageSize = 10;
+				data.size = 5;
 			}
 			uni.request({
 				url: this.$serverUrl + 'api/news',
@@ -92,17 +92,22 @@ export default {
 				},
 				data: data,
 				success: res => {
-					console.log(222, res);
 					if (res.statusCode == 200) {
-						/* let list = this.setTime(res.data.data.data);
+						let list = res.data.data.data;
+						// let list = this.setTime(res.data.data.data);
 						this.listData = this.reload ? list : this.listData.concat(list);
-						this.last_id = list[list.length - 1].id;
-						this.reload = false; */
-						this.listData = res.data.data.data
+						this.last_id = list[list.length - 1].news_id;
+						this.reload = false;
+						// this.listData = res.data.data.data
+					} else if (res.statusCode == 404) {
+						// 判断数据已经全部加载
+						if (this.last_id == res.data.data.maxId) {
+							this.status = '';return;
+						}
 					}
 				},
 				fail: (error, code) => {
-					console.log('fail' + JSON.stringify(error));
+					// console.log('fail' + JSON.stringify(error));
 				}
 			});
 		},
