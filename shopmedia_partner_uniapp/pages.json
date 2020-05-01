@@ -142,6 +142,20 @@
 				}
 			}
         }
+        ,{ // 新闻列表
+            "path" : "pages/news/news",
+            "style" : {
+				"navigationBarTitleText": "电通快讯",
+				"enablePullDownRefresh": true,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",
