@@ -38,6 +38,95 @@ class User extends AuthBase
     }
 
 
+    /**
+     * 申请成为店铺合作者
+     */
+    public function applyShop(){
+        $form=input();
+       
+        //通过邀请码查询业务员id
+        $matchcode['invitation_code']=$form['invitation_code'];
+        $matchcode['role_id']=6;
+        $salesmanlist=Db::name('user_salesman')->where($matchcode)->find();
+        //验证邀请码是否存在
+        if(!empty($salesmanlist)){
+            $data['salesman_id']=$salesmanlist['id'];
+        }else{
+            $message['status']=0;
+            $message['words']='认证码不正确';
+            return json($message);
+        }
+
+         //判断是否重复申请
+         $matchuserid['user_id']=$form['user_id'];
+         $partnerlist=Db::name('user_shopkeeper')->where($matchuserid)->find();
+
+
+         if( !empty($partnerlist) && ($partnerlist['status']==0) ){
+            $message['status']=0;
+            $message['words']='该账号被禁用';
+            return json($message);
+         } 
+
+
+         if( !empty($partnerlist) && ($partnerlist['status']==1) ){
+            $message['status']=0;
+            $message['words']='已经是合作者';
+            return json($message);
+         } 
+
+         if( !empty($partnerlist) && ($partnerlist['status']==2) ){
+            $message['status']=0;
+            $message['words']='已申请，正在审核中...';
+            return json($message);
+         } 
+
+         if( !empty($partnerlist) && ($partnerlist['status']==3) ){
+            $message['status']=0;
+            $message['words']='该账号不支持该业务';
+            return json($message);
+         }
+
+        // 入库操作
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
+        try {
+            // 新增广告屏合作商
+            $data['user_id'] = $form['user_id'];
+            $data['create_time'] = time();
+            $data['status'] = 2;
+            $res[0] = $id = Db::name('user_partner')->insert($data);
+
+            // 更新用户角色集合role_ids
+            $user = model('User')->field('role_ids')->find($form['user_id']);
+            $roleIds = explode(',', $user['role_ids']);
+            if (!in_array(2, $roleIds)) {
+                array_push($roleIds, 2); // 新增广告屏合作商角色
+            }
+            $data1['role_ids'] = implode(',', $roleIds);
+            $res[1] = Db::name('user')->where(['user_id' => $form['user_id']])->update($data1);
+
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return show(config('code.error'), '申请失败', '', 403);
+            }
+
+            // 提交事务
+            Db::commit();
+            return show(config('code.success'), '申请成功', '', 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return show(config('code.error'), '网络忙，请重试', '', 500);
+        }
+        /* 手动控制事务 e */
+    }
+
+
+
+
+
 
 
     /**
@@ -48,6 +137,7 @@ class User extends AuthBase
        
         //通过邀请码查询业务员id
         $matchcode['invitation_code']=$form['invitation_code'];
+        $matchcode['role_id']=4;
         $salesmanlist=Db::name('user_salesman')->where($matchcode)->find();
         //验证邀请码是否存在
         if(!empty($salesmanlist)){

@@ -45,6 +45,13 @@
 				"navigationBarTitleText": "广告屏合作申请"
 			}
 		},
+		{   //申请成为广告屏合作者
+			"path": "pages/user/apply-shop",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "店铺安装合作申请"
+			}
+		},
 		{ // 业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
@@ -141,11 +148,11 @@
 					}
 				}
 			}
-        }
-        ,{ // 新闻列表
+        },
+		{ // 新闻列表
             "path" : "pages/news/news",
             "style" : {
-				"navigationBarTitleText": "电通快讯",
+				"navigationBarTitleText": "店通快讯",
 				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": {

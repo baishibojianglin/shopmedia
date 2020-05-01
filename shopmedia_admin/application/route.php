@@ -92,6 +92,7 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 // 用户个人中心
 Route::resource('api/user', 'api/User');
 Route::post('api/applyPartner', 'api/User/applyPartner');
+Route::post('api/applyShop', 'api/User/applyShop');
 Route::post('api/getRole', 'api/User/getRole');
 
 // 业务员
@@ -108,6 +109,7 @@ Route::resource('api/partner_order', 'api/PartnerOrder');
 
 // 用户（店家）
 Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
+Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 
 // 新闻
 Route::resource('api/news', 'api/News');

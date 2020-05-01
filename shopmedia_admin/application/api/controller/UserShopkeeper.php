@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use think\Controller;
 use think\Request;
+use think\Db;
 
 /**
  * api模块客户端用户（店家）控制器类
@@ -12,6 +13,34 @@ use think\Request;
  */
 class UserShopkeeper extends AuthBase
 {
+
+
+
+
+    /**
+     * 获取账号店铺合作角色是否可用
+     * @return \think\response\Json
+     */
+    public function shopRole(){
+        $form=input();
+        $match['user_id']=$form['user_id'];
+        $userlist=Db::name('user_shopkeeper')->where($match)->field('status')->find();
+        if(!empty($userlist)){
+            $message['status']=1;
+            $message['data']=$userlist;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='获取失败';
+            return json($message);
+        }
+    }
+
+
+
+
+
+
     /**
      * 显示店家店铺列表
      * @return \think\response\Json

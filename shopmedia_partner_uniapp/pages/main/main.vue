@@ -36,7 +36,7 @@
 							<br/>
 							<text>合作广告屏</text>
 						</view>
-						<view class="navcon-item">
+						<view @click="toRole(3)" class="navcon-item">
 							<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
 							<br/>
 							<text>我的店铺</text>
@@ -99,13 +99,79 @@
 			 */
 			toRole(role_ids){	
 				let self = this;
-				
 				//广告屏合作商
 				if(role_ids==2){
-					if(this.role.device==true){		//已经是广告屏合作者			
+									if(this.role.device==true){		//已经是广告屏合作者			
+										//账号该角色是否可用
+										uni.request({
+											url: this.$serverUrl + 'api/partnerRole',
+											data: {
+												user_id:this.userInfo.user_id,
+											},
+											header: {
+												'commonheader': this.commonheader,
+												'access-user-token':this.userInfo.token
+											},
+											method: 'PUT',
+											success: function(res) {
+												if(res.data.status==1){
+													if(res.data.data.status==0){ //禁用
+														  uni.showToast({
+															icon:'none',
+															  title: '账号该功能被禁用',
+															  duration: 2000
+														  });
+														  return false;
+													}
+													if(res.data.data.status==2){ //待审核
+														  uni.showToast({
+															icon:'none',
+															  title: '申请审核中...',
+															  duration: 2000
+														  });
+														  return false;
+													}									
+													if(res.data.data.status==3){ //驳回
+														  uni.showToast({
+															icon:'none',
+															  title: '该账号不支持该申请',
+															  duration: 2000
+														  });
+														  return false;
+													}
+													//进入申请页
+													uni.navigateTo({
+														url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
+													});
+																				
+												}
+											}
+										})
+										
+									
+									}else{  //还不是广告屏合作者
+										uni.showModal({
+											title: '提示',
+											content: '您还不是广告屏合作者,申请加入？',
+											success: function (res) {
+												if (res.confirm) {
+												  uni.navigateTo({
+													  url: "../user/apply-partner"
+												  });  
+												} else if (res.cancel) {
+												  
+												}
+											}
+										});
+									}				
+				}
+
+				//店铺合作者
+				if(role_ids==3){
+					if(this.role.shop==true){		//已经是店铺合作者			
 						//账号该角色是否可用
 						uni.request({
-							url: this.$serverUrl + 'api/partnerRole',
+							url: this.$serverUrl + 'api/shopRole',
 							data: {
 								user_id:this.userInfo.user_id,
 							},
@@ -142,7 +208,7 @@
 									}
 									//进入申请页
 									uni.navigateTo({
-										url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
+										url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id=3'
 									});
 																
 								}
@@ -150,22 +216,24 @@
 						})
 						
 					
-					}else{  //还不是广告屏合作者
+					}else{  //还不是店铺合作者
 						uni.showModal({
 							title: '提示',
-							content: '您还不是广告屏合作者,申请加入？',
+							content: '申请店铺安装智能屏？',
 							success: function (res) {
 								if (res.confirm) {
 								  uni.navigateTo({
-									  url: "../user/apply-partner"
+									  url: "../user/apply-shop"
 								  });  
-								} else if (res.cancel) {
+								} else if(res.cancel) {
 								  
 								}
 							}
 						});
 					}				
 				}
+
+
 				
 				
 			},
