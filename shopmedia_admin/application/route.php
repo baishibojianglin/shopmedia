@@ -119,4 +119,7 @@ Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 // 新闻
 Route::resource('api/news', 'api/News');
 
+// 用户反馈
+Route::resource('api/feedback', 'api/Feedback');
+
 /* -------------------- 客户端路由 -------------------- e */
