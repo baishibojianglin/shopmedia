@@ -324,7 +324,8 @@
 				this.getDeviceList(getDeviceListCondition, this.$refs.tree.getCheckedKeys());
 			},
 			
-			/**获取设备列表
+			/**
+			 * 获取设备列表
 			 * @param {Object} condition 获取条件
 			 * @param {Object} regionIds 投放区域ID集合（只含全选）
 			 */
@@ -463,7 +464,7 @@
 			},
 			
 			/**
-			 * 编辑广告类别提交表单
+			 * 编辑广告提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {

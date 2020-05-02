@@ -17,7 +17,7 @@ class News extends Common
     {
         // 判断为GET请求
         if (request()->isGet()) {
-            // 传入的数据
+            // 传入的参数
             $param = input('param.');
 
             // 查询条件
@@ -52,7 +52,7 @@ class News extends Common
             }
             foreach ($newsList as $key => $value) {
                 // 处理数据
-                $value['publish_time'] = date('Y/m/d H:i', $value['publish_time']); // 新闻发布时间
+                $value['publish_time'] = date('Y-m-d H:i:s', $value['publish_time']); // 新闻发布时间
             }
             $data = [
                 /*'total' => $total,
@@ -74,27 +74,16 @@ class News extends Common
     {
         // 判断为GET请求
         if (request()->isGet()) {
-            // 获取原始用户信息
-            $user = model('News')->field('password', true)->find($id);
-
-            // 查询条件
-            $map = [
-                'up.user_id' => $id,
-                'up.role_id' => ['in', $user['role_ids']]
-            ];
-
-            // 获取广告屏合作商信息
+            // 获取指定的新闻资源
             try {
-                $data = Db::name('user_partner')->alias('up')->field('up.user_id, up.role_id, up.money, up.income, up.cash, up.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'up.user_id = u.user_id', 'INNER')->where($map)->find();
+                $data = model('News')->field(true)->find($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
 
             if ($data) {
                 // 处理数据
-                // 定义status_msg
-                $status = config('code.status');
-                $data['status_msg'] = $status[$data['status']];
+                $data['publish_time'] = date('Y-m-d H:i:s', $data['publish_time']); // 新闻发布时间
 
                 return show(config('code.success'), 'ok', $data);
             }

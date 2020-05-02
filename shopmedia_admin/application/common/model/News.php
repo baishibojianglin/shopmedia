@@ -23,7 +23,7 @@ class News extends Base
             $map['is_delete'] = ['neq', config('code.is_delete')];
         }
 
-        $order = ['news_id' => 'asc'];
+        $order = ['news_id' => 'desc'];
 
         $result = $this->field('content', true) // 字段排除
             ->where($map)

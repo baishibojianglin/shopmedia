@@ -163,6 +163,28 @@
 				}
 			}
         }
+        ,{ // 新闻详情
+            "path" : "pages/news/news-detail",
+            "style" : {
+				"navigationBarTitleText": "新闻详情",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+							"type": "share"
+						}]
+					}
+				},
+				"h5": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

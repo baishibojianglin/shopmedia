@@ -9,7 +9,7 @@
 			</el-col> <!--header e-->
 
 			<el-col :span="24"> <!--content s-->
-				<el-col  :xs="6" :sm="5" :md="4" :lg="3" :xl="2">  <!--menu s-->
+				<el-col  :xs="6" :sm="5" :md="4" :lg="3" :xl="2"> <!-- menu s -->
 					<div class="homemenu">
 						<dl class="m0">
 							
@@ -73,6 +73,15 @@
 								</div>
 							</el-collapse-transition>
 							
+							<dt @click="menush(8)">
+								<span class="el-icon-news" id="menu8"> 新闻管理</span>
+								<span class="fr derection" :class="menuvalue[8]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[8]">
+									<router-link to="/home/news"><dd id='menu81' :class="activevalue[81]?activeclass:''"  @click="menuactive(81,8,1)">新闻</dd></router-link>
+								</div>
+							</el-collapse-transition>
 
 							<dt @click="menush(4)">
 								<span class="el-icon-user-solid" id="menu4"> 系统管理员</span>
@@ -98,8 +107,23 @@
 							</el-collapse-transition>
 							
 						</dl>
+						
+						<!-- 以下是动态数据 menus -->
+						<dl v-show="false" class="m0" v-for="(item, index) in menus" :key="index" v-if="item.level == 1" style="color: #C0C4CC;">
+							<dt @click="menush(item.id)">
+								<span :class="item.icon" :id="'menu' + item.id"> {{item.title}}</span>
+								<span class="fr derection" :class="menuvalue[item.id]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[item.id]">
+									<router-link v-for="(value, key) in menus" :key="key" v-if="value.pid == item.id" :to="value.name">
+										<dd :id="'menu' + value.id" :class="activevalue[value.id] ? activeclass : ''" @click="menuactive(value.id, item.id, index)">{{value.title}}</dd>
+									</router-link>
+								</div>
+							</el-collapse-transition>
+						</dl>
 					</div>
-				</el-col> <!--menu e-->
+				</el-col> <!-- menu e -->
 				
 				<el-col  :xs="18" :sm="19" :md="20" :lg="21" :xl="22">  <!--main s-->
 
@@ -141,7 +165,8 @@
 				activevalue:[], //激活菜单数组
 				activeclass:'activecolor', //选中二级菜单样式
 				onetitle:localStorage.getItem("onetitle"),//一级标题
-				twotitle:localStorage.getItem("twotitle")//二级标题
+				twotitle:localStorage.getItem("twotitle"),//二级标题
+				menus: [] // 权限规则菜单（侧栏导航）
 			}
 		},
 		components: {
@@ -154,16 +179,15 @@
 			])
 		},
 		mounted(){
-			/**
-			 * 获取供应商名称
-			 */
+			// 获取供应商名称
 			let account=JSON.parse(localStorage.getItem("admin_user"));
 			this.name=account['company_name'];
 			
-			/**
-			 * 控制窗口高度
-			 */
+			// 控制窗口高度
 			wincontrol.wincontrol();
+			
+			// 获取权限规则菜单
+			this.getAuthRuleMenus();
 		},
 		methods: {
 			/**
@@ -221,6 +245,36 @@
 				this.twotitle=localStorage.getItem("twotitle");
 				
 				
+			},
+			
+			/**
+			 * 获取权限规则菜单
+			 */
+			getAuthRuleMenus() {
+				let self = this;
+				this.$axios.get(this.$url + 'auth_rule_menus', {
+					/* headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+					} */
+				})
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 权限规则菜单
+						self.menus = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
 			}
 		}
 	}
