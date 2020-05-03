@@ -11,5 +11,26 @@ use think\Model;
  */
 class Feedback extends Base
 {
+    /**
+     * 获取用户反馈列表数据（基于paginate()自动化分页）
+     * @param array $map
+     * @param int $size
+     * @return \think\Paginator
+     */
+    public function getFeedback($map = [], $size = 5)
+    {
+        /*if(!isset($map['is_delete'])) {
+            $map['is_delete'] = ['neq', config('code.is_delete')];
+        }*/
 
+        $order = ['create_time' => 'desc'];
+
+        $result = $this->alias('fb')
+            ->field('fb.*, u.user_name, u.phone')
+            ->join('__USER__ u', 'fb.user_id = u.user_id')
+            ->where($map)
+            ->order($order)
+            ->paginate($size);
+        return $result;
+    }
 }

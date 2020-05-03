@@ -54,9 +54,11 @@
 							</navigator>
 						</view>
 						<view class="navcon-item">
-							<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
-							<br/>
-							<text>投诉建议</text>
+							<navigator url="/pages/feedback/feedback">
+								<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
+								<br/>
+								<text>投诉建议</text>
+							</navigator>
 						</view>
 			</view>
 

@@ -58,6 +58,9 @@ import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
 import News from '@/pages/news/News.vue'
 import NewsCreate from '@/pages/news/NewsCreate.vue'
 import NewsEdit from '@/pages/news/NewsEdit.vue'
+// 用户反馈
+import Feedback from '@/pages/feedback/Feedback.vue'
+import FeedbackHandle from '@/pages/feedback/FeedbackHandle.vue'
 
 Vue.use(VueRouter)
 
@@ -130,6 +133,9 @@ const routes = [
 			{path: 'news', name: 'news', component: News}, // 新闻列表
 			{path: 'news_create', name: 'news_create', component: NewsCreate}, // 新增新闻
 			{path: 'news_edit', name: 'news_edit', component: NewsEdit}, // 编辑新闻
+			// 2--用户反馈
+			{path: 'feedback', name: 'feedback', component: Feedback}, // 用户反馈列表
+			{path: 'feedback_handle', name: 'feedback_handle', component: FeedbackHandle}, // 处理用户反馈
 		]
 	}
 ]
