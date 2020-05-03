@@ -249,6 +249,12 @@ class PartnerOrder extends Base
                 return show(config('code.error'), $validate->getError(), '', 403);
             }
 
+            // 获取广告屏合作商业务员ID
+            $userPartner = Db::name('user_partner')->field('salesman_id')->find($partnerOrder['partner_id']);
+            $salesmanID = $userPartner['salesman_id'];
+            // 获取广告屏合作商业务员原始用户ID
+            $userSalesman = Db::name('user_salesman')->field('uid')->find($salesmanID);
+
             // 当订单已支付完成时，同时新增该订单对应的合作商广告屏数据
             if ($data['order_status'] == 1 && $data['pay_status'] == 1) {
                 /* 手动控制事务 s */
@@ -260,6 +266,16 @@ class PartnerOrder extends Base
 
                     // 新增该订单对应的合作商广告屏数据
                     $res[1] = Db::name('partner_device')->insert($data1);
+
+                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成￥50） s */
+                    $salesmanCommission = 50;
+                    // 更新广告屏合作商业务员余额、收入
+                    $res[2] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('money', $salesmanCommission);
+                    $res[3] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('income', $salesmanCommission);
+                    // 更新广告屏合作商业务员原始用户余额、收入
+                    $res[4] = Db::name('user')->where(['user_id' => $userSalesman['uid']])->setInc('money', $salesmanCommission);
+                    $res[5] = Db::name('user')->where(['user_id' => $userSalesman['uid']])->setInc('income', $salesmanCommission);
+                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成￥50） e */
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {

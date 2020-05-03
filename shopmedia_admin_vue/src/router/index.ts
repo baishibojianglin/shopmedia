@@ -54,7 +54,10 @@ import AdEdit from '@/pages/ad/AdEdit.vue'
 import PartnerOrder from '@/pages/partner_order/PartnerOrder.vue'
 import PartnerOrderCreate from '@/pages/partner_order/PartnerOrderCreate.vue'
 import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
-
+// 新闻管理
+import News from '@/pages/news/News.vue'
+import NewsCreate from '@/pages/news/NewsCreate.vue'
+import NewsEdit from '@/pages/news/NewsEdit.vue'
 
 Vue.use(VueRouter)
 
@@ -123,6 +126,10 @@ const routes = [
 			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告屏合作商订单
 			{path: 'partner_order_create', name: 'partner_order_create', component: PartnerOrderCreate}, // 创建广告屏合作商订单
 			{path: 'partner_order_edit', name: 'partner_order_edit', component: PartnerOrderEdit}, // 编辑广告屏合作商订单
+			// 2--新闻管理
+			{path: 'news', name: 'news', component: News}, // 新闻列表
+			{path: 'news_create', name: 'news_create', component: NewsCreate}, // 新增新闻
+			{path: 'news_edit', name: 'news_edit', component: NewsEdit}, // 编辑新闻
 		]
 	}
 ]
