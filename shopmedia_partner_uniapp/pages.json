@@ -52,6 +52,15 @@
 				"navigationBarTitleText": "店铺安装合作申请"
 			}
 		},
+		{ // 业务员中心页
+			"path": "pages/saleperson/center",
+			"style": {
+				"app-plus": {
+					"titleNView": true
+				},
+				"navigationBarTitleText": "我的业务"
+			}
+		},
 		{ // 业务员首页
 			"path": "pages/saleperson/index",
 			"style": {

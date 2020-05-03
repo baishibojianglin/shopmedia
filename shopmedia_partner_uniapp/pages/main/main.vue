@@ -41,7 +41,7 @@
 							<br/>
 							<text>我的店铺</text>
 						</view>
-						<view class="navcon-item">
+						<view @click="toRole(1)" class="navcon-item">
 							<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
 							<br/>
 							<text>业务参与</text>
@@ -71,6 +71,7 @@
 		data() {
 			return {
 				role:{
+					role_ids:'',//角色字符串
 					device:false, //广告屏合作者
 					shop:false, //店铺
 					saleperson:false //业务员
@@ -225,13 +226,49 @@
 								  uni.navigateTo({
 									  url: "../user/apply-shop"
 								  });  
-								} else if(res.cancel) {
-								  
+								}else if(res.cancel) {
+
 								}
 							}
 						});
 					}				
 				}
+
+
+				//业务员
+				if(role_ids==1){
+					if(this.role.saleperson==true){		//已经是业务员			
+	                   
+						//进入业务员首页
+						uni.navigateTo({
+							url: '../saleperson/center?user_id=' + self.userInfo.user_id + '&role_ids='+self.role.role_ids
+						});
+					
+					}else{  //还不是业务员
+						uni.showModal({
+							title: '提示',
+							content: '咨询官方如何参与店通业务？',
+							success: function (res){
+								if (res.confirm) {
+                                    //不操作
+								}else if(res.cancel) {
+								  uni.makePhoneCall({
+								      phoneNumber: '13693444308' 
+								  });
+								}
+							}
+						});
+					}				
+				}
+
+	  
+				   
+				   
+				   
+				   
+				   
+			
+
 
 
 				
@@ -255,7 +292,8 @@
 					method: 'POST',
 					success: function(res) {
 						if(res.data.status==1){
-							//处理角色信息										
+							//处理角色信息
+							self.role.role_ids=res.data.data.role_ids;									
 							let role_str=res.data.data.role_ids;
 							let role_array=role_str.split(',');		
 							role_array.forEach((value,index)=>{

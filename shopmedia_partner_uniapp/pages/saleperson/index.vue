@@ -58,6 +58,7 @@
 
 <script>
 	import common from '@/common/common.js';
+	import {mapState, mapMutations} from 'vuex';
 	export default {
 		data() {
 				return {
@@ -68,6 +69,7 @@
 						devicelist:[] //设备列表
 					   }
 		},
+		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
               this.getmarkers();
 		},
@@ -77,7 +79,10 @@
 				let self=this;
 				uni.request({
 					url: this.$serverUrl+'api/getMarkers',
-					header:  getApp().globalData.commonHeaders,
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
 					success: (res) => {
 						self.salecount=res.data.data.length;//可合作数量
 						self.devicelist=res.data.data; //可合作设备列表

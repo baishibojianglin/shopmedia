@@ -14,6 +14,90 @@ use think\Model;
  */
 class UserSalesman extends AuthBase
 {
+
+    /**
+     * 获取收入
+     * @return \think\Response
+     */
+    public function getMoney()
+    {
+        $form=input();
+        $match['user_id']=$form['user_id'];
+        $userlist=Db::name('user')->where($match)->field('income,money,role_ids')->find();
+        if(!empty($userlist)){
+            $value['income']=$userlist['income'];
+            $value['money']=$userlist['money'];
+            $value['role_ids']=$userlist['role_ids'];
+            $message['data']=$value;
+            $message['status']=1;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='获取失败';
+            return json($message);
+        }
+
+    }
+
+
+
+    /**
+     * 获取业务员推广广告屏的收入
+     * @return \think\Response
+     */
+    public function getMoneyDevice()
+    {
+        $form=input();
+        $match['salesman_id']=$form['user_id'];
+        $userlist=Db::name('user_partner')->where($match)->field('income')->select();
+        $sumincome=0;
+        foreach($userlist as $key=>$value){
+            $sumincome += $value['income'];
+        }
+        if(!empty($userlist)){
+            $message['data']=$sumincome;
+            $message['status']=1;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='获取失败';
+            return json($message);
+        }
+
+
+    }
+
+
+    /**
+     * 获取业务员推广店铺的收入
+     * @return \think\Response
+     */
+    public function getMoneyShop()
+    {
+        $form=input();
+        $match['salesman_id']=$form['user_id'];
+        $userlist=Db::name('user_shopkeeper')->where($match)->field('income')->select();
+        $sumincome=0;
+        foreach($userlist as $key=>$value){
+            $sumincome += $value['income'];
+        }
+        if(!empty($userlist)){
+            $message['data']=$sumincome;
+            $message['status']=1;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='获取失败';
+            return json($message);
+        }
+
+
+    }
+
+
+
+
+
     /**
      * 获取指定的广告屏合作商业务员
      *

@@ -40,6 +40,7 @@ Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列�
 
 // 用户（业务员）
 Route::resource('user_salesman', 'admin/UserSalesman');
+Route::put('user_salesman', 'admin/UserSalesman');
 // 用户（广告屏合作商）
 Route::resource('user_partner', 'admin/UserPartner');
 Route::get('user_partner_list','admin/UserPartner/userPartnerList');  // 广告屏合作商列表（不分页）
@@ -100,7 +101,9 @@ Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
 Route::get('api/shopCateList','api/Saleperson/shopCateList');
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
-
+Route::get('api/getMoney', 'api/UserSalesman/getMoney');
+Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');
+Route::get('api/getMoneyShop', 'api/UserSalesman/getMoneyShop');
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
 Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');

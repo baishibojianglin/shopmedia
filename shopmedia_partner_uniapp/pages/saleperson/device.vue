@@ -59,6 +59,7 @@
 
 <script>
 	import common from '@/common/common.js';
+	import {mapState, mapMutations} from 'vuex';
 	export default {
 		data() {
 				return {
@@ -68,6 +69,7 @@
 					 shopcatelist:{} //店铺行业列表
 				}
 		},
+		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(options) {
            //获取设备id
            this.device_id=options.device_id;
@@ -83,7 +85,10 @@
 			  uni.request({
 			  	url: this.$serverUrl+'api/shopCateList',
 			  	method:'GET',
-			  	header:  getApp().globalData.commonHeaders,
+			  	header: {
+			  		'commonheader': this.commonheader,
+			  		'access-user-token':this.userInfo.token
+			  	},
 			  	success: (res) => {
 					 self.shopcatelist=res.data.data;
 			  	}
@@ -96,7 +101,10 @@
 					url: this.$serverUrl+'api/DeviceDetail',
 					data:{device_id:self.device_id},
 					method:'POST',
-					header:getApp().globalData.commonHeaders,
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
 					success: (res) => {
 					   self.datalist=res.data.data; //赋值
 					   self.datalist.shopcate=self.shopcatelist[self.datalist.shopcate].cate_name; //展示店铺行业
