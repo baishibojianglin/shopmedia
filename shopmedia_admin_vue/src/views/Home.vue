@@ -82,6 +82,16 @@
 									<router-link to="/home/news"><dd id='menu81' :class="activevalue[81]?activeclass:''"  @click="menuactive(81,8,1)">新闻</dd></router-link>
 								</div>
 							</el-collapse-transition>
+							
+							<dt @click="menush(9)">
+								<span class="el-icon-message" id="menu9"> 用户反馈</span>
+								<span class="fr derection" :class="menuvalue[9]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[9]">
+									<router-link to="/home/feedback"><dd id='menu91' :class="activevalue[91]?activeclass:''"  @click="menuactive(91,9,1)">投诉建议</dd></router-link>
+								</div>
+							</el-collapse-transition>
 
 							<dt @click="menush(4)">
 								<span class="el-icon-user-solid" id="menu4"> 系统管理员</span>

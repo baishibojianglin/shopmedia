@@ -185,6 +185,12 @@
 				}
 			}
         }
+        ,{ // 用户反馈
+            "path" : "pages/feedback/feedback",
+            "style" : {
+				"navigationBarTitleText": "意见反馈"
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

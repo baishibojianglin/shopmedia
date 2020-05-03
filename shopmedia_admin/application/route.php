@@ -70,6 +70,9 @@ Route::resource('news', 'admin/News');
 // 新闻类别
 Route::resource('news_cate', 'admin/NewsCate');
 
+// 用户反馈
+Route::resource('feedback', 'admin/Feedback');
+
 
 /* -------------------- 后台管理系统路由 -------------------- e */
 

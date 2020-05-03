@@ -42,9 +42,9 @@
 					<el-table-column prop="publish_time" label="发布时间" width="180"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toNewsEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteNews(scope)">删除</el-button>
+							<el-button type="primary" size="mini" plain @click="toNewsEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
+							<el-button type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
+							<el-button type="danger" size="mini" plain @click="deleteNews(scope)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
