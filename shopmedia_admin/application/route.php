@@ -130,4 +130,8 @@ Route::resource('api/news', 'api/News');
 // 用户反馈
 Route::resource('api/feedback', 'api/Feedback');
 
+//上传图片
+Route::post('api/upload', 'api/Upload/upload');
+Route::put('api/deleimg', 'api/Upload/deleimg');
+
 /* -------------------- 客户端路由 -------------------- e */
