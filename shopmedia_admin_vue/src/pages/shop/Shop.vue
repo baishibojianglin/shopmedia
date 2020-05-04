@@ -34,7 +34,7 @@
 				<!-- 店铺列表 s -->
 				<el-table :data="shopList" empty-text="数据加载中…" max-height="500" border style="width: 100%">
 					<el-table-column prop="shop_id" label="序号" fixed width="50"></el-table-column>
-					<el-table-column prop="shop_name" label="店铺名称" width="120"></el-table-column>
+					<el-table-column prop="shop_name" label="店铺名称" fixed width="120"></el-table-column>
 					<el-table-column prop="address" label="详细地址" width="180" show-overflow-tooltip></el-table-column>
 					<el-table-column label="店铺区域" header-align="center">
 						<el-table-column prop="province" label="省份" width="120"></el-table-column>
@@ -42,7 +42,7 @@
 						<el-table-column prop="county" label="区县" width="120"></el-table-column>
 						<el-table-column prop="town" label="乡镇街道" width="120"></el-table-column>
 					</el-table-column>
-					<el-table-column prop="status" label="状态" fixed width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>

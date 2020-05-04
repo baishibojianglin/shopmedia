@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-padding-wrap">
+	<view class="uni-page-body uni-padding-wrap">
 		<view class="contain-logo">
 			<image class="logo" mode="aspectFit" :src="logourl"></image>
 		</view>
@@ -13,6 +13,12 @@
 				<text class="input-line-height-1">密码</text>
 				<input class="input-line-height-2" type="password"  v-model="password" placeholder="请输入密码" />
 			</view>
+		</view>
+
+		<view class="uni-common-mt uni-center">
+			<checkbox-group>
+				<label><checkbox value="psw" :checked="rememberPsw" @tap="rememberPsw = !rememberPsw" color="#504AF2" />记住账号密码</label>
+			</checkbox-group>
 		</view>
 
 		<view>
@@ -29,20 +35,21 @@
 </template>
 
 <script>
-	import common from '@/common/common.js';
 	import {mapState, mapMutations} from 'vuex';
 
 	export default {
 		components: {},
 		data() {
 			return {
-				phone: '18989898899',
-				password: 'abc123',
+				phone: '',
+				password: '',
 				logourl: '/static/img/logo.png',
+				rememberPsw: true // 记住账号密码
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
+			this.getRememberPassword();
 		},
 		methods: {
 			/**
@@ -91,12 +98,14 @@
 					},
 					method: 'PUT',
 					success: function(res) {
-             
 						if (res.data.status == 1) {
 							let userInfo = res.data.data;
 							
 							// 使用vuex管理登录状态时开启
 							self.login(userInfo);
+							
+							// 记住账号密码
+							self.rememberPassword();
 							
 							//跳转到首页
 							uni.reLaunch({
@@ -108,10 +117,38 @@
 								title: res.data.message
 							});
 						}
-						
-						
 					}
 				})
+			},
+			
+			/**
+			 * 登录成功将用户名密码存储到用户本地
+			 */
+			rememberPassword() {
+				if (this.rememberPsw) { // 用户勾选“记住账号密码”
+					uni.setStorageSync('phone', this.phone);
+					uni.setStorageSync('password', this.password);
+				} else { //用户没有勾选“记住账号密码”
+					uni.removeStorageSync('phone');
+					uni.removeStorageSync('password');
+					this.phone = '';
+					this.password = '';
+				}
+			},
+			
+			/**
+			 * 页面加载完成，获取本地存储的用户名及密码
+			 */
+			getRememberPassword() {
+				let phone = uni.getStorageSync('phone');
+				let password = uni.getStorageSync('password');
+				if (phone && password) {
+					this.phone = phone;
+					this.password = password;
+				} else {
+					this.phone = '';
+					this.password = '';
+				}
 			}
 		}
 	}
