@@ -198,7 +198,7 @@
 		   	let self=this;
 		   	//获取角色信息
 		   	uni.request({
-		   		url: this.$serverUrl + 'api/getRole',
+		   		url: this.$serverUrl + 'api/get_user_role',
 		   		data: {
 		   			user_id:this.userInfo.user_id,
 		   		},

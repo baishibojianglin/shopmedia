@@ -17,205 +17,6 @@ use think\Db;
  */
 class User extends AuthBase
 {
-
-
-    /**
-     * 获取用户角色信息
-     */
-    public function getRole(){
-        $form=input();
-        $match['user_id']=$form['user_id'];
-        $userlist=Db::name('user')->where($match)->field('role_ids')->find();
-        if(!empty($userlist)){
-            $message['status']=1;
-            $message['data']=$userlist;
-            return json($message);
-        }else{
-            $message['status']=0;
-            $message['words']='角色获取失败';
-            return json($message);
-        }
-    }
-
-
-    /**
-     * 申请成为店铺合作者
-     */
-    public function applyShop(){
-        $form=input();
-       
-        //通过邀请码查询业务员id
-        $matchcode['invitation_code']=$form['invitation_code'];
-        $matchcode['role_id']=6;
-        $salesmanlist=Db::name('user_salesman')->where($matchcode)->find();
-        //验证邀请码是否存在
-        if(!empty($salesmanlist)){
-            $data['salesman_id']=$salesmanlist['id'];
-        }else{
-            $message['status']=0;
-            $message['words']='认证码不正确';
-            return json($message);
-        }
-
-         //判断是否重复申请
-         $matchuserid['user_id']=$form['user_id'];
-         $partnerlist=Db::name('user_shopkeeper')->where($matchuserid)->find();
-
-
-         if( !empty($partnerlist) && ($partnerlist['status']==0) ){
-            $message['status']=0;
-            $message['words']='该账号被禁用';
-            return json($message);
-         } 
-
-
-         if( !empty($partnerlist) && ($partnerlist['status']==1) ){
-            $message['status']=0;
-            $message['words']='已经是合作者';
-            return json($message);
-         } 
-
-         if( !empty($partnerlist) && ($partnerlist['status']==2) ){
-            $message['status']=0;
-            $message['words']='已申请，正在审核中...';
-            return json($message);
-         } 
-
-         if( !empty($partnerlist) && ($partnerlist['status']==3) ){
-            $message['status']=0;
-            $message['words']='该账号不支持该业务';
-            return json($message);
-         }
-
-        // 入库操作
-        /* 手动控制事务 s */
-        // 启动事务
-        Db::startTrans();
-        try {
-            // 新增广告屏合作商
-            $data['user_id'] = $form['user_id'];
-            $data['create_time'] = time();
-            $data['status'] = 2;
-            $res[0] = $id = Db::name('user_partner')->insert($data);
-
-            // 更新用户角色集合role_ids
-            $user = model('User')->field('role_ids')->find($form['user_id']);
-            $roleIds = explode(',', $user['role_ids']);
-            if (!in_array(2, $roleIds)) {
-                array_push($roleIds, 2); // 新增广告屏合作商角色
-            }
-            $data1['role_ids'] = implode(',', $roleIds);
-            $res[1] = Db::name('user')->where(['user_id' => $form['user_id']])->update($data1);
-
-            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
-            if (in_array(0, $res)) {
-                return show(config('code.error'), '申请失败', '', 403);
-            }
-
-            // 提交事务
-            Db::commit();
-            return show(config('code.success'), '申请成功', '', 201);
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-            return show(config('code.error'), '网络忙，请重试', '', 500);
-        }
-        /* 手动控制事务 e */
-    }
-
-
-
-
-
-
-
-    /**
-     * 申请成为广告屏合作者
-     */
-    public function applyPartner(){
-         $form=input();
-       
-        //通过邀请码查询业务员id
-        $matchcode['invitation_code']=$form['invitation_code'];
-        $matchcode['role_id']=4;
-        $salesmanlist=Db::name('user_salesman')->where($matchcode)->find();
-        //验证邀请码是否存在
-        if(!empty($salesmanlist)){
-            $data['salesman_id']=$salesmanlist['id'];
-        }else{
-            $message['status']=0;
-            $message['words']='认证码不正确';
-            return json($message);
-        }
-
-         //判断是否重复申请
-         $matchuserid['user_id']=$form['user_id'];
-         $partnerlist=Db::name('user_partner')->where($matchuserid)->find();
-
-
-         if( !empty($partnerlist) && ($partnerlist['status']==0) ){
-            $message['status']=0;
-            $message['words']='该账号被禁用';
-            return json($message);
-         } 
-
-
-         if( !empty($partnerlist) && ($partnerlist['status']==1) ){
-            $message['status']=0;
-            $message['words']='已经是合作者';
-            return json($message);
-         } 
-
-         if( !empty($partnerlist) && ($partnerlist['status']==2) ){
-            $message['status']=0;
-            $message['words']='已申请，正在审核中...';
-            return json($message);
-         } 
-
-         if( !empty($partnerlist) && ($partnerlist['status']==3) ){
-            $message['status']=0;
-            $message['words']='该账号不支持该业务';
-            return json($message);
-         }
-
-        // 入库操作
-        /* 手动控制事务 s */
-        // 启动事务
-        Db::startTrans();
-        try {
-            // 新增广告屏合作商
-            $data['user_id'] = $form['user_id'];
-            $data['create_time'] = time();
-            $data['status'] = 2;
-            $res[0] = $id = Db::name('user_partner')->insert($data);
-
-            // 更新用户角色集合role_ids
-            $user = model('User')->field('role_ids')->find($form['user_id']);
-            $roleIds = explode(',', $user['role_ids']);
-            if (!in_array(2, $roleIds)) {
-                array_push($roleIds, 2); // 新增广告屏合作商角色
-            }
-            $data1['role_ids'] = implode(',', $roleIds);
-            $res[1] = Db::name('user')->where(['user_id' => $form['user_id']])->update($data1);
-
-            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
-            if (in_array(0, $res)) {
-                return show(config('code.error'), '申请失败', '', 403);
-            }
-
-            // 提交事务
-            Db::commit();
-            return show(config('code.success'), '申请成功', '', 201);
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-            return show(config('code.error'), '网络忙，请重试', '', 500);
-        }
-        /* 手动控制事务 e */
-    }
-
-
-
     /**
      * 显示指定的用户资源
      * 用户的基本信息非常隐私，需要加密处理
@@ -318,5 +119,194 @@ class User extends AuthBase
         } else {
             return show(config('code.error'), '请求不合法', [], 400);
         }
+    }
+
+    /**
+     * 获取用户角色信息
+     * @return \think\response\Json
+     */
+    public function getUserRole(){
+        $param = input();
+        $match['user_id'] = $param['user_id'];
+        $userlist=Db::name('user')->where($match)->field('role_ids')->find();
+        if(!empty($userlist)){
+            $message['status']=1;
+            $message['data']=$userlist;
+            return json($message);
+        }else{
+            $message['status']=0;
+            $message['words']='角色获取失败';
+            return json($message);
+        }
+    }
+
+    /**
+     * 申请成为广告屏合作者
+     * @return \think\response\Json
+     */
+    public function applyPartner(){
+        // 传入的参数
+        $param = input();
+
+        //通过邀请码查询业务员id
+        $matchcode['invitation_code'] = $param['invitation_code'];
+        $matchcode['role_id']=4;
+        $salesmanlist=Db::name('user_salesman')->where($matchcode)->find();
+        //验证邀请码是否存在
+        if(!empty($salesmanlist)){
+            $data['salesman_id']=$salesmanlist['id'];
+        }else{
+            $message['status']=0;
+            $message['words']='认证码不正确';
+            return json($message);
+        }
+
+        //判断是否重复申请
+        $matchuserid['user_id'] = $param['user_id'];
+        $partnerlist=Db::name('user_partner')->where($matchuserid)->find();
+
+        if( !empty($partnerlist) && ($partnerlist['status']==0) ){
+            $message['status']=0;
+            $message['words']='该账号被禁用';
+            return json($message);
+        }
+
+        if( !empty($partnerlist) && ($partnerlist['status']==1) ){
+            $message['status']=0;
+            $message['words']='已经是合作者';
+            return json($message);
+        }
+
+        if( !empty($partnerlist) && ($partnerlist['status']==2) ){
+            $message['status']=0;
+            $message['words']='已申请，正在审核中...';
+            return json($message);
+        }
+
+        if( !empty($partnerlist) && ($partnerlist['status']==3) ){
+            $message['status']=0;
+            $message['words']='该账号不支持该业务';
+            return json($message);
+        }
+
+        // 入库操作
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
+        try {
+            // 新增广告屏合作商
+            $data['user_id'] = $param['user_id'];
+            $data['create_time'] = time();
+            $data['status'] = 2;
+            $res[0] = $id = Db::name('user_partner')->insert($data);
+
+            // 更新用户角色集合role_ids（新增广告屏合作商角色）
+            $user = model('User')->field('role_ids')->find($param['user_id']);
+            $roleIds = explode(',', $user['role_ids']);
+            if (!in_array(2, $roleIds)) {
+                array_push($roleIds, 2); // 新增广告屏合作商角色
+            }
+            $data1['role_ids'] = implode(',', $roleIds);
+            $res[1] = Db::name('user')->where(['user_id' => $param['user_id']])->update($data1);
+
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return show(config('code.error'), '申请失败', '', 403);
+            }
+
+            // 提交事务
+            Db::commit();
+            return show(config('code.success'), '申请成功', '', 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return show(config('code.error'), '网络忙，请重试', '', 500);
+        }
+        /* 手动控制事务 e */
+    }
+
+    /**
+     * 申请成为店家
+     * @return \think\response\Json
+     */
+    public function applyShopkeeper(){
+        // 传入的参数
+        $param = input();
+
+        //通过邀请码查询业务员id
+        $matchcode['invitation_code'] = $param['invitation_code'];
+        $matchcode['role_id'] = 6;
+        $salesmanlist = Db::name('user_salesman')->where($matchcode)->find();
+        //验证邀请码是否存在
+        if(!empty($salesmanlist)){
+            $data['salesman_id'] = $salesmanlist['id'];
+        }else{
+            $message['status'] = 0;
+            $message['words'] = '认证码不正确';
+            return json($message);
+        }
+
+        //判断是否重复申请
+        $matchuserid['user_id'] = $param['user_id'];
+        $partnerlist = Db::name('user_shopkeeper')->where($matchuserid)->find();
+
+        if(!empty($partnerlist) && ($partnerlist['status'] == 0) ){
+            $message['status'] = 0;
+            $message['words'] = '该账号被禁用';
+            return json($message);
+        }
+
+        if(!empty($partnerlist) && ($partnerlist['status'] == 1) ){
+            $message['status'] = 0;
+            $message['words'] = '已经是店家';
+            return json($message);
+        }
+
+        if(!empty($partnerlist) && ($partnerlist['status'] == 2) ){
+            $message['status'] = 0;
+            $message['words'] = '已申请，正在审核中...';
+            return json($message);
+        }
+
+        if(!empty($partnerlist) && ($partnerlist['status'] == 3) ){
+            $message['status'] = 0;
+            $message['words'] = '该账号不支持该业务';
+            return json($message);
+        }
+
+        // 入库操作
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
+        try {
+            // 新增店家
+            $data['user_id'] = $param['user_id'];
+            $data['create_time'] = time();
+            $data['status'] = 2;
+            $res[0] = $id = Db::name('user_shopkeeper')->insert($data);
+
+            // 更新用户角色集合role_ids（新增店家角色）
+            $user = model('User')->field('role_ids')->find($param['user_id']);
+            $roleIds = explode(',', $user['role_ids']);
+            if (!in_array(3, $roleIds)) {
+                array_push($roleIds, 3); // 新增店家角色
+            }
+            $data1['role_ids'] = implode(',', $roleIds);
+            $res[1] = Db::name('user')->where(['user_id' => $param['user_id']])->update($data1);
+
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return show(config('code.error'), '申请失败', '', 403);
+            }
+
+            // 提交事务
+            Db::commit();
+            return show(config('code.success'), '申请成功', '', 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return show(config('code.error'), '网络忙，请重试', '', 500);
+        }
+        /* 手动控制事务 e */
     }
 }

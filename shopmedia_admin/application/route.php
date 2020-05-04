@@ -100,9 +100,9 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');
-Route::post('api/applyPartner', 'api/User/applyPartner');
-Route::post('api/applyShop', 'api/User/applyShop');
-Route::post('api/getRole', 'api/User/getRole');
+Route::post('api/apply_partner', 'api/User/applyPartner');
+Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper');
+Route::post('api/get_user_role', 'api/User/getUserRole');
 
 // 业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
