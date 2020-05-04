@@ -1,5 +1,5 @@
 <template>
-	<div class="news">
+	<div class="feedback">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">

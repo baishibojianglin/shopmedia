@@ -28,7 +28,7 @@
 			</div>
 			<div class="">
 				<!-- 广告列表 s -->
-				<el-table :data="adList" empty-text="数据加载中…" border style="width: 100%">
+				<el-table :data="adList" empty-text="数据加载中…" max-height="500" border style="width: 100%">
 					<el-table-column prop="ad_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="ad_name" label="广告名称" fixed min-width="120"></el-table-column>
 					<el-table-column prop="ad_cate_name" label="广告类别" width="120"></el-table-column>

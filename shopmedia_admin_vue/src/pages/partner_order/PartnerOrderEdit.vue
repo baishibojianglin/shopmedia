@@ -18,17 +18,17 @@
 					<el-form-item prop="order_price" label="订单价格/元">
 						<el-input-number v-model="form.order_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
 					</el-form-item>
+					<el-form-item prop="pay_status" label="支付状态">
+						<el-radio-group v-model="form.pay_status" @change="payStatusChange">
+							<el-radio :label="0">未支付</el-radio>
+							<el-radio :label="1">已支付</el-radio>
+						</el-radio-group>
+					</el-form-item>
 					<el-form-item prop="order_status" label="订单状态">
 						<el-radio-group v-model="form.order_status" @change="orderStatusChange">
 							<el-radio :label="0">未付款</el-radio>
 							<el-radio :label="1">已完成</el-radio>
 							<el-radio :label="2">取消</el-radio>
-						</el-radio-group>
-					</el-form-item>
-					<el-form-item prop="pay_status" label="支付状态">
-						<el-radio-group v-model="form.pay_status" @change="payStatusChange">
-							<el-radio :label="0">未支付</el-radio>
-							<el-radio :label="1">已支付</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item>
@@ -92,18 +92,18 @@
 			},
 			
 			/**
-			 * 改变订单状态
-			 * @param {Object} value
-			 */
-			orderStatusChange(value) {
-				this.form.pay_status = value == 1 ? 1 : 0;
-			},
-			/**
 			 * 改变支付状态
 			 * @param {Object} value
 			 */
 			payStatusChange(value) {
 				this.form.order_status = value == 1 ? 1 : 0;
+			},
+			/**
+			 * 改变订单状态
+			 * @param {Object} value
+			 */
+			orderStatusChange(value) {
+				this.form.pay_status = value == 1 ? 1 : 0;
 			},
 			
 			/**
