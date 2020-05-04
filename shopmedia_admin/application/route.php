@@ -63,6 +63,8 @@ Route::resource('ad', 'admin/Ad');
 // 广告类别
 Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（不分页）
 
+// 店家店铺
+Route::resource('shop', 'admin/Shop');
 // 店铺类别
 Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
 
@@ -70,6 +72,9 @@ Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列�
 Route::resource('news', 'admin/News');
 // 新闻类别
 Route::resource('news_cate', 'admin/NewsCate');
+
+// 用户反馈
+Route::resource('feedback', 'admin/Feedback');
 
 
 /* -------------------- 后台管理系统路由 -------------------- e */
@@ -97,9 +102,9 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');
-Route::post('api/applyPartner', 'api/User/applyPartner');
-Route::post('api/applyShop', 'api/User/applyShop');
-Route::post('api/getRole', 'api/User/getRole');
+Route::post('api/apply_partner', 'api/User/applyPartner');
+Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper');
+Route::post('api/get_user_role', 'api/User/getUserRole');
 
 // 业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');

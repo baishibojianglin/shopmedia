@@ -35,12 +35,12 @@ class Feedback extends AuthBase
             // 入库操作
             try {
                 // 新增反馈
-                $id = model('Feedback')->save($data, 'id');
+                $id = model('Feedback')->add($data, 'id');
             } catch (\Exception $e) {
                 return show(config('code.error'), $e->getCode().'网络忙，请重试', '', 500); // $e->getMessage()
             }
             if ($id) {
-                return show(config('code.success'), '反馈成功', $data['order_sn'], 201);
+                return show(config('code.success'), '反馈成功', '', 201);
             } else {
                 return show(config('code.error'), '反馈失败', '', 403);
             }

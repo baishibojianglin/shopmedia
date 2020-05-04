@@ -51,7 +51,7 @@
 				   applyPartner(){
 					   let self=this;
 						uni.request({
-									url: this.$serverUrl + 'api/applyPartner',
+									url: this.$serverUrl + 'api/apply_partner',
 									data: {
 										user_id:this.userInfo.user_id,
 										invitation_code:this.applycode

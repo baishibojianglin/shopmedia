@@ -140,7 +140,6 @@
 				let self = this;
 				this.$axios.get(this.$url + 'news/' + this.form.news_id)
 				.then(function(res) {
-					console.log(123, res)
 					if (res.data.status == 1) {
 						// 新闻信息
 						self.form = res.data.data;

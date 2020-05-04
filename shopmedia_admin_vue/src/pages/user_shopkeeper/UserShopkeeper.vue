@@ -60,8 +60,9 @@
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
 					<el-table-column prop="login_ip" label="登录IP" width="120"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="160">
+					<el-table-column label="操作" fixed="right" min-width="210">
 						<template slot-scope="scope">
+							<el-button type="infor" size="mini" plain @click="toShopList(scope.row)">店铺</el-button>
 							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
 						</template>
@@ -229,6 +230,20 @@
 						type: 'info',
 						message: '已取消删除'
 					});
+				});
+			},
+			
+			/**
+			 * 跳转店家店铺列表页
+			 * @param {Object} row
+			 */
+			toShopList(row) {
+				this.$router.push({
+					path: "shop",
+					query: {
+						shopkeeper_id: row.shopkeeper_id,
+						user_name: row.user_name
+					}
 				});
 			}
 		}

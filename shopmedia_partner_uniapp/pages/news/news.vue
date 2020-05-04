@@ -7,7 +7,7 @@
 		<view class="uni-list">
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in listData" :key="key" @click="goDetail(value)">
 				<view class="uni-media-list">
-					<image class="uni-media-list-logo" :src="value.thumb"></image>
+					<!-- <image class="uni-media-list-logo" :src="value.thumb"></image> -->
 					<view class="uni-media-list-body">
 						<view class="uni-media-list-text-top">{{ value.title }}</view>
 						<view class="uni-media-list-text-bottom">

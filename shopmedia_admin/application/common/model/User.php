@@ -98,7 +98,7 @@ class User extends Base
         $order = ['u.user_id' => 'asc'];
 
         $result = $this->alias('u')
-            ->field(array_merge($this->_getListField(), ['us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'pu.user_name parent_name']))
+            ->field(array_merge($this->_getListField(), ['us.id shopkeeper_id', 'us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'pu.user_name parent_name']))
             ->join('__USER_SHOPKEEPER__ us', 'u.user_id = us.user_id') // 店家
             ->join('__USER_ROLE__ ur', 'us.role_id = ur.id and us.role_id = 3') // 角色
             ->join('__USER_SALESMAN__ usm', 'us.salesman_id = usm.id', 'LEFT') // 店家业务员

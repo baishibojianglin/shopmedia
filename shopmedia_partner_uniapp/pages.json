@@ -38,15 +38,15 @@
 				"navigationBarTitleText": "商市通店通传媒"
 			}
 		},
-		{   //申请成为广告屏合作者
+		{ // 申请成为广告屏合作商
 			"path": "pages/user/apply-partner",
 			"style": {
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "广告屏合作申请"
 			}
 		},
-		{   //申请成为广告屏合作者
-			"path": "pages/user/apply-shop",
+		{ // 申请成为店家
+			"path": "pages/user/apply-shopkeeper",
 			"style": {
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "店铺安装合作申请"
@@ -201,6 +201,12 @@
 						}]
 					}
 				}
+			}
+        }
+        ,{ // 用户反馈
+            "path" : "pages/feedback/feedback",
+            "style" : {
+				"navigationBarTitleText": "意见反馈"
 			}
         }
     ],

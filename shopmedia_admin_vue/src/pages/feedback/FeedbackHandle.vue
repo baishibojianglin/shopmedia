@@ -1,9 +1,9 @@
 <template>
-	<div class="partner_order_edit">
+	<div class="feedback_handle">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑合作商订单</span></el-col>
+					<el-col :span="6"><span>更新用户反馈状态</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -12,23 +12,18 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item prop="order_sn" label="订单编号">
-						<el-input v-model="form.order_sn" disabled style="width:350px;"></el-input>
+					<el-form-item prop="user_name" label="用户名称">
+						<el-input v-model="form.user_name" readonly style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="order_price" label="订单价格/元">
-						<el-input-number v-model="form.order_price" :min="0" :step="1" :precision="2" controls-position="right"></el-input-number>
+					<el-form-item prop="phone" label="用户电话">
+						<el-input v-model="form.phone" readonly style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="pay_status" label="支付状态">
-						<el-radio-group v-model="form.pay_status" @change="payStatusChange">
-							<el-radio :label="0">未支付</el-radio>
-							<el-radio :label="1">已支付</el-radio>
-						</el-radio-group>
+					<el-form-item prop="content" label="反馈内容">
+						<el-input type="textarea" :rows="5" v-model="form.content" readonly></el-input>
 					</el-form-item>
-					<el-form-item prop="order_status" label="订单状态">
-						<el-radio-group v-model="form.order_status" @change="orderStatusChange">
-							<el-radio :label="0">未付款</el-radio>
-							<el-radio :label="1">已完成</el-radio>
-							<el-radio :label="2">取消</el-radio>
+					<el-form-item prop="status" label="反馈处理状态">
+						<el-radio-group v-model="form.status">
+							<el-radio v-for="(item, index) in {0: '待处理', 1: '已处理', 2: '处理中'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item>
@@ -46,35 +41,37 @@
 	export default {
 		data() {
 			return {
-				form: {},
+				form: {
+					status: '' // 反馈处理状态
+				},
 				rules: { // 验证规则
-					/* order_price: [
-						{ required: true, message: '请输入订单价格', trigger: 'blur' }
-					] */
+					status: [
+						{ required: true, message: '请选择反馈处理状态', trigger: 'change' }
+					]
 				}
 			}
 		},
 		created() {
 			this.getParams();
-			this.getPartnerOrder(); // 获取指定的订单信息
+			this.getFeedback(); // 获取指定的用户反馈信息
 		},
 		methods: {
 			/**
 			 * 获取路由带过来的参数
 			 */
 			getParams() {
-				this.form.order_id = this.$route.query.order_id;
+				this.form.id = this.$route.query.id;
 			},
 			
 			/**
-			 * 获取指定的订单信息
+			 * 获取指定的用户反馈信息
 			 */
-			getPartnerOrder() {
+			getFeedback() {
 				let self = this;
-				this.$axios.get(this.$url + 'partner_order/' + this.form.order_id)
+				this.$axios.get(this.$url + 'feedback/' + this.form.id)
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 用户反馈信息
 						self.form = res.data.data;
 					} else {
 						self.$message({
@@ -92,33 +89,16 @@
 			},
 			
 			/**
-			 * 改变支付状态
-			 * @param {Object} value
-			 */
-			payStatusChange(value) {
-				this.form.order_status = value == 1 ? 1 : 0;
-			},
-			/**
-			 * 改变订单状态
-			 * @param {Object} value
-			 */
-			orderStatusChange(value) {
-				this.form.pay_status = value == 1 ? 1 : 0;
-			},
-			
-			/**
-			 * 编辑订单提交表单
+			 * 更新用户反馈处理状态提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'partner_order/' + this.form.order_id, {
+						this.$axios.put(this.$url + 'feedback/' + this.form.id, {
 							// 参数
-							order_price: this.form.order_price,
-							order_status: this.form.order_status,
-							pay_status: this.form.pay_status
+							status: this.form.status
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';
@@ -133,7 +113,6 @@
 								message: error.response.data.message,
 								type: 'warning'
 							});
-							self.resetForm('ruleForm'); // 提交失败，重置表单
 						});
 					} else {
 						self.$message({
@@ -151,7 +130,7 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
-				this.getPartnerOrder();
+				this.getFeedback();
 			},
 			
 			/**

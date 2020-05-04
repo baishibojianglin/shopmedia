@@ -46,6 +46,9 @@ import PartnerDeviceEdit from '@/pages/partner_device/PartnerDeviceEdit.vue'
 // 用户（店家）管理
 import UserShopkeeper from '@/pages/user_shopkeeper/UserShopkeeper.vue'
 import UserShopkeeperEdit from '@/pages/user_shopkeeper/UserShopkeeperEdit.vue'
+// 店家店铺
+import Shop from '@/pages/shop/Shop.vue'
+import ShopEdit from '@/pages/shop/ShopEdit.vue'
 // 广告管理
 import Ad from '@/pages/ad/Ad.vue'
 import AdCreate from '@/pages/ad/AdCreate.vue'
@@ -58,6 +61,9 @@ import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
 import News from '@/pages/news/News.vue'
 import NewsCreate from '@/pages/news/NewsCreate.vue'
 import NewsEdit from '@/pages/news/NewsEdit.vue'
+// 用户反馈
+import Feedback from '@/pages/feedback/Feedback.vue'
+import FeedbackHandle from '@/pages/feedback/FeedbackHandle.vue'
 
 Vue.use(VueRouter)
 
@@ -118,6 +124,9 @@ const routes = [
 			// 2--用户（店家）管理
 			{path: 'user_shopkeeper', name: 'user_shopkeeper', component: UserShopkeeper}, // 用户列表
 			{path: 'user_shopkeeper_edit', name: 'user_shopkeeper_edit', component: UserShopkeeperEdit}, // 编辑用户
+			// 2--店家店铺
+			{path: 'shop', name: 'shop', component: Shop}, // 店家店铺列表
+			{path: 'shop_edit', name: 'shop_edit', component: ShopEdit}, // 编辑店家店铺
 			// 2--广告管理
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告
@@ -130,6 +139,9 @@ const routes = [
 			{path: 'news', name: 'news', component: News}, // 新闻列表
 			{path: 'news_create', name: 'news_create', component: NewsCreate}, // 新增新闻
 			{path: 'news_edit', name: 'news_edit', component: NewsEdit}, // 编辑新闻
+			// 2--用户反馈
+			{path: 'feedback', name: 'feedback', component: Feedback}, // 用户反馈列表
+			{path: 'feedback_handle', name: 'feedback_handle', component: FeedbackHandle}, // 处理用户反馈
 		]
 	}
 ]

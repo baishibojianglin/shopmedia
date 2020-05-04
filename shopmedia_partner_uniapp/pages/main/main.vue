@@ -54,9 +54,11 @@
 							</navigator>
 						</view>
 						<view class="navcon-item">
-							<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
-							<br/>
-							<text>投诉建议</text>
+							<navigator url="/pages/feedback/feedback">
+								<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
+								<br/>
+								<text>投诉建议</text>
+							</navigator>
 						</view>
 			</view>
 
@@ -224,7 +226,7 @@
 							success: function (res) {
 								if (res.confirm) {
 								  uni.navigateTo({
-									  url: "../user/apply-shop"
+									  url: "../user/apply-shopkeeper"
 								  });  
 								}else if(res.cancel) {
 
@@ -281,7 +283,7 @@
 				let self=this;
 				//获取角色信息
 				uni.request({
-					url: this.$serverUrl + 'api/getRole',
+					url: this.$serverUrl + 'api/get_user_role',
 					data: {
 						user_id:this.userInfo.user_id,
 					},

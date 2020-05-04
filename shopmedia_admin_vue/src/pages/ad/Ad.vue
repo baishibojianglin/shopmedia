@@ -28,7 +28,7 @@
 			</div>
 			<div class="">
 				<!-- 广告列表 s -->
-				<el-table :data="adList" empty-text="数据加载中…" border style="width: 100%">
+				<el-table :data="adList" empty-text="数据加载中…" max-height="500" border style="width: 100%">
 					<el-table-column prop="ad_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="ad_name" label="广告名称" fixed min-width="120"></el-table-column>
 					<el-table-column prop="ad_cate_name" label="广告类别" width="120"></el-table-column>
@@ -59,9 +59,9 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toAdEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteAd(scope)">删除</el-button>
+							<el-button type="primary" size="mini" plain @click="toAdEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
+							<el-button type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
+							<el-button type="danger" size="mini" plain @click="deleteAd(scope)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
