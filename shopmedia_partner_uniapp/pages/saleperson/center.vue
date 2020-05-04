@@ -40,7 +40,7 @@
                     <button class="butred workbutton">智能屏业务</button>
                 </navigator>
 				
-				<navigator url="./index" hover-class="navigator-hover">
+				<navigator url="./shop" hover-class="navigator-hover">
 				    <button class="butblue workbutton">店铺业务</button>
 				</navigator>
 				

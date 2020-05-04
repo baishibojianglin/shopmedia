@@ -70,6 +70,15 @@
 				"navigationBarTitleText": "智能广告屏分布"
 			}
 		},
+		{ // 上传店铺
+			"path": "pages/saleperson/shop",
+			"style": {
+				"app-plus": {
+					"titleNView": true
+				},
+				"navigationBarTitleText": "上传店铺"
+			}
+		},
 		{ // 业务员设备详情
 			"path": "pages/saleperson/device",
 			"style": {
