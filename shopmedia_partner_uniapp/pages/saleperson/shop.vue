@@ -3,6 +3,10 @@
 
 		<view>
 			<view class="input-line-height">
+				<text class="input-line-height-1">电话</text>
+				<input class="input-line-height-2" type="text" :focus="true" v-model="phone" placeholder="输入店家手机号码" />
+			</view>
+			<view class="input-line-height">
 				<text class="input-line-height-1">店名</text>
 				<input class="input-line-height-2" type="text" :focus="true" v-model="shop_name" />
 			</view>
@@ -52,7 +56,7 @@
 		</view>
 
 		<view>
-			<button class="login-button" @click="submitShopinfo">上 传</button>
+			<button class="login-button" @click="submitShopInfo">上 传</button>
 		</view>
 		
 	</view>
@@ -66,14 +70,15 @@
 		components: {},
 		data() {
 			return {
-				shop_name:'',//店名
-				cate:'',//店铺分类
-				shop_area:'',//店铺面积
-				address:'',//店铺位置
-				latitude:'',//纬度
-				longitude:'',//经度
-				image:[],//实景图片
-				imagelist:[],
+				phone: '', // 店家电话号码
+				shop_name: '', // 店名
+				cate: '', // 店铺分类
+				shop_area: '', // 店铺面积
+				address: '', // 店铺位置
+				longitude: '', // 经度
+				latitude: '', // 纬度
+				image: [], // 实景图片
+				imagelist: [],
 				
 				shopCateList: [], // 店铺类别列表
 				shopCateIndex: 0
@@ -113,13 +118,31 @@
             /**
 			 * 上传店铺信息
 			 */			
-			submitShopinfo(){
+			submitShopInfo(){
+				// 验证表单
+				if (this.phone == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入手机号码'
+					});
+					return false;
+				}
+				if (!this.phone.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|16[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) {
+					uni.showToast({
+						icon: 'none',
+						title: '手机号不正确'
+					});
+					return false;
+				}
+				
+				// 请求接口
 				uni.request({
 					url: this.$serverUrl + 'api/shop',
 					data: {
-						user_id: this.userInfo.user_id,
+						user_id: this.userInfo.user_id, // 业务员所属用户ID
+						phone: this.phone,
 						shop_name: this.shop_name,
-						cate: this.cate,
+						cate: this.cate = this.shopCateList[this.shopCateIndex].cate_id, // 选中的店铺类别ID
 						address: this.address,
 						longitude: this.longitude,
 						latitude: this.latitude,
@@ -131,7 +154,7 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(123, res)
+						console.log(123, res);return;
 						if (res.statusCode == 201 && res.data.status == 1) {
 							uni.showModal({
 								title: res.data.message,
@@ -250,7 +273,7 @@
 			 */
 			bindShopCatePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.shopCateIndex = e.target.value
+				this.shopCateIndex = e.target.value;
 			}
 		}
 	}
