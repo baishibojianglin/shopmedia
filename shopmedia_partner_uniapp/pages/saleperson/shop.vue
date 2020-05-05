@@ -143,6 +143,7 @@
 						phone: this.phone,
 						shop_name: this.shop_name,
 						cate: this.cate = this.shopCateList[this.shopCateIndex].cate_id, // 选中的店铺类别ID
+						shop_area: this.shop_area,
 						address: this.address,
 						longitude: this.longitude,
 						latitude: this.latitude,
@@ -154,7 +155,6 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(123, res);return;
 						if (res.statusCode == 201 && res.data.status == 1) {
 							uni.showModal({
 								title: res.data.message,

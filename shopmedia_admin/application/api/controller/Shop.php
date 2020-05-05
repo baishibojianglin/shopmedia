@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use app\common\lib\IAuth;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -37,10 +38,21 @@ class Shop extends AuthBase
                 return show(config('code.error'), '用户未开通店家业务员角色', '', 403);
             }
 
-
-            // 2.3 判断店铺数据
-
-            return show(config('code.success'), '新增成功', $data, 201);
+            // 2.3 TODO：判断店铺数据
+            // 处理数据
+            $data['image'] = json_encode($data['image']);
+            // 创建店铺数据（公共部分）
+            $shopData = [
+                'shop_name' => trim($data['shop_name']),
+                'cate' => intval($data['cate']),
+                'shop_area' => floatval($data['shop_area']),
+                'address' => trim($data['address']),
+                'longitude' => floatval($data['longitude']),
+                'latitude' => floatval($data['latitude']),
+                'shop_pic' => $data['image'],
+                'status' => config('code.status_enable'),
+                'create_time' => time()
+            ];
 
             // 3 入库操作
             /* 手动控制事务 s */
@@ -54,23 +66,22 @@ class Shop extends AuthBase
                 $shopkeeper = Db::name('user_shopkeeper')->where(['user_id' => $shopkeeperUser['user_id']])->find();
                 if ($shopkeeperUser && $shopkeeper) { // 店家及店家所属用户均存在，则只创建店铺
                     // 创建店铺
-                    /*$shopData = [
-                        'shop_name' => trim($data['shop_name']),
-                        'shop_area' =>
-                    ];*/
-                    $res[0] = Db::name('shop')->insertGetId();
-                } else { // 店家所属用户不存在，则创建用户
+                    $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
+                    $shopData['shopkeeper_id'] = $shopkeeper['id']; // 店铺所属店家ID
+                    $res[0] = Db::name('shop')->insertGetId($shopData);
+                } elseif (!$shopkeeperUser) { // 店家所属用户不存在，店家一定不存在，则创建店家所属用户、店家及店铺
                     // 创建店家所属用户
                     $shopkeeperUserData = [
                         'user_name' => 'Sustock-' . trim($data['phone']), // 定义默认用户名
                         'role_ids' => 3, // 用户角色ID
                         'phone' => trim($data['phone']),
                         'phone_verified' => 1,
+                        'password' => IAuth::encrypt(trim($data['phone'])),
                         'status' => config('code.status_enable'),
                         'create_time' => time(), // 创建时间
                         'create_ip' => request()->ip() // 创建IP
                     ];
-                    $res[0] = $shopkeeperUserID = Db::name('user')->strict(true)->insertGetId($shopkeeperUserData);
+                    $res[1] = $shopkeeperUserID = Db::name('user')->strict(true)->insertGetId($shopkeeperUserData);
 
                     // 创建店家
                     $shopkeeperData = [
@@ -79,36 +90,42 @@ class Shop extends AuthBase
                         'status' => config('code.status_enable'),
                         'create_time' => time()
                     ];
-                    $res[1] = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
+                    $res[2] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
+
+                    // 创建店铺
+                    $shopData['user_id'] = $shopkeeperUserID; // 店家所属用户ID
+                    $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
+                    $res[3] = Db::name('shop')->insertGetId($shopData);
+                } elseif (!$shopkeeper) { // 店家所属用户存在，但店家不存在时，则创建店家及店铺
+                    // 创建店家
+                    $shopkeeperData = [
+                        'user_id' => $shopkeeperUser['user_id'],
+                        'salesman_id' => $salesman['id'],
+                        'status' => config('code.status_enable'),
+                        'create_time' => time()
+                    ];
+                    $res[4] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
+
+                    // 创建店铺
+                    $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
+                    $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
+                    $res[5] = Db::name('shop')->insertGetId($shopData);
                 }
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                 if (in_array(0, $res)) {
-                    return show(config('code.error'), '供应商账户新增失败', '', 403);
+                    return show(config('code.error'), '店铺创建失败', '', 403);
                 }
 
                 // 提交事务
                 Db::commit();
-                return show(config('code.success'), '供应商账户新增成功', '', 201);
+                return show(config('code.success'), '店铺创建成功', '', 201);
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
                 return show(config('code.error'), '网络忙，请重试', '', 500);
             }
             /* 手动控制事务 e */
-
-            // 入库操作
-            try {
-                // 新增反馈
-                $id = model('Shop')->add($data, 'shop_id');
-            } catch (\Exception $e) {
-                return show(config('code.error'), $e->getCode().'网络忙，请重试', '', 500); // $e->getMessage()
-            }
-            if ($id) {
-                return show(config('code.success'), '新增成功', '', 201);
-            } else {
-                return show(config('code.error'), '新增失败', '', 403);
-            }
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }
