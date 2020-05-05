@@ -9,11 +9,11 @@
 	
 	export default {
 		beforeMount() { // 在实例挂载开始之前被调用
-			this.checkLogin();
+			// this.checkLogin();
 		},
 		beforeUpdate() { // 数据更新时调用
 			this.commonHeaders();
-			this.checkLogin();
+			// this.checkLogin();
 		},
 		methods: {
 			/**

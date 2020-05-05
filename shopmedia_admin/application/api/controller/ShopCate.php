@@ -1,27 +1,17 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\api\controller;
 
 use think\Controller;
 use think\Request;
 
 /**
- * admin模块店铺类别管理控制器类
+ * api模块店铺类别管理控制器类
  * Class shopCate
- * @package app\admin\controller
+ * @package app\api\controller
  */
-class shopCate extends Base
+class shopCate extends Common
 {
-    /**
-     * 显示店铺类别资源列表
-     *
-     * @return \think\Response
-     */
-    public function index()
-    {
-        
-    }
-
     /**
      * 店铺类别列表（不分页，用于 Select 选择器等）
      * @return \think\response\Json

@@ -1,7 +1,6 @@
 <template>
 	<view class="uni-padding-wrap">
 
-
 		<view>
 			<view class="input-line-height">
 				<text class="input-line-height-1">店名</text>
@@ -9,10 +8,10 @@
 			</view>
 			<view class="input-line-height" >
 				<text class="input-line-height-1">类型</text>
-                <picker @change="catebindPickerChange" class="input-line-height-2" :value="cate_picker.index" :range="cate_picker.array">
-                     <view style="font-size: 16px;">{{cate_picker.array[cate_picker.index]}}</view>
-					 <input v-show="false" type="text" v-model="cate" />
-                </picker>
+				<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateList[shopCateIndex].cate_id" :range="shopCateList" range-key="cate_name">
+					<view style="font-size: 16px;">{{shopCateList[shopCateIndex].cate_name}}</view>
+					<input v-show="false" type="text" v-model="cate" />
+				</picker>
 			</view>
 			<view class="input-line-height">
 				<text class="input-line-height-1">面积：</text>
@@ -44,21 +43,18 @@
 			</view>		
 			
 			<view class="navcon">
-				<view  v-for="(value,index) in imagelist" class="navcon-item">
+				<view v-for="(value, index) in imagelist" :key="index" class="navcon-item">
 					<image style="width:95%; height:100px;"  :src="value"></image>
 					<text class="iconposition icon color-gray" @click="deleimg(index)">&#xe65e;</text>
 				</view>
 			</view>
-		
 			
 		</view>
 
 		<view>
-			<button class="login-button" @click="shopinfo">上 传</button>
+			<button class="login-button" @click="submitShopinfo">上 传</button>
 		</view>
-
-
- 
+		
 	</view>
 </template>
 
@@ -78,21 +74,88 @@
 				longitude:'',//经度
 				image:[],//实景图片
 				imagelist:[],
-				cate_picker:{
-					array: ['茶楼','服装','餐饮','商超','美容美发','足浴','生鲜','鞋包'],
-					index:0	
-				}
+				
+				shopCateList: [], // 店铺类别列表
+				shopCateIndex: 0
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
+			this.getShopCateList();
 		},
 		methods: {
+			/**
+			 * 获取店铺类别列表
+			 */
+			getShopCateList() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/shop_cate_list',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						if (res.data.status == 1) {
+							self.shopCateList = res.data.data;
+						}
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
+			},
+			
             /**
 			 * 上传店铺信息
 			 */			
-			shopinfo(){
-
+			submitShopinfo(){
+				uni.request({
+					url: this.$serverUrl + 'api/shop',
+					data: {
+						user_id: this.userInfo.user_id,
+						shop_name: this.shop_name,
+						cate: this.cate,
+						address: this.address,
+						longitude: this.longitude,
+						latitude: this.latitude,
+						image: this.image,
+					},
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'POST',
+					success: function(res) {
+						console.log(123, res)
+						if (res.statusCode == 201 && res.data.status == 1) {
+							uni.showModal({
+								title: res.data.message,
+								showCancel: false,
+								success() {
+									uni.switchTab({
+										url: '/pages/main/main'
+									});
+								}
+							});
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+						}
+					},
+					fail:function(error){
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
 			},
 			
             /**
@@ -183,15 +246,15 @@
 					}
 				});
 			},
-			/**
-			 * 下拉框选择的方法
-			 */
-			catebindPickerChange: function(e) {
-				//console.log('picker发送选择改变，携带值为', e.target.value)
-				this.cate_picker.index = e.target.value
-				this.cate=e.target.value
-			},
 
+			/**
+			 * 改变选择店铺类别
+			 * @param {Object} e
+			 */
+			bindShopCatePickerChange: function(e) {
+				// console.log('picker发送选择改变，携带值为', e.target.value)
+				this.shopCateIndex = e.target.value
+			}
 		}
 	}
 </script>

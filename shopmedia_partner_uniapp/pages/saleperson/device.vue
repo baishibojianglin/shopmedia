@@ -83,7 +83,7 @@
 			getCate(){
 			  let self=this;
 			  uni.request({
-			  	url: this.$serverUrl+'api/shopCateList',
+			  	url: this.$serverUrl+'api/shop_cate_list',
 			  	method:'GET',
 			  	header: {
 			  		'commonheader': this.commonheader,

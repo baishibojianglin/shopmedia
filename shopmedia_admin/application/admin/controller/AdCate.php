@@ -32,8 +32,7 @@ class AdCate extends Base
         $data = []; // 定义二维数组列表
         // 处理数据，将一维数组转成二维数组
         foreach ($adCate as $key => $value) {
-            $data[$key]['cate_id'] = $key;
-            $data[$key]['cate_name'] = $value;
+            $data[] = ['cate_id' => $key, 'cate_name' => $value];
         }
 
         return show(config('code.success'), 'OK', $data);
