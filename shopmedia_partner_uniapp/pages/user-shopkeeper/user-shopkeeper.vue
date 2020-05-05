@@ -7,7 +7,7 @@
 		</view>
 		
 		<view class="uni-common-mt mb">
-			<uni-card v-for="(item, index) in shopList" :key="index" is-shadow>
+			<uni-card v-for="(item, index) in shopList" :key="index" :note="(item.party_b_name && item.party_b_signature && item.sign_time) ? '' : 'Tips'" is-shadow>
 				<uni-list>
 					<uni-list-item :title="item.shop_name" :note="Number(item.device_list.length) != 0 ? '合计 ' + Number(item.device_list.length) + ' 台' : ''" rightText="导航" @click="openLocation(item.longitude, item.latitude)"></uni-list-item>
 					<uni-grid v-if="item.device_list.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
@@ -38,6 +38,12 @@
 						</uni-grid-item>
 					</uni-grid>
 				</uni-list>
+				
+				<template slot="footer">
+					<view class="footer-box">
+						<view @click.stop="footerClick(item)"> <button class="mini-btn" type="warn" size="mini" :plain="false">签署协议</button></view>
+					</view>
+				</template>
 			</uni-card>
 		</view>
 	</view>
@@ -66,6 +72,9 @@
 			this.userId = event.user_id;
 			this.roleId = event.role_id;
 			
+			this.getShopList();
+		},
+		onShow(){
 			this.getShopList();
 		},
 		methods: {
@@ -112,6 +121,16 @@
 					longitude: Number(longitude),
 					latitude: Number(latitude)
 				});
+			},
+			
+			/**
+			 * 跳转签署店铺合作协议页面
+			 * @param {Object} item
+			 */
+			footerClick(item) {
+				uni.navigateTo({
+					url: '/pages/shop/shop-agreement?shop=' + encodeURIComponent(JSON.stringify(item))
+				})
 			}
 		}
 	}
@@ -122,4 +141,14 @@
 		width: 100%;
 		height: 320rpx;
 	}
+	
+	/* uni-card s */
+	.footer-box {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		justify-content: flex-end;
+		flex-direction: row;
+	}
+	/* uni-card e */
 </style>

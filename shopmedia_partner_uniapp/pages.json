@@ -209,6 +209,19 @@
 				"navigationBarTitleText": "意见反馈"
 			}
         }
+        ,{ // 签署店铺合作协议
+            "path" : "pages/shop/shop-agreement",
+            "style" : {
+				"navigationBarTitleText": "店铺合作签约",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use app\common\lib\exception\ApiException;
 use app\common\lib\IAuth;
 use think\Controller;
 use think\Db;
@@ -127,6 +128,64 @@ class Shop extends AuthBase
             }
             /* 手动控制事务 e */
         } else {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+    }
+
+    /**
+     * 保存更新的店铺资源
+     * @param Request $request
+     * @param int $id
+     * @return \think\response\Json
+     * @throws ApiException
+     */
+    public function update(Request $request, $id)
+    {
+        // 判断为PUT请求
+        if (request()->isPut()) {
+            // 传入的参数
+            $param = input('param.');
+
+            // 判断数据是否存在
+            $data = [];
+            if (!empty($param['device_ids'])) {
+                $data['device_ids'] = trim($param['device_ids']);
+            }
+            if (!empty($param['device_quantity'])) {
+                $data['device_quantity'] = intval($param['device_quantity']);
+            }
+            if (!empty($param['device_price'])) {
+                $data['device_price'] = floatval($param['device_price']);
+            }
+            if (!empty($param['party_b_share'])) {
+                $data['party_b_share'] = floatval($param['party_b_share'] / 100);
+            }
+            if (!empty($param['party_b_name'])) {
+                $data['party_b_name'] = trim($param['party_b_name']);
+            }
+            if (!empty($param['party_b_signature'])) {
+                $data['party_b_signature'] = $param['party_b_signature'];
+            }
+
+            if (empty($data)) {
+                return show(config('code.error'), '数据不合法', '', 404);
+            }
+
+            // 签署时间
+            $data['sign_time'] = time();
+
+            // 更新
+            try {
+                $result = model('Shop')->save($data, ['shop_id' => $id]); // 更新
+            } catch (\Exception $e) {
+                throw new ApiException($e->getMessage(), 500, config('code.error'));
+            }
+            if (false === $result) {
+                return show(config('code.error'), '更新失败', '', 403);
+            } else {
+                return show(config('code.success'), '更新成功', '', 201);
+            }
+        }else {
             return show(config('code.error'), '请求不合法', '', 400);
         }
     }
