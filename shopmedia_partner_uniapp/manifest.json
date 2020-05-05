@@ -1,10 +1,6 @@
 {
     "name" : "shopmedia_partner_uniapp",
-<<<<<<< HEAD
-    "appid" : "__UNI__3E56CCC",
-=======
     "appid" : "",
->>>>>>> 6a0299e15ec076115d9e6e81c72a86d9a7c23ee2
     "description" : "登录模板",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -59,17 +55,6 @@
             "urlCheck" : false
         },
         "usingComponents" : true
-<<<<<<< HEAD
-    },
-    "mp-alipay" : {
-        "usingComponents" : true
-    },
-    "mp-baidu" : {
-        "usingComponents" : true
-    },
-    "mp-toutiao" : {
-        "usingComponents" : true
-=======
     },
     "mp-alipay" : {
         "usingComponents" : true
@@ -84,6 +69,5 @@
         "devServer" : {
             "https" : false
         }
->>>>>>> 6a0299e15ec076115d9e6e81c72a86d9a7c23ee2
     }
 }
