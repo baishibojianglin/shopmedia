@@ -105,12 +105,12 @@ function uploadimage($info)
 function deleteimage($data)
 {
     // 阿里云RAM账号AccessKey
-    $accessKeyId = "LTAI4FkCSGwQHirzGvdvWqiG";
-    $accessKeySecret = "ACpMHxZXPkkl23ont4mQfzjCZKtL3L";
+    $accessKeyId = "LTAI4Fu2RQ1sZsL55xAgNZhs";
+    $accessKeySecret = "srZezsN1ZQ1WkP8DFsH6gs09JBXL74";
     // Endpoint以成都为例，其它Region请按实际情况填写。
     $endpoint = "http://oss-cn-chengdu.aliyuncs.com";
     // 存储空间名称
-    $bucket = "goodshopimages";
+    $bucket = "sustock-app";
     // 文件名称
     $object =$data['name'];
 
