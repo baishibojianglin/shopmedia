@@ -82,7 +82,7 @@
 			<view class="sign-con-item">
 				<view class="blod">甲方（公章）：</view>
 				<view>
-					<image :src="gz" mode="aspectFill" style="width:100%;"></image>
+					<image :src="gz"  style="width:120px;height:120px;"></image>
 				</view>
 			</view>
 			<view class="sign-con-item">
@@ -275,14 +275,14 @@
 				if (e.index == 0) {
 					uni.showModal({
 						title: `${e.content.text}`,
-						content: '我已阅读并同意《广告屏合作协议》，确认合作。（如有疑问，请联系客服。）',
-						cancelText: '联系客服',
+						content: '确认合作经营店通智能屏',
+						cancelText: '取消',
 						success: function(res) {
 							if (res.confirm) {
 								self.createOrder();
 							}
 							if (res.cancel) {
-								self.callPhone(self.csPhone);
+								//self.callPhone(self.csPhone);
 							}
 						}
 					});
@@ -331,6 +331,9 @@
 								icon: 'none',
 								title: res.data.message
 							});
+							uni.switchTab({  
+								url:"../main/main"	  
+							});   
 						} else {
 							uni.showModal({
 								title: '提交失败',

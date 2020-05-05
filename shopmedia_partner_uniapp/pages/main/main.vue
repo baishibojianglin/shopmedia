@@ -29,28 +29,28 @@
 						<view class="navcon-item" @click="usead()">
 							<text class="iconposition icon color-blue iconbg">&#xe636;</text>
 							<br/>
-							<text>广告咨询</text>
+							<text>投放广告</text>
 						</view>
 						<view @click="toRole(2)" class="navcon-item">
 							<text class="iconposition icon color-red iconbg">&#xe637;</text>
 							<br/>
-							<text>合作广告屏</text>
+							<text>广告屏合作</text>
 						</view>
 						<view @click="toRole(3)" class="navcon-item">
 							<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
 							<br/>
-							<text>我的店铺</text>
+							<text>店铺合作</text>
 						</view>
 						<view @click="toRole(1)" class="navcon-item">
 							<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
 							<br/>
-							<text>业务参与</text>
+							<text>业务员</text>
 						</view>
 						<view class="navcon-item">
 							<navigator url="/pages/news/news">
 								<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
 								<br/>
-								<text>店通快讯</text>
+								<text>店通资讯</text>
 							</navigator>
 						</view>
 						<view class="navcon-item">

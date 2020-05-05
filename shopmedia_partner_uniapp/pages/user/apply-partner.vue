@@ -46,7 +46,7 @@
 		},
 		methods: {
 				   /**
-					* 获取认证码
+					* 提交申请
 				   */
 				   applyPartner(){
 					   let self=this;
