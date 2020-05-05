@@ -15,8 +15,6 @@
 			</view>
 		</view>
 
-
-
 		<view>
 			<button class="login-button bg-main-color" @click="bindLogin">登 录</button>
 		</view>
@@ -34,8 +32,6 @@
 				<navigator url="../pwd/pwd">忘记密码</navigator>
 			</view>
 		</view>
-		
-		
  
 	</view>
 </template>

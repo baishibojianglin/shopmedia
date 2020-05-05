@@ -109,7 +109,6 @@ Route::post('api/get_user_role', 'api/User/getUserRole');
 // 业务员
 Route::get('api/getMarkers','api/Saleperson/getMarkers');
 Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
-Route::get('api/shopCateList','api/Saleperson/shopCateList');
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
 Route::get('api/getMoney', 'api/UserSalesman/getMoney');
 Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');
@@ -123,6 +122,11 @@ Route::resource('api/partner_order', 'api/PartnerOrder');
 // 用户（店家）
 Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
 Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
+
+// 店家店铺
+Route::resource('api/shop', 'api/Shop');
+// 店铺类别
+Route::get('api/shop_cate_list', 'api/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
 
 // 新闻
 Route::resource('api/news', 'api/News');

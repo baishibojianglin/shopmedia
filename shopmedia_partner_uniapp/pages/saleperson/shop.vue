@@ -1,18 +1,21 @@
 <template>
 	<view class="uni-padding-wrap">
 
-
 		<view>
+			<view class="input-line-height">
+				<text class="input-line-height-1">电话</text>
+				<input class="input-line-height-2" type="text" :focus="true" v-model="phone" placeholder="输入店家手机号码" />
+			</view>
 			<view class="input-line-height">
 				<text class="input-line-height-1">店名</text>
 				<input class="input-line-height-2" type="text" :focus="true" v-model="shop_name" />
 			</view>
 			<view class="input-line-height" >
 				<text class="input-line-height-1">类型</text>
-                <picker @change="catebindPickerChange" class="input-line-height-2" :value="cate_picker.index" :range="cate_picker.array">
-                     <view style="font-size: 16px;">{{cate_picker.array[cate_picker.index]}}</view>
-					 <input v-show="false" type="text" v-model="cate" />
-                </picker>
+				<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateList[shopCateIndex].cate_id" :range="shopCateList" range-key="cate_name">
+					<view style="font-size: 16px;">{{shopCateList[shopCateIndex].cate_name}}</view>
+					<input v-show="false" type="text" v-model="cate" />
+				</picker>
 			</view>
 			<view class="input-line-height">
 				<text class="input-line-height-1">面积：</text>
@@ -44,21 +47,18 @@
 			</view>		
 			
 			<view class="navcon">
-				<view  v-for="(value,index) in imagelist" class="navcon-item">
+				<view v-for="(value, index) in imagelist" :key="index" class="navcon-item">
 					<image style="width:95%; height:100px;"  :src="value"></image>
 					<text class="iconposition icon color-gray" @click="deleimg(index)">&#xe65e;</text>
 				</view>
 			</view>
-		
 			
 		</view>
 
 		<view>
-			<button class="login-button" @click="shopinfo">上 传</button>
+			<button class="login-button" @click="submitShopInfo">上 传</button>
 		</view>
-
-
- 
+		
 	</view>
 </template>
 
@@ -70,29 +70,115 @@
 		components: {},
 		data() {
 			return {
-				shop_name:'',//店名
-				cate:'',//店铺分类
-				shop_area:'',//店铺面积
-				address:'',//店铺位置
-				latitude:'',//纬度
-				longitude:'',//经度
-				image:[],//实景图片
-				imagelist:[],
-				cate_picker:{
-					array: ['茶楼','服装','餐饮','商超','美容美发','足浴','生鲜','鞋包'],
-					index:0	
-				}
+				phone: '', // 店家电话号码
+				shop_name: '', // 店名
+				cate: '', // 店铺分类
+				shop_area: '', // 店铺面积
+				address: '', // 店铺位置
+				longitude: '', // 经度
+				latitude: '', // 纬度
+				image: [], // 实景图片
+				imagelist: [],
+				
+				shopCateList: [], // 店铺类别列表
+				shopCateIndex: 0
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
+			this.getShopCateList();
 		},
 		methods: {
+			/**
+			 * 获取店铺类别列表
+			 */
+			getShopCateList() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/shop_cate_list',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						if (res.data.status == 1) {
+							self.shopCateList = res.data.data;
+						}
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
+			},
+			
             /**
 			 * 上传店铺信息
 			 */			
-			shopinfo(){
-
+			submitShopInfo(){
+				// 验证表单
+				if (this.phone == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入手机号码'
+					});
+					return false;
+				}
+				if (!this.phone.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|16[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) {
+					uni.showToast({
+						icon: 'none',
+						title: '手机号不正确'
+					});
+					return false;
+				}
+				
+				// 请求接口
+				uni.request({
+					url: this.$serverUrl + 'api/shop',
+					data: {
+						user_id: this.userInfo.user_id, // 业务员所属用户ID
+						phone: this.phone,
+						shop_name: this.shop_name,
+						cate: this.cate = this.shopCateList[this.shopCateIndex].cate_id, // 选中的店铺类别ID
+						address: this.address,
+						longitude: this.longitude,
+						latitude: this.latitude,
+						image: this.image,
+					},
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'POST',
+					success: function(res) {
+						console.log(123, res);return;
+						if (res.statusCode == 201 && res.data.status == 1) {
+							uni.showModal({
+								title: res.data.message,
+								showCancel: false,
+								success() {
+									uni.switchTab({
+										url: '/pages/main/main'
+									});
+								}
+							});
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+						}
+					},
+					fail:function(error){
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
 			},
 			
             /**
@@ -140,11 +226,8 @@
 							self.image.push({name:JSON.parse(uploadFileRes.data).name,url:JSON.parse(uploadFileRes.data).url});
 						}
 					});
-							
 					
 				})
-							
-				
 			},
 			
 			/**
@@ -183,15 +266,15 @@
 					}
 				});
 			},
-			/**
-			 * 下拉框选择的方法
-			 */
-			catebindPickerChange: function(e) {
-				//console.log('picker发送选择改变，携带值为', e.target.value)
-				this.cate_picker.index = e.target.value
-				this.cate=e.target.value
-			},
 
+			/**
+			 * 改变选择店铺类别
+			 * @param {Object} e
+			 */
+			bindShopCatePickerChange: function(e) {
+				// console.log('picker发送选择改变，携带值为', e.target.value)
+				this.shopCateIndex = e.target.value;
+			}
 		}
 	}
 </script>
