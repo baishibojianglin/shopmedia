@@ -15,21 +15,27 @@
 			</view>
 		</view>
 
+
+
+		<view>
+			<button class="login-button bg-main-color" @click="bindLogin">登 录</button>
+		</view>
+
 		<view class="uni-common-mt uni-center">
 			<checkbox-group>
-				<label><checkbox value="psw" :checked="rememberPsw" @tap="rememberPsw = !rememberPsw" color="#504AF2" />记住账号密码</label>
+				<label><checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住账号和密码</label>
 			</checkbox-group>
 		</view>
 
-		<view>
-			<button class="login-button" @click="bindLogin">登 录</button>
+        <view class="bottom">
+			<view class="bottom-con">
+				<navigator url="../reg/reg">注册账号</navigator>
+				<text class="bottom-con-1">|</text>
+				<navigator url="../pwd/pwd">忘记密码</navigator>
+			</view>
 		</view>
-
-		<view class="bottom-con">
-			<navigator url="../reg/reg">注册账号</navigator>
-			<text class="bottom-con-1">|</text>
-			<navigator url="../pwd/pwd">忘记密码</navigator>
-		</view>
+		
+		
  
 	</view>
 </template>
@@ -70,7 +76,7 @@
 					});
 					return false;
 				}
-				if (!this.phone.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) { /* 或 !(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(this.phone) */
+				if (!this.phone.match(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|16[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/)) { /* 或 !(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(this.phone) */
 					uni.showToast({
 						icon: 'none',
 						title: '手机号不正确'
@@ -169,24 +175,25 @@
 		line-height: 50px;
 		border-bottom:1px solid #ECECEC; 
 		font-size:16px;
+		position: relative;
 	}
 	.input-line-height-1{
-		flex:1;
-		padding-left: 5px;
+        position: absolute;
+		left: 5px;
+		padding:15px 0 10px 0;
 	}
 	.input-line-height-2{
-		flex:3;
+		flex:1;
 		font-size: 16px;
-		text-align: left;
+		text-align: center;
+        padding: 15px 0 10px 0;
 	}
 	.login-button{
-		background-color: #504AF2;
 		color:#fff;
 		margin-top: 20px;
 	}
 	.bottom-con{
 		display: flex;
-		margin-top: 20px;
 		flex-direction: row;
 		justify-content:center;
 		font-size: 14px;
@@ -194,5 +201,10 @@
 	.bottom-con-1{
 		padding: 0 8px;
 	}
-
+    .bottom{
+		position: fixed;
+		bottom: 40px;
+		left:0;
+		right:0;
+	}
 </style>

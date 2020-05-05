@@ -203,11 +203,8 @@
 							self.image.push({name:JSON.parse(uploadFileRes.data).name,url:JSON.parse(uploadFileRes.data).url});
 						}
 					});
-							
 					
 				})
-							
-				
 			},
 			
 			/**
@@ -285,7 +282,7 @@
 		text-align: left;
 	}
 	.login-button{
-		background-color: #504AF2;
+		background-color: #409EFF;
 		color:#fff;
 		margin-top: 20px;
 	}

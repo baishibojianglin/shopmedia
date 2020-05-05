@@ -23,12 +23,12 @@
 				<view class="input-list">
 					<text class="iconposition icon color-blue">&#xe7d6;</text>
 					<input name="verify_code" type="number" v-model="verify_code" placeholder="手机验证码" />
-					<button type="primary" v-if="!showseconds" @click="getVerifyCode()" class="verify-button">获取验证码</button>
-					<button type="primary" v-if="showseconds"  class="verify-button" >{{seconds}} S</button>
+					<button  v-if="!showseconds" @click="getVerifyCode()" class="bg-main-color color-white verify-button">获取验证码</button>
+					<button  v-if="showseconds"  class="bg-main-color color-white verify-button" >{{seconds}} S</button>
 				</view>
 
 				<view>
-					<button @click="submitForm()" type="primary" class="submit">确认修改</button>
+					<button @click="submitForm()"  class="bg-main-color color-white submit">确认修改</button>
 				</view>
 		</view>
 	</view>
@@ -275,7 +275,6 @@
 		right: 0;
 		bottom: 3px;
 		font-size: 13px;
-		background-color: #3F45F2;
 		width: 100px;
 	}
 
@@ -293,7 +292,6 @@
 	}
 
 	.submit {
-		background-color: #3F45F2;
 		margin-top: 35px;
 	}
 </style>

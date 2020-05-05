@@ -212,7 +212,7 @@
     ],
 	"tabBar": {
 		"color": "#808080",
-		"selectedColor": "#504AF2",
+		"selectedColor": "#409EFF",
 		"backgroundColor": "#fff",
 		"list": [{
 			"pagePath": "pages/main/main",
@@ -228,7 +228,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarBackgroundColor": "#504AF2", // #3F44F3
+		"navigationBarBackgroundColor": "#409EFF", // #3F44F3
 		"backgroundColor": "#fff"
 	}
 }

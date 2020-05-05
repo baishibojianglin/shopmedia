@@ -20,7 +20,7 @@
 			<view class="infobasic-item uni-center" v-if="role.shop">
 				<text>推小店</text>
 				<br/>
-				<text class="icon" style="color: #504AF2;">&#xe726;</text>
+				<text class="icon" style="color: #409EFF;">&#xe726;</text>
 				<br/>
 				<text>{{shop_money}}</text>
 			</view>
