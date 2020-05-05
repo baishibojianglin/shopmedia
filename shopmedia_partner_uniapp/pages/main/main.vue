@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		   <view>
-                 <video class="vedio-con"  autoplay="false" loop="false" controls="true" src="https://sustock-app.oss-cn-chengdu.aliyuncs.com/sustock-logo.mp4"></video>
+                 <video class="vedio-con"  autoplay="false" loop="false" controls="true" src="https://sustock-app.oss-cn-chengdu.aliyuncs.com/company.mp4"></video>
 		   </view>
 			   
            <view >

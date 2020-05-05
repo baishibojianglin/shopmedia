@@ -18,6 +18,9 @@
 			<view class="text-space">甲、乙双方依据中华人民共和国相关法律法规，经平等、友好协商达成如下合作协议：</view>
 			<view class="blod">一、合作内容</view>
 			<view class="content-text">
+				甲、乙双方共同出资购买和运营店通智能广告屏。
+			</view>
+			<view class="content-text">
 				<text class="content-left-text">设备编号：</text>
 				<text class="content-right sign-border blod">{{'SUSTOCK-'+device.device_id}}</text>
 			</view>
@@ -25,44 +28,62 @@
 				<text class="content-left-text">安装位置：</text>
 				<text class="content-right sign-border-text">{{device.address+device.shopname}}</text>
 			</view>
+			
+			<view class="blod">二、出资方式、出资比例</view>
+			
 			<view>
-				上述智能广告屏设备安装到店总成本为（智能屏生产成本、店通智能数据系统研发成本、运至店铺的运输成本、店铺安装的人工成本等）
+				2.1 上述智能广告屏设备总成本为（智能屏生产成本、店通智能数据系统软件研发成本、运至店铺的运输成本、店铺安装的人工成本等）
 				<text class="text-word blod">{{device.sale_price}}</text>
-				元，甲、乙双方各出资<input :disabled="true" class="text-word blod" v-model="share" /> % 合作经营，甲方出资
+				元。
+			</view>
+			<view>
+				2.2 甲、乙双方各出资<input :disabled="true" class="text-word blod" v-model="share" /> % 合作经营，甲方出资
 				<input :disabled="true" class="text-word blod" v-model="company_out" />
 				元，乙方出资
 				<input :disabled="true" class="text-word blod" v-model="person_out" />
-				元，甲、乙双方按对应出资比例分担和享有该广告屏的经营成本和广告收入。
+				元。
 			</view>
-
-			<view class="blod">二、权利与义务</view>
-			<view>1、甲方承担设备的运营、管理、维修责任;</view>
-			<view>2、乙方需配合甲方完成日常运营维护的必要工作；</view>
-			<view>3、甲方负责广告的业务开拓、制作、剪辑、投放工作；</view>
-			<view>4、甲方负责终端店智能广告系统的研发、系统升级、系统维护和系统安全防护等工作。</view>
-			<view>5、当终端店设备损坏时，由甲方出资生产新的智能广告屏重新安装到终端店铺；</view>
-			<view>6、当终端店铺发生铺面转让、店铺倒闭等造成安装在该店的智能广告屏无法正常经营时，由甲方负责开拓新的店铺安装该台智能广告屏，保证该台智能广告屏恢复正常的广告投放业务。</view>
-			<view>7、智能广告屏的广告利润收入，甲乙双方各占{{share}}%；</view>
-			<view>8、甲、乙双方均不得从事有损合作经营的活动；</view>
-			<view>9、甲、乙双方签订协议后3个工作日内，须将款项转入成都商市通电子商务有限公司公户，账户信息如下：</view>
-			<view><text class="blod">账户名称：成都商市通电子商务有限公司</text></view>
-			<view><text class="blod">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：8028 2001 0122 7004 51</text></view>
-			<view><text class="blod">开 &nbsp;户 &nbsp;行：恒丰银行股份有限公司成都金牛支行</text></view>
-			<view class="blod">三、不可抗力因素</view>
-			<view>1、发生地震、滑坡、泥石流、重大公共卫生疫情等不可抗力因素导致智能屏无法正常投放广告的，甲、乙双方承担各自应负担的损失，无须承担其他责任；</view>
-			<view>2、乙方可以根据自身情况提请退出合作经营，退出合作经营时甲方应退还乙方扣除设备折旧、运营成本后乙方剩余的出资款，退出后乙方不再承担合作协议约定的权利与义务；</view>
-			<view>A、合作协议生效起3个月内不能退出经营，否则甲方有权不退乙方出资款；</view>
-			<view>B、12个月内退出经营时，扣除出资款30%作为设备折旧和运营成本；</view>
-			<view>3、当遭遇公司破产清算等情况时，该智能屏设备所有权归乙方所有。</view>
-			<view class="blod">四、其他</view>
-			<view>1、当甲、乙双方发生纠纷且无法协商解决时，提交甲方所在地仲裁委员会或人民法院依据相关法律法规办理；</view>
-			<view>2、如有本协议未约定的其他事项应签署补充协议约定。</view>
+            <view>2.3 甲、乙双方签订协议后3个工作日内，须将款项转入成都商市通电子商务有限公司公户，账户信息如下：</view>
+			<view><text class="">账户名称：成都商市通电子商务有限公司</text></view>
+			<view><text class="">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：8028 2001 0122 7004 51</text></view>
+			<view><text class="">开 &nbsp;户 &nbsp;行：恒丰银行股份有限公司成都金牛支行</text></view>
+            <view>2.4甲、乙双方按对应出资比例享有该广告屏的广告利润收入。</view>
+			<view class="blod">三、双方权利与义务</view>
+			<view>3.1 甲方权利与义务</view>
+			<view>3.1.1 甲方承担设备的运营、管理、维修责任;</view>
+			<view>3.1.2 甲方负责广告的业务开拓、制作、剪辑、投放工作；</view>
+			<view>3.1.3 甲方负责终端店智能广告系统的研发、系统升级、系统维护和系统安全防护等工作;</view>
+			<view>3.1.4 当终端店设备损坏时，由甲方出资生产新的智能广告屏重新安装到终端店铺；</view>
+			<view>3.1.5 当终端店出现铺面转让、倒闭等造成该店的智能广告屏无法正常经营时，甲方负责开拓新的终端店安装该台智能广告屏，保证该台智能广告屏正常的广告投放业务。</view>
+			<view>3.2 乙方权利与义务</view>
+			<view>3.2.1 乙方需配合甲方完成日常运营维护的必要工作;</view>
+			<view>3.2.2 乙方应当按照本协议约定按期履行出资义务；</view>
+			<view>3.2.3 乙方依法享有利润分配权，乙方应分利润可通过店通客户端APP软件提取或由店通转入乙方指定账户,结算日为每月最末一周工作日时间；</view>
+			<view>3.2.4 乙方不得从事有损合作经营的活动。</view>
+			
+			<view class="blod">四、合作期限</view>
+			<view>4.1 自协议生效后，乙方永久享有该智能广告屏的合作经营权；</view>
+			<view>4.2 合作协议生效起3个月内乙方不能退出经营，否则甲方有权不退乙方出资款；</view>
+			<view>4.3 乙方1年后自愿提出退出经营时，扣除乙方出资款30%作为智能屏设备折旧费用；</view>
+			
+			<view class="blod">五、合作期限</view>
+			<view>5.1 甲方应按时足额向乙方分配利润，若甲方迟延分配利润，乙方有权要求甲方按照同期银行贷款利息支付迟延利息。</view>
+			<view>5.2 乙方应按时足额履行出资义务，若乙方迟延履行出资义务，甲方有权单方面解除本合同。</view>
+			
+			<view class="blod">六、不可抗力因素</view>
+			<view>由于发生地震、滑坡、泥石流、重大公共卫生疫情等不可抗力因素导致智能广告屏无法正常经营时，甲、乙双方互不承担违约责任。</view>
+			<view class="blod">七、其他</view>
+			<view>7.1 本协议一式两份，自双方签字盖章之日起生效。</view>
+			<view>7.2 甲、乙双方发生纠纷且无法协商解决时，提交甲方所在地人民法院裁决。</view>
+			<view>7.3 如有本协议未约定的其他事项可签署补充协议进行约定。</view>
 		</view>
 
 		<view class="sign-con">
 			<view class="sign-con-item">
 				<view class="blod">甲方（公章）：</view>
-				<view></view>
+				<view>
+					<image :src="gz" mode="aspectFill" style="width:100%;"></image>
+				</view>
 			</view>
 			<view class="sign-con-item">
 				<view class="blod">乙方（签名）：</view>
@@ -117,6 +138,7 @@
 			return {
 				csPhone: '', // 客服电话
 				device: '', // 广告屏信息
+				gz:'../../static/img/gz.png',//公章url
 
 				/* GoodsNav 商品导航 s */
 				options: [{
