@@ -345,7 +345,7 @@
 	line-height: 80px;
 	font-weight: bolder;
 	font-size: 17px;
-	color:#504AF2;
+	color:#409EFF;
 }
 .user-title{
 	line-height: 50px;

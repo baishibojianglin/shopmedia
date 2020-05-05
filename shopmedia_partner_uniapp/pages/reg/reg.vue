@@ -23,14 +23,14 @@
 				<view class="input-list">
 					<text class="iconposition icon color-blue">&#xe7d6;</text>
 					<input name="verify_code" type="number" v-model="verify_code" placeholder="手机验证码" />
-					<button type="primary" v-if="!showseconds" @click="getVerifyCode()" class="verify-button">获取验证码</button>
-					<button type="primary" v-if="showseconds"  class="verify-button" >{{seconds}} S</button>
+					<button class="bg-main-color color-white verify-button" v-if="!showseconds" @click="getVerifyCode()">获取验证码</button>
+					<button v-if="showseconds"  class="bg-main-color color-white verify-button" >{{seconds}} S</button>
 				</view>
 
 				<view class="input-list" style="border-bottom: none;">
 					<checkbox-group @change="seevalue">
 						<label>
-							<checkbox class="checkbox inline" value="1" color="#504AF2" checked="true" />
+							<checkbox class="checkbox inline" value="1" color="#409EFF" checked="true" />
 						</label>
 						<navigator class="inline text" url="book">
 							阅读并同意<text class="color-blue">《商市通用户协议》</text>
@@ -39,7 +39,7 @@
 				</view>
 
 				<view>
-					<button @click="submitdata()" type="primary" class="submit">注 册</button>
+					<button @click="submitdata()" class="submit bg-main-color color-white">注 册</button>
 				</view>				
 		</view>
 		
@@ -263,7 +263,7 @@
 		right: 0;
 		bottom: 3px;
 		font-size: 13px;
-		background-color: #504AF2;
+		background-color: #409EFF;
 		width: 100px;
 	}
 
@@ -286,7 +286,7 @@
 	}
 
 	.submit {
-		background-color: #504AF2;
+		background-color: #409EFF;
 		margin-top: 35px;
 	}
 </style>

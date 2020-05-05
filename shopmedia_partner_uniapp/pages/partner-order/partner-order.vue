@@ -125,7 +125,7 @@
 				}],
 				buttonGroup: [{
 					text: '提交协议',
-					backgroundColor: '#504AF2',
+					backgroundColor: '#409EFF',
 					color: '#fff'
 				}],
 				/* GoodsNav 商品导航 e */

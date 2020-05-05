@@ -81,7 +81,7 @@
 				}],
 				buttonGroup: [{
 					text: '立即合作',
-					backgroundColor: '#504AF2',
+					backgroundColor: '#409EFF',
 					color: '#fff'
 				}]
 				/* GoodsNav 商品导航 e */

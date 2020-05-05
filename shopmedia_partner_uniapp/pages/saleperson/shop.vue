@@ -222,7 +222,7 @@
 		text-align: left;
 	}
 	.login-button{
-		background-color: #504AF2;
+		background-color: #409EFF;
 		color:#fff;
 		margin-top: 20px;
 	}

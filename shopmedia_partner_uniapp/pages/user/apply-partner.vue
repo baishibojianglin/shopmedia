@@ -121,7 +121,7 @@
 		padding-left: 15px;
 	}
 	.login-button{
-		background-color: #504AF2;
+		background-color: #409EFF;
 		color:#fff;
 		margin: 40px 10px 20px 10px;
 	}
