@@ -49,6 +49,7 @@ class Login extends Common
      */
     public function login()
     {
+                        
         // 判断是否为PUT请求
         if (!request()->isPut()) {
             return show(config('code.error'), '请求不合法', [], 400);
@@ -95,7 +96,7 @@ class Login extends Common
                     return show(config('code.error'), '密码错误', [], 401);
                 }
             }
-
+              
             // 更新token和token失效时间
             try { // 捕获异常
                 $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
@@ -173,7 +174,7 @@ class Login extends Common
             /*if ($param['repassword'] != $param['password']) {
                 return show(config('code.error'), '两次输入密码不一致', '', 401);
             }*/
-
+   
             // validate验证 TODO：需做注册场景的验证
             $validate = validate('User');
             if (!$validate->check($param, [], 'login')) {
@@ -188,7 +189,7 @@ class Login extends Common
             }
 
             /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
-            $roleId = '';
+            $roleId = ''; 
             // 判断为（目标客户）邀请码时
             if ($salesman['invitation_code'] == $param['invitation_code']) {
                 // 根据业务员类型，获取新增的目标客户的类型
@@ -205,9 +206,11 @@ class Login extends Common
                     default:
                         // 其他情况默认执行代码
                 }
+
             }
+
             // 判断为（下级业务员）邀请码时 TODO
-            elseif ($salesman['son_invitation_code'] == $param['invitation_code']) {
+            if($salesman['son_invitation_code'] == $param['invitation_code']) {
                 $roleId = $salesman['role_id'];
             }
             /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
@@ -231,14 +234,13 @@ class Login extends Common
                 $data['status'] = config('code.status_enable');
                 $data['create_time'] = time(); // 创建时间
                 $data['create_ip'] = request()->ip(); // 创建IP
-
+        
                 /* 手动控制事务 s */
                 // 启动事务
                 Db::startTrans();
                 try {
                     // 新增原始用户
-                    $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
-
+                    $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值                
                     // 新增（目标客户或下级业务员）用户角色明细
                     if ($roleId == 2) { // 广告屏合作商
                         $data1['user_id'] = $userId;
@@ -290,7 +292,7 @@ class Login extends Common
                 } catch (\Exception $e) {
                     // 回滚事务
                     Db::rollback();
-                    return show(config('code.error'), '注册失败，请重试', '', 500);
+                    return show(config('code.error'), '注册失败，请重试'.$e.getMessage(), '', 500);
                     //throw new ApiException($e->getMessage(), 500, config('code.error'));
                 }
                 /* 手动控制事务 e */

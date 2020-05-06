@@ -13,13 +13,13 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '101.132.78.50', // 127.0.0.1，101.132.78.50
+    'hostname'        => '127.0.0.1', // 127.0.0.1，101.132.78.50
     // 数据库名
-    'database'        => 'goodsmedia',
+    'database'        => 'sustock_shopmedia', //goodsmedia
     // 用户名
-    'username'        => 'goodsmedia', // root，goodsmedia
+    'username'        => 'shopmedia', // root，goodsmedia
     // 密码
-    'password'        => '200316goodsmedia@goodsmedia', // root，200316goodsmedia@goodsmedia
+    'password'        => 'shopmedia20200506', // root，200316goodsmedia@goodsmedia
     // 端口
     'hostport'        => '',
     // 连接dsn
@@ -29,7 +29,7 @@ return [
     // 数据库编码默认采用utf8
     'charset'         => 'utf8',
     // 数据库表前缀
-    'prefix'          => 'goodsmedia_',
+    'prefix'          => 'shopmedia_',//goodsmedia_
     // 数据库调试模式
     'debug'           => true,
     // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
