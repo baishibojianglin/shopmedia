@@ -139,7 +139,7 @@ class Login extends Common
         if (request()->isPost()) {
             // 传入的参数
             $param = input('param.');
-
+           
             // 实例化Aes
             $aesObj = new Aes();
 
@@ -214,7 +214,7 @@ class Login extends Common
                 $roleId = $salesman['role_id'];
             }
             /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
-
+             
             // 查询该手机号用户是否存在
             $user = User::get(['phone' => $param['phone']]);
             if ($user) { // 用户已存在
@@ -237,7 +237,9 @@ class Login extends Common
         
                 /* 手动控制事务 s */
                 // 启动事务
-                Db::startTrans();
+                //Db::startTrans();
+                Db::execute('BEGIN');
+
                 try {
                     // 新增原始用户
                     $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值                
@@ -282,16 +284,19 @@ class Login extends Common
                         return show(config('code.error'), '新增失败', '', 403);
                     }
 
-                    // 提交事务
-                    Db::commit();
+
                     // 返回token给客户端
                     $result = [
                         'token' => (new Aes())->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
                     ];
+                    // 提交事务
+                    //Db::commit();
+                    Db::execute('COMMIT');
                     return show(config('code.success'), 'OK', $result, 201);
                 } catch (\Exception $e) {
                     // 回滚事务
-                    Db::rollback();
+                    //Db::rollback();
+                    Db::execute('ROLLBACK');
                     return show(config('code.error'), '注册失败，请重试'.$e.getMessage(), '', 500);
                     //throw new ApiException($e->getMessage(), 500, config('code.error'));
                 }
