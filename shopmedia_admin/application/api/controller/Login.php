@@ -42,14 +42,13 @@ class Login extends Common
 
     /**
      * 用户登录
-     * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 短信验证码（或密码） 登录
+     * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 密码（暂不支持短信验证码） 登录
      *
      * @return \think\response\Json
      * @throws ApiException
      */
     public function login()
     {
-                        
         // 判断是否为PUT请求
         if (!request()->isPut()) {
             return show(config('code.error'), '请求不合法', [], 400);
@@ -81,6 +80,7 @@ class Login extends Common
         // 设置登录的唯一性token
         $token = IAuth::setAppLoginToken($param['phone']);
 
+        // 待更新数据
         $data = [
             'token' => $token, // token
             'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
@@ -208,15 +208,14 @@ class Login extends Common
                     default:
                         // 其他情况默认执行代码
                 }
-
             }
 
-            // 判断为（下级业务员）邀请码时 TODO
+            // 判断为（下级业务员）邀请码时
             if($salesman['son_invitation_code'] == $param['invitation_code']) {
                 $roleId = $salesman['role_id'];
             }
             /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
-             
+
             // 查询该手机号用户是否存在
             $user = User::get(['phone' => $param['phone']]);
             if ($user) { // 用户已存在
@@ -231,33 +230,34 @@ class Login extends Common
                 $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
                 $data['role_ids'] = $roleId; // 用户角色ID
                 $data['phone'] = trim($param['phone']);
-                $data['phone_verified'] = 1;
+                $data['phone_verified'] = 1; // 手机号已验证
                 $data['password'] = IAuth::encrypt($param['password']);
                 $data['status'] = config('code.status_enable');
                 $data['create_time'] = time(); // 创建时间
                 $data['create_ip'] = request()->ip(); // 创建IP
-        
+
+                // 入库操作
                 /* 手动控制事务 s */
                 // 启动事务
-                //Db::startTrans();
-                //Db::execute('BEGIN');
-
+                Db::startTrans();
                 try {
                     // 新增原始用户
-                    //$res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值                
-                    $res[0] = $userId = Db::name('user')->insertGetId($data); // 新增数据并返回主键值                
+                    $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+
                     // 新增（目标客户或下级业务员）用户角色明细
                     if ($roleId == 2) { // 广告屏合作商
                         $data1['user_id'] = $userId;
                         $data1['salesman_id'] = $salesman['id']; // 业务员ID
                         $data1['role_id'] = $roleId; // 用户角色ID
                         $data1['status'] = config('code.status_enable');
+                        $data1['create_time'] = time(); // 创建时间
                         $res[1] = Db::name('user_partner')->insert($data1);
                     } elseif ($roleId == 3) { // 店家
                         $data1['user_id'] = $userId;
                         $data1['salesman_id'] = $salesman['id']; // 业务员ID
                         $data1['role_id'] = $roleId; // 用户角色ID
                         $data1['status'] = config('code.status_enable');
+                        $data1['create_time'] = time(); // 创建时间
                         $res[1] = Db::name('user_shopkeeper')->insert($data1);
                     } elseif ($roleId == $salesman['role_id']) { // 下级业务员
                         // TODO：新增下级业务员数据
@@ -266,18 +266,21 @@ class Login extends Common
                         $data1['company_id'] = $salesman['company_id']; // 分公司ID
                         $data1['parent_id'] = $salesman['id']; // 上级ID
                         $data1['status'] = config('code.status_enable');
+                        $data1['create_time'] = time(); // 创建时间
 
                         // （下级业务员）邀请码
                         // 获取（下级业务员）邀请码集合
                         $sonInvitationCodes = Db::name('user_salesman')->column('son_invitation_code');
-                        // 生成唯一（下级业务员）邀请码，加前缀 S 用于区别于（目标客户）邀请码（两种邀请码也必须不同）
-                        $data1['son_invitation_code'] = 'S' . uniqueRand(10000, 99999, $sonInvitationCodes);
+
+                        // 生成唯一（下级业务员）邀请码，加前缀 1 用于区别于（目标客户）邀请码（两种邀请码也必须不同）
+                        //return show(config('code.error'), '注册失败，请重试', $sonInvitationCodes, 500);
+                        $data1['son_invitation_code'] = uniqueRand('1', 10000, 99999, $sonInvitationCodes);
 
                         // （目标客户）邀请码
                         // 获取（下级业务员）邀请码集合
                         $invitationCodes = Db::name('user_salesman')->column('invitation_code');
-                        // 生成唯一（目标客户）邀请码，加前缀 C 用于区别于（下级业务员）邀请码（两种邀请码也必须不同）
-                        $data1['invitation_code'] = 'C' . uniqueRand(10000, 99999, $invitationCodes);
+                        // 生成唯一（目标客户）邀请码，加前缀 2 用于区别于（下级业务员）邀请码（两种邀请码也必须不同）
+                        $data1['invitation_code'] = uniqueRand('2', 10000, 99999, $invitationCodes);
 
                         $res[1] = Db::name('user_salesman')->insert($data1);
                     }
@@ -287,20 +290,17 @@ class Login extends Common
                         return show(config('code.error'), '新增失败', '', 403);
                     }
 
-
                     // 返回token给客户端
                     $result = [
                         'token' => (new Aes())->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
                     ];
                     // 提交事务
-                    //Db::commit();
-                    //Db::execute('COMMIT');
+                    Db::commit();
                     return show(config('code.success'), 'OK', $result, 201);
                 } catch (\Exception $e) {
                     // 回滚事务
-                    //Db::rollback();
-                    //Db::execute('ROLLBACK');
-                    return show(config('code.error'), '注册失败，请重试'.$e.getMessage(), '', 500);
+                    Db::rollback();
+                    return show(config('code.error'), '注册失败，请重试' . $e->getMessage(), '', 500);
                     //throw new ApiException($e->getMessage(), 500, config('code.error'));
                 }
                 /* 手动控制事务 e */

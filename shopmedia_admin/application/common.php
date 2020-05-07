@@ -143,15 +143,16 @@ function show($status, $message, $data = [], $httpCode = 200){
 }
 
 /**
- * 生成唯一随机数
+ * 生成唯一带前缀的随机数
+ * @param string $pre 随机数前缀
  * @param $min
  * @param $max
  * @param array|int $number 用于比较的值
- * @return int
+ * @return string
  */
-function uniqueRand($min, $max, $number){
-    // 生成随机数
-    $rand = mt_rand($min, $max);
+function uniqueRand($pre = '', $min, $max, $number){
+    // 生成带前缀的随机数
+    $rand = $pre . mt_rand($min, $max);
 
     // 判断生成的随机数是否唯一，重复时重新生成
     if (is_array($number)) {
@@ -160,7 +161,7 @@ function uniqueRand($min, $max, $number){
         $flag = $rand == $number ? false : true;
     }
     if ($flag == false) {
-        uniqueRand($min, $max, $number);
+        uniqueRand($pre, $min, $max, $number);
     } else {
         return $rand;
     }

@@ -98,7 +98,7 @@
 		<!-- 协议书 e -->
 
 		<!--电子签名 s-->
-		<view v-if="!showimg">
+		<view v-if="!partnerOrder.party_b_signature">
 			<view class="handBtn" v-if="false">
 				<view class="slide-wrapper">
 					<text>选择粗细</text>
@@ -125,7 +125,7 @@
 		</view>
 		<!--电子签名 e-->
 
-		<view class="goods-carts" v-if="!showimg">
+		<view class="goods-carts" v-if="!partnerOrder.party_b_signature">
 			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
 		</view>
 	</view>

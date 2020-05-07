@@ -59,10 +59,10 @@
             },
             "icons" : {
                 "android" : {
-                    "hdpi" : "D:/Projects/Sustock_200227/sustock2.png",
-                    "xhdpi" : "D:/Projects/Sustock_200227/sustock2.png",
-                    "xxhdpi" : "D:/Projects/Sustock_200227/sustock2.png",
-                    "xxxhdpi" : "D:/Projects/Sustock_200227/sustock2.png"
+                    "hdpi" : "D:/Projects/Sustock_200227/sustock.png",
+                    "xhdpi" : "D:/Projects/Sustock_200227/sustock.png",
+                    "xxhdpi" : "D:/Projects/Sustock_200227/sustock.png",
+                    "xxxhdpi" : "D:/Projects/Sustock_200227/sustock.png"
                 },
                 "ios" : {
                     "appstore" : "",
