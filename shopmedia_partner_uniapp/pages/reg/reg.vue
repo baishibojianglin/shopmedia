@@ -203,8 +203,6 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(res)
-						return
 						if (0 == res.data.status) { // 验证失败
 							uni.showToast({
 								icon: 'none',

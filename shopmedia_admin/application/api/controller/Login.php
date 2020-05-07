@@ -240,11 +240,12 @@ class Login extends Common
                 /* 手动控制事务 s */
                 // 启动事务
                 //Db::startTrans();
-                Db::execute('BEGIN');
+                //Db::execute('BEGIN');
 
                 try {
                     // 新增原始用户
-                    $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值                
+                    //$res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值                
+                    $res[0] = $userId = Db::name('user')->insertGetId($data); // 新增数据并返回主键值                
                     // 新增（目标客户或下级业务员）用户角色明细
                     if ($roleId == 2) { // 广告屏合作商
                         $data1['user_id'] = $userId;
@@ -293,12 +294,12 @@ class Login extends Common
                     ];
                     // 提交事务
                     //Db::commit();
-                    Db::execute('COMMIT');
+                    //Db::execute('COMMIT');
                     return show(config('code.success'), 'OK', $result, 201);
                 } catch (\Exception $e) {
                     // 回滚事务
                     //Db::rollback();
-                    Db::execute('ROLLBACK');
+                    //Db::execute('ROLLBACK');
                     return show(config('code.error'), '注册失败，请重试'.$e.getMessage(), '', 500);
                     //throw new ApiException($e->getMessage(), 500, config('code.error'));
                 }
