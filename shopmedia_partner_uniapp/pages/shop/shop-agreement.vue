@@ -19,17 +19,21 @@
 			<view class="blod">一、合作内容</view>
 			<view class="content-text">
 				<text class="content-left-text">设备编号：</text>
-				<input class="content-right sign-border" v-model="device_ids" placeholder="请填写设备编号，多个以英文逗号“,”分隔" :focus="true" />
+				<input class="content-right sign-border" v-model="shop.device_ids" placeholder="请填写设备编号，多个以逗号“，”分隔" :disabled="inputDisabled" :focus="!shop.party_b_signature ? true : false" />
+			</view>
+			<view class="content-text">
+				<text class="content-left-text">设备安装数量：</text>
+				<input class="content-right sign-border" v-model="shop.device_quantity" placeholder="请填写设备安装数量" :disabled="inputDisabled" />
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">安装位置：</text>
 				<text class="content-right sign-border-text">{{shop.address + shop.shop_name}}</text>
 			</view>
 			<view>
-				智能广告屏设备总价格：
-				<input class="content-right sign-border" v-model="device_price" placeholder="请填写广告屏总价格" />
+				智能广告屏设备总价格（￥）：
+				<input class="content-right sign-border" v-model="shop.device_price" placeholder="请填写广告屏总价格" :disabled="inputDisabled" />
 				广告收益乙方（店铺）提成比例（%）：
-				<input class="content-right sign-border" v-model="party_b_share" placeholder="请填写广告收益乙方（店铺）提成比例" />
+				<input class="content-right sign-border" v-model="party_b_share" placeholder="请填写广告收益乙方（店铺）提成比例" :disabled="inputDisabled" />
 			</view>
 
 			<view class="blod">二、权利与义务</view>
@@ -74,32 +78,34 @@
 		<!-- 协议书 e -->
 
 		<!--电子签名 s-->
-		<view class="handBtn" v-if="false">
-			<view class="slide-wrapper">
-				<text>选择粗细</text>
-				<slider @change="updateValue" value="50" show-value class="slider" step="25" />
+		<view v-if="!shop.party_b_signature">
+			<view class="handBtn" v-if="false">
+				<view class="slide-wrapper">
+					<text>选择粗细</text>
+					<slider @change="updateValue" value="50" show-value class="slider" step="25" />
+				</view>
+				<view class="color">
+					<text>选择颜色</text>
+					<image @click="selectColorEvent('black')" :src="selectColor === 'black' ? '../../static/img/color_black_selected.png' : '../../static/img/color_black.png'"
+					 :class="selectColor === 'black' ? 'color_select' : ''" class="black-select"></image>
+					<image @click="selectColorEvent('red')" :src="selectColor === 'red' ? '../../static/img/color_red_selected.png' : '../../static/img/color_red.png' "
+					 :class="selectColor === 'red' ? 'color_select' : ''" class="red-select"></image>
+				</view>
 			</view>
-			<view class="color">
-				<text>选择颜色</text>
-				<image @click="selectColorEvent('black')" :src="selectColor === 'black' ? '../../static/img/color_black_selected.png' : '../../static/img/color_black.png'"
-				 :class="selectColor === 'black' ? 'color_select' : ''" class="black-select"></image>
-				<image @click="selectColorEvent('red')" :src="selectColor === 'red' ? '../../static/img/color_red_selected.png' : '../../static/img/color_red.png' "
-				 :class="selectColor === 'red' ? 'color_select' : ''" class="red-select"></image>
+			<view class="handCenter">
+				<canvas class="handWriting" disable-scroll="true" @touchstart="uploadScaleStart" @touchmove="uploadScaleMove"
+				 @touchend="uploadScaleEnd" @tap="mouseDown" canvas-id="handWriting">
+				</canvas>
 			</view>
-		</view>
-		<view class="handCenter">
-			<canvas class="handWriting" disable-scroll="true" @touchstart="uploadScaleStart" @touchmove="uploadScaleMove"
-			 @touchend="uploadScaleEnd" @tap="mouseDown" canvas-id="handWriting">
-			</canvas>
-		</view>
 
-		<view class="buttons sign-con" style="margin-bottom: 100px;">
-			<button @click="retDraw" class="sign-con-item" style="margin: 0 15px;">重写</button>
-			<button @click="subCanvas" class="sign-con-item" style="margin: 0 15px;">确认</button>
+			<view class="buttons sign-con" style="margin-bottom: 100px;">
+				<button @click="retDraw" class="sign-con-item" style="margin: 0 15px;">重写</button>
+				<button @click="subCanvas" class="sign-con-item" style="margin: 0 15px;">确认</button>
+			</view>
 		</view>
 		<!--电子签名 e-->
 
-		<view class="goods-carts">
+		<view class="goods-carts" v-if="!shop.party_b_signature">
 			<uni-goods-nav :options="[]" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
 		</view>
 	</view>
@@ -113,7 +119,17 @@
 		data() {
 			return {
 				csPhone: '', // 客服电话
-				shop: '', // 店铺信息
+				// 店铺（协议书）信息
+				shop: {
+					device_ids: '', // 广告屏编号集合
+					device_quantity: '', // 安装广告屏数量
+					device_price: '', // 广告屏总价格
+					party_b_share: '', // 广告收益乙方（店铺）提成比例
+				},
+				party_b_share: 30,
+				
+				// 输入框是否禁用
+				inputDisabled: false,
 
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -134,13 +150,7 @@
 				selectColor: 'black',
 				color: '',
 				showimg: '', // 签名图片地址
-				share_popup: false,
-
-				// 协议书
-				device_ids: '', // 广告屏编号集合
-				device_quantity: '', // 安装广告屏数量
-				device_price: '', // 广告屏总价格
-				party_b_share: 30, // 广告收益乙方（店铺）提成比例
+				share_popup: false
 			}
 		},
 		computed: {
@@ -152,6 +162,12 @@
 		onLoad(event) {
 			// this.csPhone = event.cs_phone;
 			this.shop = JSON.parse(decodeURIComponent(event.shop));
+			// 判断是否已签约
+			if (this.shop.party_b_signature) {
+				this.party_b_share = this.shop.party_b_share * 100;
+				this.showimg = this.shop.party_b_signature;
+				this.inputDisabled = true;
+			}
 			
 			// 电子签名
 			this.$nextTick(function() {
@@ -271,9 +287,9 @@
 				uni.request({
 					url: this.$serverUrl + 'api/shop/' + this.shop.shop_id,
 					data: {
-						device_ids: this.device_ids,
-						device_quantity: this.device_quantity,
-						device_price: this.device_price,
+						device_ids: this.shop.device_ids,
+						device_quantity: this.shop.device_quantity,
+						device_price: this.shop.device_price,
 						party_b_share: this.party_b_share,
 						party_b_name: this.shop.user_name, // 乙方用户名称
 						party_b_signature: this.showimg // 合同乙方签名
@@ -302,6 +318,31 @@
 										self.callPhone(self.csPhone);
 									}
 								}
+							});
+						}
+					}
+				})
+			},
+			
+			/**
+			 * 获取店铺（协议书）信息
+			 */
+			getShop() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/shop/' + this.shop.shop_id,
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						if (res.data.status == 1) {
+							this.shop = res.data.data;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
 							});
 						}
 					}

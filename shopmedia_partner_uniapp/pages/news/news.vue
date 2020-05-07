@@ -75,7 +75,7 @@
 						}
 					},
 					fail: (data, code) => {
-						console.log('fail' + JSON.stringify(data));
+						// console.log('fail' + JSON.stringify(data));
 					}
 				});
 			},

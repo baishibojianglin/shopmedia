@@ -7,9 +7,9 @@
 		</view>
 		
 		<view class="uni-common-mt mb">
-			<uni-card v-for="(item, index) in shopList" :key="index" :note="(item.party_b_name && item.party_b_signature && item.sign_time) ? '' : 'Tips'" is-shadow>
+			<uni-card v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
 				<uni-list>
-					<uni-list-item :title="item.shop_name" :note="Number(item.device_list.length) != 0 ? '合计 ' + Number(item.device_list.length) + ' 台' : ''" rightText="导航" @click="openLocation(item.longitude, item.latitude)"></uni-list-item>
+					<uni-list-item :title="item.shop_name" :note="Number(item.device_list.length) != 0 ? '合计 ' + Number(item.device_list.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>
 					<uni-grid v-if="item.device_list.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
 						<uni-grid-item>
 							<text class="">广告屏编号</text>
@@ -41,7 +41,7 @@
 				
 				<template slot="footer">
 					<view class="footer-box">
-						<view @click.stop="footerClick(item)"> <button class="mini-btn" type="warn" size="mini" :plain="false">签署协议</button></view>
+						<view @click.stop="footerClick(item)"> <button class="mini-btn" :type="item.party_b_signature ? 'default' : 'warn'" size="mini" :plain="false">{{item.party_b_signature ? '查看协议' : '签署协议'}}</button></view>
 					</view>
 				</template>
 			</uni-card>
@@ -114,12 +114,15 @@
 			
 			/**
 			 * 查看位置
+			 * @param {Object} item
 			 */
-			openLocation(longitude, latitude) {
+			openLocation(item) {
 				// 使用应用内置地图查看位置
 				uni.openLocation({
-					longitude: Number(longitude),
-					latitude: Number(latitude)
+					longitude: Number(item.longitude),
+					latitude: Number(item.latitude),
+					name: item.shop_name,
+					address: item.address
 				});
 			},
 			

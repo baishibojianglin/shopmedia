@@ -120,7 +120,7 @@
 					});
 					return;
 				}
-				let role_id = item.role_id;
+				let role_id = Number(item.role_id);
 				// 将用户角色 role_id 存储在本地缓存中（同步）
 				try {
 					uni.setStorageSync('role_id', role_id);
@@ -136,7 +136,7 @@
 					})
 				} else {
 					// 非业务员角色
-					let url;
+					let url = '';
 					switch (role_id){
 						case 2:
 							url = '/pages/user-partner/user-partner?user_id=' + this.userInfo.user_id + '&role_id=' + role_id;

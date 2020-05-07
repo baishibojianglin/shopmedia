@@ -12,7 +12,7 @@
 			</view>
 			<view class="content">
 				<text class="content-left blod">乙方：</text>
-				<input class="content-right sign-border" :focus="true" placeholder="请填写姓名" v-model="user_name" />
+				<input class="content-right sign-border" :focus="!showimg ? true : false" placeholder="请填写姓名" v-model="user_name" :disabled="inputDisabled" />
 			</view>
 
 			<view class="text-space">甲、乙双方依据中华人民共和国相关法律法规，经平等、友好协商达成如下合作协议：</view>
@@ -98,32 +98,34 @@
 		<!-- 协议书 e -->
 
 		<!--电子签名 s-->
-		<view class="handBtn" v-if="false">
-			<view class="slide-wrapper">
-				<text>选择粗细</text>
-				<slider @change="updateValue" value="50" show-value class="slider" step="25" />
+		<view v-if="!showimg">
+			<view class="handBtn" v-if="false">
+				<view class="slide-wrapper">
+					<text>选择粗细</text>
+					<slider @change="updateValue" value="50" show-value class="slider" step="25" />
+				</view>
+				<view class="color">
+					<text>选择颜色</text>
+					<image @click="selectColorEvent('black')" :src="selectColor === 'black' ? '../../static/img/color_black_selected.png' : '../../static/img/color_black.png'"
+					 :class="selectColor === 'black' ? 'color_select' : ''" class="black-select"></image>
+					<image @click="selectColorEvent('red')" :src="selectColor === 'red' ? '../../static/img/color_red_selected.png' : '../../static/img/color_red.png' "
+					 :class="selectColor === 'red' ? 'color_select' : ''" class="red-select"></image>
+				</view>
 			</view>
-			<view class="color">
-				<text>选择颜色</text>
-				<image @click="selectColorEvent('black')" :src="selectColor === 'black' ? '../../static/img/color_black_selected.png' : '../../static/img/color_black.png'"
-				 :class="selectColor === 'black' ? 'color_select' : ''" class="black-select"></image>
-				<image @click="selectColorEvent('red')" :src="selectColor === 'red' ? '../../static/img/color_red_selected.png' : '../../static/img/color_red.png' "
-				 :class="selectColor === 'red' ? 'color_select' : ''" class="red-select"></image>
+			<view class="handCenter">
+				<canvas class="handWriting" disable-scroll="true" @touchstart="uploadScaleStart" @touchmove="uploadScaleMove"
+				 @touchend="uploadScaleEnd" @tap="mouseDown" canvas-id="handWriting">
+				</canvas>
 			</view>
-		</view>
-		<view class="handCenter">
-			<canvas class="handWriting" disable-scroll="true" @touchstart="uploadScaleStart" @touchmove="uploadScaleMove"
-			 @touchend="uploadScaleEnd" @tap="mouseDown" canvas-id="handWriting">
-			</canvas>
-		</view>
 
-		<view class="buttons sign-con" style="margin-bottom: 100px;">
-			<button @click="retDraw" class="sign-con-item" style="margin: 0 15px;">重写</button>
-			<button @click="subCanvas" class="sign-con-item" style="margin: 0 15px;">确认</button>
+			<view class="buttons sign-con" style="margin-bottom: 100px;">
+				<button @click="retDraw" class="sign-con-item" style="margin: 0 15px;">重写</button>
+				<button @click="subCanvas" class="sign-con-item" style="margin: 0 15px;">确认</button>
+			</view>
 		</view>
 		<!--电子签名 e-->
 
-		<view class="goods-carts">
+		<view class="goods-carts" v-if="!showimg">
 			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
 		</view>
 	</view>
@@ -166,6 +168,11 @@
 				share: 50, // 份额
 				company_out: 0, // 甲方出资额
 				person_out: 0, // 乙方出资额
+				
+				// 广告屏合作商订单（协议书）信息
+				partnerOrder: {},
+				// 输入框是否禁用
+				inputDisabled: false
 			}
 		},
 		computed: {
@@ -177,6 +184,9 @@
 		onLoad(event) {
 			this.csPhone = event.cs_phone;
 			this.device = JSON.parse(decodeURIComponent(event.device));
+			
+			// 判断是否已签约
+			this.getPartnerOrder();
 
 			// 电子签名
 			this.$nextTick(function() {
@@ -266,7 +276,7 @@
 				if (this.showimg == '') {
 					uni.showToast({
 						icon: 'none',
-						title: '请签名后在提交',
+						title: '请签名后再提交',
 						duration: 2000
 					});
 					return false;
@@ -276,7 +286,7 @@
 					uni.showModal({
 						title: `${e.content.text}`,
 						content: '确认合作经营店通智能屏',
-						cancelText: '取消',
+						// cancelText: '取消',
 						success: function(res) {
 							if (res.confirm) {
 								self.createOrder();
@@ -348,6 +358,41 @@
 						}
 					}
 				})
+			},
+			
+			/**
+			 * 获取广告屏合作商订单（协议书）信息
+			 */
+			getPartnerOrder() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/partner_order/0',
+					data: {
+						user_id: this.userInfo.user_id,
+						device_id: this.device.device_id
+					},
+					header: {
+						'commonheader': this.$store.state.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					success: (res) => {
+						if (res.data.status == 1) {
+							self.partnerOrder = res.data.data;
+							// 判断是否已签约
+							if (self.partnerOrder.party_b_signature) {
+								self.user_name = self.partnerOrder.party_b_name;
+								self.showimg = self.partnerOrder.party_b_signature;
+								self.inputDisabled = true;
+							}
+						}
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				});
 			}
 		}
 	}

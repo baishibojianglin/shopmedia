@@ -221,7 +221,9 @@
 				// 使用应用内置地图查看位置
 				uni.openLocation({
 					latitude: Number(this.datalist.latitude),
-					longitude: Number(this.datalist.longitude)
+					longitude: Number(this.datalist.longitude),
+					name: this.datalist.shopname,
+					address: this.datalist.address
 				});
 			}
 		}
