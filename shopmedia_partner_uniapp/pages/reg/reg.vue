@@ -195,14 +195,16 @@
 						invitation_code: this.invitation_code,
 						phone: this.phone,
 						password: this.password,
-						verify_code: this.verify_code,
-						return_code: this.return_code
+						verify_code: 123,//this.verify_code,
+						return_code:123// this.return_code
 					},
 					header:{
 						commonheader:this.commonheader
 					},
 					method: 'POST',
 					success: function(res) {
+						console.log(res)
+						return false;
 						if (0 == res.data.status) { // 验证失败
 							uni.showToast({
 								icon: 'none',
@@ -210,9 +212,18 @@
 							});
 							return;
 						} else { // 验证成功跳转
-							uni.navigateTo({
-								url: '../login/login'
-							});
+						   uni.showModal({
+						       title: '提示',
+						       content: '恭喜您注册成功，去登陆',
+							   showCancel:false,
+						       success: function (res) {
+						           if (res.confirm) {
+						               uni.navigateTo({
+						               	url: '../login/login'
+						               });
+						           }
+						       }
+						   });
 						}
 					},
 					fail: function(error) {
