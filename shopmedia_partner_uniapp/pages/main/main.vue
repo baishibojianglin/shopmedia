@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view>
-			<video class="vedio-con" src="https://sustock-app.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true" :loop="false" :controls="true"></video>
+			<video class="vedio-con" src="https://sustock-app.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="false" :loop="false" :controls="true"></video>
 		</view>
 
 		<view>
@@ -250,11 +250,11 @@
 							content: '咨询官方如何参与店通业务？',
 							success: function(res) {
 								if (res.confirm) {
-									//不操作
-								} else if (res.cancel) {
 									uni.makePhoneCall({
 										phoneNumber: '13693444308'
 									});
+								} else if (res.cancel) {
+									//不操作
 								}
 							}
 						});

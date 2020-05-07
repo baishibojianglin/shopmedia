@@ -223,7 +223,7 @@
 						},
 						name: 'file',
 						success: (uploadFileRes) => {
-							console.log(uploadFileRes)
+							// console.log(uploadFileRes)
 							//self.image.push({name:JSON.parse(uploadFileRes.data).name,url:JSON.parse(uploadFileRes.data).url});
 						}
 					});

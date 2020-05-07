@@ -54,9 +54,8 @@
 					method: 'POST',
 					success: function(res) {
 						if (res.statusCode == 201 && res.data.status == 1) {
-							uni.showModal({
+							uni.showToast({
 								title: res.data.message,
-								showCancel: false,
 								success() {
 									uni.switchTab({
 										url: '/pages/main/main'

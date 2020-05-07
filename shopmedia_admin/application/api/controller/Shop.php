@@ -133,6 +133,44 @@ class Shop extends AuthBase
     }
 
     /**
+     * 显示指定的店铺资源
+     * @param int $id
+     * @return \think\response\Json
+     * @throws ApiException
+     */
+    public function read($id)
+    {
+        // 判断为GET请求
+        if (request()->isGet()) {
+            try {
+                $data = model('Shop')->alias('s')
+                    ->field(['s.*', 'u.user_name', 'rp.region_name province', 'rc.region_name city', 'rco.region_name county', 'rt.region_name town'])
+                    ->join('__USER__ u', 's.user_id = u.user_id', 'LEFT') // 用户
+                    ->join('__USER_SHOPKEEPER__ us', 's.shopkeeper_id = us.id', 'LEFT') // 店家
+                    ->join('__REGION__ rp', 's.province_id = rp.region_id', 'LEFT') // 区域（省级）
+                    ->join('__REGION__ rc', 's.city_id = rc.region_id', 'LEFT') // 区域（市级）
+                    ->join('__REGION__ rco', 's.county_id = rco.region_id', 'LEFT') // 区域（区县）
+                    ->join('__REGION__ rt', 's.town_id = rt.region_id', 'LEFT') // 区域（乡镇街道）
+                    ->find($id);
+            } catch (\Exception $e) {
+                return show(config('code.error'), '请求异常', '', 500);
+                //throw new ApiException($e->getMessage(), 500, config('code.error'));
+            }
+
+            if ($data) {
+                // 处理数据
+                // 定义status_msg
+                $status = config('code.status');
+                $data['status_msg'] = $status[$data['status']];
+
+                return show(config('code.success'), 'ok', $data);
+            }
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+    }
+
+    /**
      * 保存更新的店铺资源
      * @param Request $request
      * @param int $id

@@ -90,18 +90,24 @@ class PartnerOrder extends AuthBase
 
             // 查询条件
             $map = [];
-            if (
-                isset($param['partner_id']) && $param['partner_id'] != 0
-                && isset($param['device_id']) && $param['device_id'] != 0
-            ) {
-                $map['partner_id'] = intval($param['partner_id']);
-                $map['device_id'] = intval($param['device_id']);
+            if (isset($param['device_id']) && $param['device_id'] != 0) {
+                // 传入广告屏合作商ID
+                if (isset($param['partner_id']) && $param['partner_id'] != 0) {
+                    $map['partner_id'] = intval($param['partner_id']);
+                    $map['device_id'] = intval($param['device_id']);
+                }
+                // 传入广告屏合作商所属用户ID
+                if (isset($param['user_id']) && $param['user_id'] != 0) {
+                    $map['user_id'] = intval($param['user_id']);
+                    $map['device_id'] = intval($param['device_id']);
+                }
             }
 
             try {
                 if (!empty($id)) {
                     $data = Db::name('partner_order')->find($id);
-                } elseif ($map) {
+                }
+                if ($map) {
                     $data = Db::name('partner_order')->where($map)->find();
                 }
             } catch (\Exception $e) {
@@ -110,7 +116,7 @@ class PartnerOrder extends AuthBase
 
             if ($data) {
                 // 处理数据
-                $data['order_time'] = date('Y-m-d H:i:s'); // 下单时间
+                $data['order_time'] = date('Y-m-d H:i:s', $data['order_time']); // 下单时间
                 return show(config('code.success'), 'ok', $data);
             } else {
                 return show(config('code.error'), 'Not Found', $data, 404);

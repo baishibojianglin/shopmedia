@@ -56,7 +56,7 @@ class Login extends Common
 
         // 传入的参数
         $param = input('param.');
-
+   
         // 判断传入的参数是否存在
         // 手机号码
         if (empty($param['phone'])) {
@@ -79,16 +79,17 @@ class Login extends Common
 
         // 设置登录的唯一性token
         $token = IAuth::setAppLoginToken($param['phone']);
+
         $data = [
             'token' => $token, // token
             'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
             'login_time' => time(), // 登录时间
             'login_ip' => request()->ip() // 登录IP
         ];
-
+ 
         // 查询该手机号用户是否存在
         $user = User::get(['phone' => $param['phone']]);
-        if ($user && $user['status'] == config('code.status_enable')) { // 用户存在且已启用，则登录并更新token和token失效时间
+        if ($user && $user['status'] == config('code.status_enable')) { // 用户存在且已启用，则登录并更新token和token失效时间   
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
                 if (IAuth::encrypt($param['password']) != $user['password']) {
@@ -100,7 +101,8 @@ class Login extends Common
             try { // 捕获异常
                 $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
             } catch (\Exception $e) {
-                throw new ApiException($e->getMessage(), 500, config('code.error'));
+                return show(config('code.error'), $e->getMessage(), '', 500);
+                //throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
         } else {
             if (!$user) {
