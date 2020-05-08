@@ -49,6 +49,8 @@ class Login extends Common
      */
     public function login()
     {
+        //$headers = request()->header(); 
+        //return json($headers);
         // 判断是否为PUT请求
         if (!request()->isPut()) {
             return show(config('code.error'), '请求不合法', [], 400);
@@ -87,7 +89,7 @@ class Login extends Common
             'login_time' => time(), // 登录时间
             'login_ip' => request()->ip() // 登录IP
         ];
- 
+
         // 查询该手机号用户是否存在
         $user = User::get(['phone' => $param['phone']]);
         if ($user && $user['status'] == config('code.status_enable')) { // 用户存在且已启用，则登录并更新token和token失效时间   

@@ -56,8 +56,8 @@
 				invitation_code: '', // 邀请码
 				phone: '', // 手机号
 				password: '', // 密码
-				verify_code: 123, // 验证码
-				return_code: 123,
+				verify_code:'', // 验证码
+				return_code:'',
 				value: 1, // 勾选协议状态
 				logourl: '/static/img/logo.png',
 				seconds:120 ,//倒计时秒数
@@ -203,8 +203,6 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(res)
-						return
 						if (0 == res.data.status) { // 验证失败
 							uni.showToast({
 								icon: 'none',
