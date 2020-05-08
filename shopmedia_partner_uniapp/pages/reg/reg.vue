@@ -212,7 +212,7 @@
 						} else { // 验证成功跳转
 						   uni.showModal({
 						       title: '提示',
-						       content: '恭喜您注册成功，去登陆',
+						       content: '恭喜您注册成功，去登录',
 							   showCancel:false,
 						       success: function (res) {
 						           if (res.confirm) {

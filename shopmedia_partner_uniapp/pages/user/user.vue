@@ -65,17 +65,40 @@
 			 * 退出登录
 			 */
 			bindLogout() {
-				this.userData = {};
-				this.logout(); // TODO：使用vuex管理登录状态时开启
-				
-				/**
-				 * 如果需要强制登录跳转回登录页面
-				 */
-				if (this.forcedLogin) {
-					uni.reLaunch({
-						url: '../login/login',
-					});
-				}
+				let self = this;
+				// 请求接口
+				uni.request({
+					url: this.$serverUrl + 'api/logout',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'PUT',
+					success: function(res){
+						if (res.statusCode == 201) { // 退出登录成功
+							// 清空登录状态及登录用户数据
+							self.userData = {};
+							self.logout(); // TODO：使用vuex管理登录状态时开启
+							
+							// 如果需要强制登录跳转回登录页面
+							if (self.forcedLogin) {
+								uni.reLaunch({
+									url: '../login/login',
+								});
+							}
+						} else {
+							uni.showToast({
+								title: res.data.message
+							})
+						}
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
 			},
 			
 			/**

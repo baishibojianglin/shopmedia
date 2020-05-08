@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		forcedLogin: false, // 是否需要强制登录
+		forcedLogin: true, // 是否需要强制登录
 		hasLogin: false, // 是否登录
 		userInfo: {},// 存放用户信息
 		commonheader: JSON.stringify({
