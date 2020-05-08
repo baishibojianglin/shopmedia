@@ -33,17 +33,16 @@
 			</view>
 		</view>
 		
-		<view class="uni-center title">我的业务范围</view>
+		<!-- <view class="uni-center title">我的业务范围</view> -->
 		
-		<view class="uni-padding-wrap">
-                <navigator url="./index" hover-class="navigator-hover">
+		<view class="uni-padding-wrap mtop">
+                <navigator url="./index" hover-class="navigator-hover"  v-if="role.device">
                     <button class="butred workbutton">智能屏业务</button>
                 </navigator>
 				
-				<navigator url="./shop" hover-class="navigator-hover">
-				    <button class="butblue workbutton">店铺业务</button>
-				</navigator>
-				
+				<navigator url="./shop" hover-class="navigator-hover" v-if="role.shop">
+				    <button class="bg-main-color color-white workbutton">店铺业务</button>
+				</navigator>			
 		</view>
   
 						
@@ -62,7 +61,7 @@
 				  device_money:'',//推广广告机收入
 				  shop_money:'',//推广店铺收入
 				  ad_money:'0.00',//推广广告收入
-                  logourl: 'https://sustock-app.oss-cn-chengdu.aliyuncs.com/logoimage.png',
+                  logourl:'/static/img/logo.png',
 				  role:{
 					  device:false,
 					  ad:false,
@@ -100,7 +99,7 @@
                             self.income=res.data.data.income;  
 							self.money=res.data.data.money; 
 							let role_str=res.data.data.role_ids;
-							let role_array=role_str.split(',');		
+							let role_array=role_str.split(',');	
 							role_array.forEach((value,index)=>{
 								 switch(parseInt(value)) {
 									  case 4:
@@ -150,7 +149,7 @@
 						}else{
 							uni.showToast({
 								icon:'none',
-							    title: '网络繁忙，稍后重试',
+							    title: '网络繁忙2，稍后重试',
 							    duration: 2000
 							});
 						}
@@ -283,5 +282,8 @@
 }
 .workbutton{
 	margin-bottom: 20px;
+}
+.mtop{
+	margin-top: 20px;
 }
 </style>

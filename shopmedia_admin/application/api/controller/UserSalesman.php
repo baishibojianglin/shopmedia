@@ -49,20 +49,22 @@ class UserSalesman extends AuthBase
     {
         $form=input();
         $match['salesman_id']=$form['user_id'];
-        $userlist=Db::name('user_partner')->where($match)->field('income')->select();
         $sumincome=0;
+        $userlist=Db::name('user_partner')->where($match)->field('income')->select();
+        //未开单
+        if(empty($userlist)){
+            $message['status']=1;
+            $message['data']=$sumincome;
+            return json($message);
+        }
+
         foreach($userlist as $key=>$value){
             $sumincome += $value['income'];
         }
-        if(!empty($userlist)){
-            $message['data']=$sumincome;
-            $message['status']=1;
-            return json($message);
-        }else{
-            $message['status']=0;
-            $message['words']='获取失败';
-            return json($message);
-        }
+        
+        $message['status']=1;
+        $message['data']=$sumincome;
+        return json($message);
 
 
     }

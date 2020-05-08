@@ -223,9 +223,18 @@
 							});
 							return false;
 						} else { // 验证成功跳转
-							uni.navigateTo({
-								url: '../login/login'
-							});
+						   uni.showModal({
+						       title: '提示',
+						       content: '密码重置成功，去登陆',
+							   showCancel:false,
+						       success: function (res) {
+						           if (res.confirm) {
+						               uni.navigateTo({
+						               	url: '../login/login'
+						               });
+						           }
+						       }
+						   })
 						}
 					},
 					fail: function(error) {
