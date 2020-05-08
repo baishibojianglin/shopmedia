@@ -56,8 +56,8 @@
 				invitation_code: '', // 邀请码
 				phone: '', // 手机号
 				password: '', // 密码
-				verify_code: '', // 验证码
-				return_code: '',
+				verify_code: 123, // 验证码
+				return_code: 123,
 				value: 1, // 勾选协议状态
 				logourl: '/static/img/logo.png',
 				seconds:120 ,//倒计时秒数
@@ -195,14 +195,16 @@
 						invitation_code: this.invitation_code,
 						phone: this.phone,
 						password: this.password,
-						verify_code: 123,//this.verify_code,
-						return_code:123// this.return_code
+						verify_code: this.verify_code,//this.verify_code,
+						return_code:this.verify_code// this.return_code
 					},
 					header:{
 						commonheader:this.commonheader
 					},
 					method: 'POST',
 					success: function(res) {
+						console.log(res)
+						return
 						if (0 == res.data.status) { // 验证失败
 							uni.showToast({
 								icon: 'none',
@@ -221,7 +223,7 @@
 						               });
 						           }
 						       }
-						   });
+						   })
 						}
 					},
 					fail: function(error) {
