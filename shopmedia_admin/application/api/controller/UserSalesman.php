@@ -15,6 +15,26 @@ use think\Model;
 class UserSalesman extends AuthBase
 {
 
+
+   /**
+   *获取业务员角色状态
+   */
+   public function getRoleStatus(){
+     $form=input();
+
+     //广告屏业务员
+     if($form['role_id']==4){
+        $match['uid']=$form['user_id'];
+        $list=Db::name('user_salesman')->where($match)->field('status')->find();
+        $data['status']=$list['status'];
+        return show(config('code.success'), 'OK', $data);
+     }
+     
+   }
+
+
+
+
     /**
      * 获取收入
      * @return \think\Response
@@ -23,10 +43,11 @@ class UserSalesman extends AuthBase
     {
         $form=input();
         $match['user_id']=$form['user_id'];
-        $userlist=Db::name('user')->where($match)->field('income,money,role_ids')->find();
+        $userlist=Db::name('user')->where($match)->field('income,money,cash,role_ids')->find();
         if(!empty($userlist)){
             $value['income']=$userlist['income'];
             $value['money']=$userlist['money'];
+            $value['cash']=$userlist['cash'];
             $value['role_ids']=$userlist['role_ids'];
             $message['data']=$value;
             $message['status']=1;

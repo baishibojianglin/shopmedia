@@ -56,7 +56,11 @@
 			"path": "pages/saleperson/center",
 			"style": {
 				"app-plus": {
-					"titleNView": true
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
 				},
 				"navigationBarTitleText": "我的业务"
 			}
@@ -64,11 +68,16 @@
 		{ // 业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
+				"navigationBarTitleText": "智能广告屏分布",
 				"app-plus": {
-					"titleNView": true
-				},
-				"navigationBarTitleText": "智能广告屏分布"
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
+			
 		},
 		{ // 上传店铺
 			"path": "pages/saleperson/shop",
@@ -180,8 +189,8 @@
 					}
 				}
 			}
-        }
-        ,{ // 新闻详情
+        },
+        { // 新闻详情
             "path" : "pages/news/news-detail",
             "style" : {
 				"navigationBarTitleText": "新闻详情",
@@ -202,17 +211,30 @@
 					}
 				}
 			}
-        }
-        ,{ // 用户反馈
+        },
+        { // 用户反馈
             "path" : "pages/feedback/feedback",
             "style" : {
 				"navigationBarTitleText": "意见反馈"
 			}
-        }
-        ,{ // 签署店铺合作协议
+        },
+        { // 签署店铺合作协议
             "path" : "pages/shop/shop-agreement",
             "style" : {
 				"navigationBarTitleText": "店铺合作签约",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 业务员申请开通业务
+            "path" : "pages/saleperson/apply",
+            "style" : {
+				"navigationBarTitleText": "申请开通业务",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
