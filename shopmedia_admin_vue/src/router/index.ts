@@ -46,6 +46,9 @@ import PartnerDeviceEdit from '@/pages/partner_device/PartnerDeviceEdit.vue'
 // 用户（店家）管理
 import UserShopkeeper from '@/pages/user_shopkeeper/UserShopkeeper.vue'
 import UserShopkeeperEdit from '@/pages/user_shopkeeper/UserShopkeeperEdit.vue'
+// 用户（广告主）管理
+import UserAdvertiser from '@/pages/user_advertiser/UserAdvertiser.vue'
+import UserAdvertiserEdit from '@/pages/user_advertiser/UserAdvertiserEdit.vue'
 // 店家店铺
 import Shop from '@/pages/shop/Shop.vue'
 import ShopEdit from '@/pages/shop/ShopEdit.vue'
@@ -127,6 +130,9 @@ const routes = [
 			// 2--店家店铺
 			{path: 'shop', name: 'shop', component: Shop}, // 店家店铺列表
 			{path: 'shop_edit', name: 'shop_edit', component: ShopEdit}, // 编辑店家店铺
+			// 2--用户（广告主）管理
+			{path: 'user_advertiser', name: 'user_advertiser', component: UserAdvertiser}, // 用户列表
+			{path: 'user_advertiser_edit', name: 'user_advertiser_edit', component: UserAdvertiserEdit}, // 编辑用户
 			// 2--广告管理
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告

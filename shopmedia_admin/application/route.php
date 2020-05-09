@@ -51,6 +51,8 @@ Route::resource('partner_device', 'admin/PartnerDevice');
 Route::resource('partner_order', 'admin/PartnerOrder');
 // 用户（店家）
 Route::resource('user_shopkeeper', 'admin/UserShopkeeper');
+// 用户（广告主）
+Route::resource('user_advertiser', 'admin/UserAdvertiser');
 
 // 广告屏管理
 Route::resource('device', 'admin/Device');
