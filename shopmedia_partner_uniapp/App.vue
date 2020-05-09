@@ -9,15 +9,6 @@
 		onLaunch: function(event){
 			let self = this;
 			
-			// 设置请求头 header 基本信息
-			// 获取设备系统信息
-			uni.getSystemInfo({
-				success: function (res) {
-					uni.setStorageSync('model',res.model); //手机型号
-					uni.setStorageSync('apptype',res.platform);//客户端平台
-				}
-			});
-			
 			// 获取用户登录信息缓存（异步）
 			uni.getStorage({
 				key: 'userInfo',

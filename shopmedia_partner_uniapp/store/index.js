@@ -6,14 +6,14 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		forcedLogin: true, // 是否需要强制登录
+		forcedLogin: false, // 是否需要强制登录
 		hasLogin: false, // 是否登录
 		userInfo: {},// 存放用户信息
 		commonheader: JSON.stringify({
 			'sign':common.sign(),
 			'version':1,
-			'model':uni.getStorageSync('model'),
-			'apptype':uni.getStorageSync('apptype'),
+			'model':uni.getSystemInfoSync().model,
+			'apptype':uni.getSystemInfoSync().platform,
 			'did':'sustock2020'
 		})
 	},
