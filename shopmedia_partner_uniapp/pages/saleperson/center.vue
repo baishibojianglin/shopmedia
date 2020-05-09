@@ -17,6 +17,8 @@
 			
 		<view class="uni-padding-wrap text-center">
 				<uni-grid class="view-grid-con" :column="3" :highlight="false">
+					
+					        <!--销售智能屏业务 s-->
 							<uni-grid-item>
 								<text class="text-grid-title">销售智能屏</text>
 								<text class="icon main-color">&#xe723;</text>
@@ -25,34 +27,64 @@
 										进入 	
 									</button>
 								</navigator>
-								<navigator url="./apply" v-else hover-class="none">
+								<navigator  url="./apply?role_id=4" hover-class="none"  v-if="!role.is_device">
 									<button class="text-grid work-button bg-second-color color-white">	
-										申请开通  	
+										申请开通 
 									</button>
-								</navigator>
+								</navigator>						
+								<button v-if="role.device_words" class="text-grid work-button bg-gray-color color-white">	
+									{{role.device_words}} 	
+								</button>							
 							</uni-grid-item>
-					 
-					  
+					       <!--销售智能屏业务 e-->
+						   
+						   
+						   
+						<!--开拓店铺业务 s-->
 							<uni-grid-item>
 								<text class="text-grid-title">开拓店铺</text>
 								<text class="icon" style="color: #EA4C89;">&#xe726;</text>
-								<navigator url="./shop" v-if="role.shop" hover-class="none">
+								<navigator url="./index" v-if="role.shop" hover-class="none">
 									<button class="text-grid work-button bg-main-color color-white">	
 										进入 	
 									</button>
 								</navigator>
-								<navigator url="./index" v-else hover-class="none">
+								<navigator  v-if="!role.is_shop"  hover-class="none">
 									<button class="text-grid work-button bg-second-color color-white">	
 										申请开通  	
 									</button>
-								</navigator>
+								</navigator>						
+								<button v-if="role.shop_words" class="text-grid work-button bg-gray-color color-white">	
+									{{role.device_words}} 	
+								</button>							
 							</uni-grid-item>
-					  </navigator>
-							<uni-grid-item>
-								<text class="text-grid-title">推广广告</text>
-								<text class="icon" style="color: #38E084;">&#xe725;</text>
-								<text class="text-grid"></text>
-							</uni-grid-item>
+						<!--开拓店铺业务 e-->   
+						   
+
+							
+						<!--推广广告业务 s-->	
+						<uni-grid-item>
+							<text class="text-grid-title">推广广告</text>
+							<text class="icon" style="color: #38E084;">&#xe725;</text>
+							<navigator url="./index" v-if="role.ad" hover-class="none">
+								<button class="text-grid work-button bg-main-color color-white">	
+									进入 	
+								</button>
+							</navigator>
+							<navigator  v-if="!role.is_ad" url="./apply" hover-class="none">
+								<button class="text-grid work-button bg-second-color color-white">	
+									申请开通  	
+								</button>
+							</navigator>						
+							<button v-if="role.ad_words" class="text-grid work-button bg-gray-color color-white">	
+								{{role.ad_words}} 	
+							</button>							
+						</uni-grid-item>
+						<!--推广广告业务 e-->	
+							
+							
+							
+							
 				</uni-grid>
 		</view>
 		
@@ -72,10 +104,13 @@
 				  money:'',//余额
                   logourl:'/static/img/logoheadimg.png',
 				  role:{
+					  is_device:false,
 					  device:false,
 					  device_words:'',
+					  is_ad:false,
 					  ad:false,
 					  ad_words:'',
+					  is_shop:false,
 					  shop:false,
 					  shop_words:''
 				  }
@@ -115,23 +150,6 @@
                             self.income=res.data.data.income;  
 							self.cash=res.data.data.cash;
 							self.money=res.data.data.money; 
-							let role_str=res.data.data.role_ids;
-							let role_array=role_str.split(',');	
-							role_array.forEach((value,index)=>{
-								 switch(parseInt(value)) {
-									  case 4:
-										 self.role.device=true;
-										 break;
-									  case 5:
-										 self.role.ad=true;
-										 break;
-									  case 6:
-										 self.role.shop=true;
-										 break;
-									  default:
-										//
-								 } 
-							})
 						}else{
 							uni.showToast({
 								icon:'none',
@@ -143,6 +161,156 @@
 				})
 			},
 			
+
+		   
+		   /**
+		    * 判断用户角色
+		    */
+		   is_role(){
+		   	let self=this;
+		   	//获取角色信息
+		   	uni.request({
+		   		url: this.$serverUrl + 'api/get_user_role',
+		   		data: {
+		   			user_id:this.userInfo.user_id,
+		   		},
+		   		header: {
+		   			'commonheader': this.commonheader,
+		   			'access-user-token':this.userInfo.token
+		   		},
+		   		method: 'POST',
+		   		success: function(res) {
+		   			if(res.data.status==1){
+		   				//处理角色信息									
+		   				let role_str=res.data.data.role_ids;
+		   				let role_array=role_str.split(',');	
+		   				role_array.forEach((value,index)=>{
+		   					 switch(parseInt(value)) {
+		   						  case 4:
+								     self.role.is_device=true;
+								     self.getRoleStatus(4);
+		   							 break;
+		   						  case 5:
+								     self.role.is_ad=true;
+								     self.getRoleStatus(5);
+		   							 break;
+		   						  case 6:
+								     self.role.is_shop=true;
+								     self.getRoleStatus(6);
+									 break;
+		   					 } 
+		   				})
+		   			}else{
+		   				uni.showToast({
+		   					icon:'none',
+		   				    title: '网络繁忙，稍后重试',
+		   				    duration: 2000
+		   				});
+		   			}
+		   		}
+		   	})				
+		   
+		   },
+		 
+		/**
+		 * 获取角色状态
+		 */ 
+		 getRoleStatus(role_id){
+		   	let self=this;
+		   	//获取角色信息
+		   	uni.request({
+		   		url: this.$serverUrl + 'api/get_role_status',
+		   		data: {
+		   			user_id:this.userInfo.user_id,
+					role_id:role_id
+		   		},
+		   		header: {
+		   			'commonheader': this.commonheader,
+		   			'access-user-token':this.userInfo.token
+		   		},
+		   		method: 'GET',
+		   		success: function(res) {
+					
+								//广告屏业务员
+								if(role_id==4){
+										if( res.data.data.status==1 ){
+											  self.role.device=true;
+											  self.role.device_words='';
+											  return false;
+										}else{
+											  self.role.device=false;
+											  switch(res.data.data.status) {
+														  case 0:
+															 self.role.device_words='停用';
+															 break;
+														  case 2:
+															 self.role.device_words='审核中';
+															 break;
+														  case 3:
+															 self.role.device_words='停用';
+															 break;
+											  } 
+											  return false;
+										}									
+								}
+
+								
+								//广告业务员
+								if(role_id==5){
+									if( res.data.data.status==1 ){
+										  self.role.ad=true;
+										  self.role.ad_words='';
+										  return false;
+									}else{
+										  self.role.ad=false;
+										  switch(res.data.data.status) {
+													  case 0:
+														 self.role.ad_words='停用';
+														 break;
+													  case 2:
+														 self.role.ad_words='审核中';
+														 break;
+													  case 3:
+														 self.role.ad_words='停用';
+														 break;
+										  } 
+										  return false;
+									}	
+								}
+	
+								//店铺业务员
+								if(role_id==6){
+									if( res.data.data.status==1 ){
+										  self.role.shop=true;
+										  self.role.shop_words='';
+										  return false;
+									}else{
+										  self.role.shop=false;
+										  switch(res.data.data.status) {
+													  case 0:
+														 self.role.shop_words='停用';
+														 break;
+													  case 2:
+														 self.role.shop_words='审核中';
+														 break;
+													  case 3:
+														 self.role.shop_words='停用';
+														 break;
+										  } 
+										  return false;
+									}	
+								}
+	
+	
+											
+											
+											
+					
+		   		}
+		   	})							 
+		 } , 
+		   
+
 			/**
 			 * 获取业务员推广广告屏收入
 			 */
@@ -201,95 +369,10 @@
 				})				
 			},
 	
-		   
-		   /**
-		    * 判断用户角色
-		    */
-		   is_role(){
-		   	let self=this;
-		   	//获取角色信息
-		   	uni.request({
-		   		url: this.$serverUrl + 'api/get_user_role',
-		   		data: {
-		   			user_id:this.userInfo.user_id,
-		   		},
-		   		header: {
-		   			'commonheader': this.commonheader,
-		   			'access-user-token':this.userInfo.token
-		   		},
-		   		method: 'POST',
-		   		success: function(res) {
-		   			if(res.data.status==1){
-		   				//处理角色信息									
-		   				let role_str=res.data.data.role_ids;
-		   				let role_array=role_str.split(',');		
-		   				role_array.forEach((value,index)=>{
-		   					 switch(parseInt(value)) {
-		   						  case 4:
-								     self.getRoleStatus(4);
-		   							 break;
-		   						  case 5:
-		   							 self.role.ad=true;
-		   							 break;
-		   						  case 6:
-		   							 self.role.shop=true;
-									 break;
-		   					 } 
-		   				})
-		   			}else{
-		   				uni.showToast({
-		   					icon:'none',
-		   				    title: '网络繁忙，稍后重试',
-		   				    duration: 2000
-		   				});
-		   			}
-		   		}
-		   	})				
-		   
-		   },
-		 
-		/**
-		 * 获取角色状态
-		 */ 
-		 getRoleStatus(role_id){
-		   	let self=this;
-		   	//获取角色信息
-		   	uni.request({
-		   		url: this.$serverUrl + 'api/get_role_status',
-		   		data: {
-		   			user_id:this.userInfo.user_id,
-					role_id:role_id
-		   		},
-		   		header: {
-		   			'commonheader': this.commonheader,
-		   			'access-user-token':this.userInfo.token
-		   		},
-		   		method: 'GET',
-		   		success: function(res) {
-					//广告屏业务员
-		   			if( (res.data.data.status==1) && (role_id==4) ){
-	                      self.role.device=true;
-						  return false;
-		   			}else{
-                          switch(res.data.data.status) {
-									  case 0:
-										 self.role.device_words='该业务被禁用';
-										 break;
-									  case 2:
-										 self.role.device_words='申请审核中...';
-										 break;
-									  case 3:
-										 self.role.device_words='申请未通过，请咨询客服';
-										 break;
-                          } 
-						  return false;
-		   			}
-					
-					
-		   		}
-		   	})							 
-		 }  
-		   
+
+
+
+
 		   
 		   
 		   
@@ -348,7 +431,7 @@
 	top:-15px;
 }
 .work-button{
-	font-size: 13px;
+	font-size: 12px;
 	width: 90%;
 }
 </style>
