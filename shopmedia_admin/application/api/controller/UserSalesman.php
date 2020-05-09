@@ -20,16 +20,12 @@ class UserSalesman extends AuthBase
    *获取业务员角色状态
    */
    public function getRoleStatus(){
-     $form=input();
-
-     //广告屏业务员
-     if($form['role_id']==4){
+        $form=input();
         $match['uid']=$form['user_id'];
         $list=Db::name('user_salesman')->where($match)->field('status')->find();
         $data['status']=$list['status'];
         return show(config('code.success'), 'OK', $data);
-     }
-     
+
    }
 
 

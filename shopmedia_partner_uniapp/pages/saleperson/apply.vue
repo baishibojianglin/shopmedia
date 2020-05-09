@@ -3,17 +3,17 @@
        <uni-card>
 			<view>
 				<view class="input-line-height">
-					<text class="input-line-height-1">认证码</text>
+					<text class="input-line-height-1">认证码 |</text>
 					<input class="input-line-height-2" type="text" v-model="applycode"  placeholder="填写认证码" />
 				</view>
 				<view class="input-line-height">
-					<text class="input-line-height-1">申请者</text>
+					<text class="input-line-height-1">申请者 |</text>
 					<input class="input-line-height-2" type="text"  v-model="this.userInfo.phone" disabled="true"  />
 				</view>
 			</view>
        </uni-card>
 	   <view>
-	   	<button class="login-button" @click="applyPartner()">提交申请</button>
+	   	  <button class="login-button" @click="applySaleperson()">提交申请</button>
 	   </view>
 	</view>
 </template>
@@ -26,18 +26,48 @@
 		components: {},
 		data() {
 			return {
-
+                  applycode:188888, //邀请码
+				  role_id:'' //角色id
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
-		onLoad(){
-			
+		onLoad(options){
+			this.role_id=options.role_id;
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
 		},
 		methods: {
+			/**
+			 * 业务员角色类型申请
+			 */
+             applySaleperson(){
+				 let self=this;
+				 uni.request({
+				 	url: this.$serverUrl + 'api/apply_sale_partner',
+				 	data: {
+				 		user_id:this.userInfo.user_id, //用户id
+						son_invitation_code:this.applycode, //邀请码
+						role_id:this.role_id //角色id		
+				 	},
+				 	header: {
+				 		'commonheader': this.commonheader,
+				 		'access-user-token':this.userInfo.token
+				 	},
+				 	method: 'POST',
+				 	success: function(res) {
+				 		if(res.data.status==1){
 
+				 		}else{
+				 			uni.showToast({
+				 				icon:'none',
+				 			    title: '网络繁忙，稍后重试',
+				 			    duration: 2000
+				 			});
+				 		}
+				 	}
+				 })
+			 }
 		}
 	}
 </script>
