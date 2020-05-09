@@ -165,4 +165,22 @@ class UserSalesman extends AuthBase
 
         return show(config('code.success'), 'OK', $data);
     }
+
+    /**
+     * 申请成为业务员
+     * @return \think\response\Json
+     */
+    public function applySalesman()
+    {
+        // 判断为POST请求
+        if (!request()->isPost()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 判断传入的参数是否存在
+
+    }
 }

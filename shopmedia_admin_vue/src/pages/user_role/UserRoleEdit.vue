@@ -75,7 +75,7 @@
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 用户角色信息
 						self.form = res.data.data;
 					} else {
 						self.$message({

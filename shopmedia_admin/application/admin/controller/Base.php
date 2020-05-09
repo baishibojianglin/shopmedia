@@ -38,7 +38,7 @@ class Base extends Common
 
         // 判断是否登录
         if (!($this->isLogin())) {
-            //throw new ApiException('未登录', 401);
+            throw new ApiException('未登录', 401);
             //return show(config('code.error'), '未登录', '', 401);
         }
     }
@@ -70,6 +70,9 @@ class Base extends Common
         // 验证 token 过期时间
         if(time() > $adminUser['token_time']){
             return false;
+        } else { // 当登录未过期时，为避免客户端登录后的操作中断，更新token失效时间
+            $data = ['token_time' => strtotime('+' . config('admin.login_time_out'))]; // token失效时间
+            model('Admin')->save($data, ['token' => $adminUserToken]);
         }
 
         // 赋值登录管理用户的基本信息

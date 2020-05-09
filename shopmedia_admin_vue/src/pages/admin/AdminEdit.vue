@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑供应商账户</span></el-col>
+					<el-col :span="6"><span>编辑管理员</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -22,8 +22,8 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item prop="user_name" label="供应商账户名称">
-						<el-input v-model="form.user_name" placeholder="输入供应商账户名称" clearable style="width:350px;"></el-input>
+					<el-form-item prop="user_name" label="管理员名称">
+						<el-input v-model="form.user_name" placeholder="输入管理员名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="avatar" label="证件照(头像)">
 						<el-input v-model="form.avatar" v-show="false" style="width:350px;"></el-input>
@@ -31,17 +31,17 @@
 						<el-button size="medium" type="primary" plain icon="el-icon-upload">上传证件照</el-button>
 						</el-upload>
 					</el-form-item>
-					<el-form-item prop="account" label="供应商账户号">
-						<el-input v-model="form.account" placeholder="输入供应商账户号" clearable style="width:350px;"></el-input>
+					<el-form-item prop="account" label="管理员账号">
+						<el-input v-model="form.account" placeholder="输入管理员账号" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="password" label="登录密码">
 						<el-input v-model="form.password" placeholder="请输入密码" clearable show-password style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="phone" label="电话号码">
-						<el-input v-model="form.phone" placeholder="输入供应商账户电话号码" clearable style="width:350px;"></el-input>
+						<el-input v-model="form.phone" placeholder="输入管理员电话号码" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="ratio" label="提成比例">
-						<el-input v-model="form.ratio" placeholder="输入供应商账户提成比例" clearable style="width:350px;"></el-input>
+						<el-input v-model="form.ratio" placeholder="输入管理员提成比例" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">
@@ -75,9 +75,9 @@
 		data() {
 			return {
 				form: {
-					/* user_name: '', // 供应商账户名称
-					avatar: '', // 供应商账户证件照
-					account: '', // 供应商账户号
+					/* user_name: '', // 管理员名称
+					avatar: '', // 管理员头像
+					account: '', // 管理员号
 					phone: '', // 电话号码
 					ratio: '', // 提成比例
 					status: '', // 状态 */
@@ -87,14 +87,14 @@
 						{ required: true, message: '请选择供应商', trigger: 'change' }
 					],
 					user_name: [
-						{ required: true, message: '请输入供应商账户名称', trigger: 'blur' },
+						{ required: true, message: '请输入管理员名称', trigger: 'blur' },
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
 					/* avatar: [
-						{ required: true, message: '请上传供应商账户证件照', trigger: 'blur' }
+						{ required: true, message: '请上传管理员头像', trigger: 'blur' }
 					], */
 					account: [
-						{ required: true, message: '请输入供应商账户号', trigger: 'blur' },
+						{ required: true, message: '请输入管理员账号', trigger: 'blur' },
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
 					password: [
@@ -114,7 +114,7 @@
 		},
 		created() {
 			this.getParams();
-			this.getCompanyUser(); // 获取指定的供应商账户信息
+			this.getCompanyUser(); // 获取指定的管理员信息
 			this.getCompanyTree(); // 获取供应商列表树
 			this.getAuthGroupTree(); // 获取角色列表树
 		},
@@ -127,7 +127,7 @@
 			},
 			
 			/**
-			 * 获取指定的供应商账户信息
+			 * 获取指定的管理员信息
 			 */
 			getCompanyUser() {
 				let self = this;
@@ -139,7 +139,7 @@
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 管理员信息
 						self.form = res.data.data;
 					} else {
 						self.$message({
@@ -211,7 +211,7 @@
 			},
 			
 			/**
-			 * 编辑供应商账户提交表单
+			 * 编辑管理员提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {

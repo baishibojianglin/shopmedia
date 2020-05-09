@@ -49,8 +49,8 @@
 					<el-form-item prop="play_times" label="每日播放次数">
 						<el-input-number v-model="form.play_times" :min="0" :step="1" :precision="0" controls-position="right"></el-input-number>
 					</el-form-item>
-					<el-form-item prop="advertisers" label="广告主名称">
-						<el-input v-model="form.advertisers" placeholder="输入广告主名称" clearable style="width:350px;"></el-input>
+					<el-form-item prop="advertiser" label="广告主名称">
+						<el-input v-model="form.advertiser" placeholder="输入广告主名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="phone" label="广告主电话">
 						<el-input v-model="form.phone" placeholder="输入广告主联系电话" clearable style="width:350px;"></el-input>
@@ -148,7 +148,7 @@
 					play_times: [
 						{ required: true, message: '请输入每日播放次数', trigger: 'blur' }
 					],
-					advertisers: [
+					advertiser: [
 						{ required: true, message: '请输入广告主名称', trigger: 'blur' },
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
@@ -480,7 +480,7 @@
 							ad_datetime: this.form.ad_datetime,
 							ad_time: this.form.ad_time,
 							play_times: this.form.play_times,
-							advertisers: this.form.advertisers,
+							advertiser: this.form.advertiser,
 							phone: this.form.phone,
 							region_ids: this.form.region_ids,
 							shop_cate_ids: this.form.shop_cate_ids,

@@ -59,7 +59,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
-					<el-table-column prop="login_ip" label="登录IP" width="120"></el-table-column>
+					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="210">
 						<template slot-scope="scope">
 							<el-button type="infor" size="mini" plain @click="toShopList(scope.row)">店铺</el-button>

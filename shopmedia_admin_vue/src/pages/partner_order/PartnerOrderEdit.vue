@@ -74,7 +74,7 @@
 				this.$axios.get(this.$url + 'partner_order/' + this.form.order_id)
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 订单信息
 						self.form = res.data.data;
 					} else {
 						self.$message({

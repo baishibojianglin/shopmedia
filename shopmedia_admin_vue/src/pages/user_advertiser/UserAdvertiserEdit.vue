@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑店家</span></el-col>
+					<el-col :span="6"><span>编辑广告主</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -22,21 +22,6 @@
 					<!-- <el-form-item prop="phone" label="电话号码">
 						<el-input v-model="form.phone" readonly style="width:350px;"></el-input>
 					</el-form-item> -->
-					<el-form-item prop="money" label="剩余金额/元">
-						<el-input v-model="form.money" placeholder="输入用户剩余金额" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="income" label="累计收益/元">
-						<el-input v-model="form.income" placeholder="请输入累计收益金额" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="cash" label="累计提现/元">
-						<el-input v-model="form.cash" placeholder="请输入累计提现金额" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="comm_ratio" label="店铺提成比例" required>
-						<el-input v-model="form.comm_ratio" placeholder="请输入店铺提成比例" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="parent_comm_ratio" label="向上级店铺提成比例" required>
-						<el-input v-model="form.parent_comm_ratio" placeholder="请输入向上级店铺的提成比例" clearable style="width:350px;"></el-input>
-					</el-form-item>
 					<el-form-item prop="status" label="状态" required>
 						<el-radio-group v-model="form.status">
 							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :label="Number(index)">{{item}}</el-radio>
@@ -58,21 +43,13 @@
 		data() {
 			return {
 				form: {
-					/* user_name: '', // 供应商账户名称
-					avatar: '', // 供应商账户证件照
+					/* user_name: '', // 用户名称
+					avatar: '', // 用户头像
 					phone: '', // 电话号码
 					status: '', // 状态 */
 				},
 				rules: { // 验证规则
-					money: [
-						{ required: true, message: '输入用户剩余金额', trigger: 'blur' }
-					],
-					income: [
-						{ required: true, message: '请输入累计收益金额', trigger: 'blur' }
-					],
-					cash: [
-						{ required: true, message: '请输入累计提现金额', trigger: 'blur' }
-					]
+					
 				}
 			}
 		},
@@ -86,6 +63,7 @@
 			 */
 			getParams() {
 				this.form.user_id = this.$route.query.user_id;
+				this.form.advertiser_id = this.$route.query.advertiser_id;
 			},
 			
 			/**
@@ -93,15 +71,10 @@
 			 */
 			getUser() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_advertiser/' + this.form.user_id, {
-					/* headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					} */
-				})
+				this.$axios.get(this.$url + 'user_advertiser/' + this.form.user_id)
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 用户信息
 						self.form = res.data.data;
 					} else {
 						self.$message({
@@ -119,7 +92,7 @@
 			},
 			
 			/**
-			 * 编辑供应商账户提交表单
+			 * 编辑用户提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
@@ -128,11 +101,6 @@
 					if (valid) {
 						this.$axios.put(this.$url + 'user_advertiser/' + this.form.user_id, {
 							// 参数
-							money: this.form.money,
-							income: this.form.income,
-							cash: this.form.cash,
-							comm_ratio: this.form.comm_ratio,
-							parent_comm_ratio: this.form.parent_comm_ratio,
 							status: this.form.status
 						}, {
 							// 请求头配置

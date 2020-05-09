@@ -231,8 +231,8 @@ class Ad extends Base
             if (isset($param['discount_ratio'])) { // 广告折扣率
                 $data['discount_ratio'] = input('param.discount_ratio/f');
             }
-            if (!empty($param['advertisers'])) { // 广告主名称
-                $data['advertisers'] = trim($param['advertisers']);
+            if (!empty($param['advertiser'])) { // 广告主名称
+                $data['advertiser'] = trim($param['advertiser']);
             }
             if (!empty($param['phone'])) { // 广告主电话
                 $data['phone'] = trim($param['phone']);

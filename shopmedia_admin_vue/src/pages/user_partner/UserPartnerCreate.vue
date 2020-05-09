@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>新增供应商账户</span></el-col>
+					<el-col :span="6"><span>新增广告屏合作商</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -22,8 +22,8 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item prop="user_name" label="供应商账户名称">
-						<el-input v-model="form.user_name" placeholder="输入供应商账户名称" clearable style="width:350px;"></el-input>
+					<el-form-item prop="user_name" label="广告屏合作商名称">
+						<el-input v-model="form.user_name" placeholder="输入广告屏合作商名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="avatar" label="证件照(头像)">
 						<el-input v-model="form.avatar" v-show="false" style="width:350px;"></el-input>
@@ -31,17 +31,17 @@
 						<el-button size="medium" type="primary" plain icon="el-icon-upload">上传证件照</el-button>
 						</el-upload>
 					</el-form-item>
-					<el-form-item prop="account" label="供应商账户号">
-						<el-input v-model="form.account" placeholder="输入供应商账户号" clearable style="width:350px;"></el-input>
+					<el-form-item prop="account" label="广告屏合作商号">
+						<el-input v-model="form.account" placeholder="输入广告屏合作商号" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="password" label="登录密码">
 						<el-input v-model="form.password" placeholder="请输入密码" clearable show-password style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="phone" label="电话号码">
-						<el-input v-model="form.phone" placeholder="输入供应商账户电话号码" clearable style="width:350px;"></el-input>
+						<el-input v-model="form.phone" placeholder="输入广告屏合作商电话号码" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="ratio" label="提成比例">
-						<el-input v-model="form.ratio" placeholder="输入供应商账户提成比例" clearable style="width:350px;"></el-input>
+						<el-input v-model="form.ratio" placeholder="输入广告屏合作商提成比例" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">
@@ -76,9 +76,9 @@
 			return {
 				form: {
 					company_id: '', // 供应商ID
-					user_name: '', // 供应商账户名称
-					avatar: '', // 供应商账户证件照
-					account: '', // 供应商账户号
+					user_name: '', // 广告屏合作商名称
+					avatar: '', // 广告屏合作商证件照
+					account: '', // 广告屏合作商号
 					password: '', // 密码
 					phone: '', // 电话号码
 					ratio: '', // 提成比例
@@ -90,14 +90,14 @@
 						{ required: true, message: '请选择供应商', trigger: 'change' }
 					],
 					user_name: [
-						{ required: true, message: '请输入供应商账户名称', trigger: 'blur' },
+						{ required: true, message: '请输入广告屏合作商名称', trigger: 'blur' },
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
 					/* avatar: [
-						{ required: true, message: '请上传供应商账户证件照', trigger: 'blur' }
+						{ required: true, message: '请上传广告屏合作商证件照', trigger: 'blur' }
 					], */
 					account: [
-						{ required: true, message: '请输入供应商账户号', trigger: 'blur' },
+						{ required: true, message: '请输入广告屏合作商号', trigger: 'blur' },
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
 					password: [
@@ -182,7 +182,7 @@
 			},
 			
 			/**
-			 * 新增供应商账户提交表单
+			 * 新增广告屏合作商提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
