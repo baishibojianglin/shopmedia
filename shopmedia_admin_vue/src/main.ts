@@ -10,9 +10,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 // 公用配置
 Vue.config.productionTip = false
-Vue.prototype.$axios = axios  //ajax插件
-Vue.prototype.$url='http://www.shopmedia.com/index.php/'  //后台域名
-axios.defaults.withCredentials=true  //解决跨域后保持相同session(允许ajax携带cook)
+Vue.prototype.$axios = axios // ajax插件
+// Vue.prototype.$url = 'http://www.shopmedia.com/index.php/' // 测试环境（本地）
+// Vue.prototype.$url = 'http://dt.dilinsat.com/index.php/' // 测试环境
+Vue.prototype.$url = 'http://media.dilinsat.com/index.php/' // 正式环境
+axios.defaults.withCredentials = true // 解决跨域后保持相同session(允许ajax携带cook)
 Vue.use(ElementUI)
 
 // 引入基本样式

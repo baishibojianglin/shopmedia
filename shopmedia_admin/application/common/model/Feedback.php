@@ -23,11 +23,11 @@ class Feedback extends Base
             $map['is_delete'] = ['neq', config('code.is_delete')];
         }*/
 
-        $order = ['create_time' => 'desc'];
+        $order = ['fb.create_time' => 'desc'];
 
         $result = $this->alias('fb')
             ->field('fb.*, u.user_name, u.phone')
-            ->join('__USER__ u', 'fb.user_id = u.user_id')
+            ->join('__USER__ u', 'fb.user_id = u.user_id', 'LEFT')
             ->where($map)
             ->order($order)
             ->paginate($size);
