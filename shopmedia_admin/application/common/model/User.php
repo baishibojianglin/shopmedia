@@ -111,6 +111,31 @@ class User extends Base
     }
 
     /**
+     * 获取用户（广告主）列表数据（基于paginate()自动化分页）
+     * @param array $map
+     * @param int $size
+     * @return \think\Paginator
+     */
+    public function getUserAdvertiser($map = [], $size = 5)
+    {
+        if(!isset($map['u.is_delete'])) {
+            $map['u.is_delete'] = ['neq', config('code.is_delete')];
+        }
+
+        $order = ['u.user_id' => 'asc'];
+
+        $result = $this->alias('u')
+            ->field(array_merge($this->_getListField(), ['ua.id advertiser_id', 'ua.role_id', 'ua.status ua_status']))
+            ->join('__USER_ADVERTISER__ ua', 'u.user_id = ua.user_id') // 广告主
+            ->join('__USER_ROLE__ ur', 'ua.role_id = ur.id and ua.role_id = 7') // 角色
+            ->join('__USER_SALESMAN__ usm', 'ua.salesman_id = usm.id', 'LEFT') // 广告主业务员
+            ->where($map)
+            ->order($order)
+            ->paginate($size);
+        return $result;
+    }
+
+    /**
      * 通用化获取参数的数据字段
      * @return array
      */
