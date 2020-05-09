@@ -43,6 +43,10 @@ class User extends AuthBase
                     $userShopkeeper = Db::name('user_shopkeeper')->where(['user_id' => $this->user['user_id']])->find();
                     $userRole[$key]['user_role'] = $userShopkeeper;
                     break;
+                case 7: // 广告主
+                    $userAdvertiser = Db::name('user_advertiser')->where(['user_id' => $this->user['user_id']])->find();
+                    $userRole[$key]['user_role'] = $userAdvertiser;
+                    break;
                 case 4 || 5 || 6: // 业务员
                     $userSalesman = Db::name('user_salesman')->where(['uid' => $this->user['user_id'], 'role_id' => $value['role_id']])->find();
                     $userRole[$key]['user_role'] = $userSalesman;

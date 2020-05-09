@@ -199,9 +199,9 @@ class Login extends Common
                     case 4: // 广告屏业务员
                         $roleId = 2; // 广告屏合作商
                         break;
-                    /*case 5: // 广告业务员 TODO：对应的广告主用户需求（不是功能）待开发
-                        $roleId = ;
-                        break;*/
+                    case 5: // 广告业务员
+                        $roleId = 7; // 广告主
+                        break;
                     case 6: // 店铺业务员
                         $roleId = 3; // 店家
                         break;
@@ -228,7 +228,7 @@ class Login extends Common
                 $data['token'] = $token; // token
                 $data['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
                 $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
-                $data['role_ids'] = $roleId; // 用户角色ID
+                $data['role_ids'] = implode(',', array_unique([$roleId, 7])); // 用户角色ID集合，默认创建广告主角色
                 $data['phone'] = trim($param['phone']);
                 $data['phone_verified'] = 1; // 手机号已验证
                 $data['password'] = IAuth::encrypt($param['password']);
@@ -284,6 +284,14 @@ class Login extends Common
 
                         $res[1] = Db::name('user_salesman')->insert($data1);
                     }
+
+                    // 默认创建广告主角色
+                    $data2['user_id'] = $userId;
+                    $data2['salesman_id'] = $salesman['id']; // 业务员ID
+                    //$data2['role_id'] = 7; // 用户角色ID
+                    $data2['status'] = config('code.status_enable');
+                    $data2['create_time'] = time(); // 创建时间
+                    $res[2] = Db::name('user_advertiser')->insert($data2);
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
