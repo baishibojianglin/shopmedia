@@ -113,6 +113,7 @@ Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获�
 Route::get('api/getMoney', 'api/UserSalesman/getMoney');
 Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');
 Route::get('api/getMoneyShop', 'api/UserSalesman/getMoneyShop');
+Route::get('api/get_role_status', 'api/UserSalesman/getRoleStatus');
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
 Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');

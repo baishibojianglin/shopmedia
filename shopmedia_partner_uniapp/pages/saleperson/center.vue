@@ -5,48 +5,59 @@
 		</view>
 
 		
-		<view class="infobasic">
+		<view class="infobasic" style="padding-bottom: 35px;">
 			<text class="infobasic-item text-left">总收入：{{income}}</text>
+			<text class="infobasic-item text-center">已提现：{{cash}}</text>
 			<text class="infobasic-item text-right">余额：{{money}}</text>
 		</view>					
-		<view class="infobasic">
-			<view class="infobasic-item uni-center" v-if="role.device">
-				<text>推智能屏</text>
-				<br/>
-				<text class="icon" style="color: #EA4C89;">&#xe723;</text>
-				<br/>
-				<text>{{device_money}}</text>
-			</view>
-			<view class="infobasic-item uni-center" v-if="role.shop">
-				<text>推小店</text>
-				<br/>
-				<text class="icon" style="color: #409EFF;">&#xe726;</text>
-				<br/>
-				<text>{{shop_money}}</text>
-			</view>
-			<view class="infobasic-item uni-center" v-if="role.ad">
-				<text>推广告</text>
-				<br/>
-				<text class="icon" style="color: #38E084;">&#xe725;</text>
-				<br/>
-				<text>{{ad_money}}</text>
-			</view>
+		<view class="infobasic positon-relative" style="padding-top:35px; border-bottom:none;">
+			<view class="money-detail-title">业务详情</view>
+		</view> 
+		
+			
+		<view class="uni-padding-wrap text-center">
+				<uni-grid class="view-grid-con" :column="3" :highlight="false">
+							<uni-grid-item>
+								<text class="text-grid-title">销售智能屏</text>
+								<text class="icon main-color">&#xe723;</text>
+								<navigator url="./index" v-if="role.device" hover-class="none">
+									<button class="text-grid work-button bg-main-color color-white">	
+										进入 	
+									</button>
+								</navigator>
+								<navigator url="./apply" v-else hover-class="none">
+									<button class="text-grid work-button bg-second-color color-white">	
+										申请开通  	
+									</button>
+								</navigator>
+							</uni-grid-item>
+					 
+					  
+							<uni-grid-item>
+								<text class="text-grid-title">开拓店铺</text>
+								<text class="icon" style="color: #EA4C89;">&#xe726;</text>
+								<navigator url="./shop" v-if="role.shop" hover-class="none">
+									<button class="text-grid work-button bg-main-color color-white">	
+										进入 	
+									</button>
+								</navigator>
+								<navigator url="./index" v-else hover-class="none">
+									<button class="text-grid work-button bg-second-color color-white">	
+										申请开通  	
+									</button>
+								</navigator>
+							</uni-grid-item>
+					  </navigator>
+							<uni-grid-item>
+								<text class="text-grid-title">推广广告</text>
+								<text class="icon" style="color: #38E084;">&#xe725;</text>
+								<text class="text-grid"></text>
+							</uni-grid-item>
+				</uni-grid>
 		</view>
 		
-		<!-- <view class="uni-center title">我的业务范围</view> -->
-		
-		<view class="uni-padding-wrap mtop">
-                <navigator url="./index" hover-class="navigator-hover"  v-if="role.device">
-                    <button class="butred workbutton">智能屏业务</button>
-                </navigator>
-				
-				<navigator url="./shop" hover-class="navigator-hover" v-if="role.shop">
-				    <button class="bg-main-color color-white workbutton">店铺业务</button>
-				</navigator>			
-		</view>
   
-						
-							
+													
 	</view>
 </template>
 
@@ -57,15 +68,16 @@
 		data() {
 				return {
 				  income:'',//总收入
+				  cash:'',//提现
 				  money:'',//余额
-				  device_money:'',//推广广告机收入
-				  shop_money:'',//推广店铺收入
-				  ad_money:'0.00',//推广广告收入
-                  logourl:'/static/img/logo.png',
+                  logourl:'/static/img/logoheadimg.png',
 				  role:{
 					  device:false,
+					  device_words:'',
 					  ad:false,
-					  shop:false
+					  ad_words:'',
+					  shop:false,
+					  shop_words:''
 				  }
 				}
 		},
@@ -73,9 +85,13 @@
 		onLoad(){
 
 		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
+		},
 		onShow(){
 			//角色
 			this.is_role();
+			//收入
 			this.getMoney()
 		},
 		methods: {
@@ -97,6 +113,7 @@
 					success: function(res) {
 						if(res.data.status==1){
                             self.income=res.data.data.income;  
+							self.cash=res.data.data.cash;
 							self.money=res.data.data.money; 
 							let role_str=res.data.data.role_ids;
 							let role_array=role_str.split(',');	
@@ -104,14 +121,12 @@
 								 switch(parseInt(value)) {
 									  case 4:
 										 self.role.device=true;
-										 self.getMoneyDevice();
 										 break;
 									  case 5:
 										 self.role.ad=true;
 										 break;
 									  case 6:
 										 self.role.shop=true;
-										 self.getMoneyShop();
 										 break;
 									  default:
 										//
@@ -156,38 +171,35 @@
 					}
 				})				
 			},
-	
-	/**
-	 * 获取业务员推广店铺收入
-	 */
-	getMoneyShop(){
-		let self=this;
-		uni.request({
-			url: this.$serverUrl + 'api/getMoneyShop',
-			data: {
-				user_id:this.userInfo.user_id
+				
+			/**
+			 * 获取业务员推广店铺收入
+			 */
+			getMoneyShop(){
+				let self=this;
+				uni.request({
+					url: this.$serverUrl + 'api/getMoneyShop',
+					data: {
+						user_id:this.userInfo.user_id
+					},
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						if(res.data.status==1){
+						   self.shop_money=res.data.data;
+						}else{
+							uni.showToast({
+								icon:'none',
+								title: '网络繁忙，稍后重试',
+								duration: 2000
+							});
+						}
+					}
+				})				
 			},
-			header: {
-				'commonheader': this.commonheader,
-				'access-user-token':this.userInfo.token
-			},
-			method: 'GET',
-			success: function(res) {
-				if(res.data.status==1){
-	               self.shop_money=res.data.data;
-				}else{
-					uni.showToast({
-						icon:'none',
-					    title: '网络繁忙，稍后重试',
-					    duration: 2000
-					});
-				}
-			}
-		})				
-	},
-	
-	
-	
 	
 		   
 		   /**
@@ -214,7 +226,7 @@
 		   				role_array.forEach((value,index)=>{
 		   					 switch(parseInt(value)) {
 		   						  case 4:
-		   							 self.role.device=true;
+								     self.getRoleStatus(4);
 		   							 break;
 		   						  case 5:
 		   							 self.role.ad=true;
@@ -234,9 +246,49 @@
 		   		}
 		   	})				
 		   
-		   }
-		   	
-		   
+		   },
+		 
+		/**
+		 * 获取角色状态
+		 */ 
+		 getRoleStatus(role_id){
+		   	let self=this;
+		   	//获取角色信息
+		   	uni.request({
+		   		url: this.$serverUrl + 'api/get_role_status',
+		   		data: {
+		   			user_id:this.userInfo.user_id,
+					role_id:role_id
+		   		},
+		   		header: {
+		   			'commonheader': this.commonheader,
+		   			'access-user-token':this.userInfo.token
+		   		},
+		   		method: 'GET',
+		   		success: function(res) {
+					//广告屏业务员
+		   			if( (res.data.data.status==1) && (role_id==4) ){
+	                      self.role.device=true;
+						  return false;
+		   			}else{
+                          switch(res.data.data.status) {
+									  case 0:
+										 self.role.device_words='该业务被禁用';
+										 break;
+									  case 2:
+										 self.role.device_words='申请审核中...';
+										 break;
+									  case 3:
+										 self.role.device_words='申请未通过，请咨询客服';
+										 break;
+                          } 
+						  return false;
+		   			}
+					
+					
+		   		}
+		   	})							 
+		 }  
 		   
 		   
 		   
@@ -248,18 +300,18 @@
 
 <style>
 .headimg{
-	width: 60px;
-	height: 60px;
-	border-radius: 60px;
-	background-color: #FAFAFA;
-	padding: 15px;
+	width: 50px;
+	height: 50px;
+	border-radius: 50px;
+	background-color: #F2F2F2;
+	padding: 10px;
 	margin-top: 15px;
 }
 .infobasic{
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	border-bottom: 1px solid #E3E0D5;
+	border-bottom: 1px solid #409EFF;
 	padding:15px 10px;
 }
 .infobasic-item{
@@ -285,5 +337,18 @@
 }
 .mtop{
 	margin-top: 20px;
+}
+.money-detail-title{
+	position: absolute;
+	z-index: 2;
+	padding: 3px 15px;
+	background-color: #fff;
+	border:1px solid #409EFF;
+	border-radius: 5px;
+	top:-15px;
+}
+.work-button{
+	font-size: 13px;
+	width: 90%;
 }
 </style>

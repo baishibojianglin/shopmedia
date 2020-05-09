@@ -23,7 +23,9 @@
 .bg-main-color{
 	background-color: #409EFF;
 }
-
+.bg-second-color{
+	background-color: #46D359;
+}
 /* 颜色 */
 .color-blue{
 	color:#409EFF;
@@ -43,6 +45,12 @@
 .color-disable{
 	color: #c0c0c0;
 }
+
+/*常用位置*/
+.positon-relative{
+	position: relative;
+}
+
 
 /*文字位置*/
 .text-center{
