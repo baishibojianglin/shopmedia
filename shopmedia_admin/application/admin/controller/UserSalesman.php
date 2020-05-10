@@ -69,11 +69,12 @@ class UserSalesman extends Base
                 $map['u.user_id'] = ['in', array_unique($userIds)];
             }
             if (isset($param['status']) && $param['status'] != null) { // 角色状态
-                if (intval($param['status']) == config('code.status_enable')) { // 启用
+                $map['us.status'] = intval($param['status']);
+                /*if (intval($param['status']) == config('code.status_enable')) { // 启用
                     $map['u.status&us.status'] = config('code.status_enable');
                 } else { // 禁用
                     $map['u.status|us.status'] = config('code.status_disable');
-                }
+                }*/
             }
 
             // 获取分页page、size

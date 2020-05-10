@@ -61,8 +61,7 @@
 					</el-form-item> -->
 					<el-form-item prop="status" label="角色状态" required>
 						<el-radio-group v-model="form.status">
-							<el-radio :label="1">启用</el-radio>
-							<el-radio :label="0">禁用</el-radio>
+							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item>
@@ -97,8 +96,11 @@
 					cash: [
 						{ required: true, message: '请输入累计提现金额', trigger: 'blur' }
 					],
-					user_status: [
+					/* user_status: [
 						{ required: true, message: '请选择用户状态', trigger: 'change' }
+					] , */
+					status: [
+						{ required: true, message: '请选择角色状态', trigger: 'change' }
 					] 
 				}
 			}
