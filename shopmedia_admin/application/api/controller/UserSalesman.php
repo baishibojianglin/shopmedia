@@ -22,6 +22,7 @@ class UserSalesman extends AuthBase
    public function getRoleStatus(){
         $form=input();
         $match['uid']=$form['user_id'];
+        $match['role_id']=$form['role_id'];
         $list=Db::name('user_salesman')->where($match)->field('status')->find();
         $data['status']=$list['status'];
         return show(config('code.success'), 'OK', $data);

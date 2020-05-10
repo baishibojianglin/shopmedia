@@ -58,9 +58,18 @@
 				 	method: 'POST',
 				 	success: function(res) {
 				 		if(res.data.status == 1){
-							uni.showToast({
-								title: res.data.message
-							});
+						   uni.showModal({
+						       title: '提示',
+						       content: '申请已提交，审核中...',
+							   showCancel:false,
+						       success: function (res) {
+						           if (res.confirm) {
+						               uni.navigateTo({
+						               	url: './center'
+						               });
+						           }
+						       }
+						   })
 				 		}else{
 				 			uni.showToast({
 				 				icon:'none',

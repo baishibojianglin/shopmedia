@@ -230,7 +230,6 @@
 		   		},
 		   		method: 'GET',
 		   		success: function(res) {
-					
 								//广告屏业务员
 								if(role_id==4){
 										if( res.data.data.status==1 ){
@@ -280,6 +279,7 @@
 	
 								//店铺业务员
 								if(role_id==6){
+									console.log(res)
 									if( res.data.data.status==1 ){
 										  self.role.shop=true;
 										  self.role.shop_words='';
