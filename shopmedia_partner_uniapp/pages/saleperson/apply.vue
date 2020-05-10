@@ -44,11 +44,11 @@
              applySaleperson(){
 				 let self=this;
 				 uni.request({
-				 	url: this.$serverUrl + 'api/apply_sale_partner',
+				 	url: this.$serverUrl + 'api/apply_salesman',
 				 	data: {
-				 		user_id:this.userInfo.user_id, //用户id
-						son_invitation_code:this.applycode, //邀请码
-						role_id:this.role_id //角色id		
+				 		user_id: this.userInfo.user_id, //用户id
+						invitation_code: this.applycode, //邀请码
+						role_id: this.role_id //角色id
 				 	},
 				 	header: {
 				 		'commonheader': this.commonheader,
@@ -56,12 +56,14 @@
 				 	},
 				 	method: 'POST',
 				 	success: function(res) {
-				 		if(res.data.status==1){
-
+				 		if(res.data.status == 1){
+							uni.showToast({
+								title: res.data.message
+							});
 				 		}else{
 				 			uni.showToast({
 				 				icon:'none',
-				 			    title: '网络繁忙，稍后重试',
+				 			    title: res.data.message,
 				 			    duration: 2000
 				 			});
 				 		}
