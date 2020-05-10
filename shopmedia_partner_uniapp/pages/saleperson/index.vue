@@ -46,7 +46,7 @@
 							<text class="">¥{{value.sale_price}}</text>
 						</view>
 						<view class="listcon-item-3">
-							<text class="icon icon-size">&#xe6b7;</text>
+							<text class="icon icon-size">&#xe6a2;</text>
 						</view>
 				</view>	
 			</view>
@@ -72,6 +72,9 @@
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
               this.getmarkers();
+		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
 		},
 		methods: {
 			//获取广告屏位置

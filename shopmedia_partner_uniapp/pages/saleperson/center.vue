@@ -27,7 +27,7 @@
 										进入 	
 									</button>
 								</navigator>
-								<navigator  url="./apply?role_id=4" hover-class="none"  v-if="!role.is_device">
+								<navigator  url="./apply?role_id=4&code=188888" hover-class="none"  v-if="!role.is_device">
 									<button class="text-grid work-button bg-second-color color-white">	
 										申请开通 
 									</button>
@@ -49,7 +49,7 @@
 										进入 	
 									</button>
 								</navigator>
-								<navigator  v-if="!role.is_shop"  hover-class="none">
+								<navigator url="./apply?role_id=6&code=199999"  v-if="!role.is_shop"  hover-class="none">
 									<button class="text-grid work-button bg-second-color color-white">	
 										申请开通  	
 									</button>
@@ -71,7 +71,7 @@
 									进入 	
 								</button>
 							</navigator>
-							<navigator  v-if="!role.is_ad" url="./apply" hover-class="none">
+							<navigator  v-if="!role.is_ad" url="./apply?role_id=5&code=166666" hover-class="none">
 								<button class="text-grid work-button bg-second-color color-white">	
 									申请开通  	
 								</button>

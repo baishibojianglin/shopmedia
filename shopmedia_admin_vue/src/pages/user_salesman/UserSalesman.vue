@@ -57,11 +57,11 @@
 					<el-table-column prop="user_id" label="用户序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="title" label="业务员角色" fixed min-width="120"></el-table-column>
-					<el-table-column prop="avatar" label="头像" width="90">
+<!-- 					<el-table-column prop="avatar" label="头像" width="90">
 						<template slot-scope="scope">
 							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
 						</template>
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column prop="phone" label="电话号码" width="120">
 						<template slot-scope="scope">
 							{{scope.row.phone}}<!-- {{scope.row.phone ? (scope.row.phone_verified == 1 ? '' : '(未验证)') : ''}} -->
@@ -94,7 +94,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
-					<el-table-column prop="login_ip" label="登录IP" width="120"></el-table-column>
+					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>

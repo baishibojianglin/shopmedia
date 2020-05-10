@@ -40,7 +40,7 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" width="90">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toUserRoleEdit(scope.row)" :disabled="scope.row.id == 1||scope.row.id == 2||scope.row.id == 3 ? true : false">编辑</el-button>
+							<el-button type="primary" size="mini" plain @click="toUserRoleEdit(scope.row)" :disabled="scope.row.id == 1||scope.row.id == 2||scope.row.id == 3 ||scope.row.id == 7 ? true : false">编辑</el-button>
 						</template>
 					</el-table-column>
 				</el-table>

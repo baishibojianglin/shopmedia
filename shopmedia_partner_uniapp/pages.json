@@ -62,7 +62,7 @@
 						}]
 					}
 				},
-				"navigationBarTitleText": "我的业务"
+			"navigationBarTitleText": "我的业务"
 			}
 		},
 		{ // 业务员首页
@@ -91,10 +91,14 @@
 		{ // 业务员设备详情
 			"path": "pages/saleperson/device",
 			"style": {
+				"navigationBarTitleText": "智能屏详情",
 				"app-plus": {
-					"titleNView": true
-				},
-				"navigationBarTitleText": "智能广告屏详情"
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
 		}, 
 		{  //个人中心
