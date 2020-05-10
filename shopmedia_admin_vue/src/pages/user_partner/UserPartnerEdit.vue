@@ -52,8 +52,8 @@
 		data() {
 			return {
 				form: {
-					/* user_name: '', // 供应商账户名称
-					avatar: '', // 供应商账户证件照
+					/* user_name: '', // 用户名称
+					avatar: '', // 用户头像
 					phone: '', // 电话号码
 					status: '', // 状态 */
 				},
@@ -83,7 +83,7 @@
 			},
 			
 			/**
-			 * 获取指定的用户信息
+			 * 获取指定的用户（广告屏合作商）信息
 			 */
 			getUser() {
 				let self = this;
@@ -95,7 +95,7 @@
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 供应商账户信息
+						// 用户（广告屏合作商）信息
 						self.form = res.data.data;
 					} else {
 						self.$message({
@@ -113,7 +113,7 @@
 			},
 			
 			/**
-			 * 编辑供应商账户提交表单
+			 * 编辑用户（广告屏合作商）提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {

@@ -43,7 +43,7 @@
 					</el-table-column>
 					<el-table-column prop="play_times" label="每日播放次数" width="120"></el-table-column>
 					<el-table-column label="广告主" header-align="center">
-						<el-table-column prop="advertisers" label="广告主名称" width="120"></el-table-column>
+						<el-table-column prop="advertiser" label="广告主名称" width="120"></el-table-column>
 						<el-table-column prop="phone" label="广告主电话" width="120"></el-table-column>
 					</el-table-column>
 					<el-table-column prop="shop_cate_names" label="投放店铺类别" width="120"></el-table-column>

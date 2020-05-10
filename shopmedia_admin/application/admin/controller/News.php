@@ -214,7 +214,7 @@ class News extends Base
      */
     public function delete($id)
     {
-        // 显示指定的店鋪比赛场次模板
+        // 显示指定的新闻资源
         try {
             $data = model('News')->find($id);
             //return show(config('code.success'), 'ok', $data);

@@ -56,6 +56,7 @@ class Login extends Common
 
         // 传入的参数
         $param = input('param.');
+        $param['phone'] = trim($param['phone']);
    
         // 判断传入的参数是否存在
         // 手机号码
@@ -97,7 +98,7 @@ class Login extends Common
                     return show(config('code.error'), '密码错误', [], 401);
                 }
             }
-              
+
             // 更新token和token失效时间
             try { // 捕获异常
                 $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
@@ -141,7 +142,8 @@ class Login extends Common
         if (request()->isPost()) {
             // 传入的参数
             $param = input('param.');
-           
+            $param['phone'] = trim($param['phone']);
+
             // 实例化Aes
             $aesObj = new Aes();
 
@@ -328,7 +330,7 @@ class Login extends Common
         if (request()->isPut()) {
             // 传入的参数
             $param = input('param.');
-
+            $param['phone'] = trim($param['phone']);
 
             // 判断传入的参数是否存在及合法性
             // 手机号码

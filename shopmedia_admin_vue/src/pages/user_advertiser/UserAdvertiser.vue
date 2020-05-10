@@ -48,11 +48,6 @@
 							{{scope.row.phone}}{{scope.row.phone_verified == 1 ? '' : '(未验证)'}}
 						</template>
 					</el-table-column>
-					<el-table-column prop="parent_id" label="上级序号" min-width="90"></el-table-column>
-					<el-table-column prop="parent_name" label="上级名称" min-width="180"></el-table-column>
-					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
-					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
-					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
@@ -62,7 +57,7 @@
 					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="210">
 						<template slot-scope="scope">
-							<el-button type="infor" size="mini" plain @click="toShopList(scope.row)">店铺</el-button>
+							<el-button type="infor" size="mini" plain @click="toAdList(scope.row)">广告</el-button>
 							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
 						</template>
@@ -187,7 +182,8 @@
 				this.$router.push({
 					path: "user_advertiser_edit",
 					query: {
-						user_id: row.user_id
+						user_id: row.user_id,
+						advertiser_id: row.advertiser_id
 					}
 				});
 			},
@@ -230,15 +226,14 @@
 			},
 			
 			/**
-			 * 跳转店家店铺列表页
+			 * 跳转广告主广告列表页
 			 * @param {Object} row
 			 */
-			toShopList(row) {
+			toAdList(row) {
 				this.$router.push({
-					path: "shop",
+					path: "ad",
 					query: {
-						advertiser_id: row.advertiser_id,
-						user_name: row.user_name
+						advertiser_id: row.advertiser_id
 					}
 				});
 			}

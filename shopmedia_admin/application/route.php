@@ -104,8 +104,8 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');
-Route::post('api/apply_partner', 'api/User/applyPartner');
-Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper');
+Route::post('api/apply_partner', 'api/User/applyPartner'); // 申请成为广告屏合作商
+Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper'); // 申请成为店家
 Route::post('api/get_user_role', 'api/User/getUserRole');
 
 // 业务员
@@ -116,6 +116,7 @@ Route::get('api/getMoney', 'api/UserSalesman/getMoney');
 Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');
 Route::get('api/getMoneyShop', 'api/UserSalesman/getMoneyShop');
 Route::get('api/get_role_status', 'api/UserSalesman/getRoleStatus');
+Route::post('api/apply_salesman', 'api/UserSalesman/applySalesman'); // 申请成为业务员
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
 Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');

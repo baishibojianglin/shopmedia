@@ -38,6 +38,7 @@ class Login extends Common
         // 字符串分解成变量
         parse_str($str, $data);
         // 账号是否为空
+        $data['account'] = trim($data['account']);
         if (empty($data['account'])) {
             return show(config('code.error'), '账号不能为空', '', 401);
         }

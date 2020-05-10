@@ -24,10 +24,7 @@ class UserAdvertiser extends Base
         if (request()->isGet()) {
             // 传入的数据
             $param = input('param.');
-            if (isset($param['size'])) { // 每页条数
-                $param['size'] = intval($param['size']);
-            }
-            return show(config('code.success'), 'OK', 123);
+
             // 查询条件
             $map = [];
             $map['ur.status'] = config('code.status_enable'); // 启用角色
@@ -35,10 +32,10 @@ class UserAdvertiser extends Base
                 $map['cu.company_id'] = $this->adminUser['company_id'];
             }*/
             if (!empty($param['user_name'])) { // 用户名称
-                $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
+                $map['u.user_name'] = ['like', '%' . trim($param['user_name']) . '%'];
             }
             if (isset($param['status'])) { // 状态
-                $map['us.status'] = intval($param['status']);
+                $map['ua.status'] = intval($param['status']);
             }
 
             // 获取分页page、size
@@ -46,13 +43,13 @@ class UserAdvertiser extends Base
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
             try {
-                $data = model('User')->getUserAdvertiser($map, $this->size);
+                $data = model('User')->getUserAdvertiser($map, (int)$this->size);
             } catch (\Exception $e) {
                 return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
             }
             $status = config('code.status');
             foreach ($data as $key => $value) {
-                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['ua_status'] : config('code.status_disable'); // 状态
                 $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
                 @$data[$key]['login_time'] = $value['login_time'] ? date('Y-m-d H:i:s', $value['login_time']) : ''; // 登录时间
             }
@@ -151,9 +148,9 @@ class UserAdvertiser extends Base
 
             // 获取广告主信息
             try {
-                $data = Db::name('user_shopkeeper')->alias('us')->field('us.user_id, us.role_id, us.money, us.income, us.cash, us.status, us.parent_comm_ratio, us.comm_ratio, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'us.user_id = u.user_id', 'INNER')->where(['us.user_id' => $id, 'us.role_id' => ['in', $user['role_ids']]])->find();
+                $data = Db::name('user_advertiser')->alias('ua')->field('ua.user_id, ua.role_id, ua.status, u.user_name, u.role_ids, u.phone, u.avatar')->join('__USER__ u', 'ua.user_id = u.user_id', 'INNER')->where(['ua.user_id' => $id, 'ua.role_id' => ['in', $user['role_ids']]])->find();
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500);
             }
 
             if ($data) {
@@ -194,21 +191,6 @@ class UserAdvertiser extends Base
 
         // 判断数据是否存在
         $data = [];
-        if (isset($param['money'])) { // 余额
-            $data['money'] = trim($param['money']);
-        }
-        if (isset($param['income'])) { // 收益
-            $data['income'] = trim($param['income']);
-        }
-        if (isset($param['cash'])) { // 提现
-            $data['cash'] = trim($param['cash']);
-        }
-        if (isset($param['comm_ratio'])) { // 店铺提成比例
-            $data['comm_ratio'] = trim($param['comm_ratio']);
-        }
-        if (isset($param['parent_comm_ratio'])) { // 向上级店铺提成比例
-            $data['parent_comm_ratio'] = trim($param['parent_comm_ratio']);
-        }
         if (isset($param['status'])) { // 状态
             $data['status'] = $param['status'];
         }
@@ -222,7 +204,7 @@ class UserAdvertiser extends Base
         }
 
         try {
-            $result = Db::name('user_shopkeeper')->where(['user_id' => $id])->update($data);
+            $result = Db::name('user_advertiser')->where(['user_id' => $id])->update($data);
         } catch(\Exception $e) {
             throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
         }
@@ -243,7 +225,7 @@ class UserAdvertiser extends Base
     {
         // 判断为DELETE请求
         if (request()->isDelete()) {
-            // 显示指定的店鋪比赛场次模板
+            // 显示指定的用户信息
             try {
                 $data = model('User')->find($id);
                 //return show(config('code.success'), 'ok', $data);
