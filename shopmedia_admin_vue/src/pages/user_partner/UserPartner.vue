@@ -42,11 +42,11 @@
 				<el-table :data="userList" border empty-text="数据加载中…" style="width: 100%">
 					<el-table-column prop="user_id" label="序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="avatar" label="头像" width="90">
+<!-- 					<el-table-column prop="avatar" label="头像" width="90">
 						<template slot-scope="scope">
 							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
 						</template>
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column prop="phone" label="电话号码" width="120">
 						<template slot-scope="scope">
 							{{scope.row.phone}}{{scope.row.phone_verified == 1 ? '' : '(未验证)'}}

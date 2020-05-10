@@ -10,48 +10,57 @@
 				</swiper-item>
 			</swiper>
 		</view>
-		
-        <view>
-			<view class="datalist">
-				<text class="datalist-title">屏编号：</text>
-				<text class="datalist-content">{{datalist.device_id}}</text>
+		<uni-card :is-shadow="true">
+			<view>
+				<view class="datalist">
+					<text class="datalist-title">屏编号：</text>
+					<text class="datalist-content">{{datalist.device_id}}</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">总价：</text>
+					<text class="datalist-content">{{datalist.sale_price*2}} 元</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">合作价：</text>
+					<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">占股比例：</text>
+					<text class="datalist-content color-red">50%</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">屏尺寸：</text>
+					<text class="datalist-content">{{datalist.size}} 寸</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">数据系统：</text>
+					<text class="datalist-content">店通智能大数据系统</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">店铺：</text>
+					<text class="datalist-content">{{datalist.shopname}}</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">店铺面积：</text>
+					<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">所属行业：</text>
+					<text class="datalist-content">{{datalist.shopcate}}</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">位置：</text>
+					<text class="datalist-content">{{datalist.address}}</text>
+				</view>
+				<view class="datalist" style="border-bottom: none;">
+					<text class="datalist-title">周围环境：</text>
+					<text class="datalist-content">{{datalist.environment}}</text>
+				</view>
 			</view>
-			<view class="datalist">
-				<text class="datalist-title">合作价：</text>
-				<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">屏尺寸：</text>
-				<text class="datalist-content">{{datalist.size}} 寸</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">数据系统：</text>
-				<text class="datalist-content">店通智能大数据系统</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">店铺：</text>
-				<text class="datalist-content">{{datalist.shopname}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">店铺面积：</text>
-				<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">所属行业：</text>
-				<text class="datalist-content">{{datalist.shopcate}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">位置：</text>
-				<text class="datalist-content">{{datalist.address}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">周围环境：</text>
-				<text class="datalist-content">{{datalist.environment}}</text>
-			</view>
-		</view>
+		</uni-card>
 		
 		<view class="ordercon">
-			<button  class="ordercon-item" @click="openLocation()">导航实地查看</button>
+			<button  class="ordercon-item bg-main-color" @click="openLocation()">导航实地查看</button>
 		</view>
 		
 	</view>
@@ -77,6 +86,9 @@
 		   this.getCate()
 		   //获取设备信息
 		   this.deviceDetail();
+		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
 		},
 		methods: {
 			//获取行业配置信息
@@ -180,7 +192,6 @@
 	flex: 1;
 	text-align: center;
 	margin: 10rpx 15rpx;
-	background-color: #3339F1;
 	color:#ffffff;
 }
 

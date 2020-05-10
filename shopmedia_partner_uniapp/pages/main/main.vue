@@ -44,7 +44,7 @@
 			<view @click="toRole(1)" class="navcon-item">
 				<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
 				<br />
-				<text>业务员</text>
+				<text>业务合作</text>
 			</view>
 			<view class="navcon-item">
 				<navigator url="/pages/news/news">
@@ -237,29 +237,37 @@
 
 				//业务员
 				if (role_ids == 1) {
-					if (this.role.saleperson == true) { //已经是业务员			
+					
+					uni.navigateTo({
+						url: '../saleperson/center'
+					});				
+				/**有条件的限制进入版块 暂时未使用 s--*/	
+					// if (this.role.saleperson == true) { //已经是业务员			
 
-						//进入业务员首页
-						uni.navigateTo({
-							url: '../saleperson/center?user_id=' + self.userInfo.user_id + '&role_ids=' + self.role.role_ids
-						});
+					// 	//进入业务员首页
+					// 	uni.navigateTo({
+					// 		url: '../saleperson/center'
+					// 	});
 
-					} else { //还不是业务员
-						uni.showModal({
-							title: '提示',
-							content: '咨询官方如何参与店通业务？',
-							success: function(res) {
-								if (res.confirm) {
-									uni.makePhoneCall({
-										phoneNumber: '13693444308'
-									});
-								} else if (res.cancel) {
-									//不操作
-								}
-							}
-						});
-					}
+					// } else { //还不是业务员
+					// 	uni.showModal({
+					// 		title: '提示',
+					// 		content: '咨询官方如何参与店通业务？',
+					// 		success: function(res) {
+					// 			if (res.confirm) {
+					// 				uni.makePhoneCall({
+					// 					phoneNumber: '13693444308'
+					// 				});
+					// 			} else if (res.cancel) {
+					// 				//不操作
+					// 			}
+					// 		}
+					// 	});
+					// }
+				/**有条件的限制进入版块 暂时未使用 e--*/
 				}
+				
+				
 			},
 			
 			/**

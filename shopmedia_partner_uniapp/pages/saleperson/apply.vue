@@ -26,13 +26,14 @@
 		components: {},
 		data() {
 			return {
-                  applycode:188888, //邀请码
+                  applycode:'', //邀请码
 				  role_id:'' //角色id
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(options){
 			this.role_id=options.role_id;
+			this.applycode=options.code;
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
