@@ -247,7 +247,21 @@
 					}
 				}
 			}
+        },
+        { // 业务员申请开通业务
+            "path" : "pages/saleperson/signbook",
+            "style" : {
+				"navigationBarTitleText": "协议样本",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
         }
+		
     ],
 	"tabBar": {
 		"color": "#808080",

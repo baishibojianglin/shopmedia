@@ -44,7 +44,7 @@
 							<uni-grid-item>
 								<text class="text-grid-title">开拓店铺</text>
 								<text class="icon" style="color: #EA4C89;">&#xe726;</text>
-								<navigator url="./index" v-if="role.shop" hover-class="none">
+								<navigator url="./shop" v-if="role.shop" hover-class="none">
 									<button class="text-grid work-button bg-main-color color-white">	
 										进入 	
 									</button>
@@ -279,7 +279,6 @@
 	
 								//店铺业务员
 								if(role_id==6){
-									console.log(res)
 									if( res.data.data.status==1 ){
 										  self.role.shop=true;
 										  self.role.shop_words='';

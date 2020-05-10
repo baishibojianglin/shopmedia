@@ -3,53 +3,53 @@
 
 		<view>
 			<view class="input-line-height">
-				<text class="input-line-height-1">电话</text>
-				<input class="input-line-height-2" type="text" :focus="true" v-model="phone" placeholder="输入店家手机号码" />
+				<view class="input-line-height-1">电话 <text class="main-color line-blue">|</text></view>
+				<input class="input-line-height-2" type="text" v-model="phone" placeholder="联系手机号码" />
 			</view>
 			<view class="input-line-height">
-				<text class="input-line-height-1">店名</text>
-				<input class="input-line-height-2" type="text" :focus="true" v-model="shop_name" />
+				<view class="input-line-height-1">店名 <text class="main-color line-blue">|</text></view>
+				<input class="input-line-height-2" type="text" v-model="shop_name" />
 			</view>
 			<view class="input-line-height" >
-				<text class="input-line-height-1">类型</text>
-				<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateList[shopCateIndex].cate_id" :range="shopCateList" range-key="cate_name">
-					<view style="font-size: 16px;">{{shopCateList[shopCateIndex].cate_name}}</view>
+				<view class="input-line-height-1">类型 <text class="main-color line-blue">|</text></view>
+				<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
+					<view style="font-size: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
 					<input v-show="false" type="text" v-model="cate" />
 				</picker>
 			</view>
 			<view class="input-line-height">
-				<text class="input-line-height-1">面积：</text>
+				<view class="input-line-height-1">面积 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"  v-model="shop_area" />
 			</view>
 			<view class="input-line-height">
-				<text class="input-line-height-1">位置：</text>
+				<view class="input-line-height-1">位置 <text class="main-color line-blue">|</text></view>
 				<view class="input-line-height-2">
-					<button v-show="!address" @click="getlocation()" style="font-size: 16px;">点击获取</button>
+					<button v-show="!address" size="mini" @click="getlocation()" style="font-size: 14px; margin-top: 5px;">点击获取</button>
 					<input v-show="address" type="text" v-model="address" />
 				</view>
 			</view>
 	
 			<view class="input-line-height">
-				<text class="input-line-height-1">经度：</text>
+				<view class="input-line-height-1">经度 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"   v-model="longitude" />
 			</view>
 			
 			<view class="input-line-height">
-				<text class="input-line-height-1">纬度：</text>
+				<view class="input-line-height-1">纬度 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"  v-model="latitude" />
 			</view>
 	
 			<view class="input-line-height">
-				<text class="input-line-height-1">实景：</text>
+				<view class="input-line-height-1">实景 <text class="main-color line-blue">|</text></view>
 				<view class="input-line-height-2">
-                    <button  @click="takePhoto">上传照片</button>
+                    <button size="mini" style="margin-top: 5px;font-size: 14px;"  @click="takePhoto">上传照片</button>
 				</view>
 			</view>		
 			
 			<view class="navcon">
 				<view v-for="(value, index) in imagelist" :key="index" class="navcon-item">
 					<image style="width:95%; height:100px;"  :src="value"></image>
-					<text class="iconposition icon color-gray" @click="deleimg(index)">&#xe65e;</text>
+					<text class="iconposition icon" style="color:#E3E0D5;" @click="deleimg(index)">&#xe65e;</text>
 				</view>
 			</view>
 			
@@ -80,7 +80,7 @@
 				image: [], // 实景图片
 				imagelist: [],
 				
-				shopCateList: [], // 店铺类别列表
+				shopCateList: [{cate_id:'',cate_name:''}], // 店铺类别列表
 				shopCateIndex: 0
 			}
 		},
@@ -103,7 +103,9 @@
 					method: 'GET',
 					success: function(res) {
 						if (res.data.status == 1) {
-							self.shopCateList = res.data.data;
+							res.data.data.forEach((value,index)=>{
+								self.$set(self.shopCateList,index,{cate_id:value.cate_id,cate_name:value.cate_name});
+							})
 						}
 					},
 					fail(error) {
@@ -134,7 +136,7 @@
 					});
 					return false;
 				}
-				
+				this.cate = this.shopCateList[this.shopCateIndex].cate_id;
 				// 请求接口
 				uni.request({
 					url: this.$serverUrl + 'api/shop',
@@ -142,7 +144,7 @@
 						user_id: this.userInfo.user_id, // 业务员所属用户ID
 						phone: this.phone,
 						shop_name: this.shop_name,
-						cate: this.cate = this.shopCateList[this.shopCateIndex].cate_id, // 选中的店铺类别ID
+						cate: this.cate , // 选中的店铺类别ID
 						shop_area: this.shop_area,
 						address: this.address,
 						longitude: this.longitude,
@@ -223,8 +225,7 @@
 						},
 						name: 'file',
 						success: (uploadFileRes) => {
-							// console.log(uploadFileRes)
-							//self.image.push({name:JSON.parse(uploadFileRes.data).name,url:JSON.parse(uploadFileRes.data).url});
+							self.image.push({name:JSON.parse(uploadFileRes.data).name,url:JSON.parse(uploadFileRes.data).url});
 						}
 					});
 					
@@ -294,15 +295,17 @@
 		align-items:center;
 		line-height: 50px;
 		border-bottom:1px solid #ECECEC; 
-		font-size:16px;
+		font-size:15px;
 	}
 	.input-line-height-1{
 		flex:1;
+		line-height: 50px;
+		font-size:15px;
 		padding-left: 5px;
 	}
 	.input-line-height-2{
 		flex:3;
-		font-size: 16px;
+		font-size: 15px;
 		text-align: left;
 	}
 	.login-button{
@@ -340,5 +343,9 @@
 		position: absolute;
 		right: -5px;
 		top:-5px;
+	}
+	.line-blue{
+		font-size: 18px;
+		margin-left: 5px;
 	}
 </style>

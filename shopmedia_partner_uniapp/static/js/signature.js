@@ -381,11 +381,11 @@ class Handwriting {
 			uni.canvasToTempFilePath({
 				canvasId: this.canvasName,
 				success: function(res) {
-					console.log(res.tempFilePath)
+					//console.log(res.tempFilePath)
 					resolve(res.tempFilePath);
 				},
 				 fail:function(err){
-					 console.log('图片生成失败：'+err)
+					 //console.log('图片生成失败：'+err)
 					 rej(err);
 				 }
 			})
