@@ -37,7 +37,7 @@ class UserShopkeeper extends Base
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
             }
-            if (isset($param['status'])) { // 状态
+            if (isset($param['status']) && $param['status'] != null) { // 状态
                 $map['us.status'] = intval($param['status']);
             }
 

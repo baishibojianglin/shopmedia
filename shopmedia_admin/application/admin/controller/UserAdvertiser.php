@@ -34,7 +34,7 @@ class UserAdvertiser extends Base
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . trim($param['user_name']) . '%'];
             }
-            if (isset($param['status'])) { // 状态
+            if (isset($param['status']) && $param['status'] != null) { // 状态
                 $map['ua.status'] = intval($param['status']);
             }
 

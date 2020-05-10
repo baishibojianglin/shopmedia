@@ -21,9 +21,8 @@
 								</el-select>
 							</el-form-item>
 							<el-form-item label="">
-								<el-select v-model="formInline.status" placeholder="状态">
-									<el-option label="启用" value="1"></el-option>
-									<el-option label="禁用" value="0"></el-option>
+								<el-select v-model="formInline.status" clearable placeholder="状态">
+									<el-option v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :label="item" :value="Number(index)"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="">
@@ -52,12 +51,12 @@
 			</div>
 			<div class="">
 				<!-- 用户列表 s -->
-				<el-table :data="userList" border empty-text="数据加载中…" :span-method="objectSpanMethod" style="width: 100%">
+				<el-table :data="userList" border empty-text="数据加载中…" max-height="500" :span-method="objectSpanMethod" style="width: 100%">
 					<!-- <el-table-column prop="id" label="序号" fixed width="90"></el-table-column> -->
 					<el-table-column prop="user_id" label="用户序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
 					<el-table-column prop="title" label="业务员角色" fixed min-width="120"></el-table-column>
-<!-- 					<el-table-column prop="avatar" label="头像" width="90">
+					<!-- <el-table-column prop="avatar" label="头像" width="90">
 						<template slot-scope="scope">
 							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
 						</template>
@@ -88,9 +87,9 @@
 					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90">
-					<!-- <el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">替换上面 prop="status" 可用于筛选状态 -->
+					<!-- <el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }]" :filter-method="filterStatus" filter-placement="bottom-end"> --><!-- 替换上面 prop="status" 可用于筛选状态 -->
 						<template slot-scope="scope">
-							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
@@ -248,7 +247,7 @@
 			 * 合并行
 			 */
 			objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-				let columnIndexArray = [0, 1, 3, 4, 5, 17, 18]; // 列号组成的数组
+				let columnIndexArray = [0, 1, 3, 4, 16, 17]; // 列号组成的数组
 				if (columnIndexArray.includes(columnIndex) === true) { // 即 columnIndex === 0 || columnIndex === 1 …
 					const _row = this.spanArr[rowIndex];
 					const _col = _row > 0 ? 1 : 0;
