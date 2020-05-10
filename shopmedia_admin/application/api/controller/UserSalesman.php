@@ -175,6 +175,8 @@ class UserSalesman extends AuthBase
 
         // 传入的参数
         $param = input('param.');
+        $param['user_id'] = intval($param['user_id']);
+        $param['role_id'] = intval($param['role_id']);
 
         // 判断传入的参数是否存在合法
         // 判断是否是下级业务员邀请码
@@ -184,9 +186,14 @@ class UserSalesman extends AuthBase
             return show(config('code.error'), '认证码错误', '', 401);
         }
 
+        // 判断角色是否匹配
+        if ($param['role_id'] != $parentSalesman['role_id']) {
+            return show(config('code.error'), '认证码错误，业务员类型不匹配', '', 401);
+        }
+
         // 判断是否重复申请该业务员
-        $salesmanMap['uid'] = intval($param['user_id']);
-        $salesmanMap['role_id'] = intval($param['role_id']);
+        $salesmanMap['uid'] = $param['user_id'];
+        $salesmanMap['role_id'] = $param['role_id'];
         $salesman = Db::name('user_salesman')->where($salesmanMap)->find();
         if ($salesman) {
             switch ($salesman['status']) {
@@ -229,7 +236,6 @@ class UserSalesman extends AuthBase
             $data['uid'] = $param['user_id'];
             $data['role_id'] = $param['role_id'];
             $data['company_id'] = $parentSalesman['company_id'];
-            $data['parent_id'] = $parentSalesman['parent_id'];
             $data['parent_id'] = $parentSalesman['parent_id'];
             $data['create_time'] = time();
             $data['status'] = 2;
