@@ -236,7 +236,7 @@ class UserSalesman extends AuthBase
             $data['uid'] = $param['user_id'];
             $data['role_id'] = $param['role_id'];
             $data['company_id'] = $parentSalesman['company_id'];
-            $data['parent_id'] = $parentSalesman['parent_id'];
+            $data['parent_id'] = $parentSalesman['id'];
             $data['create_time'] = time();
             $data['status'] = 2;
             $res[0] = $id = Db::name('user_salesman')->insert($data);
