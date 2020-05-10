@@ -14,10 +14,10 @@
 				  </div>
 				  <div class="checkcode">
 				  	 <el-input style="width: 188px;" v-model="verifycode" type="text"  placeholder="输入验证码"></el-input>
-					 <el-button @click='getverifycode()' style="width:112px; margin: 20px 0;" type="success" plain>{{tips}}</el-button>
+					 <el-button @click='getverifycode()' style="width:112px; margin: 20px 0;" type="primary" plain>{{tips}}</el-button>
 				  </div>
 				  <div class="count">
-				  	 <el-button style="width: 300px;" type="success" @click="login()">登录</el-button>
+				  	 <el-button style="width: 300px;" type="primary" @click="login()">登 录</el-button>
 				  </div>
 			  </div>
 		  </el-col>

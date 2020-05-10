@@ -37,7 +37,7 @@ class UserPartner extends Base
             if (!empty($param['user_name'])) { // 用户名称
                 $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
             }
-            if (isset($param['status'])) { // 状态
+            if (isset($param['status']) && $param['status'] != null) { // 状态
                 $map['up.status'] = intval($param['status']);
             }
             if (isset($param['is_delete'])) { // 是否删除
