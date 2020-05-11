@@ -22,8 +22,24 @@ class PartnerOrder extends Base
         $result = $this->alias('o')
             ->field($this->_getListField())
             ->join('__USER__ u', 'o.user_id = u.user_id', 'LEFT') // 用户
+            ->join('__USER_PARTNER__ up', 'o.partner_id = up.id', 'LEFT') // 广告屏合作商
             ->join('__DEVICE__ d', 'o.device_id = d.device_id', 'LEFT') // 广告屏
             ->where($map)->cache(true, 10)->paginate($size);
+        return $result;
+    }
+
+    /**
+     * 获取订单总金额
+     * @param $map
+     * @return false|\PDOStatement|string|\think\Collection
+     */
+    public function getPartnerOrderPriceSum($map)
+    {
+        $result = $this->alias('o')
+            ->join('__USER__ u', 'o.user_id = u.user_id', 'LEFT') // 用户
+            ->join('__USER_PARTNER__ up', 'o.partner_id = up.id', 'LEFT') // 广告屏合作商
+            ->join('__DEVICE__ d', 'o.device_id = d.device_id', 'LEFT') // 广告屏
+            ->where($map)->sum('o.order_price');
         return $result;
     }
 
@@ -36,6 +52,7 @@ class PartnerOrder extends Base
         return [
             'o.*',
             'u.user_name',
+            'up.salesman_id',
             'd.shopname'
         ];
     }
