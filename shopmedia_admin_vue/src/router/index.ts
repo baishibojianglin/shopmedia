@@ -36,6 +36,7 @@ import UserRoleEdit from '@/pages/user_role/UserRoleEdit.vue'
 import UserSalesman from '@/pages/user_salesman/UserSalesman.vue'
 import UserSalesmanCreate from '@/pages/user_salesman/UserSalesmanCreate.vue'
 import UserSalesmanEdit from '@/pages/user_salesman/UserSalesmanEdit.vue'
+import SonSalesman from '@/pages/user_salesman/SonSalesman.vue'
 // 用户（广告屏合作商）管理
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
 import UserPartnerCreate from '@/pages/user_partner/UserPartnerCreate.vue'
@@ -118,6 +119,7 @@ const routes = [
 			{path: 'user_salesman', name: 'user_salesman', component: UserSalesman}, // 用户列表
 			{path: 'user_salesman_create', name: 'user_salesman_create', component: UserSalesmanCreate}, // 创建用户
 			{path: 'user_salesman_edit', name: 'user_salesman_edit', component: UserSalesmanEdit}, // 编辑用户
+			{path: 'son_salesman', name: 'son_salesman', component: SonSalesman}, // 下级业务员列表
 			// 2--用户（广告屏合作商）管理
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_create', name: 'user_partner_create', component: UserPartnerCreate}, // 新增用户

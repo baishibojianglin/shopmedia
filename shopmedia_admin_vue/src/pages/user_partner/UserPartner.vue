@@ -64,7 +64,7 @@
 					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
 					<el-table-column label="操作" fixed="right" :min-width="formInline.is_delete != 1 ? 230 : 160">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toUserDevice(scope.row)" v-if="formInline.is_delete != 1">广告屏</el-button>
+							<el-button type="infor" size="mini" plain @click="toUserDevice(scope.row)" v-if="formInline.is_delete != 1">广告屏</el-button>
 							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
 							<el-button type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>

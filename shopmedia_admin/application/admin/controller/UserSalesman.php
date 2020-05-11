@@ -384,4 +384,69 @@ class UserSalesman extends Base
             return show(config('code.error'), '请求不合法', '', 400);
         }
     }
+
+
+    /**
+     * 获取指定角色的下级业务员销售数据列表
+     */
+    public function sonSalesman()
+    {
+        // 判断为GET请求
+        if (request()->isGet()) {
+            // 传入的数据
+            $param = input('param.');
+
+            // 查询条件
+            $map = [];
+            $map['ur.status'] = config('code.status_enable'); // 启用角色
+            $map['us.parent_id'] = intval($param['parent_id']); // 上级ID
+            $map['us.role_id'] = intval($param['role_id']); // 角色ID
+            if (!empty($param['user_name'])) { // 用户名称
+                $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
+            }
+            if (isset($param['status']) && $param['status'] != null) { // 角色状态
+                $map['us.status'] = intval($param['status']);
+            }
+
+            // 获取分页page、size
+            $this->getPageAndSize($param);
+
+            // 获取分页列表数据 模式一：基于paginate()自动化分页
+            try {
+                $data = model('User')->getUserSalesman($map, (int)$this->size);
+            } catch (\Exception $e) {
+                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
+            }
+            $status = config('code.status');
+            foreach ($data as $key => $value) {
+                $data[$key]['status'] = $value['status'] == config('code.status_enable') ? $value['us_status'] : config('code.status_disable'); // 状态
+                $data[$key]['status_msg'] = $status[$data[$key]['status']]; // 定义状态信息
+
+                // 根据业务员角色获取业务员销售数据
+                switch (intval($param['role_id'])) {
+                    case 4: // 广告屏业务员
+                        // 根据广告屏业务员ID获取广告屏合作商ID集合
+                        $partnerIds = Db::name('user_partner')->where(['salesman_id' => $value['id']])->column('id');
+                        // 根据广告屏合作商ID获取广告屏业务员对应广告屏合作商订单总金额
+                        $partnerOrderMap['o.partner_id'] = ['in', $partnerIds];
+                        $partnerOrderMap['o.order_status'] = 1;
+                        $partnerOrderMap['o.pay_status'] = 1;
+                        $PartnerOrderPriceSum = model('PartnerOrder')->getPartnerOrderPriceSum($partnerOrderMap);
+                        $data[$key]['sales_amount'] = $PartnerOrderPriceSum;
+                        break;
+                    case 5: // 广告业务员
+                        // TODO
+                        break;
+                    case 6: // 店铺业务员
+                        // TODO
+                        break;
+                    default:
+                        // 默认执行
+                }
+            }
+            return show(config('code.success'), 'OK', $data);
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+    }
 }

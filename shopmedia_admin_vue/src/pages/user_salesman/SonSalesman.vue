@@ -3,7 +3,10 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="3"><span>业务员</span></el-col>
+					<el-col :span="3"><span>下级业务员</span></el-col>
+					<el-col :span="3">
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
+					</el-col>
 				</el-row>
 				<el-row :gutter="20" type="flex" justify="space-between" style="margin-top: 1rem;">
 					<!-- <el-col :span="3"><span>业务员</span></el-col> -->
@@ -11,23 +14,9 @@
 						<!-- 查询 s -->
 						<el-form ref="formInline" :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-select v-model="formInline.role_id" multiple placeholder="选择角色" filterable style="margin-right: 25px;">
-									<el-option
-										v-for="item in userRoleList"
-										:key="item.id"
-										:label="item.title"
-										:value="item.id">
-									</el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item label="">
 								<el-select v-model="formInline.status" clearable placeholder="状态">
 									<el-option v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :label="item" :value="Number(index)"></el-option>
 								</el-select>
-							</el-form-item>
-							<el-form-item label="">
-								<el-input placeholder="上级名称" v-model="formInline.parent_name" clearable>
-								</el-input>
 							</el-form-item>
 							<el-form-item label="">
 								<el-input placeholder="用户名称" v-model="formInline.user_name" clearable>
@@ -42,20 +31,16 @@
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="6">
-						<!-- 新增 s -->
-						<router-link to="user_salesman_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增业务员</el-button></router-link>
-						<!-- 新增 e -->
-					</el-col>
 				</el-row>
 			</div>
 			<div class="">
 				<!-- 用户列表 s -->
-				<el-table :data="userList" border empty-text="数据加载中…" max-height="600" :span-method="objectSpanMethod" style="width: 100%">
+				<el-table :data="userList" border empty-text="数据加载中…" max-height="500" style="width: 100%">
 					<!-- <el-table-column prop="id" label="序号" fixed width="90"></el-table-column> -->
 					<el-table-column prop="user_id" label="用户序号" fixed width="90"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="title" label="业务员角色" fixed min-width="120"></el-table-column>
+					<el-table-column prop="sales_amount" label="销售金额/元" fixed min-width="120"></el-table-column>
+					<!-- <el-table-column prop="title" label="业务员角色" min-width="120"></el-table-column> -->
 					<!-- <el-table-column prop="avatar" label="头像" width="90">
 						<template slot-scope="scope">
 							<img :src="scope.row.avatar" :alt="scope.row.avatar" :title="scope.row.user_name" width="50" height="50" />
@@ -66,9 +51,9 @@
 							{{scope.row.phone}}<!-- {{scope.row.phone ? (scope.row.phone_verified == 1 ? '' : '(未验证)') : ''}} -->
 						</template>
 					</el-table-column>
-					<el-table-column prop="company_name" label="分公司" min-width="180"></el-table-column>
+					<!-- <el-table-column prop="company_name" label="分公司" min-width="180"></el-table-column> -->
 					<!-- <el-table-column prop="parent_id" label="上级序号" min-width="90"></el-table-column> -->
-					<el-table-column prop="parent_name" label="上级名称" min-width="180"></el-table-column>
+					<!-- <el-table-column prop="parent_name" label="上级名称" min-width="180"></el-table-column> -->
 					<el-table-column prop="comm_ratio" label="业务员提成比例" min-width="120"></el-table-column>
 					<el-table-column prop="parent_comm_ratio" label="向上级提成比例" min-width="120"></el-table-column>
 					<el-table-column prop="auth_son_ratio_msg" label="授权配置下级提成比例" min-width="120">
@@ -92,15 +77,11 @@
 							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
-					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="210">
+					<!-- <el-table-column label="操作" fixed="right" min-width="210">
 						<template slot-scope="scope">
-							<el-button type="infor" size="mini" plain @click="toSonUser(scope.row)">下级</el-button>
-							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
+							
 						</template>
-					</el-table-column>
+					</el-table-column> -->
 				</el-table>
 				<!-- 用户列表 e -->
 
@@ -123,8 +104,6 @@
 			return {
 				formInline: {
 					user_name: '', // 用户名称
-					parent_name: '', // 上级用户名称
-					role_id: '', // 角色ID
 					status: '' // 角色状态
 				},
 				userList: [], // 用户列表
@@ -132,14 +111,11 @@
 				
 				// 合并行的相关参数
 				spanArr: [], // 用于存放每一行记录的合并数
-				position: 0, // spanArr的索引
-				
-				userRoleList: [] // 用户角色列表
+				position: 0 // spanArr的索引
 			}
 		},
 		mounted() {
 			this.getUserList(); // 获取用户列表
-			this.getUserRoleList();
 		},
 		methods: {
 			/**
@@ -147,19 +123,15 @@
 			 */
 			getUserList() {
 				let self = this;
-				this.$axios.get(this.$url + 'user_salesman', {
+				this.$axios.get(this.$url + 'son_salesman', {
 					params: {
 						user_name: this.formInline.user_name,
-						parent_name: this.formInline.parent_name,
-						role_id: this.formInline.role_id,
+						parent_id: this.$route.query.id, // 获取路由带过来的参数
+						role_id: this.$route.query.role_id, // 获取路由带过来的参数
 						status: this.formInline.status,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
-					}/* ,
-					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					} */
+					}
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
@@ -177,8 +149,6 @@
 
 						// 用户列表
 						self.userList = self.listPagination.data;
-						// 获取每一行合并的行数
-						self.getSpanArr(self.userList);
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -222,44 +192,6 @@
 			},
 			
 			/**
-			 * 获取每一行合并的行数
-			 * @param {Object} data
-			 */
-			getSpanArr(data) {
-				this.spanArr = []; // 避免表格错乱！
-				data.forEach((item, index) => {
-					if (index === 0) {
-						this.spanArr.push(1);
-						this.position = 0;
-					} else {
-						// 判断当前元素与上一个元素是否相同
-						if (data[index].user_id === data[index - 1].user_id) { // 这里是要合并行
-							this.spanArr[this.position] += 1;
-							this.spanArr.push(0); // ０即表示该行不显示
-						} else {
-							this.spanArr.push(1);
-							this.position = index;
-						}
-					}
-				})
-			},
-			
-			/**
-			 * 合并行
-			 */
-			objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-				let columnIndexArray = [0, 1, 3, 4, 16, 17]; // 列号组成的数组
-				if (columnIndexArray.includes(columnIndex) === true) { // 即 columnIndex === 0 || columnIndex === 1 …
-					const _row = this.spanArr[rowIndex];
-					const _col = _row > 0 ? 1 : 0;
-					return {
-						rowspan: _row,
-						colspan: _col
-					}
-				}
-			},
-			
-			/**
 			 * 重置表单
 			 * @param {Object} formName
 			 */
@@ -268,109 +200,16 @@
 				this.formInline = {};
 				this.getUserList();
 			},
-
-			/**
-			 * 跳转用户编辑页
-			 * @param {Object} row
-			 */
-			toUserEdit(row) {
-				this.$router.push({
-					path: "user_salesman_edit",
-					query: {
-						id: row.id
-					}
-				});
-			},
-
-			/**
-			 * 删除用户
-			 * @param {Object} scope
-			 */
-			deleteUser(scope) {
-				this.$confirm('此操作将永久删除该用户, 是否继续?', '删除', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					// 调用删除接口
-					let self = this;
-					this.$axios.delete(this.$url + 'user_salesman/' + scope.row.id)
-						.then(function(res) {
-							// 移除元素
-							self.userList.splice(scope.$index, 1);
-
-							let type = res.data.status == 1 ? 'success' : 'warning';
-							self.$message({
-								message: res.data.message,
-								type: type
-							});
-						})
-						.catch(function(error) {
-							self.$message({
-								message: error.response.data.message,
-								type: 'warning'
-							});
-						});
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '已取消删除'
-					});
-				});
-			},
 			
 			/**
-			 * 跳转下级用户（业务员）列表页
-			 * @param {Object} row
+			 * 返回上一页
 			 */
-			toSonUser(row) {
-				this.$router.push({
-					path: "son_salesman",
-					query: {
-						id: row.id,
-						role_id: row.role_id
-					}
-				});
-			},
-			
-			/**
-			 * 获取用户角色（业务员）列表
-			 */
-			getUserRoleList() {
-				let self = this;
-				this.$axios.get(this.$url + 'user_role_list', {
-					params: {
-						parent_id: 1
-					}/* ,
-					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					} */
-				})
-				.then(function(res) {
-					if (res.data.status == 1) {
-						// 用户角色列表
-						self.userRoleList = res.data.data;
-					} else {
-						self.$message({
-							message: '网络忙，请重试',
-							type: 'warning'
-						});
-					}
-				})
-				.catch(function(error) {
-					self.$message({
-						message: error.response.data.message,
-						type: 'warning'
-					});
-				});
+			back(){
+				this.$router.go(-1);
 			}
 		}
 	}
 </script>
 
 <style>
-	.el-select .el-input {
-		width: 100px;
-	}
 </style>
