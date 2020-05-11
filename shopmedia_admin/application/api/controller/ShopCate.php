@@ -27,4 +27,16 @@ class shopCate extends Common
 
         return show(config('code.success'), 'OK', $data);
     }
+
+    /**
+     * 店铺环境列表（不分页，用于 Select 选择器等）
+     * @return \think\response\Json
+     */
+    public function shopEnviroment()
+    {
+        $shopEnviroment= config('code.shop_enviroment'); // 店铺类别
+        return show(config('code.success'), 'OK', $shopEnviroment);
+    }
+
+
 }

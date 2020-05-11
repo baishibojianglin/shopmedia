@@ -85,7 +85,7 @@
 				"app-plus": {
 					"titleNView": true
 				},
-				"navigationBarTitleText": "上传店铺"
+				"navigationBarTitleText": "店铺信息"
 			}
 		},
 		{ // 业务员设备详情

@@ -19,7 +19,7 @@
 			</view>
 			<view class="input-line-height">
 				<view class="input-line-height-1">面积 <text class="main-color line-blue">|</text></view>
-				<input class="input-line-height-2" type="number"  v-model="shop_area" />
+				<input class="input-line-height-2" type="number"  v-model="shop_area" />㎡
 			</view>
 			<view class="input-line-height">
 				<view class="input-line-height-1">位置 <text class="main-color line-blue">|</text></view>
@@ -29,16 +29,25 @@
 				</view>
 			</view>
 	
-			<view class="input-line-height">
+			<view class="input-line-height" v-show="false">
 				<view class="input-line-height-1">经度 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"   v-model="longitude" />
 			</view>
+
+			<view class="input-line-height" >
+				<view class="input-line-height-1">环境 <text class="main-color line-blue">|</text></view>
+				<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="testindex" :range="test" >
+					<view style="font-size: 15px;">{{test[testindex]}}</view>
+					<input v-show="false" type="text" v-model="test[testindex]" />
+				</picker>
+			</view>
+
 			
-			<view class="input-line-height">
+			<view class="input-line-height" v-show="false">
 				<view class="input-line-height-1">纬度 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"  v-model="latitude" />
 			</view>
-	
+
 			<view class="input-line-height">
 				<view class="input-line-height-1">实景 <text class="main-color line-blue">|</text></view>
 				<view class="input-line-height-2">
@@ -79,6 +88,8 @@
 				latitude: '', // 纬度
 				image: [], // 实景图片
 				imagelist: [],
+				test:[1,2,3],
+				testindex:0,
 				
 				shopCateList: [{cate_id:'',cate_name:''}], // 店铺类别列表
 				shopCateIndex: 0
@@ -87,8 +98,35 @@
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
 			this.getShopCateList();
+			this.getShopEnviroment();
 		},
 		methods: {
+			/**
+			 * 获取店铺环境列表
+			 */
+			getShopEnviroment(){
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/shop_enviroment',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						console.log(res.data)
+						if (res.data.status == 1) {
+
+						}
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})				
+			},
 			/**
 			 * 获取店铺类别列表
 			 */
@@ -276,7 +314,18 @@
 			bindShopCatePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.shopCateIndex = e.target.value;
-			}
+			},
+
+			/**
+			 * 改变选择店铺的环境
+			 * @param {Object} e
+			 */
+			bindShopHjPickerChange: function(e) {
+				// console.log('picker发送选择改变，携带值为', e.target.value)
+				this.shopCateIndex = e.target.value;
+			}			
+			
+			
 		}
 	}
 </script>

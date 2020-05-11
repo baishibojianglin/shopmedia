@@ -46,7 +46,7 @@
 					</view>
 					<view class="datalist">
 						<text class="datalist-title">所属行业：</text>
-						<text class="datalist-content">{{datalist.shopcate}}</text>
+						<text class="datalist-content">{{cate_name}}</text>
 					</view>
 					<view class="datalist">
 						<text class="datalist-title">位置：</text>
@@ -73,8 +73,8 @@
 			return {
 				device_id: 0, //设备id
 				datalist: {}, //设备信息列表
+				cate_name:'',//行业名字
 				imglist: [], //实景图列表
-				shopcatelist: {}, //店铺行业列表
 				csPhone: '02865272616', // 客服电话
 				
 				/* GoodsNav 商品导航 s */
@@ -116,7 +116,7 @@
 				uni.request({
 					url: this.$serverUrl + 'api/shop_cate_list',
 					header: {
-						'commonheader': this.$store.state.commonheader,
+						'commonheader':this.commonheader,
 						'access-user-token': this.userInfo.token
 					},
 					method: 'GET',
@@ -134,13 +134,13 @@
 						device_id: self.device_id
 					},
 					header: {
-						'commonheader': this.$store.state.commonheader,
+						'commonheader':  this.commonheader,
 						'access-user-token': this.userInfo.token
 					},
 					method: 'POST',
 					success: (res) => {
 						self.datalist = res.data.data; //赋值
-						self.datalist.shopcate = self.shopcatelist[self.datalist.shopcate].cate_name; //展示店铺行业
+						self.cate_name=self.shopcatelist[self.datalist.shopcate-1].cate_name;
 						//取实景图
 						let str_image = res.data.data.url_image;
 						if (str_image.indexOf(',') == -1) {
@@ -158,24 +158,24 @@
 			/**
 			 * 获取广告屏合作商业务员信息
 			 */
-			getPartnerSalesman() {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/partner_salesman',
-					data: {
-						user_id: this.userInfo.user_id,
-						role_id: uni.getStorageSync('role_id')
-					},
-					header: {
-						'commonheader': this.$store.state.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'GET',
-					success: (res) => {
-						self.csPhone = res.data.data.phone;
-					}
-				})
-			},
+			// getPartnerSalesman() {
+			// 	let self = this;
+			// 	uni.request({
+			// 		url: this.$serverUrl + 'api/partner_salesman',
+			// 		data: {
+			// 			user_id: this.userInfo.user_id,
+			// 			role_id: uni.getStorageSync('role_id')
+			// 		},
+			// 		header: {
+			// 			'commonheader':  this.commonheader,
+			// 			'access-user-token': this.userInfo.token
+			// 		},
+			// 		method: 'GET',
+			// 		success: (res) => {
+			// 			self.csPhone = res.data.data.phone;
+			// 		}
+			// 	})
+			// },
 			
 			/* GoodsNav 商品导航 s */
 			/**

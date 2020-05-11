@@ -69,6 +69,7 @@ Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（�
 Route::resource('shop', 'admin/Shop');
 // 店铺类别
 Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
+Route::get('shop_enviroment', 'admin/ShopCate/shopEnviroment');
 
 // 新闻
 Route::resource('news', 'admin/News');
