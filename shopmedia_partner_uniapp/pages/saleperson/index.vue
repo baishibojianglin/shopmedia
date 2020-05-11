@@ -20,36 +20,38 @@
 					<text>可合作：{{salecount}} 台</text>
 				</view>
 			</view>	
-            <view>
-				<view class="listcon">
-					<view class="listcon-item-1">
-						<text>屏号</text>
+			<uni-card :is-shadow="true">
+					<view>
+						<view class="listcon">
+							<view class="listcon-item-1">
+								<text>屏号</text>
+							</view>
+							<view class="listcon-item-2">
+								<text>店名</text>
+							</view>
+							<view class="listcon-item-1">
+								<text>合作价</text>
+							</view>
+							<view class="listcon-item-3">
+								<text v-show="false">详情</text>
+							</view>
+						</view>	 
+						<view class="listcon" v-for="value in devicelist" @click="toDevice(value.device_id)">
+								<view class="listcon-item-1">
+									<text>{{value.device_id}}</text>
+								</view>
+								<view class="listcon-item-2">
+									<text>{{value.shopname}}</text>
+								</view>
+								<view class="listcon-item-1">
+									<text class="">¥{{value.sale_price}}</text>
+								</view>
+								<view class="listcon-item-3">
+									<text class="icon icon-size">&#xe6a2;</text>
+								</view>
+						</view>	
 					</view>
-					<view class="listcon-item-2">
-						<text>店名</text>
-					</view>
-					<view class="listcon-item-1">
-						<text>合作价</text>
-					</view>
-					<view class="listcon-item-3">
-						<text v-show="false">详情</text>
-					</view>
-				</view>	 
-				<view class="listcon" v-for="value in devicelist" @click="toDevice(value.device_id)">
-						<view class="listcon-item-1">
-							<text>{{value.device_id}}</text>
-						</view>
-						<view class="listcon-item-2">
-							<text>{{value.shopname}}</text>
-						</view>
-						<view class="listcon-item-1">
-							<text class="">¥{{value.sale_price}}</text>
-						</view>
-						<view class="listcon-item-3">
-							<text class="icon icon-size">&#xe6a2;</text>
-						</view>
-				</view>	
-			</view>
+				</uni-card>
                 					
 						
 							

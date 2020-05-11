@@ -111,7 +111,7 @@
 		{ // 用户（智能广告屏合作商）角色
 			"path": "pages/user-partner/user-partner",
 			"style": {
-				"navigationBarTitleText": "智能广告屏合作商",
+				"navigationBarTitleText": "智能广告屏合作",
 				"app-plus": {
 					"titleNView": {
 						// "type": "default",
@@ -131,7 +131,7 @@
 	    { // 智能广告屏列表
             "path" : "pages/device/device",
             "style" : {
-				"navigationBarTitleText": "智能广告屏市场",
+				"navigationBarTitleText": "智能广告屏合作",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{

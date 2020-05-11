@@ -9,14 +9,18 @@
 		<view class="uni-common-mt mb">
 			<uni-card title="合作广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-shadow>
 				<uni-list>
+					<view v-if="this.deviceList.length == 0" class="uni-center notdevice">您还没有合作广告屏</view>
+					
 					<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname" @click="toPartnerDeviceDetail(item.partner_device_id, item.partner_id, item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 				</uni-list>
 			</uni-card>
-			<view v-if="this.deviceList.length == 0" class="uni-center notdevice">您还没有合作的广告屏，去寻找发现吧！</view>
 		</view>
 		
 		<view class="uni-padding-wrap uni-common-mt uni-common-mb btn-bottom">
-			<button class="primary" type="primary" @click="toDeviceList">发现广告屏</button>
+			<button class="primary" type="primary" @click="toDeviceList">
+				查看可合作的屏
+				<text class="icon icon-position">&#xe6a2;</text>
+			</button>
 		</view>
 	</view>
 </template>
@@ -116,5 +120,12 @@
 	}
 	.notdevice{
 		font-size:16px;
+		line-height: 60px;
+	}
+	.icon-position{
+		position: relative;
+		top:2px;
+		margin-left: 5px;
+		font-size: 22px;
 	}
 </style>

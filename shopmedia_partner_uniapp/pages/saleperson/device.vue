@@ -60,7 +60,7 @@
 		</uni-card>
 		
 		<view class="ordercon">
-			<button  class="ordercon-item-1 bg-second-color" @click="openLocation()">位置导航</button>
+			<button  class="ordercon-item-1 bg-gray-color" @click="openLocation()">位置导航</button>
 			<navigator class="ordercon-item-2" :url="'./signbook?device_id='+device_id+'&address='+datalist.address+'&sale_price='+datalist.sale_price">
 			   <button  class="bg-main-color color-white">展示合作协议</button>
 		    </navigator>
@@ -195,12 +195,10 @@
 	flex: 1;
 	text-align: center;
 	margin: 10rpx 15rpx;
-	color:#ffffff;
 }
 .ordercon-item-2{
 	flex: 3;
 	text-align: center;
 	margin: 10rpx 15rpx;
-	color:#ffffff;
 }
 </style>
