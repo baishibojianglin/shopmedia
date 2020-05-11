@@ -57,18 +57,55 @@ class PartnerOrder extends AuthBase
             }
 
             // 入库操作
-            try {
-                // 新增订单
-                $id = Db::name('partner_order')->strict(false)->insertGetId($data);
-                // 更新用户名称为签约名称
-                @model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => intval($data['user_id'])]);
-            } catch (\Exception $e) {
-                return show(config('code.error'), $e->getCode().'网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
-            }
-            if ($id) {
-                return show(config('code.success'), '下单成功', $data['order_sn'], 201);
-            } else {
-                return show(config('code.error'), '下单失败', '', 403);
+            if ($data['partner_id']) { // 广告屏合作商存在时，只创建订单
+                try {
+                    // 新增订单
+                    $id = Db::name('partner_order')->strict(false)->insertGetId($data);
+                    // 更新用户名称为签约名称
+                    //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => intval($data['user_id'])]);
+                } catch (\Exception $e) {
+                    return show(config('code.error'), $e->getCode().'网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
+                }
+                if ($id) {
+                    return show(config('code.success'), '下单成功', $data['order_sn'], 201);
+                } else {
+                    return show(config('code.error'), '下单失败', '', 403);
+                }
+            } else { // 广告屏合作商不存在时，同时创建广告屏合作商和订单
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    // 创建广告屏合作商
+                    $salesman = Db::name('user_salesman')->field('id')->where(['role_id' => 4, 'company_id' => 0, 'parent_id' => 0])->find(); // 获取广告屏合作商业务员
+                    $partnerData['user_id'] = intval($data['user_id']);
+                    $partnerData['salesman_id'] = $salesman['id'];
+                    $partnerData['role_id'] = 2;
+                    $partnerData['status'] = config('code.status_enable');
+                    $partnerData['create_time'] = time();
+                    $res[0] = $partnerID = Db::name('user_partner')->strict(true)->insertGetId($partnerData);
+
+                    // 创建订单
+                    // 新增订单
+                    $data['partner_id'] = $partnerID;
+                    $res[1] = Db::name('partner_order')->strict(false)->insertGetId($data);
+                    // 更新用户名称为签约名称
+                    //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => intval($data['user_id'])]);
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '下单失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+                    return show(config('code.success'), '下单成功', '', 201);
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    return show(config('code.error'), '网络忙，请重试', '', 500);
+                }
+                /* 手动控制事务 e */
             }
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
