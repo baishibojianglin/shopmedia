@@ -10,49 +10,55 @@
 			</swiper>
 		</view>
 
-		<view class="uni-padding-wrap uni-common-mt mb">
-			<view class="datalist">
-				<text class="datalist-title">屏编号：</text>
-				<text class="datalist-content">{{datalist.device_id}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">总价：</text>
-				<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
-			</view>
-			<view class="datalist" v-if="datalist.sale_price">
-				<text class="datalist-title">合作价：</text>
-				<text class="datalist-content color-red">{{(datalist.sale_price/2).toFixed(2)}} 元</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">屏尺寸：</text>
-				<text class="datalist-content">{{datalist.size}} 寸</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">数据系统：</text>
-				<text class="datalist-content">店通智能大数据系统</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">店铺：</text>
-				<text class="datalist-content">{{datalist.shopname}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">店铺面积：</text>
-				<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">所属行业：</text>
-				<text class="datalist-content">{{datalist.shopcate}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">位置：</text>
-				<text class="datalist-content">{{datalist.address}}</text>
-			</view>
-			<view class="datalist">
-				<text class="datalist-title">周围环境：</text>
-				<text class="datalist-content">{{datalist.environment}}</text>
-			</view>
-		</view>
-		
+        <uni-card :is-shadow="true" style="margin-bottom: 150upx;">
+				<view>
+					<view class="datalist">
+						<text class="datalist-title">屏编号：</text>
+						<text class="datalist-content">{{datalist.device_id}}</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">总价：</text>
+						<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
+					</view>
+					<view class="datalist" v-if="datalist.sale_price">
+						<text class="datalist-title">合作价：</text>
+						<text class="datalist-content color-red">{{(datalist.sale_price/2).toFixed(2)}} 元</text>
+					</view>
+					<view class="datalist" v-if="datalist.sale_price">
+						<text class="datalist-title">占股比例：</text>
+						<text class="datalist-content color-red">50%</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">屏尺寸：</text>
+						<text class="datalist-content">{{datalist.size}} 寸</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">数据系统：</text>
+						<text class="datalist-content">店通智能大数据系统</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">店铺：</text>
+						<text class="datalist-content">{{datalist.shopname}}</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">店铺面积：</text>
+						<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">所属行业：</text>
+						<text class="datalist-content">{{datalist.shopcate}}</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">位置：</text>
+						<text class="datalist-content">{{datalist.address}}</text>
+					</view>
+					<view class="datalist">
+						<text class="datalist-title">周围环境：</text>
+						<text class="datalist-content">{{datalist.environment}}</text>
+					</view>
+				</view>
+			</uni-card>
+			
 		<view class="goods-carts">
 			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
 		</view>
@@ -80,7 +86,7 @@
 					text: '位置导航'
 				}],
 				buttonGroup: [{
-					text: '立即合作',
+					text: '合作签约',
 					backgroundColor: '#409EFF',
 					color: '#fff'
 				}]
