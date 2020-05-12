@@ -51,6 +51,8 @@ class Shop extends AuthBase
                 'longitude' => floatval($data['longitude']),
                 'latitude' => floatval($data['latitude']),
                 'shop_pic' => $data['image'],
+                'environment' => intval($data['environment']),
+                'describe' => $data['describe'],
                 'status' => config('code.status_enable'),
                 'create_time' => time()
             ];
@@ -107,10 +109,19 @@ class Shop extends AuthBase
                     ];
                     $res[4] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
 
+                    // 更新用户角色集合role_ids（新增店家角色）
+                    $user = model('User')->field('role_ids')->find($data['user_id']);
+                    $roleIds = explode(',', $user['role_ids']);
+                    if (!in_array(3, $roleIds)) {
+                        array_push($roleIds, 3); // 新增店家角色
+                        $userData['role_ids'] = implode(',', $roleIds);
+                        $res[5] = Db::name('user')->where(['user_id' => $data['user_id']])->update($userData);
+                    }
+
                     // 创建店铺
                     $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
                     $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
-                    $res[5] = Db::name('shop')->insertGetId($shopData);
+                    $res[6] = Db::name('shop')->insertGetId($shopData);
                 }
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
@@ -124,7 +135,7 @@ class Shop extends AuthBase
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500);
             }
             /* 手动控制事务 e */
         } else {
