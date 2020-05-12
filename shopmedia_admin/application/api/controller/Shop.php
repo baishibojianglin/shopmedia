@@ -110,12 +110,12 @@ class Shop extends AuthBase
                     $res[4] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
 
                     // 更新用户角色集合role_ids（新增店家角色）
-                    $user = model('User')->field('role_ids')->find($data['user_id']);
+                    $user = model('User')->field('role_ids')->find($shopkeeperUser['user_id']);
                     $roleIds = explode(',', $user['role_ids']);
                     if (!in_array(3, $roleIds)) {
                         array_push($roleIds, 3); // 新增店家角色
                         $userData['role_ids'] = implode(',', $roleIds);
-                        $res[5] = Db::name('user')->where(['user_id' => $data['user_id']])->update($userData);
+                        $res[5] = Db::name('user')->where(['user_id' => $shopkeeperUser['user_id']])->update($userData);
                     }
 
                     // 创建店铺
