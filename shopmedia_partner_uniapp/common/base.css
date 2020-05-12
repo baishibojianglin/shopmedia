@@ -29,6 +29,9 @@
 .bg-gray-color{
 	background-color: #E3E0D5;
 }
+.bg-qgray-color{
+	background-color: #EBEBEB;
+}
 /* 颜色 */
 .color-blue{
 	color:#409EFF;
@@ -68,6 +71,14 @@
 /* 加粗 */
 .blod{
 	font-weight: bold;
+}
+
+/*字体大小*/
+.fon14{
+	font-size: 14px;
+}
+.fon16{
+	font-size: 16px;
 }
 
 /* 行列转换 */
