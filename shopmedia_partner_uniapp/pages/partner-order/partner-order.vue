@@ -337,13 +337,18 @@
 					method: 'POST',
 					success: function(res) {
 						if (res.data.status == 1) {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message
-							});
-							uni.switchTab({  
-								url:"../main/main"	  
-							});   
+							uni.showModal({
+								title: '提交成功',
+								content: res.data.message,
+								showCancel: false,
+								success: function(res) {
+									if (res.confirm) {
+										uni.switchTab({
+											url:"../main/main"	  
+										});
+									}
+								}
+							})
 						} else {
 							uni.showModal({
 								title: '提交失败',
