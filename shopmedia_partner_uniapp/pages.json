@@ -83,7 +83,11 @@
 			"path": "pages/saleperson/shop",
 			"style": {
 				"app-plus": {
-					"titleNView": true
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
 				},
 				"navigationBarTitleText": "店铺信息"
 			}

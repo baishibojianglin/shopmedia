@@ -31,11 +31,10 @@
 			<view class="input-line-height">
 				<view class="input-line-height-1">位置 <text class="main-color line-blue">|</text></view>
 				<view class="input-line-height-2">
-					<button v-show="!address" size="mini" @click="getlocation()" style="font-size: 14px; margin-top: 5px;">点击获取</button>
-					<input v-show="address" type="text" v-model="address" />
+					<button v-show="!address" size="mini" @click="getlocation()" style="font-size: 14px; margin-top: 7px;">点击获取</button>
+					<input v-show="address" type="text" style="font-size: 15px;" v-model="address" />
 				</view>
 			</view>
-	        <view>{{province}} {{city}} {{district}}</view>
 			<view class="input-line-height" v-show="false">
 				<view class="input-line-height-1">经度 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"   v-model="longitude" />
@@ -50,7 +49,7 @@
 			<view class="input-line-height">
 				<view class="input-line-height-1">实景 <text class="main-color line-blue">|</text></view>
 				<view class="input-line-height-2">
-                    <button size="mini" style="margin-top: 5px;font-size: 14px;"  @click="takePhoto">上传照片</button>
+                    <button size="mini" style="margin-top: 7px;font-size: 14px;"  @click="takePhoto">上传照片</button>
 				</view>
 			</view>		
 			
@@ -62,11 +61,15 @@
 			</view>
 			
 		</view>
+		
+		<view class="input-line-height">
+			<view class="input-line-height-1">描述 <text class="main-color line-blue">|</text></view>
+			<textarea class="input-line-height-2" style="padding: 20upx 0;" auto-height :value="describle" />
+		</view>
 
 		<view>
 			<button class="login-button" @click="submitShopInfo">上 传</button>
 		</view>
-		
 	</view>
 </template>
 
@@ -81,15 +84,14 @@
 				phone: '', // 店家电话号码
 				shop_name: '', // 店名
 				cate: '', // 店铺分类
+				enviroment:'',//环境
 				shop_area: '', // 店铺面积
 				address: '', // 店铺位置
 				longitude: '', // 经度
 				latitude: '', // 纬度
-				province:'',
-				city:'',
-				district:'',
 				image: [], // 实景图片
 				imagelist: [],
+				describle:'',//店铺描述
 
 				
 				shopCateList: [{cate_id:'',cate_name:''}], // 店铺类别列表
@@ -102,6 +104,9 @@
 		onLoad(){
 			this.getShopCateList();
 			this.getShopEnviroment();
+		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
 		},
 		methods: {
 			/**
@@ -192,6 +197,8 @@
 						longitude: this.longitude,
 						latitude: this.latitude,
 						image: this.image,
+						enviroment:this.enviroment,
+						describle:this.describle
 					},
 					header: {
 						'commonheader': this.commonheader,
@@ -308,15 +315,6 @@
 						self.latitude=res.latitude;
 						self.longitude=res.longitude;
 					}
-				});
-				uni.getLocation({
-				    type: 'wgs84',
-					geocode:true,
-				    success: function (res) {
-				        self.province=res.address.province;
-						self.city=res.address.city;
-						self.district=res.address.district;
-				    }
 				});
 			},
 
