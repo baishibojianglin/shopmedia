@@ -255,7 +255,7 @@
         { // 业务员申请开通业务
             "path" : "pages/saleperson/signbook",
             "style" : {
-				"navigationBarTitleText": "协议样本",
+				"navigationBarTitleText": "广告屏合作协议样本",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
@@ -264,8 +264,20 @@
 					}
 				}
 			}
-        }
-		
+        },
+        { // 业务员版块店铺合作协议样本
+            "path" : "pages/saleperson/signshop",
+            "style" : {
+				"navigationBarTitleText": "店铺合作协议样本",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }	
     ],
 	"tabBar": {
 		"color": "#808080",

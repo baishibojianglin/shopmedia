@@ -70,6 +70,11 @@
 		<view>
 			<button class="login-button" @click="submitShopInfo">上 传</button>
 		</view>
+
+        <navigator url="./signshop" class="input-line-height" style="border-bottom: none;">
+			<view class="input-line-height-1 text-center"><text class="main-color">《店铺合作协议》</text></view>
+		</navigator>		
+		
 	</view>
 </template>
 
@@ -205,14 +210,18 @@
 					},
 					method: 'POST',
 					success: function(res) {
+						console.log(res)
 						if (res.statusCode == 201 && res.data.status == 1) {
 							uni.showModal({
-								title: res.data.message,
+								title: '提示',
+								content:res.data.message,
 								showCancel: false,
-								success() {
-									uni.switchTab({
-										url: '/pages/main/main'
-									});
+								success:function(res) {
+									if (res.confirm) {
+										uni.switchTab({
+											url: '/pages/main/main'
+										});
+									}
 								}
 							});
 						} else {
