@@ -26,6 +26,8 @@ class PartnerOrder extends AuthBase
         if(request()->isPost()){
             // 传入的参数
             $data = input('post.');
+            $data['user_id'] = intval($data['user_id']);
+            $data['role_id'] = intval($data['role_id']);
 
             // 判断数据是否存在
             if (empty($data['user_name'])) {
@@ -43,26 +45,26 @@ class PartnerOrder extends AuthBase
 
             // 获取广告屏合作商信息
             $partnerMap = []; // 查询条件
-            if (isset($data['user_id']) && isset($data['role_id']) && intval($data['role_id']) == 2) {
-                $partnerMap['user_id'] = intval($data['user_id']);
-                $partnerMap['role_id'] = intval($data['role_id']);
+            if (isset($data['user_id']) && isset($data['role_id']) && $data['role_id'] == 2) {
+                $partnerMap['user_id'] = $data['user_id'];
+                $partnerMap['role_id'] = $data['role_id'];
                 $partner = Db::name('user_partner')->field('id')->where($partnerMap)->find();
                 $data['partner_id'] = $partner['id'];
             }
 
-            // validate验证数据合法性
-            $validate = validate('PartnerOrder');
-            if (!$validate->check($data)) {
-                return show(config('code.error'), $validate->getError(), '', 403);
-            }
-
             // 入库操作
-            if ($data['partner_id']) { // 广告屏合作商存在时，只创建订单
+            if (!empty($data['partner_id'])) { // 广告屏合作商角色存在时，只创建订单
+                // validate验证数据合法性
+                $validate = validate('PartnerOrder');
+                if (!$validate->check($data)) {
+                    return show(config('code.error'), $validate->getError(), $data, 403);
+                }
+
                 try {
                     // 新增订单
                     $id = Db::name('partner_order')->strict(false)->insertGetId($data);
                     // 更新用户名称为签约名称
-                    //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => intval($data['user_id'])]);
+                    //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => $data['user_id']]);
                 } catch (\Exception $e) {
                     return show(config('code.error'), $e->getCode().'网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
                 }
@@ -71,30 +73,43 @@ class PartnerOrder extends AuthBase
                 } else {
                     return show(config('code.error'), '下单失败', '', 403);
                 }
-            } else { // 广告屏合作商不存在时，同时创建广告屏合作商和订单
+            } else { // 广告屏合作商角色不存在时，同时创建广告屏合作商和订单
                 /* 手动控制事务 s */
                 // 启动事务
                 Db::startTrans();
                 try {
                     // 创建广告屏合作商
                     $salesman = Db::name('user_salesman')->field('id')->where(['role_id' => 4, 'company_id' => 0, 'parent_id' => 0])->find(); // 获取广告屏合作商业务员
-                    $partnerData['user_id'] = intval($data['user_id']);
+                    $partnerData['user_id'] = $data['user_id'];
                     $partnerData['salesman_id'] = $salesman['id'];
                     $partnerData['role_id'] = 2;
                     $partnerData['status'] = config('code.status_enable');
                     $partnerData['create_time'] = time();
                     $res[0] = $partnerID = Db::name('user_partner')->strict(true)->insertGetId($partnerData);
 
+                    // 更新用户角色集合role_ids（新增广告屏合作商角色）
+                    $user = model('User')->field('role_ids')->find($data['user_id']);
+                    $roleIds = explode(',', $user['role_ids']);
+                    if (!in_array(2, $roleIds)) {
+                        array_push($roleIds, 2); // 新增广告屏合作商角色
+                        $userData['role_ids'] = implode(',', $roleIds);
+                        $res[1] = Db::name('user')->where(['user_id' => $data['user_id']])->update($userData);
+                    }
+
                     // 创建订单
-                    // 新增订单
                     $data['partner_id'] = $partnerID;
-                    $res[1] = Db::name('partner_order')->strict(false)->insertGetId($data);
+                    // validate验证数据合法性
+                    $validate = validate('PartnerOrder');
+                    if (!$validate->check($data)) {
+                        return show(config('code.error'), $validate->getError(), $data, 403);
+                    }
+                    $res[2] = Db::name('partner_order')->strict(false)->insertGetId($data);
                     // 更新用户名称为签约名称
-                    //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => intval($data['user_id'])]);
+                    //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => $data['user_id']]);
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
-                        return show(config('code.error'), '下单失败', '', 403);
+                        return show(config('code.error'), '下单失败', $res, 403);
                     }
 
                     // 提交事务
