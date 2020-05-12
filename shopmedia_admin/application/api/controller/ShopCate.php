@@ -35,7 +35,11 @@ class shopCate extends Common
     public function shopEnviroment()
     {
         $shopEnviroment= config('code.shop_enviroment'); // 店铺类别
-        return show(config('code.success'), 'OK', $shopEnviroment);
+        // 处理数据，将一维数组转成二维数组
+        foreach ($shopEnviroment as $key => $value) {
+            $data[] = ['en_id' => $key, 'en_name' => $value];
+        }
+        return show(config('code.success'), 'OK', $data);
     }
 
 

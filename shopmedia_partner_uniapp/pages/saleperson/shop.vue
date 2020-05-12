@@ -17,6 +17,13 @@
 					<input v-show="false" type="text" v-model="cate" />
 				</picker>
 			</view>
+			<view class="input-line-height" >
+				<view class="input-line-height-1">环境 <text class="main-color line-blue">|</text></view>
+				<picker @change="bindShopHjPickerChange" class="input-line-height-2" :value="enviromentindex" :range="enviromentlist" range-key="en_name">
+					<view style="font-size: 15px;">{{enviromentlist[enviromentindex].en_name}}</view>
+					<input v-show="false" type="text" v-model="enviromentlist[enviromentindex].en_id" />
+				</picker>
+			</view>
 			<view class="input-line-height">
 				<view class="input-line-height-1">面积 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"  v-model="shop_area" />㎡
@@ -28,18 +35,10 @@
 					<input v-show="address" type="text" v-model="address" />
 				</view>
 			</view>
-	
+	        <view>{{province}} {{city}} {{district}}</view>
 			<view class="input-line-height" v-show="false">
 				<view class="input-line-height-1">经度 <text class="main-color line-blue">|</text></view>
 				<input class="input-line-height-2" type="number"   v-model="longitude" />
-			</view>
-
-			<view class="input-line-height" >
-				<view class="input-line-height-1">环境 <text class="main-color line-blue">|</text></view>
-				<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="testindex" :range="test" >
-					<view style="font-size: 15px;">{{test[testindex]}}</view>
-					<input v-show="false" type="text" v-model="test[testindex]" />
-				</picker>
 			</view>
 
 			
@@ -86,13 +85,17 @@
 				address: '', // 店铺位置
 				longitude: '', // 经度
 				latitude: '', // 纬度
+				province:'',
+				city:'',
+				district:'',
 				image: [], // 实景图片
 				imagelist: [],
-				test:[1,2,3],
-				testindex:0,
+
 				
 				shopCateList: [{cate_id:'',cate_name:''}], // 店铺类别列表
-				shopCateIndex: 0
+				shopCateIndex: 0,
+				enviromentlist:[{en_id:'',en_name:''}],//环境
+				enviromentindex:0
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
@@ -114,9 +117,10 @@
 					},
 					method: 'GET',
 					success: function(res) {
-						console.log(res.data)
 						if (res.data.status == 1) {
-
+							res.data.data.forEach((value,index)=>{
+								self.$set(self.enviromentlist,index,{en_id:value.en_id,en_name:value.en_name});
+							})
 						}
 					},
 					fail(error) {
@@ -305,6 +309,15 @@
 						self.longitude=res.longitude;
 					}
 				});
+				uni.getLocation({
+				    type: 'wgs84',
+					geocode:true,
+				    success: function (res) {
+				        self.province=res.address.province;
+						self.city=res.address.city;
+						self.district=res.address.district;
+				    }
+				});
 			},
 
 			/**
@@ -322,7 +335,7 @@
 			 */
 			bindShopHjPickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.shopCateIndex = e.target.value;
+				this.enviromentindex= e.target.value;
 			}			
 			
 			
