@@ -103,8 +103,6 @@
 			this.getCate()
 			//获取设备信息
 			this.deviceDetail();
-			// 获取广告屏合作商业务员信息
-			this.getPartnerSalesman();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();

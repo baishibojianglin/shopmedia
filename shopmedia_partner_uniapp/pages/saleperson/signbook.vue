@@ -1,7 +1,7 @@
 <template>
 	<view class="wrapper uni-padding-wrap">
 		<!-- 协议书 s -->
-		<view class="blod uni-center title">
+		<view class="blod uni-center title fon16">
 			智能广告屏合作协议书
 		</view>
 
@@ -12,7 +12,7 @@
 			</view>
 			<view class="content">
 				<text class="content-left blod">乙方：</text>
-				<input class="content-right sign-border" :focus="!showimg ? true : false" placeholder="请填写姓名" v-model="user_name" :disabled="inputDisabled" />
+				<input class="content-right sign-border" v-model="user_name" :disabled="inputDisabled" />
 			</view>
 
 			<view class="text-space">甲、乙双方依据中华人民共和国相关法律法规，经平等、友好协商达成如下合作协议：</view>
@@ -125,9 +125,9 @@
 		</view>
 		<!--电子签名 e-->
 
-		<view class="goods-carts" v-if="!partnerOrder.party_b_signature">
+<!-- 		<view class="goods-carts" v-if="!partnerOrder.party_b_signature">
 			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
-		</view>
+		</view> -->
 	</view>
 </template>
 

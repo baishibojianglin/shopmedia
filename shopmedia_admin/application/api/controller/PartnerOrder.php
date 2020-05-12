@@ -69,9 +69,9 @@ class PartnerOrder extends AuthBase
                     return show(config('code.error'), $e->getCode().'网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
                 }
                 if ($id) {
-                    return show(config('code.success'), '下单成功', $data['order_sn'], 201);
+                    return show(config('code.success'), '签约成功', $data['order_sn'], 201);
                 } else {
-                    return show(config('code.error'), '下单失败', '', 403);
+                    return show(config('code.error'), '签约失败', '', 403);
                 }
             } else { // 广告屏合作商角色不存在时，同时创建广告屏合作商和订单
                 /* 手动控制事务 s */
@@ -109,12 +109,12 @@ class PartnerOrder extends AuthBase
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
-                        return show(config('code.error'), '下单失败', $res, 403);
+                        return show(config('code.error'), '签约失败', $res, 403);
                     }
 
                     // 提交事务
                     Db::commit();
-                    return show(config('code.success'), '下单成功', '', 201);
+                    return show(config('code.success'), '签约成功', '', 201);
                 } catch (\Exception $e) {
                     // 回滚事务
                     Db::rollback();

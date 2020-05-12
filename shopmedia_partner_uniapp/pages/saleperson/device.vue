@@ -60,9 +60,9 @@
 		</uni-card>
 		
 		<view class="ordercon">
-			<button  class="ordercon-item-1 bg-gray-color" @click="openLocation()">位置导航</button>
+			<button  class="ordercon-item-1 bg-qgray-color fon16" @click="openLocation()">位置导航</button>
 			<navigator class="ordercon-item-2" :url="'./signbook?device_id='+device_id+'&address='+datalist.address+'&sale_price='+datalist.sale_price">
-			   <button  class="bg-main-color color-white">展示合作协议</button>
+			   <button  class="bg-main-color color-white fon16">展示合作协议</button>
 		    </navigator>
 		</view>
 		

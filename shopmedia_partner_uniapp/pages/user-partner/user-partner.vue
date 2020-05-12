@@ -17,7 +17,7 @@
 		</view>
 		
 		<view class="uni-padding-wrap uni-common-mt uni-common-mb btn-bottom">
-			<button class="primary" type="primary" @click="toDeviceList">
+			<button class="primary fon16" type="primary" @click="toDeviceList">
 				查看可合作的屏
 				<text class="icon icon-position">&#xe6a2;</text>
 			</button>
@@ -126,6 +126,6 @@
 		position: relative;
 		top:2px;
 		margin-left: 5px;
-		font-size: 22px;
+		font-size: 20px;
 	}
 </style>
