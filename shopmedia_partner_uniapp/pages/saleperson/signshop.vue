@@ -1,8 +1,8 @@
 <template>
 	<view class="wrapper uni-padding-wrap">
 		<!-- 协议书 s -->
-		<view class="blod uni-center title fon16">
-			智能广告屏合作协议书
+		<view class="blod uni-center title">
+			店铺安装广告屏合作协议书
 		</view>
 
 		<view class="content-con">
@@ -12,78 +12,48 @@
 			</view>
 			<view class="content">
 				<text class="content-left blod">乙方：</text>
-				<input class="content-right sign-border" v-model="user_name" :disabled="inputDisabled" />
+				<text class="content-right sign-border-text">{{shop.shop_name}}</text>
 			</view>
 
 			<view class="text-space">甲、乙双方依据中华人民共和国相关法律法规，经平等、友好协商达成如下合作协议：</view>
 			<view class="blod">一、合作内容</view>
 			<view class="content-text">
-				甲、乙双方共同出资购买和运营店通智能广告屏。
+				<text class="content-left-text">设备编号：</text>
+				<input class="content-right sign-border"  placeholder="" :disabled="inputDisabled" />
 			</view>
 			<view class="content-text">
-				<text class="content-left-text">设备编号：</text>
-				<text class="content-right sign-border blod">{{'SUSTOCK-'+device_id}}</text>
+				<text class="content-left-text">安装数量：</text>
+				<input class="content-right sign-border"  placeholder="" :disabled="inputDisabled" />
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">安装位置：</text>
-				<text class="content-right sign-border-text">{{address}}</text>
+				<text class="content-right sign-border-text"></text>
 			</view>
-			
-			<view class="blod">二、出资方式、出资比例</view>
-			
-			<view>
-				2.1 上述智能广告屏设备总成本为（智能屏生产成本、店通智能数据系统软件研发成本、运至店铺的运输成本、店铺安装的人工成本等）
-				<text class="text-word blod">{{total_out}}</text>
-				元。
+			<view class="content-text">
+				<text class="content-left-text">设备总价值：</text>
+				<text class="content-right sign-border-text"></text>
 			</view>
-			<view>
-				2.2 甲、乙双方各出资<input :disabled="true" class="text-word blod" v-model="share" /> % 合作经营，甲方出资
-				<input :disabled="true" class="text-word blod" v-model="company_out" />
-				元，乙方出资
-				<input :disabled="true" class="text-word blod" v-model="person_out" />
-				元。
-			</view>
-            <view>2.3 甲、乙双方签订协议后3个工作日内，须将款项转入成都商市通电子商务有限公司公户，账户信息如下：</view>
-			<view><text class="">账户名称：成都商市通电子商务有限公司</text></view>
-			<view><text class="">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：8028 2001 0122 7004 51</text></view>
-			<view><text class="">开 &nbsp;户 &nbsp;行：恒丰银行股份有限公司成都金牛支行</text></view>
-            <view>2.4甲、乙双方按对应出资比例享有该广告屏的广告利润收入。</view>
-			<view class="blod">三、双方权利与义务</view>
-			<view>3.1 甲方权利与义务</view>
-			<view>3.1.1 甲方承担设备的运营、管理、维修责任;</view>
-			<view>3.1.2 甲方负责广告的业务开拓、制作、剪辑、投放工作；</view>
-			<view>3.1.3 甲方负责终端店智能广告系统的研发、系统升级、系统维护和系统安全防护等工作;</view>
-			<view>3.1.4 当终端店设备损坏时，由甲方出资生产新的智能广告屏重新安装到终端店铺；</view>
-			<view>3.1.5 当终端店出现铺面转让、倒闭等造成该店的智能广告屏无法正常经营时，甲方负责开拓新的终端店安装该台智能广告屏，保证该台智能广告屏正常的广告投放业务。</view>
-			<view>3.2 乙方权利与义务</view>
-			<view>3.2.1 乙方需配合甲方完成日常运营维护的必要工作;</view>
-			<view>3.2.2 乙方应当按照本协议约定按期履行出资义务；</view>
-			<view>3.2.3 乙方依法享有利润分配权，乙方应分利润可通过店通客户端APP软件提取或由店通转入乙方指定账户,结算日为每月最末一周工作日时间；</view>
-			<view>3.2.4 乙方不得从事有损合作经营的活动。</view>
-			
-			<view class="blod">四、合作期限</view>
-			<view>4.1 自协议生效后，乙方永久享有该智能广告屏的合作经营权；</view>
-			<view>4.2 合作协议生效起3个月内乙方不能退出经营，否则甲方有权不退乙方出资款；</view>
-			<view>4.3 乙方1年后自愿提出退出经营时，扣除乙方出资款30%作为智能屏设备折旧费用；</view>
-			
-			<view class="blod">五、合作期限</view>
-			<view>5.1 甲方应按时足额向乙方分配利润，若甲方迟延分配利润，乙方有权要求甲方按照同期银行贷款利息支付迟延利息。</view>
-			<view>5.2 乙方应按时足额履行出资义务，若乙方迟延履行出资义务，甲方有权单方面解除本合同。</view>
-			
-			<view class="blod">六、不可抗力因素</view>
-			<view>由于发生地震、滑坡、泥石流、重大公共卫生疫情等不可抗力因素导致智能广告屏无法正常经营时，甲、乙双方互不承担违约责任。</view>
-			<view class="blod">七、其他</view>
-			<view>7.1 本协议一式两份，自双方签字盖章之日起生效。</view>
-			<view>7.2 甲、乙双方发生纠纷且无法协商解决时，提交甲方所在地人民法院裁决。</view>
-			<view>7.3 如有本协议未约定的其他事项可签署补充协议进行约定。</view>
+			<view class="content-text">甲方将店通广告屏安装到乙方店内，并将该广告机 <text class="fix-text">{{party_b_share}}</text> %广告利润收入支付乙方，乙方在店通传媒每年享有一次<text class="fix-text">2</text>折投放广告的优惠权利。</view>
+
+			<view class="blod">二、权利与义务</view>
+			<view>1、甲方承担设备的运营、管理、维修责任;</view>
+			<view>2、乙方需配合甲方完成日常运营维护的必要工作；</view>
+			<view>3、甲方负责广告的业务开拓、制作、剪辑、投放工作；</view>
+			<view>4、甲方负责终端店智能广告系统的研发、系统升级、系统维护和系统安全防护等工作；</view>
+			<view>5、当乙方因铺面装修、转让等原因申请拆除广告屏时，需提前通知甲方，甲方在收到通知之日起10天内完成拆除。</view>
+			<view>6、智能屏安装后，无协议约定的特殊情况外，须保证至少6个月内不拆除；</view>
+			<view>7、乙方的广告收入可以选择在甲方开发的APP中提取或由甲方转入乙方指定的账户，结算期为每个月最后一个工作日支付，如甲方逾期支付，乙方有权要求甲方按银行同期利率支付滞纳金。</view>
+			<view class="blod">三、不可抗力因素</view>
+			<view>发生地震、滑坡、泥石流、重大公共卫生疫情等不可抗力因素导致甲、乙双方均无法正常开展经营时，双方均无须承担相应责任。</view>
+			<view class="blod">四、其他</view>
+			<view>1、当甲、乙双方发生纠纷且无法协商解决时，提交甲方所在地人民法院依据相关法律法规办理。</view>
+			<view>2、如有本协议未约定的其他事项应签署补充协议约定。</view>
 		</view>
 
 		<view class="sign-con">
 			<view class="sign-con-item">
 				<view class="blod">甲方（公章）：</view>
-				<view>
-					<image :src="gz"  style="width:120px;height:120px;"></image>
-				</view>
+				<view></view>
 			</view>
 			<view class="sign-con-item">
 				<view class="blod">乙方（签名）：</view>
@@ -98,7 +68,7 @@
 		<!-- 协议书 e -->
 
 		<!--电子签名 s-->
-		<view v-if="!partnerOrder.party_b_signature">
+		<view v-if="!shop.party_b_signature">
 			<view class="handBtn" v-if="false">
 				<view class="slide-wrapper">
 					<text>选择粗细</text>
@@ -114,7 +84,7 @@
 			</view>
 			<view class="handCenter">
 				<canvas class="handWriting" disable-scroll="true" @touchstart="uploadScaleStart" @touchmove="uploadScaleMove"
-				 @touchend="uploadScaleEnd" canvas-id="handWriting">
+				 @touchend="uploadScaleEnd"  canvas-id="handWriting">
 				</canvas>
 			</view>
 
@@ -125,9 +95,6 @@
 		</view>
 		<!--电子签名 e-->
 
-<!-- 		<view class="goods-carts" v-if="!partnerOrder.party_b_signature">
-			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
-		</view> -->
 	</view>
 </template>
 
@@ -139,8 +106,17 @@
 		data() {
 			return {
 				csPhone: '', // 客服电话
-				device: '', // 广告屏信息
-				gz:'../../static/img/gz.png',//公章url
+				// 店铺（协议书）信息
+				shop: {
+					device_ids: '', // 广告屏编号集合
+					device_quantity: '', // 安装广告屏数量
+					device_price: '', // 广告屏总价格
+					party_b_share: '', // 广告收益乙方（店铺）提成比例
+				},
+				party_b_share: 30,
+				
+				// 输入框是否禁用
+				inputDisabled: false,
 
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -149,7 +125,7 @@
 				}],
 				buttonGroup: [{
 					text: '提交协议',
-					backgroundColor: '#9ABAD1',
+					backgroundColor: '#409EFF',
 					color: '#fff'
 				}],
 				/* GoodsNav 商品导航 e */
@@ -161,22 +137,7 @@
 				selectColor: 'black',
 				color: '',
 				showimg: '', // 签名图片地址
-				share_popup: false,
-
-				// 协议书
-				device_id:'',//设备id
-				user_name: '', // 乙方用户姓名
-				address:'',//地址
-				share: 50, // 份额
-				total_out:0,//总价
-				company_out: 0, // 甲方出资额
-				person_out: 0, // 乙方出资额
-				
-				
-				// 广告屏合作商订单（协议书）信息
-				partnerOrder: {},
-				// 输入框是否禁用
-				inputDisabled: false
+				share_popup: false
 			}
 		},
 		computed: {
@@ -186,7 +147,7 @@
 			this.$common.actionSheetTap();
 		},
 		onLoad(event) {
-
+			
 			// 电子签名
 			this.$nextTick(function() {
 				this.handwriting = new Handwriting({
@@ -195,13 +156,9 @@
 					canvasName: 'handWriting',
 				})
 			})
+			
+	
 
-			// 协议书
-			this.company_out = (event.sale_price / 2).toFixed(2);
-			this.person_out = (event.sale_price / 2).toFixed(2);
-			this.device_id = event.device_id;
-			this.address=event.address;
-			this.total_out=(this.company_out*2).toFixed(2);
 		},
 		methods: {
 			/* 电子签名 s */
@@ -249,38 +206,8 @@
 				});
 			},
 			/* 电子签名 e */
+        }
 
-			/* GoodsNav 商品导航 s */
-			/**
-			 * GoodsNav 左侧点击事件
-			 * @param {Object} e
-			 */
-			onClick(e) {
-				// 联系客服
-				if (e.index == 0) {
-					this.callPhone(this.csPhone);
-				}
-			},
-			/**
-			 * GoodsNav 右侧按钮组点击事件
-			 * @param {Object} e
-			 */
-			buttonClick(e) {
-	             //无操作
-			},
-			/* GoodsNav 商品导航 e */
-
-			/**
-			 * 拨打电话
-			 * @param {Object} phone
-			 */
-			callPhone(phone) {
-				uni.makePhoneCall({
-					phoneNumber: phone
-				});
-			}
-
-		}
 	}
 </script>
 
@@ -497,5 +424,11 @@
 	.showimg>text {
 		font-size: 40upx;
 		color: #888;
+	}
+	.fix-text{
+		display: inline-block;
+		border-bottom:1px solid #000;
+        font-weight: bold;
+		padding: 0 10px;
 	}
 </style>
