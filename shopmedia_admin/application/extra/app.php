@@ -10,7 +10,7 @@
 return [
     'password_pre_salt' => '#sustock_shop_media', // 密码加密盐
     'aeskey' => '7ff9968f64d69c6ccabe3e2c1bc38ffe', // aes密钥，服务端和客户端必须保持一致 MD5('#sustock_shop_media')
-    'apptypes' => ['android', 'ios', 'devtools','other'],
+    'apptypes' => ['android', 'ios', 'devtools', 'other'],
     'version' => 1, // 大版本号
     'did' => 'sustock2020', // 设备号
     'app_sign_time' => 10, // sign失效时间（秒）
