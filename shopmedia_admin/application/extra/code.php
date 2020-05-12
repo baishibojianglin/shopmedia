@@ -73,7 +73,8 @@ return [
         8 => '鞋包'
     ],
 
-    'shop_enviroment' => [
+    // 店铺周边环境
+    'shop_environment' => [
         1 => '商场',
         2 => '社区',
         3 => '景区'

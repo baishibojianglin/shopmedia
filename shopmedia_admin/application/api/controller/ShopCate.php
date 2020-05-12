@@ -32,15 +32,14 @@ class shopCate extends Common
      * 店铺环境列表（不分页，用于 Select 选择器等）
      * @return \think\response\Json
      */
-    public function shopEnviroment()
+    public function shopEnvironment()
     {
-        $shopEnviroment= config('code.shop_enviroment'); // 店铺类别
+        $shopEnvironment= config('code.shop_environment'); // 店铺周边环境
+        $data = []; // 定义二维数组列表
         // 处理数据，将一维数组转成二维数组
-        foreach ($shopEnviroment as $key => $value) {
+        foreach ($shopEnvironment as $key => $value) {
             $data[] = ['en_id' => $key, 'en_name' => $value];
         }
         return show(config('code.success'), 'OK', $data);
     }
-
-
 }

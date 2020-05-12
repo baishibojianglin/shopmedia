@@ -19,9 +19,9 @@
 			</view>
 			<view class="input-line-height" >
 				<view class="input-line-height-1">环境 <text class="main-color line-blue">|</text></view>
-				<picker @change="bindShopHjPickerChange" class="input-line-height-2" :value="enviromentindex" :range="enviromentlist" range-key="en_name">
-					<view style="font-size: 15px;">{{enviromentlist[enviromentindex].en_name}}</view>
-					<input v-show="false" type="text" v-model="enviromentlist[enviromentindex].en_id" />
+				<picker @change="bindShopHjPickerChange" class="input-line-height-2" :value="environmentindex" :range="environmentlist" range-key="en_name">
+					<view style="font-size: 15px;">{{environmentlist[environmentindex].en_name}}</view>
+					<input v-show="false" type="text" v-model="environmentlist[environmentindex].en_id" />
 				</picker>
 			</view>
 			<view class="input-line-height">
@@ -64,7 +64,7 @@
 		
 		<view class="input-line-height">
 			<view class="input-line-height-1">描述 <text class="main-color line-blue">|</text></view>
-			<textarea class="input-line-height-2" style="padding: 20upx 0;" auto-height :value="describle" />
+			<textarea class="input-line-height-2" style="padding: 20upx 0;" auto-height :value="describe" />
 		</view>
 
 		<view>
@@ -84,26 +84,25 @@
 				phone: '', // 店家电话号码
 				shop_name: '', // 店名
 				cate: '', // 店铺分类
-				enviroment:'',//环境
+				environment: '', // 店铺环境
 				shop_area: '', // 店铺面积
 				address: '', // 店铺位置
 				longitude: '', // 经度
 				latitude: '', // 纬度
 				image: [], // 实景图片
 				imagelist: [],
-				describle:'',//店铺描述
-
+				describe: '', // 店铺描述
 				
-				shopCateList: [{cate_id:'',cate_name:''}], // 店铺类别列表
+				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
 				shopCateIndex: 0,
-				enviromentlist:[{en_id:'',en_name:''}],//环境
-				enviromentindex:0
+				environmentlist: [{en_id: '', en_name: ''}], // 店铺环境列表
+				environmentindex: 0
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(){
 			this.getShopCateList();
-			this.getShopEnviroment();
+			this.getShopEnvironment();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
@@ -112,10 +111,10 @@
 			/**
 			 * 获取店铺环境列表
 			 */
-			getShopEnviroment(){
+			getShopEnvironment(){
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/shop_enviroment',
+					url: this.$serverUrl + 'api/shop_environment',
 					header: {
 						'commonheader': this.commonheader,
 						'access-user-token': this.userInfo.token
@@ -124,7 +123,7 @@
 					success: function(res) {
 						if (res.data.status == 1) {
 							res.data.data.forEach((value,index)=>{
-								self.$set(self.enviromentlist,index,{en_id:value.en_id,en_name:value.en_name});
+								self.$set(self.environmentlist,index,{en_id:value.en_id,en_name:value.en_name});
 							})
 						}
 					},
@@ -197,8 +196,8 @@
 						longitude: this.longitude,
 						latitude: this.latitude,
 						image: this.image,
-						enviroment:this.enviroment,
-						describle:this.describle
+						environment: this.environment,
+						describe: this.describe
 					},
 					header: {
 						'commonheader': this.commonheader,
@@ -303,7 +302,6 @@
 				})				
 			},
 			
-					
 			/**
 			 * 获取位置信息
 			 */
@@ -333,10 +331,8 @@
 			 */
 			bindShopHjPickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.enviromentindex= e.target.value;
-			}			
-			
-			
+				this.environmentindex = e.target.value;
+			}
 		}
 	}
 </script>

@@ -133,7 +133,7 @@ Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 Route::resource('api/shop', 'api/Shop');
 // 店铺类别
 Route::get('api/shop_cate_list', 'api/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
-Route::get('api/shop_enviroment', 'api/ShopCate/shopEnviroment');
+Route::get('api/shop_environment', 'api/ShopCate/shopEnvironment'); // 店铺环境列表（不分页）
 
 // 新闻
 Route::resource('api/news', 'api/News');
