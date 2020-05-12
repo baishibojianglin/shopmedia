@@ -125,7 +125,7 @@
 		</view>
 		<!--电子签名 e-->
 
-		<view class="goods-carts" v-if="!partnerOrder.party_b_signature">
+		<view class="goods-carts" v-if="!(partnerOrder.party_b_signature && partnerOrder.order_status == 1)">
 			<uni-goods-nav :options="options" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
 		</view>
 	</view>
