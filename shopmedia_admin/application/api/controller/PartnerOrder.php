@@ -43,6 +43,21 @@ class PartnerOrder extends AuthBase
             $data['party_a_share'] = $data['party_a_share'] / 100; // 广告屏甲方占股
             $data['party_b_share'] = $data['party_b_share'] / 100; // 广告屏乙方占股
 
+            // 查询是否已经创建广告屏合作商（user_id）对应的广告屏（device_id）订单
+            $order = model('PartnerOrder')->where(['user_id' => $data['user_id'], 'device_id' => $data['device_id']])->select();
+            if (!empty($order)) {
+                foreach ($order as $key => $value) {
+                    // 订单未付款
+                    if ($value['order_status'] == 0) {
+                        return show(config('code.error'), '已存在签约，待确认付款', '', 403);
+                    }
+                    // 订单已付款
+                    if ($value['order_status'] == 1 && $value['pay_status'] == 1) {
+                        return show(config('code.error'), '签约失败，已合作该广告屏', '', 403);
+                    }
+                }
+            }
+
             // 获取广告屏合作商信息
             $partnerMap = []; // 查询条件
             if (isset($data['user_id']) && isset($data['role_id']) && $data['role_id'] == 2) {
@@ -61,7 +76,7 @@ class PartnerOrder extends AuthBase
                 }
 
                 try {
-                    // 新增订单
+                    // 创建订单
                     $id = Db::name('partner_order')->strict(false)->insertGetId($data);
                     // 更新用户名称为签约名称
                     //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => $data['user_id']]);
@@ -109,7 +124,7 @@ class PartnerOrder extends AuthBase
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
-                        return show(config('code.error'), '签约失败', $res, 403);
+                        return show(config('code.error'), '签约失败', '', 403);
                     }
 
                     // 提交事务
@@ -143,15 +158,21 @@ class PartnerOrder extends AuthBase
             // 查询条件
             $map = [];
             if (isset($param['device_id']) && $param['device_id'] != 0) {
+                $map['device_id'] = intval($param['device_id']);
+                $map['order_status'] = 1;
+                $map['pay_status'] = 1;
+
                 // 传入广告屏合作商ID
                 if (isset($param['partner_id']) && $param['partner_id'] != 0) {
                     $map['partner_id'] = intval($param['partner_id']);
-                    $map['device_id'] = intval($param['device_id']);
                 }
                 // 传入广告屏合作商所属用户ID
-                if (isset($param['user_id']) && $param['user_id'] != 0) {
+                elseif (isset($param['user_id']) && $param['user_id'] != 0) {
                     $map['user_id'] = intval($param['user_id']);
-                    $map['device_id'] = intval($param['device_id']);
+                }
+                // 广告屏合作商ID、广告屏合作商所属用户ID都不存在
+                else {
+                    return show(config('code.error'), 'Not Found', '', 404);
                 }
             }
 

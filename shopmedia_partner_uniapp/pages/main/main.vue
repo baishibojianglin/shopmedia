@@ -103,7 +103,7 @@
 				let self = this;
 				//广告屏合作商
 				if (role_ids == 2) {
-					
+					uni.setStorageSync('role_id', role_ids); // 将用户角色 role_id 存储在本地缓存中（同步）
 					//进入合作设备列表
 					uni.navigateTo({
 						url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
