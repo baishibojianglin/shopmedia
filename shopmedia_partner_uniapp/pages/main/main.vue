@@ -177,69 +177,73 @@
 
 				//店铺合作者
 				if (role_ids == 3) {
-					if (this.role.shop == true) { //已经是店铺合作者			
-						//账号该角色是否可用
-						uni.request({
-							url: this.$serverUrl + 'api/shopRole',
-							data: {
-								user_id: this.userInfo.user_id,
-							},
-							header: {
-								'commonheader': this.commonheader,
-								'access-user-token': this.userInfo.token
-							},
-							method: 'PUT',
-							success: function(res) {
-								if (res.data.status == 1) {
-									if (res.data.data.status == 0) { //禁用
-										uni.showToast({
-											icon: 'none',
-											title: '账号该功能被禁用',
-											duration: 2000
-										});
-										return false;
-									}
-									if (res.data.data.status == 2) { //待审核
-										uni.showToast({
-											icon: 'none',
-											title: '申请审核中...',
-											duration: 2000
-										});
-										return false;
-									}
-									if (res.data.data.status == 3) { //驳回
-										uni.showToast({
-											icon: 'none',
-											title: '该账号不支持该申请',
-											duration: 2000
-										});
-										return false;
-									}
-									//进入申请页
-									uni.navigateTo({
-										url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id=3'
-									});
+					//进入店铺主页
+					uni.navigateTo({
+						url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id=3'
+					});
+					// if (this.role.shop == true) { //已经是店铺合作者			
+					// 	//账号该角色是否可用
+					// 	uni.request({
+					// 		url: this.$serverUrl + 'api/shopRole',
+					// 		data: {
+					// 			user_id: this.userInfo.user_id,
+					// 		},
+					// 		header: {
+					// 			'commonheader': this.commonheader,
+					// 			'access-user-token': this.userInfo.token
+					// 		},
+					// 		method: 'PUT',
+					// 		success: function(res) {
+					// 			if (res.data.status == 1) {
+					// 				if (res.data.data.status == 0) { //禁用
+					// 					uni.showToast({
+					// 						icon: 'none',
+					// 						title: '账号该功能被禁用',
+					// 						duration: 2000
+					// 					});
+					// 					return false;
+					// 				}
+					// 				if (res.data.data.status == 2) { //待审核
+					// 					uni.showToast({
+					// 						icon: 'none',
+					// 						title: '申请审核中...',
+					// 						duration: 2000
+					// 					});
+					// 					return false;
+					// 				}
+					// 				if (res.data.data.status == 3) { //驳回
+					// 					uni.showToast({
+					// 						icon: 'none',
+					// 						title: '该账号不支持该申请',
+					// 						duration: 2000
+					// 					});
+					// 					return false;
+					// 				}
+					// 				//进入申请页
+					// 				uni.navigateTo({
+					// 					url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id=3'
+					// 				});
 
-								}
-							}
-						})
+					// 			}
+					// 		}
+					// 	})
 
 
-					} else { //还不是店铺合作者
-						uni.showModal({
-							title: '提示',
-							content: '申请店铺安装智能屏？',
-							success: function(res) {
-								if (res.confirm) {
-									uni.navigateTo({
-										url: "../user/apply-shopkeeper"
-									});
-								} else if (res.cancel) {
+					// } else { //还不是店铺合作者
+					// 	uni.showModal({
+					// 		title: '提示',
+					// 		content: '申请店铺安装智能屏？',
+					// 		success: function(res) {
+					// 			if (res.confirm) {
+					// 				uni.navigateTo({
+					// 					url: "../user/apply-shopkeeper"
+					// 				});
+					// 			} else if (res.cancel) {
 
-								}
-							}
-						});
-					}
+					// 			}
+					// 		}
+					// 	});
+					// }
 				}
 
 				//业务员

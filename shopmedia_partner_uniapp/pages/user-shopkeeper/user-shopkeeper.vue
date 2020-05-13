@@ -74,6 +74,9 @@
 			
 			this.getShopList();
 		},
+		onNavigationBarButtonTap(e) {
+			this.$common.actionSheetTap();
+		},
 		onShow(){
 			this.getShopList();
 		},

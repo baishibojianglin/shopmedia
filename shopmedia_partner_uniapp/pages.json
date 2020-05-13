@@ -129,7 +129,14 @@
 		{ // 用户（店家）角色
 			"path": "pages/user-shopkeeper/user-shopkeeper",
 			"style": {
-				"navigationBarTitleText": "店家"
+				"navigationBarTitleText": "店铺智能屏",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
 			}
 		},
 	    { // 智能广告屏列表
