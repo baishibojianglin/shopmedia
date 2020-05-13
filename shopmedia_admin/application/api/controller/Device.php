@@ -21,7 +21,19 @@ class Device extends AuthBase
      * @return \think\response\Json
      */
     public function getMarkers(){
-        $devicelist = Db::name('device')->select();
+        // 查询条件
+        $map = [];
+        // 广告屏列表
+        try{
+            $devicelist = Db::name('device')->alias('d')
+                ->field('d.*, po.order_status')
+                ->join('__PARTNER_ORDER__ po', 'd.device_id = po.device_id and po.order_status = 2', 'LEFT') // 若广告屏已经生成订单，取订单被取消对应的广告屏
+                ->where($map)
+                ->group('d.device_id')
+                ->select();
+        } catch (\Exception $e) {
+            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
+        }
         
         if(!empty($devicelist)){
             $message['data'] = $devicelist;

@@ -60,6 +60,12 @@ Route::resource('device', 'admin/Device');
 Route::get('device_list', 'admin/Device/deviceList');  // 广告屏列表（不分页）
 Route::post('addDevice', 'admin/Device/addDevice');
 Route::post('getDevice', 'admin/Device/getDevice');
+Route::get('get_device_brand', 'admin/Device/getDeviceBrand');
+Route::post('get_device_model', 'admin/Device/getDeviceModel');
+Route::get('get_device_size', 'admin/Device/getDeviceSize');
+Route::get('get_device_status', 'admin/Device/getDeviceStatus');
+Route::get('get_device_level', 'admin/Device/getDeviceLevel');
+Route::get('get_device_shop', 'admin/Device/getDeviceShop');
 
 // 广告
 Route::resource('ad', 'admin/Ad');

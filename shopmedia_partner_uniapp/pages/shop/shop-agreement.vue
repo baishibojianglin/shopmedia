@@ -18,8 +18,8 @@
 			<view class="text-space">甲、乙双方依据中华人民共和国相关法律法规，经平等、友好协商达成如下合作协议：</view>
 			<view class="blod">一、合作内容</view>
 			<view class="content-text">
-				<text class="content-left-text">设备编号：</text>
-				<input class="content-right sign-border" v-model="shop.device_ids" placeholder="请填写设备编号，多个以逗号“，”分隔" :disabled="inputDisabled" :focus="!shop.party_b_signature ? true : false" />
+				<!-- <text class="content-left-text">设备编号：</text>
+				<input class="content-right sign-border" v-model="shop.device_ids" placeholder="请填写设备编号，多个以逗号“，”分隔" :disabled="inputDisabled" :focus="!shop.party_b_signature ? true : false" /> -->
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">设备安装数量：</text>
@@ -121,7 +121,7 @@
 				csPhone: '', // 客服电话
 				// 店铺（协议书）信息
 				shop: {
-					device_ids: '', // 广告屏编号集合
+					// device_ids: '', // 广告屏编号集合
 					device_quantity: '', // 安装广告屏数量
 					device_price: '', // 广告屏总价格
 					party_b_share: '', // 广告收益乙方（店铺）提成比例
@@ -287,7 +287,7 @@
 				uni.request({
 					url: this.$serverUrl + 'api/shop/' + this.shop.shop_id,
 					data: {
-						device_ids: this.shop.device_ids,
+						// device_ids: this.shop.device_ids,
 						device_quantity: this.shop.device_quantity,
 						device_price: this.shop.device_price,
 						party_b_share: this.party_b_share,
