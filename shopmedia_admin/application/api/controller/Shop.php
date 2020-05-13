@@ -63,6 +63,9 @@ class Shop extends AuthBase
             Db::startTrans();
             try {
                 // 2.2 判断店铺所属店家（包括店家所属用户）数据：user_shopkeeper、user表
+                if ($data['phone'] == $this->user['phone']) {
+                    return show(config('code.error'), '电话号码错误', '', 401);
+                }
                 // 获取店家所属用户数据
                 $shopkeeperUser = Db::name('user')->where(['phone' => trim($data['phone'])])->find();
                 // 获取店家数据
@@ -71,6 +74,11 @@ class Shop extends AuthBase
                     // 创建店铺
                     $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
                     $shopData['shopkeeper_id'] = $shopkeeper['id']; // 店铺所属店家ID
+                    // validate验证数据合法性
+                    $validate = validate('Shop');
+                    if (!$validate->check($shopData)) {
+                        return show(config('code.error'), $validate->getError(), '', 403);
+                    }
                     $res[0] = Db::name('shop')->insertGetId($shopData);
                 } elseif (!$shopkeeperUser) { // 店家所属用户不存在，店家一定不存在，则创建店家所属用户、店家及店铺
                     // 创建店家所属用户
@@ -98,6 +106,11 @@ class Shop extends AuthBase
                     // 创建店铺
                     $shopData['user_id'] = $shopkeeperUserID; // 店家所属用户ID
                     $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
+                    // validate验证数据合法性
+                    $validate = validate('Shop');
+                    if (!$validate->check($shopData)) {
+                        return show(config('code.error'), $validate->getError(), '', 403);
+                    }
                     $res[3] = Db::name('shop')->insertGetId($shopData);
                 } elseif (!$shopkeeper) { // 店家所属用户存在，但店家不存在时，则创建店家及店铺
                     // 创建店家
@@ -121,6 +134,11 @@ class Shop extends AuthBase
                     // 创建店铺
                     $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
                     $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
+                    // validate验证数据合法性
+                    $validate = validate('Shop');
+                    if (!$validate->check($shopData)) {
+                        return show(config('code.error'), $validate->getError(), '', 403);
+                    }
                     $res[6] = Db::name('shop')->insertGetId($shopData);
                 }
 
@@ -135,7 +153,7 @@ class Shop extends AuthBase
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500);
             }
             /* 手动控制事务 e */
         } else {

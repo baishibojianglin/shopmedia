@@ -15,6 +15,61 @@ use think\Request;
 class PartnerOrder extends AuthBase
 {
     /**
+     * 显示订单资源列表
+     *
+     * @return \think\Response
+     */
+    public function index()
+    {
+        // 判断为GET请求
+        if (request()->isGet()) {
+            // 传入的参数
+            $param = input('param.');
+
+            // 查询条件
+            $map = [];
+            $map['o.order_status'] = 0; // 订单状态
+            $map['o.pay_status'] = 0; // 支付状态
+            if (!empty($param['user_id']) && !empty($param['role_id']) && intval($param['role_id']) == 2) { // 广告屏合作商角色ID、所属用户ID
+                $map['o.user_id'] = intval($param['user_id']);
+            } else {
+                return show(config('code.error'), '广告屏合作商信息错误', '', 403);
+            }
+            if (!empty($param['order_sn'])) { // 订单编号
+                $map['o.order_sn'] = ['like', '%' . trim($param['order_sn']) . '%'];
+            }
+
+            // 获取分页page、size
+            $this->getPageAndSize($param);
+
+            // 获取订单列表数据
+            try {
+                $data = model('PartnerOrder')->getPartnerOrder($map, (int)$this->size);
+            } catch (\Exception $e) {
+                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+            }
+
+            if ($data) {
+                // 处理数据
+                $orderStatus = config('code.order_status'); // 订单状态
+                $payStatus = config('code.pay_status'); // 支付状态
+                foreach ($data as $key => $value) {
+                    $data[$key]['order_status_msg'] = $orderStatus[$value['order_status']]; // 定义订单状态信息
+                    $data[$key]['order_time'] = $value['order_time'] ? date('Y-m-d', $value['order_time']) : ''; // 下单时间
+                    $data[$key]['pay_status_msg'] = $payStatus[$value['pay_status']]; // 定义支付状态信息
+                    $data[$key]['pay_time'] = $value['pay_time'] ? date('Y-m-d H:i:s', $value['pay_time']) : ''; // 支付时间
+                }
+
+                return show(config('code.success'), 'OK', $data);
+            } else {
+                return show(config('code.error'), 'Not Found', $data, 404);
+            }
+        } else {
+            return show(config('code.error'), '请求不合法', [], 400);
+        }
+    }
+
+    /**
      * 保存新建的订单资源
      *
      * @param  \think\Request  $request
@@ -72,7 +127,7 @@ class PartnerOrder extends AuthBase
                 // validate验证数据合法性
                 $validate = validate('PartnerOrder');
                 if (!$validate->check($data)) {
-                    return show(config('code.error'), $validate->getError(), $data, 403);
+                    return show(config('code.error'), $validate->getError(), '', 403);
                 }
 
                 try {
@@ -116,7 +171,7 @@ class PartnerOrder extends AuthBase
                     // validate验证数据合法性
                     $validate = validate('PartnerOrder');
                     if (!$validate->check($data)) {
-                        return show(config('code.error'), $validate->getError(), $data, 403);
+                        return show(config('code.error'), $validate->getError(), '', 403);
                     }
                     $res[2] = Db::name('partner_order')->strict(false)->insertGetId($data);
                     // 更新用户名称为签约名称
