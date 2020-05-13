@@ -210,7 +210,6 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(res)
 						if (res.statusCode == 201 && res.data.status == 1) {
 							uni.showModal({
 								title: '提示',

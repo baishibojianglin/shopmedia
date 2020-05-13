@@ -72,7 +72,7 @@ class PartnerOrder extends AuthBase
                 // validate验证数据合法性
                 $validate = validate('PartnerOrder');
                 if (!$validate->check($data)) {
-                    return show(config('code.error'), $validate->getError(), $data, 403);
+                    return show(config('code.error'), $validate->getError(), '', 403);
                 }
 
                 try {
@@ -116,7 +116,7 @@ class PartnerOrder extends AuthBase
                     // validate验证数据合法性
                     $validate = validate('PartnerOrder');
                     if (!$validate->check($data)) {
-                        return show(config('code.error'), $validate->getError(), $data, 403);
+                        return show(config('code.error'), $validate->getError(), '', 403);
                     }
                     $res[2] = Db::name('partner_order')->strict(false)->insertGetId($data);
                     // 更新用户名称为签约名称
