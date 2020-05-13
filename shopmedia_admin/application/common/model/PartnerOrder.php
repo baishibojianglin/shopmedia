@@ -53,7 +53,10 @@ class PartnerOrder extends Base
             'o.*',
             'u.user_name',
             'up.salesman_id',
-            'd.shopname'
+            'd.shopname',
+            'd.address',
+            'd.longitude',
+            'd.latitude'
         ];
     }
 }

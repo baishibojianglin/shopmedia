@@ -110,9 +110,11 @@ Route::post('api/apply_partner', 'api/User/applyPartner'); // 申请成为广告
 Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper'); // 申请成为店家
 Route::post('api/get_user_role', 'api/User/getUserRole');
 
+// 广告屏
+Route::get('api/getMarkers','api/Device/getMarkers');
+Route::post('api/DeviceDetail','api/Device/DeviceDetail');
+
 // 业务员
-Route::get('api/getMarkers','api/Saleperson/getMarkers');
-Route::post('api/DeviceDetail','api/Saleperson/DeviceDetail');
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
 Route::get('api/getMoney', 'api/UserSalesman/getMoney');
 Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');

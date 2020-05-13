@@ -139,7 +139,7 @@
 		data() {
 			return {
 				csPhone: '', // 客服电话
-				device: '', // 广告屏信息
+				device: {}, // 广告屏信息
 				gz:'../../static/img/gz.png',//公章url
 
 				/* GoodsNav 商品导航 s */
@@ -170,6 +170,7 @@
 				person_out: 0, // 乙方出资额
 				
 				// 广告屏合作商订单（协议书）信息
+				order_id: 0,
 				partnerOrder: {},
 				// 输入框是否禁用
 				inputDisabled: false
@@ -183,7 +184,16 @@
 		},
 		onLoad(event) {
 			this.csPhone = event.cs_phone;
-			this.device = JSON.parse(decodeURIComponent(event.device));
+			if (typeof(event.device) != 'undefined') {
+				this.device = JSON.parse(decodeURIComponent(event.device));
+			}
+			if (typeof(event.device_id) != 'undefined') {
+				this.device.device_id = Number(event.device_id);
+				this.deviceDetail();
+			}
+			if (typeof(event.order_id) != 'undefined') {
+				this.order_id = Number(event.order_id);
+			}
 			
 			// 判断是否已签约
 			this.getPartnerOrder();
@@ -370,12 +380,16 @@
 			 */
 			getPartnerOrder() {
 				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/partner_order/0',
-					data: {
+				let data = {};
+				if (this.order_id == 0) {
+					data = {
 						user_id: this.userInfo.user_id,
 						device_id: this.device.device_id
-					},
+					}
+				}
+				uni.request({
+					url: this.$serverUrl + 'api/partner_order/' + this.order_id,
+					data: data,
 					header: {
 						'commonheader': this.$store.state.commonheader,
 						'access-user-token': this.userInfo.token
@@ -396,6 +410,27 @@
 							icon: 'none',
 							title: '请求异常'
 						});
+					}
+				});
+			},
+			
+			/**
+			 * 获取广告屏详细信息
+			 */
+			deviceDetail() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/DeviceDetail',
+					data: {
+						device_id: this.device.device_id
+					},
+					header: {
+						'commonheader':  this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'POST',
+					success: (res) => {
+						self.device = res.data.data; //赋值
 					}
 				});
 			}
