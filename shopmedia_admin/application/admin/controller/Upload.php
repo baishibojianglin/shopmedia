@@ -9,7 +9,7 @@ use think\Controller;
  * Class Device
  * @package app\admin\controller
  */
-class Upload extends Base
+class Upload extends Controller
 {
     /**
      * 上传图片

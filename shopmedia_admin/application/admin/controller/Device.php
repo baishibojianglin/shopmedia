@@ -161,6 +161,117 @@ class Device extends Base
 		return json($message);
 	}
 
+	/**
+	 * 获取广告屏品牌
+	 * @return \think\response\Json
+	 */
+
+   public function getDeviceBrand()
+    {
+        $brand= config('code.device_brand'); 
+        $data = []; // 定义二维数组列表
+        // 处理数据，将一维数组转成二维数组
+        foreach ($brand as $key => $value) {
+            $data[] = ['brand_id' => $key, 'brand_name' => $value];
+        }
+        return show(config('code.success'), 'OK', $data);
+    }
+
+
+	/**
+	 * 获取广告屏型号
+	 * @return \think\response\Json
+	 */
+
+   public function getDeviceModel()
+    {
+        $form=input();
+        $model= config('code.device_model'); 
+        $data = []; // 定义二维数组列表
+        //处理数据，将一维数组转成二维数组
+        foreach ($model[$form['brand_id']] as $key => $value) {
+            $data[] = ['model_id' => $key, 'model_name' => $value];
+        }
+        return show(config('code.success'), 'OK', $data);
+
+
+    }
+
+	/**
+	 * 获取广告屏尺寸
+	 * @return \think\response\Json
+	 */
+   public function getDeviceSize()
+    {
+        $size= config('code.device_size'); 
+        $data = []; // 定义二维数组列表
+        // 处理数据，将一维数组转成二维数组
+        foreach ($size as $key => $value) {
+            $data[] = ['size_id' => $key, 'size_name' => $value];
+        }
+        return show(config('code.success'), 'OK', $data);
+    }
+
+	/**
+	 * 获取广告屏状态
+	 * @return \think\response\Json
+	 */
+   public function getDeviceStatus()
+    {
+        $status= config('code.device_status'); 
+        $data = []; // 定义二维数组列表
+        // 处理数据，将一维数组转成二维数组
+        foreach ($status as $key => $value) {
+            $data[] = ['status_id' => $key, 'status_name' => $value];
+        }
+        return show(config('code.success'), 'OK', $data);
+    }
+
+
+	/**
+	 * 获取广告屏等级
+	 * @return \think\response\Json
+	 */
+   public function getDeviceLevel()
+    {
+        $level= config('code.device_level'); 
+        $data = []; // 定义二维数组列表
+        // 处理数据，将一维数组转成二维数组
+        foreach ($level as $key => $value) {
+            $data[] = ['level_id' => $key, 'level_name' => $value];
+        }
+        return show(config('code.success'), 'OK', $data);
+    }
+
+
+	/**
+	 * 获取店铺列表
+	 * @return \think\response\Json
+	 */
+   public function getDeviceShop()
+    {
+        $match['status']=1;
+        $shoplist=Db::name('shop')->where($match)->field('shop_id','shop_name','device_quantity','plan_quantity')->select();
+		
+	    if(!empty($shoplist)){
+            
+            foreach ($shoplist as $key => $value){
+            	  if($value['device_quantity']==$value['plan_quantity']){
+            	  	      array_splice($shoplist,$key,1);
+            	  }
+            }
+            return show(config('code.success'), 'OK', $shoplist);
+
+		}else{   
+			$data['words']="没有店铺有空闲安装";
+            return show(config('code.error'), 'OK', $data);
+		}
+
+
+
+
+
+    }
 
 
 
