@@ -41,7 +41,7 @@ class Device extends AuthBase
                 ->where($map)
                 ->select();
         } catch (\Exception $e) {
-            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
+            return show(config('code.error'), '请求异常', '', 500);
         }
         
         if(!empty($devicelist)){
@@ -61,16 +61,25 @@ class Device extends AuthBase
      */
     public function deviceDetail()
     {
+        // 传入的参数
         $param = input();
+
+        // 查询条件
         $map['d.device_id'] = $param['device_id'];
-        $devicelist = Db::name('device')->alias('d')
-            ->field('d.*, s.shop_name, s.cate shop_cate')
-            ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
-            ->where($map)
-            ->find();
-        
-        if(!empty($devicelist)){
-            $message['data'] = $devicelist;
+
+        // 广告屏详细信息
+        try{
+            $device = Db::name('device')->alias('d')
+                ->field('d.*, s.shop_name, s.cate shop_cate, s.shop_area, s.province_id, s.city_id, s.county_id, s.town_id, s.address, s.longitude, s.latitude, s.shop_pic, s.environment')
+                ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
+                ->where($map)
+                ->find();
+        } catch (\Exception $e) {
+            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
+        }
+
+        if(!empty($device)){
+            $message['data'] = $device;
             $message['status'] = 1;
             $message['words'] = '获取成功';
         }else{
