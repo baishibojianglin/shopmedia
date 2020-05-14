@@ -52,7 +52,7 @@ class Shop extends AuthBase
                 'latitude' => floatval($data['latitude']),
                 'shop_pic' => $data['image'],
                 'environment' => intval($data['environment']),
-                'describe' => $data['describe'],
+                'shop_describe' => $data['shop_describe'],
                 'status' => config('code.status_enable'),
                 'create_time' => time()
             ];

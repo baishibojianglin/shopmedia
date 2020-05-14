@@ -21,7 +21,7 @@
 				<view class="input-line-height-1">环境 <text class="main-color line-blue">|</text></view>
 				<picker @change="bindShopHjPickerChange" class="input-line-height-2" :value="environmentindex" :range="environmentlist" range-key="en_name">
 					<view style="font-size: 15px;">{{environmentlist[environmentindex].en_name}}</view>
-					<input v-show="false" type="text" v-model="environmentlist[environmentindex].en_id" />
+					<input v-show="false" type="text" v-model="environment" />
 				</picker>
 			</view>
 			<view class="input-line-height">
@@ -64,7 +64,7 @@
 		
 		<view class="input-line-height">
 			<view class="input-line-height-1">描述 <text class="main-color line-blue">|</text></view>
-			<textarea class="input-line-height-2" style="padding: 20upx 0;" auto-height :value="describe" />
+			<textarea class="input-line-height-2" style="padding: 20upx 0;" auto-height v-model="shop_describe" />
 		</view>
 
 		<view>
@@ -96,7 +96,7 @@
 				latitude: '', // 纬度
 				image: [], // 实景图片
 				imagelist: [],
-				describe: '', // 店铺描述
+				shop_describe: '', // 店铺描述
 				
 				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
 				shopCateIndex: 0,
@@ -188,6 +188,7 @@
 					return false;
 				}
 				this.cate = this.shopCateList[this.shopCateIndex].cate_id;
+				this.environment = this.environmentlist[this.environmentindex].en_id;
 				// 请求接口
 				uni.request({
 					url: this.$serverUrl + 'api/shop',
@@ -202,7 +203,7 @@
 						latitude: this.latitude,
 						image: this.image,
 						environment: this.environment,
-						describe: this.describe
+						shop_describe: this.shop_describe
 					},
 					header: {
 						'commonheader': this.commonheader,
