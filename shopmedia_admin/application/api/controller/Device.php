@@ -75,10 +75,12 @@ class Device extends AuthBase
                 ->where($map)
                 ->find();
         } catch (\Exception $e) {
-            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
+            return show(config('code.error'), '请求异常', '', 500);
         }
 
         if(!empty($device)){
+            $shopEnvironment = config('code.shop_environment');
+            $device['environment'] = $device['environment'] ? $shopEnvironment[$device['environment']] : '';
             $message['data'] = $device;
             $message['status'] = 1;
             $message['words'] = '获取成功';

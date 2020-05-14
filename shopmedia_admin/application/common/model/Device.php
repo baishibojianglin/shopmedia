@@ -41,7 +41,7 @@ class Device extends Base
     public function getDeviceList($map)
     {
         $result = $this->alias('d')
-            ->field('d.device_id, d.brand, d.model, d.size, d.shop_id, s.shop_name, s.province_id, s.city_id, s.county_id, s.town_id, s.address, s.longitude, s.latitude, s.cate shopcate, rp.region_name province, rc.region_name city, r.region_name county, rt.region_name street, c.company_name, sd.today_income, sd.total_income')
+            ->field('d.device_id, d.brand, d.model, d.size, d.shop_id, s.shop_name, s.province_id, s.city_id, s.county_id, s.town_id, s.address, s.longitude, s.latitude, s.cate shopcate, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name street, c.company_name, sd.today_income, sd.total_income')
             ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
             ->join('__SHOP_DEVICE__ sd', 'd.device_id = sd.device_id', 'LEFT') // 店家所在店铺安装的广告屏明细
             ->join('__REGION__ rp', 's.province_id = rp.region_id', 'LEFT') // 区域（省份）
