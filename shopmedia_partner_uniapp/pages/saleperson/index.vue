@@ -41,7 +41,7 @@
 									<text>{{value.device_id}}</text>
 								</view>
 								<view class="listcon-item-2">
-									<text>{{value.shopname}}</text>
+									<text>{{value.shop_name}}</text>
 								</view>
 								<view class="listcon-item-1">
 									<text class="">¥{{value.sale_price}}</text>
@@ -93,7 +93,7 @@
 						self.devicelist=res.data.data; //可合作设备列表
 						res.data.data.forEach((value,index)=>{
 							self.$set(self.markers,index,{
-								title:value.device_id+' '+value.shopname,
+								title:value.device_id+' '+value.shop_name,
 								longitude:value.longitude,
 								latitude:value.latitude
 								});

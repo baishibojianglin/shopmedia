@@ -37,7 +37,7 @@ class Device extends AuthBase
             $devicelist = Db::name('device')->alias('d')
                 ->field('d.*, po.order_id, po.order_status, s.shop_name')
                 ->join('__PARTNER_ORDER__ po', 'd.device_id = po.device_id', 'LEFT') // 广告屏已经生成的订单
-                ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 广告屏已经生成的订单
+                ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
                 ->where($map)
                 ->select();
         } catch (\Exception $e) {
