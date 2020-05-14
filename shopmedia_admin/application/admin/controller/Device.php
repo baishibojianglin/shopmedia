@@ -49,8 +49,14 @@ class Device extends Base
 			if ($data) {
 				// 处理数据
 				$status = config('code.status'); // 状态
+				$brand = config('code.device_brand'); // 品牌
+				$model = config('code.device_model'); // 型号
+				$size = config('code.device_size'); // 型号
 				foreach ($data as $key => $value) {
 					$data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
+					$data[$key]['brand_msg']=$brand[$value['brand']]; //定义品牌信息
+					$data[$key]['model_msg']=$model[$value['brand']][$value['model']]; //定义型号信息
+					$data[$key]['size_msg']=$size[$value['size']]; //定义尺寸信息
 				}
 
 				return show(config('code.success'), 'OK', $data);
@@ -102,7 +108,7 @@ class Device extends Base
 	 */
 	public function addDevice(){
 		$form=input();
-        $form['data']['createtime']=date('Y-m-d H:i:s');
+        $form['data']['create_time']=time();
 
         if($form['device_id']!=''){ //更新
         	$mapdevice['device_id']=$form['device_id'];
