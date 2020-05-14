@@ -15,7 +15,7 @@
 						<uni-list>
 							<view v-if="this.deviceList.length == 0" class="uni-center notdevice">您还没有合作广告屏</view>
 							
-							<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shopname + '（地址：'+ item.address +'）'" @click="toPartnerDeviceDetail(item.partner_device_id, item.partner_id, item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
+							<uni-list-item v-for="(item, index) in deviceList" :key="index" :title="'广告收入：今日￥' + item.today_income + '，累计￥' + item.total_income" :note="'店铺：' + item.shop_name + '（地址：'+ item.address +'）'" @click="toPartnerDeviceDetail(item.partner_device_id, item.partner_id, item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 						</uni-list>
 					</uni-card>
 				</view>
@@ -24,7 +24,7 @@
 						<uni-list>
 							<view v-if="this.orderList.length == 0" class="uni-center notdevice">数据不存在</view>
 							
-							<uni-list-item v-for="(item, index) in orderList" :key="index" :title="'签约时间：' + item.order_time" :note="'店铺：' + item.shopname + '（地址：'+ item.address +'）'" @click="toPartnerOrderDetail(item.order_id, item.partner_id, item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
+							<uni-list-item v-for="(item, index) in orderList" :key="index" :title="'签约时间：' + item.order_time" :note="'店铺：' + item.shop_name + '（地址：'+ item.address +'）'" @click="toPartnerOrderDetail(item.order_id, item.partner_id, item.device_id)">广告屏编号：{{item.device_id}}</uni-list-item><!-- '合作价：￥' + item.sale_price + '，占股：' + item.share * 100 + '%' -->
 						</uni-list>
 					</uni-card>
 				</view>
@@ -100,7 +100,7 @@
 						self.deviceList = res.data.data.data;
 						self.deviceList.forEach((item, index) => {
 							self.$set(self.markers, index, {
-								title: item.device_id + ' ' + item.shopname,
+								title: item.device_id + ' ' + item.shop_name,
 								longitude: item.longitude,
 								latitude: item.latitude
 							});
@@ -150,10 +150,10 @@
 								order_sn: item.order_sn,
 								device_id: item.device_id,
 								order_time: item.order_time,
-								shopname: item.shopname
+								shop_name: item.shop_name
 							}); */
 							self.$set(self.orderMarkers, index, {
-								title: item.device_id + ' ' + item.shopname,
+								title: item.device_id + ' ' + item.shop_name,
 								longitude: item.longitude,
 								latitude: item.latitude
 							});

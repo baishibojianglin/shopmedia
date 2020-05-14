@@ -113,9 +113,9 @@
 			deviceDetail(){
 				let self=this;
 				uni.request({
-					url: this.$serverUrl+'api/DeviceDetail',
-					data:{device_id:self.device_id},
-					method:'POST',
+					url: this.$serverUrl+'api/device_detail',
+					data: {device_id:self.device_id},
+					method: 'GET',
 					header: {
 						'commonheader': this.commonheader,
 						'access-user-token':this.userInfo.token

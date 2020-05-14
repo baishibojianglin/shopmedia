@@ -169,7 +169,7 @@
 			getDeviceDetail() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/DeviceDetail',
+					url: this.$serverUrl + 'api/device_detail',
 					data: {
 						device_id: self.deviceId
 					},
@@ -177,7 +177,7 @@
 						'commonheader': this.$store.state.commonheader,
 						'access-user-token': this.userInfo.token
 					},
-					method: 'POST',
+					method: 'GET',
 					success: (res) => {
 						self.datalist = res.data.data; //赋值
 						self.datalist.shopcate = self.shopCateList[self.datalist.shopcate].cate_name; // 店铺类别

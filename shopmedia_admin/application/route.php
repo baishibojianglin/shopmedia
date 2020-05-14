@@ -117,8 +117,8 @@ Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper'); // 申请成为
 Route::post('api/get_user_role', 'api/User/getUserRole');
 
 // 广告屏
-Route::get('api/getMarkers','api/Device/getMarkers');
-Route::post('api/DeviceDetail','api/Device/DeviceDetail');
+Route::get('api/device_list','api/Device/getDeviceList');
+Route::get('api/device_detail','api/Device/deviceDetail');
 
 // 业务员
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
