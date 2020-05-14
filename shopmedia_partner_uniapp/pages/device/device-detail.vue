@@ -38,11 +38,11 @@
 					</view>
 					<view class="datalist">
 						<text class="datalist-title">店铺：</text>
-						<text class="datalist-content">{{datalist.shopname}}</text>
+						<text class="datalist-content">{{datalist.shop_name}}</text>
 					</view>
 					<view class="datalist">
 						<text class="datalist-title">店铺面积：</text>
-						<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
+						<text class="datalist-content">{{datalist.shop_area}} ㎡</text>
 					</view>
 					<view class="datalist">
 						<text class="datalist-title">所属行业：</text>
@@ -72,7 +72,7 @@
 		data() {
 			return {
 				device_id: 0, //设备id
-				datalist: {}, //设备信息列表
+				datalist: {}, //设备详细信息
 				cate_name:'',//行业名字
 				imglist: [], //实景图列表
 				csPhone: '02865272616', // 客服电话
@@ -137,6 +137,7 @@
 					},
 					method: 'GET',
 					success: (res) => {
+						console.log(500, res)
 						self.datalist = res.data.data; //赋值
 						self.cate_name = self.shopcatelist[self.datalist.shop_cate - 1].cate_name;
 						//取实景图
@@ -227,7 +228,7 @@
 				uni.openLocation({
 					latitude: Number(this.datalist.latitude),
 					longitude: Number(this.datalist.longitude),
-					name: this.datalist.shopname,
+					name: this.datalist.shop_name,
 					address: this.datalist.address
 				});
 			}
