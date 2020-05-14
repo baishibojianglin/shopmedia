@@ -71,11 +71,13 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
-			//获取广告屏位置
+			/**
+			 * 获取广告屏位置列表
+			 */
 			getmarkers() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/getMarkers',
+					url: this.$serverUrl + 'api/device_list',
 					header: {
 						'commonheader': this.$store.state.commonheader,
 						'access-user-token': this.userInfo.token

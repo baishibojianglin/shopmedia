@@ -420,7 +420,7 @@
 			deviceDetail() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/DeviceDetail',
+					url: this.$serverUrl + 'api/device_detail',
 					data: {
 						device_id: this.device.device_id
 					},
@@ -428,7 +428,7 @@
 						'commonheader':  this.commonheader,
 						'access-user-token': this.userInfo.token
 					},
-					method: 'POST',
+					method: 'GET',
 					success: (res) => {
 						self.device = res.data.data; //赋值
 					}

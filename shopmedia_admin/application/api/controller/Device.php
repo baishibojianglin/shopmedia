@@ -17,10 +17,10 @@ use think\Db;
 class Device extends AuthBase
 {
     /**
-     * 获取广告屏位置列表信息
+     * 获取广告屏列表信息
      * @return \think\response\Json
      */
-    public function getMarkers()
+    public function getDeviceList()
     {
         // 获取未付款和已付款订单ID集合
         $orderDeviceIds = Db::name('partner_order')
@@ -35,7 +35,7 @@ class Device extends AuthBase
         // 广告屏列表
         try{
             $devicelist = Db::name('device')->alias('d')
-                ->field('d.*, po.order_id, po.order_status, s.shop_name')
+                ->field('d.*, po.order_id, po.order_status, s.shop_name, s.cate shop_cate')
                 ->join('__PARTNER_ORDER__ po', 'd.device_id = po.device_id', 'LEFT') // 广告屏已经生成的订单
                 ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
                 ->where($map)
@@ -59,10 +59,15 @@ class Device extends AuthBase
      * 获取广告屏详细信息
      * @return \think\response\Json
      */
-    public function DeviceDetail(){
-        $form = input();
-        $match['device_id'] = $form['device_id'];
-        $devicelist = Db::name('device')->where($match)->find();
+    public function deviceDetail()
+    {
+        $param = input();
+        $map['d.device_id'] = $param['device_id'];
+        $devicelist = Db::name('device')->alias('d')
+            ->field('d.*, s.shop_name, s.cate shop_cate')
+            ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
+            ->where($map)
+            ->find();
         
         if(!empty($devicelist)){
             $message['data'] = $devicelist;

@@ -127,7 +127,7 @@
 			deviceDetail() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/DeviceDetail',
+					url: this.$serverUrl + 'api/device_detail',
 					data: {
 						device_id: self.device_id
 					},
@@ -135,11 +135,12 @@
 						'commonheader':  this.commonheader,
 						'access-user-token': this.userInfo.token
 					},
-					method: 'POST',
+					method: 'GET',
 					success: (res) => {
 						self.datalist = res.data.data; //赋值
-						self.cate_name=self.shopcatelist[self.datalist.shopcate-1].cate_name;
+						self.cate_name = self.shopcatelist[self.datalist.shop_cate - 1].cate_name;
 						//取实景图
+						console.log(223, res.data.data)
 						let str_image = res.data.data.url_image;
 						if (str_image.indexOf(',') == -1) {
 							self.$set(self.imglist, 0, str_image);
