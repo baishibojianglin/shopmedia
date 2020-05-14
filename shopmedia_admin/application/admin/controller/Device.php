@@ -119,7 +119,6 @@ class Device extends Base
 			$message['words']='添加失败';
 		}
 		return json($message);
-		//return json($form['device_id']);
 	}
 
 	/**
@@ -251,12 +250,12 @@ class Device extends Base
    public function getDeviceShop()
     {
         $match['status']=1;
-        $shoplist=Db::name('shop')->where($match)->field('shop_id','shop_name','device_quantity','plan_quantity')->select();
+        $shoplist=Db::name('shop')->where($match)->field('shop_id,shop_name,device_quantity,plan_quantity')->select();
 		
 	    if(!empty($shoplist)){
             
             foreach ($shoplist as $key => $value){
-            	  if($value['device_quantity']==$value['plan_quantity']){
+            	  if($value['device_quantity']>=$value['plan_quantity']){
             	  	      array_splice($shoplist,$key,1);
             	  }
             }
@@ -266,10 +265,6 @@ class Device extends Base
 			$data['words']="没有店铺有空闲安装";
             return show(config('code.error'), 'OK', $data);
 		}
-
-
-
-
 
     }
 

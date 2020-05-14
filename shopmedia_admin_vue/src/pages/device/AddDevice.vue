@@ -39,7 +39,7 @@
 		   </el-form-item>				  
 
 		   <el-form-item label="安装店铺" prop="shop">	
-			   <el-select v-model="ruleForm.shop" placeholder="请选择">
+			   <el-select  v-model="ruleForm.shop" placeholder="请选择">
 				 <el-option
 				   v-for="item in shop_options"
 				   :key="item.value"
@@ -48,12 +48,21 @@
 				 </el-option>
 			   </el-select>
 		   </el-form-item>	         
-			  	   
+	
+
+		   <el-form-item label="排除广告类型" prop="remove_ad_cate">	
+			   <el-select  v-model="ruleForm.remove_ad_cate" placeholder="请选择">
+				 <el-option
+				   v-for="item in remove_options"
+				   :key="item.value"
+				   :label="item.label"
+				   :value="item.value">
+				 </el-option>
+			   </el-select>
+		   </el-form-item>	
+				   
 		   
-		   <el-form-item label="排除广告类型" prop="remove_ad_cate">
-			 <el-input style="width:217px;" type="text" clearable v-model="ruleForm.remove_ad_cate"></el-input>
-		   </el-form-item>	   
-		   
+  	   
 		   <el-form-item label="租售价格" prop="sale_price">
 			 <el-input style="width:217px;" type="number" clearable v-model="ruleForm.sale_price"></el-input>
 		   </el-form-item>
@@ -118,6 +127,12 @@
    export default {
      data() {
 		   return {
+			   remove_options: [
+			     {
+			       value:'',
+			   	   label:''
+			     }
+			   ],
 			   shop_options: [
 			     {
 			       value:'',
@@ -185,7 +200,7 @@
 				  	{ required: true, message: '请选择等级', trigger: 'blur' }
 				  ],
 				  remove_ad_cate:[
-				  	{ required: true, message: '请确定排除类型', trigger: 'blur' }
+				  	{ required: false, message: '请确定排除类型', trigger: 'blur' }
 				  ],
 				  sale_price:[
 					{ required: true, message: '请输入设备出售价格', trigger: 'blur' }
@@ -209,7 +224,8 @@
 				  	{ required: true, message: '请填写已售份额', trigger: 'blur' }
 				  ]
 				},
-				device_id:''//广告屏id
+				device_id:'',//广告屏id
+				shoplist:[]//店铺列表
 		   }
      },
 	 mounted(){
@@ -223,6 +239,22 @@
 		   
 	 },
      methods: {
+		 
+      /**
+		* 获取广告类型
+		*/
+	   getadcate(){
+			let self=this;			
+			this.$axios.get(this.$url+'get_ad_cate')
+			.then(function (response){
+				      self.shoplist=response.data.data;
+					  response.data.data.forEach((value,index)=>{
+						  self.$set(self.shop_options,index,{value:value.shop_id,label:value.shop_name});
+					  })              
+			})		   
+	   },
+
+		 
        /**
 		* 获取店铺列表
 		*/
@@ -230,16 +262,10 @@
 			let self=this;			
 			this.$axios.get(this.$url+'get_device_shop')
 			.then(function (response){
-				if(response.data.status==1){
-					  // response.data.data.forEach((value,index)=>{
-						 //  self.$set(self.status_options,index,{value:value.status_id,label:value.status_name})
-					  // })
-				}else{
-					  self.$message({
-							message:'网络繁忙，请重试',
-							type: 'warning'
-					  });					   
-				}
+				      self.shoplist=response.data.data;
+					  response.data.data.forEach((value,index)=>{
+						  self.$set(self.shop_options,index,{value:value.shop_id,label:value.shop_name});
+					  })              
 			})		   
 	   },
 	    /**
@@ -384,6 +410,9 @@
  </script>  
 
 <style>
+	.el-select .el-input {
+	    width: 215px;
+	}
 	.create{
 		padding:20px 0 50px 0;
 	}
