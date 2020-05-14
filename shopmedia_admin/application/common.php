@@ -72,7 +72,7 @@ function sendSms($phone, $verifyCode){
 function uploadimage($info)
 {
     // 阿里云RAM账号AccessKey
-    $accessKeyId = "LTAI4Fu2RQ1sZsL55xAgNZhs";
+    $accessKeyId = "sdgdge13144141";
     $accessKeySecret = "srZezsN1ZQ1WkP8DFsH6gs09JBXL74";
     // Endpoint以成都为例，其它Region请按实际情况填写。
     $endpoint = "http://oss-cn-chengdu.aliyuncs.com";

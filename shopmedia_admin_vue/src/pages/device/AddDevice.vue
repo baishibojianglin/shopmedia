@@ -36,10 +36,24 @@
 				   :value="item.value">
 				 </el-option>
 			   </el-select>
-		   </el-form-item>				  
+		   </el-form-item>	
+						 
+		   <el-form-item label="设备图片(5张以内)" prop="url_image" class="idcard">
+			   <el-input v-show='false' style="width:350px;"  v-model="ruleForm.url_image"></el-input>
+			   <el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="5" :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'url_image',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,5,0)}"  :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,5,'url_image')}" :on-preview="handlePictureCardPreview"  name='image'>
+				     <i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传图片</i>
+			   </el-upload>
+			   <el-dialog :visible.sync="dialogVisible">
+			     <img width="100%" :src="dialogImageUrl" alt="">
+			   </el-dialog>
+		   </el-form-item>				 
+						 
+						 
+						 
+						 
 
-		   <el-form-item label="安装店铺" prop="shop">	
-			   <el-select  v-model="ruleForm.shop" placeholder="请选择">
+		   <el-form-item label="安装店铺" prop="shop_id">	
+			   <el-select  v-model="ruleForm.shop_id" placeholder="请选择">
 				 <el-option
 				   v-for="item in shop_options"
 				   :key="item.value"
@@ -184,9 +198,13 @@
 				   factory_ad_rate:'',//厂家收益率
 				   status:'',//状态
 				   saled_part:'',//已售份额
-				   shop:''//安装店铺
+				   shop_id:'',//安装店铺
+				   url_image:'',//图片
 				},
 				rules: {
+				  url_image:[
+					{ required: true, message: '请上传照片' }
+				  ],
 				  brand: [
 					{ required: true, message: '请选择设备品牌', trigger: 'blur' }
 				  ],
@@ -222,10 +240,17 @@
 				  ],
 				  saled_part:[
 				  	{ required: true, message: '请填写已售份额', trigger: 'blur' }
+				  ],
+				  shop_id:[
+				  	{ required: true, message: '请选择安装店铺', trigger: 'blur' }
 				  ]
 				},
 				device_id:'',//广告屏id
-				shoplist:[]//店铺列表
+				dialogImageUrl: '',
+				dialogVisible: false ,//放大预览图片
+				url_image_list:[],//图片地址列表
+				name_image_list:[],//图片名字列表
+				hideUpload:[false,false] ,//隐藏图片添加按钮
 		   }
      },
 	 mounted(){
@@ -235,21 +260,94 @@
 		   this.getsize();//设备尺寸
 		   this.getstatus();//设备状态
 		   this.getshop();//店铺信息
+		   this.getadcate();//广告类型
+		   this.getlevel();//获取广告屏等级
 		   
 		   
 	 },
      methods: {
 		 
+	  /**
+	   * 上传图片
+	   * @param {string} response  返回图片地址
+	   * @param {Object} file
+	   * @param {Object} fileList
+	   * @param {string} url_name 图片地址变量名
+	   * @param {string} index 上传组件索引
+	   */
+	  returnUrl(response, file, fileList,url_name,index){
+		  console.log(response)
+		  this.url_image_list.push({name:response['name'],url:response['url']});
+		 // this.url_image_list.push(response['url']);
+		 // this.name_image_list.push(response['name']);
+	  },
+	   /**
+	   * 删除图片上传完后的添加按钮
+	   * @param {Object} file
+	   * @param {Object} fileList
+	   * @param {Object} num 允许上传的图片张数
+	   * @param {string} index 上传组件索引
+	   */
+	  delePlusButton(file,fileList,num,index){
+		  this.$set(this.hideUpload,index,fileList.length >= num);
+	  },
+	  /**
+	   * 删除图片
+	   * @param {Object} file
+	   * @param {Object} fileList
+	   * @param {string} index 上传组件索引
+	   * @param {Object} num 允许上传的图片张数
+	   * @param {string} url_name 图片地址变量名
+	   */
+	   handleRemove(file,fileList,index,num,url_name) {
+			this.url_image_list.forEach((value,index)=>{
+				if(value.name==file.response.name){
+					this.url_image_list.splice(index,1);
+				}
+			})
+			let self=this;
+			//删除oss上的图片
+			this.$axios.post(this.$url+'deleteimages',{
+				name:file.response.name
+			}).then(function(res){	
+				console.log(res)
+				self.$set(self.hideUpload,index,fileList.length >= num);
+			})
+	   },
+	   /**
+		* 放大图片
+		* @param {Object} file
+		*/
+	   handlePictureCardPreview(file) {
+		  this.dialogImageUrl = file.url;
+		  this.dialogVisible = true;
+	   },
+
+      /**
+		* 获取广告屏等级
+	  */
+	   getlevel(){
+			let self=this;			
+			this.$axios.get(this.$url+'get_device_level')
+			.then(function (response){
+					  response.data.data.forEach((value,index)=>{
+						  self.$set(self.level_options,index,{value:value.level_id,label:value.level_id+'级'});
+					  })              
+			})		   
+	   },
+
+
+
+		 
       /**
 		* 获取广告类型
-		*/
+	  */
 	   getadcate(){
 			let self=this;			
 			this.$axios.get(this.$url+'get_ad_cate')
 			.then(function (response){
-				      self.shoplist=response.data.data;
 					  response.data.data.forEach((value,index)=>{
-						  self.$set(self.shop_options,index,{value:value.shop_id,label:value.shop_name});
+						  self.$set(self.remove_options,index,{value:value.adcate_id,label:value.adcate_name});
 					  })              
 			})		   
 	   },
@@ -298,7 +396,7 @@
 			.then(function (response){
 				if(response.data.status==1){
 					  response.data.data.forEach((value,index)=>{
-						  self.$set(self.size_options,index,{value:value.size_id,label:value.size_name})
+						  self.$set(self.size_options,index,{value:value.size_id,label:value.size_name+'寸'})
 					  })
 				}else{
 					  self.$message({
@@ -370,10 +468,7 @@
 			let self=this;
 			let admin_user=JSON.parse(localStorage.getItem('admin_user')); //取出的缓存的登录账户信息
 			this.ruleForm.company_id=admin_user.company_id; //获取登录账号所属的供应商id，并赋值给表单
-			this.ruleForm.create_user=admin_user.id; //获取登录账号的用户id，并赋值给表单
-			//将图片地址和名字组装成一个字符串
-			this.ruleForm.name_image=this.name_image_list.join();
-			this.ruleForm.url_image=this.url_image_list.join();		
+			this.ruleForm.create_user=admin_user.id; //获取登录账号的用户id，并赋值给表单	
 			this.$refs[formName].validate((valid) => {
 			  if (valid) {
 				this.$axios.post(this.$url+'addDevice',{
@@ -410,9 +505,6 @@
  </script>  
 
 <style>
-	.el-select .el-input {
-	    width: 215px;
-	}
 	.create{
 		padding:20px 0 50px 0;
 	}
