@@ -77,7 +77,6 @@ Route::resource('shop', 'admin/Shop');
 // 店铺类别
 Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
 
-
 // 新闻
 Route::resource('news', 'admin/News');
 // 新闻类别
