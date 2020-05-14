@@ -49,8 +49,14 @@ class Device extends Base
 			if ($data) {
 				// 处理数据
 				$status = config('code.status'); // 状态
+				$brand = config('code.device_brand'); // 品牌
+				$model = config('code.device_model'); // 型号
+				$size = config('code.device_size'); // 型号
 				foreach ($data as $key => $value) {
 					$data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
+					$data[$key]['brand_msg']=$brand[$value['brand']]; //定义品牌信息
+					$data[$key]['model_msg']=$model[$value['brand']][$value['model']]; //定义型号信息
+					$data[$key]['size_msg']=$size[$value['size']]; //定义尺寸信息
 				}
 
 				return show(config('code.success'), 'OK', $data);
@@ -102,7 +108,7 @@ class Device extends Base
 	 */
 	public function addDevice(){
 		$form=input();
-        $form['data']['createtime']=date('Y-m-d H:i:s');
+        $form['data']['create_time']=time();
 
         if($form['device_id']!=''){ //更新
         	$mapdevice['device_id']=$form['device_id'];
@@ -119,7 +125,6 @@ class Device extends Base
 			$message['words']='添加失败';
 		}
 		return json($message);
-		//return json($form['device_id']);
 	}
 
 	/**
@@ -251,12 +256,12 @@ class Device extends Base
    public function getDeviceShop()
     {
         $match['status']=1;
-        $shoplist=Db::name('shop')->where($match)->field('shop_id','shop_name','device_quantity','plan_quantity')->select();
+        $shoplist=Db::name('shop')->where($match)->field('shop_id,shop_name,device_quantity,plan_quantity')->select();
 		
 	    if(!empty($shoplist)){
             
             foreach ($shoplist as $key => $value){
-            	  if($value['device_quantity']==$value['plan_quantity']){
+            	  if($value['device_quantity']>=$value['plan_quantity']){
             	  	      array_splice($shoplist,$key,1);
             	  }
             }
@@ -266,10 +271,6 @@ class Device extends Base
 			$data['words']="没有店铺有空闲安装";
             return show(config('code.error'), 'OK', $data);
 		}
-
-
-
-
 
     }
 

@@ -26,17 +26,13 @@
 				<!-- 广告屏列表 s -->
 				<el-table :data="deviceList" empty-text="数据加载中…" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="70"></el-table-column>
-					<el-table-column prop="brand" label="品牌" min-width="120"></el-table-column>
-					<el-table-column prop="model" label="型号" width="120"></el-table-column>
-					<el-table-column prop="size" label="尺寸" width="70"></el-table-column>
+					<el-table-column prop="brand_msg" label="品牌" min-width="120"></el-table-column>
+					<el-table-column prop="model_msg" label="型号" width="120"></el-table-column>
+					<el-table-column prop="size_msg" label="尺寸/寸" width="80"></el-table-column>
 					<el-table-column prop="sale_price" label="价格/元" width="100"></el-table-column>
 					<el-table-column prop="saled_part" label="已售份额" width="100"></el-table-column>
 					<el-table-column prop="company_name" label="所属分公司" width="120"></el-table-column>
-					<el-table-column prop="province" label="省份" width="120"></el-table-column>
-					<el-table-column prop="city" label="城市" width="120"></el-table-column>
-					<el-table-column prop="county" label="区县" width="120"></el-table-column>
-					<el-table-column prop="street" label="街道" width="120"></el-table-column>
-					<el-table-column prop="shopname" label="店铺" width="120"></el-table-column>
+					<el-table-column prop="shop_id" label="店铺编号" width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')">{{scope.row.status_msg}}</span>
@@ -92,20 +88,14 @@
 				let self = this;
 				this.$axios.get(this.$url + 'device', {
 					params: {
-						// company_name: this.formInline.company_name,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
-					}/* ,
-					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					} */
+					}
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
 						// 广告屏列表分页参数
 						self.listPagination = res.data.data;
-						
 						// 当数据为空时
 						if (self.listPagination.total == 0) {
 							self.$message({
