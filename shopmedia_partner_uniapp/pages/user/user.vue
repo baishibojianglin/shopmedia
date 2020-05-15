@@ -22,7 +22,7 @@
 		
 		<view class="uni-common-mt" v-if="hasLogin">
 			<uni-card title="我的角色" thumbnail="" extra="" note="" is-full is-shadow>
-				<button v-for="(item, index) in userData.user_roles" :key="index" class="mini-btn" :class="item.user_role.status != 1 ? 'color-disable' : ''" size="mini" @click="toUserRoleDetails(item)">{{item.role_title}}</button>
+				<button v-for="(item, index) in userData.user_roles" :key="index" v-if="item.role_id != 7" class="mini-btn" :class="item.user_role.status != 1 ? 'color-disable' : ''" size="mini" @click="toUserRoleDetails(item)">{{item.role_title}}</button>
 			</uni-card>
 		</view>
 		
