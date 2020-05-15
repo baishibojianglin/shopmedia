@@ -19,13 +19,15 @@ class PartnerOrder extends Base
      */
     public function getPartnerOrder($map = [], $size = 5)
     {
+        $order = ['o.order_time' => 'desc'];
+
         $result = $this->alias('o')
             ->field($this->_getListField())
             ->join('__USER__ u', 'o.user_id = u.user_id', 'LEFT') // 用户
             ->join('__USER_PARTNER__ up', 'o.partner_id = up.id', 'LEFT') // 广告屏合作商
             ->join('__DEVICE__ d', 'o.device_id = d.device_id', 'LEFT') // 广告屏
             ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
-            ->where($map)->cache(true, 10)->paginate($size);
+            ->where($map)->order($order)->cache(true, 10)->paginate($size);
         return $result;
     }
 

@@ -48,7 +48,7 @@ class PartnerOrder extends Base
             try {
                 $data = model('PartnerOrder')->getPartnerOrder($map, $this->size);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '请求异常', [], 500); // $e->getMessage()
             }
 
             if ($data) {
@@ -149,14 +149,14 @@ class PartnerOrder extends Base
                 } catch (\Exception $e) {
                     // 回滚事务
                     Db::rollback();
-                    return show(config('code.error'), '网络忙，请重试', '', 500);
+                    return show(config('code.error'), '请求异常', '', 500);
                 }
                 /* 手动控制事务 e */
             } else {
                 try {
                     $id = model('PartnerOrder')->add($data, 'order_id');
                 } catch (\Exception $e) {
-                    return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                    return show(config('code.error'), '请求异常', [], 500); // $e->getMessage()
                 }
                 if ($id) {
                     return show(config('code.success'), '订单新增成功', $data['order_sn'], 201);
@@ -182,7 +182,7 @@ class PartnerOrder extends Base
             try {
                 $data = model('PartnerOrder')->find($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '请求异常', [], 500); // $e->getMessage()
             }
 
             if ($data) {
@@ -288,14 +288,14 @@ class PartnerOrder extends Base
                 } catch (\Exception $e) {
                     // 回滚事务
                     Db::rollback();
-                    return show(config('code.error'), '网络忙，请重试', '', 500);
+                    return show(config('code.error'), '请求异常', '', 500);
                 }
                 /* 手动控制事务 e */
             } else {
                 try {
                     $result = model('PartnerOrder')->save($data, ['order_id' => $id]); // 更新
                 } catch (\Exception $e) {
-                    return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                    return show(config('code.error'), '请求异常', [], 500); // $e->getMessage()
                 }
                 if (false === $result) {
                     return show(config('code.error'), '更新失败', [], 403);
@@ -323,7 +323,7 @@ class PartnerOrder extends Base
             try {
                 $data = model('PartnerOrder')->find($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
                 //throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
 
@@ -358,7 +358,7 @@ class PartnerOrder extends Base
             /*try {
                 $result = model('PartnerOrder')->destroy($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
             }
             if (!$result) {
                 return show(config('code.error'), '删除失败', '', 403);

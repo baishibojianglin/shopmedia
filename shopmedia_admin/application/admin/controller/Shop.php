@@ -114,6 +114,18 @@ class Shop extends Base
             if (!empty($param['cate_id'])) {
                 $data['cate'] = intval($param['cate_id']);
             }
+            if (!empty($param['province_id'])) {
+                $data['province_id'] = intval($param['province_id']);
+            }
+            if (!empty($param['city_id'])) {
+                $data['city_id'] = intval($param['city_id']);
+            }
+            if (!empty($param['county_id'])) {
+                $data['county_id'] = intval($param['county_id']);
+            }
+            if (!empty($param['town_id'])) {
+                $data['town_id'] = intval($param['town_id']);
+            }
             if (!empty($param['address'])) {
                 $data['address'] = trim($param['address']);
             }

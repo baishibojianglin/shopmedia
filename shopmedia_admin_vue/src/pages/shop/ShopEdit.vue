@@ -190,16 +190,16 @@
 								self.$set(self.provinceList, index, {value: value.region_id, label: value.region_name});
 							})
 						} else if (level == 2) {  // 市级
-							self.form.city_id = ''; // 清空上次选择的市级数据
+							/* self.form.city_id = ''; // 清空上次选择的市级数据
 							self.form.county_id = ''; // 清空上次选择的区县数据
-							self.form.town_id = ''; // 清空上次选择的乡镇街道数据
+							self.form.town_id = ''; // 清空上次选择的乡镇街道数据 */
 							self.cityList.splice(0, self.cityList.length);
 							res.data.data.forEach((value, index) => {
 								self.$set(self.cityList, index, {value: value.region_id, label: value.region_name});
 							})
 						} else if (level == 3) {  // 区县
-							self.form.county_id = ''; // 清空上次选择的区县数据
-							self.form.town_id = ''; // 清空上次选择的乡镇街道数据
+							/* self.form.county_id = ''; // 清空上次选择的区县数据
+							self.form.town_id = ''; // 清空上次选择的乡镇街道数据 */
 							self.countyList.splice(0, self.countyList.length);
 							res.data.data.forEach((value, index) => {
 								self.$set(self.countyList, index, {value: value.region_id, label:value.region_name});
@@ -233,6 +233,12 @@
 					if (res.data.status == 1) {
 						// 店铺信息
 						self.form = res.data.data;
+						console.log(2221, self.form)
+						
+						// 区域回显
+						self.region(self.form.province_id, 2);
+						self.region(self.form.city_id, 3);
+						self.region(self.form.county_id, 4);
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -254,7 +260,7 @@
 			 */
 			submitForm(formName) {
 				let self = this;
-				console.log(22211, this.form);return;
+				console.log(22211, this.form);
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
 						this.$axios.put(this.$url + 'shop/' + this.form.shop_id, {
