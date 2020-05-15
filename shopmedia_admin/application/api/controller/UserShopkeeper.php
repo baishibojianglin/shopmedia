@@ -13,10 +13,6 @@ use think\Db;
  */
 class UserShopkeeper extends AuthBase
 {
-
-
-
-
     /**
      * 获取账号店铺合作角色是否可用
      * @return \think\response\Json
@@ -35,11 +31,6 @@ class UserShopkeeper extends AuthBase
             return json($message);
         }
     }
-
-
-
-
-
 
     /**
      * 显示店家店铺列表
@@ -75,7 +66,11 @@ class UserShopkeeper extends AuthBase
             // 处理数据
             foreach ($data as $key => $value) {
                 // 获取店铺对应广告屏列表
-                $deviceList = model('Device')->getDeviceList(['d.shop_id' => $value['shop_id']]);
+                try {
+                    $deviceList = model('ShopDevice')->getShopDeviceList(['sd.shop_id' => $value['shop_id']]);
+                } catch (\Exception $e) {
+                    return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+                }
                 $data[$key]['device_list'] = $deviceList;
             }
         }

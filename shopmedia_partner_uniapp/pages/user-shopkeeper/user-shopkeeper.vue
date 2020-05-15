@@ -1,9 +1,9 @@
 <template>
 	<view class="uni-page-body">
 		<view>
-			<uni-card is-shadow>
+			<!-- <uni-card is-shadow> -->
 				<map class="map" :longitude="longitude" :latitude="latitude" :scale="9" :markers="markers" :enable-satellite="false"></map>
-			</uni-card>
+			<!-- </uni-card> -->
 		</view>
 		
 		<view class="uni-common-mt mb">
