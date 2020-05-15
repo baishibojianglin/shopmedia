@@ -245,23 +245,19 @@ class Company extends Base
 	 * 获取区域数据
 	 * @return \think\response\Json
 	 */
-	public function getzone(){
-		$form=input();	
-		$maparea['parent_id']=$form['parent_id'];
-	    $listarea=model('Region')->where($maparea)->cache(true, 10)->select();
+	public function getzone()
+	{
+		$param = input();
+		$map['parent_id'] = $param['parent_id'];
+	    $regionList = model('Region')->where($map)->cache(true, 10)->select();
 
-		if(!empty($listarea)){
-			$message['data']=$listarea;
-			$message['status']=1;
+		if(!empty($regionList)){
+			$message['data'] = $regionList;
+			$message['status'] = 1;
 		}else{
-			$message['data']=[];
-			$message['status']=0;
+			$message['data'] = [];
+			$message['status'] = 0;
 		}
 		return json($message);
 	}
-
-
-
-
-
 }
