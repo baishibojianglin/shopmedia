@@ -48,7 +48,7 @@ class Device extends Base
 
 			if ($data) {
 				// 处理数据
-				$status = config('code.status'); // 状态
+				$status = config('code.device_status'); // 状态
 				$brand = config('code.device_brand'); // 品牌
 				$model = config('code.device_model'); // 型号
 				$size = config('code.device_size'); // 型号
