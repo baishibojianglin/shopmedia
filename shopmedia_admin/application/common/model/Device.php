@@ -20,7 +20,7 @@ class Device extends Base
     public function getDevice($map = [], $size = 5)
     {
         $result = $this->alias('d')
-            ->field('d.device_id, d.brand, d.model, d.size, d.shop_id, d.url_image, d.sale_price, d.saled_part, d.company_id, d.status, s.shop_name, s.province_id, s.city_id, s.county_id, s.town_id, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name street, c.company_name')
+            ->field('d.device_id, d.brand, d.model, d.size, d.shop_id, d.url_image, d.sale_price, d.saled_part, d.company_id, d.status, d.level, s.shop_name, s.province_id, s.city_id, s.county_id, s.town_id, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name street, c.company_name')
             ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
             ->join('__REGION__ rp', 's.province_id = rp.region_id', 'LEFT') // 区域（省份）
             ->join('__REGION__ rc', 's.city_id = rc.region_id', 'LEFT') // 区域（城市）

@@ -249,7 +249,6 @@
 				dialogImageUrl: '',
 				dialogVisible: false ,//放大预览图片
 				url_image_list:[],//图片地址列表
-				name_image_list:[],//图片名字列表
 				hideUpload:[false,false] ,//隐藏图片添加按钮
 		   }
      },
@@ -276,10 +275,7 @@
 	   * @param {string} index 上传组件索引
 	   */
 	  returnUrl(response, file, fileList,url_name,index){
-		  console.log(response)
 		  this.url_image_list.push({name:response['name'],url:response['url']});
-		 // this.url_image_list.push(response['url']);
-		 // this.name_image_list.push(response['name']);
 	  },
 	   /**
 	   * 删除图片上传完后的添加按钮
@@ -310,7 +306,6 @@
 			this.$axios.post(this.$url+'deleteimages',{
 				name:file.response.name
 			}).then(function(res){	
-				console.log(res)
 				self.$set(self.hideUpload,index,fileList.length >= num);
 			})
 	   },
@@ -469,6 +464,7 @@
 			let admin_user=JSON.parse(localStorage.getItem('admin_user')); //取出的缓存的登录账户信息
 			this.ruleForm.company_id=admin_user.company_id; //获取登录账号所属的供应商id，并赋值给表单
 			this.ruleForm.create_user=admin_user.id; //获取登录账号的用户id，并赋值给表单	
+			this.ruleForm.url_image=JSON.stringify(this.url_image_list);//将图片地址处理成json字符串
 			this.$refs[formName].validate((valid) => {
 			  if (valid) {
 				this.$axios.post(this.$url+'addDevice',{

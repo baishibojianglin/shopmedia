@@ -33,7 +33,9 @@
 					<el-table-column prop="saled_part" label="已售份额" width="100"></el-table-column>
 					<el-table-column prop="company_name" label="所属分公司" width="120"></el-table-column>
 					<el-table-column prop="shop_id" label="店铺编号" width="120"></el-table-column>
-					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="shop_name" label="店铺名称" width="150"></el-table-column>
+					<el-table-column prop="level" label="广告位等级" width="150"></el-table-column>
+					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '下线', value: 0 }, { text: '正常', value: 1 },{ text: '故障', value: 2 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')">{{scope.row.status_msg}}</span>
 						</template>
@@ -41,8 +43,8 @@
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
 							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toDeviceEdit(scope.row)">编辑</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteDevice(scope)">删除</el-button>
-						</template>
+<!-- 							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteDevice(scope)">删除</el-button>
+ -->						</template>
 					</el-table-column>
 				</el-table>
 				<!-- 广告屏列表 e -->
