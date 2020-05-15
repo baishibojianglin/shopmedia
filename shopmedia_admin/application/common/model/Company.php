@@ -23,13 +23,14 @@ class Company extends Base
             $map['c.is_delete'] = ['neq', config('code.is_delete')];
         }
 
-        $order = ['c.createtime' => 'desc'];
+        $order = ['c.create_time' => 'desc'];
 
         $result = $this->alias('c')
             ->field($this->_getListField())
             ->join('__REGION__ rp', 'c.province_id = rp.region_id', 'LEFT') // 省份
             ->join('__REGION__ rc', 'c.city_id = rc.region_id', 'LEFT') // 城市
             ->where($map)->order($order)->cache(true, 10)->paginate($size);
+
         return $result;
     }
 
@@ -47,7 +48,7 @@ class Company extends Base
             'c.person_name',
             'c.phone',
             'c.status',
-            'c.createtime',
+            'c.create_time',
             'c.is_delete',
             'rp.region_name province',
             'rc.region_name city'
@@ -57,45 +58,37 @@ class Company extends Base
     /**
      * 创建供应商
      * @param $data
+     * @return mixed
      */
     public function inCompany($data)
     {
-
         $data['status']=1; //正常
         $data['create_time']=date('Y-m-d H:i:s');
         $list=$this->save($data);
         return $this->id;
-
     }
-
 
     /**
      * 插入供应商销售区域值信息
      * @param $data
+     * @return $this
      */
     public function insertcompany($data)
     {
         //入库供应商基本信息表
         $list=$this->update($data);
         return $list;
-
     }
-
-
-
 
     /**
      * 获取供应商销售区域字段
      * @param $data
+     * @return mixed
      */
     public function salearea($data)
     {
         //入库供应商基本信息表
-
         $list=$this->where($data)->value('salearea');
         return $list;
-
     }
-
-
 }

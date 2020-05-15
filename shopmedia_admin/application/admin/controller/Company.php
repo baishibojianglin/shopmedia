@@ -25,9 +25,6 @@ class Company extends Base
 		if (request()->isGet()) {
 			// 传入的参数
 			$param = input('param.');
-			if (isset($param['size'])) { // 每页条数
-				$param['size'] = intval($param['size']);
-			}
 
 			// 查询条件
 			$map = [];
@@ -43,10 +40,10 @@ class Company extends Base
 
 			// 获取分公司列表数据
 			try {
-				$data = model('Company')->getCompany($map, $this->size);
+				$data = model('Company')->getCompany($map, (int)$this->size);
 			} catch (\Exception $e) {
-				throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
-				//return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+				return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
+				//throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
 			}
 
 			if ($data) {

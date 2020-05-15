@@ -40,7 +40,7 @@
 							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column prop="createtime" label="创建时间" width="180" sortable></el-table-column>
+					<el-table-column prop="create_time" label="创建时间" width="180" sortable></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
 							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
