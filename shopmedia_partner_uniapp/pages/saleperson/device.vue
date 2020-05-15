@@ -124,15 +124,7 @@
 					   self.datalist=res.data.data; //赋值
 					   self.datalist.shopcate=self.shopcatelist[self.datalist.shopcate].cate_name; //展示店铺行业
 					   //取实景图
-					   let str_image=res.data.data.url_image;
-					   if(str_image.indexOf(',')==-1){
-						  self.$set(self.imglist,0,str_image);
-					   }else{
-						  let str_image_array=str_image.split(",");
-						  str_image_array.forEach((value,index)=>{
-						  	self.$set(self.imglist,index,value);
-						  })
-					   }
+                       self.imglist = JSON.parse(res.data.data.url_image);
 					},
 				});
 			},
