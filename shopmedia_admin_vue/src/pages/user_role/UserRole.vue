@@ -30,12 +30,12 @@
 					<!-- <el-table-column prop="parent_id" label="上级角色序号" width="120"></el-table-column> -->
 					<el-table-column prop="parent_comm_ratio" label="上级提成比例" width="180">
 						<template slot-scope="scope">
-							<span>{{scope.row.id == 1 ? '—' : scope.row.parent_comm_ratio}}</span>
+							<span>{{scope.row.id == 1 ? '-' : scope.row.parent_comm_ratio}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.id == 1 ? '—' : scope.row.status_msg}}</span>
+							<span :class="(scope.row.status === 1 && scope.row.id != 1) ? 'text-success' : 'text-info'">{{scope.row.id == 1 ? '-' : scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" width="90">
