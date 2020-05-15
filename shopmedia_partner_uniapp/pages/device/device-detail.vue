@@ -4,13 +4,13 @@
 			<swiper class="swiper" :autoplay="true" :interval="3000" :circular="true" :indicator-dots="true" indicator-active-color="#fff">
 				<swiper-item v-for="(value, key) in imglist" :key="key">
 					<view class="swiper-item">
-						<image :src="value"></image>
+						<image :src="value.url"></image>
 					</view>
 				</swiper-item>
 			</swiper>
 		</view>
 
-        <uni-card :is-shadow="true" style="margin-bottom: 150upx;">
+        <uni-card :is-shadow="true" style="margin-bottom:60px;">
 				<view>
 					<view class="datalist">
 						<text class="datalist-title">屏编号：</text>
@@ -137,20 +137,10 @@
 					},
 					method: 'GET',
 					success: (res) => {
-						console.log(500, res)
 						self.datalist = res.data.data; //赋值
 						self.cate_name = self.shopcatelist[self.datalist.shop_cate - 1].cate_name;
 						//取实景图
-						console.log(223, res.data.data)
-						let str_image = res.data.data.url_image;
-						if (str_image.indexOf(',') == -1) {
-							self.$set(self.imglist, 0, str_image);
-						} else {
-							let str_image_array = str_image.split(",");
-							str_image_array.forEach((value, index) => {
-								self.$set(self.imglist, index, value);
-							})
-						}
+						self.imglist = JSON.parse(res.data.data.url_image);
 					},
 				});
 			},
@@ -204,7 +194,7 @@
 				// 立即合作
 				if (e.index == 0) {
 					uni.navigateTo({
-						url: '../partner-order/partner-order?cs_phone=' + this.csPhone + '&device=' + encodeURIComponent(JSON.stringify(this.datalist))
+						url: '../partner-order/partner-order?cs_phone='+this.csPhone+'&device_id='+this.datalist.device_id
 					})
 				}
 			},
@@ -268,5 +258,8 @@
 	.datalist-content {
 		flex: 1;
 		text-align: right;
+	}
+	.bottom-con{
+		margin-bottom: 100px;
 	}
 </style>

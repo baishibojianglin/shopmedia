@@ -26,7 +26,7 @@
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">安装位置：</text>
-				<text class="content-right sign-border-text">{{device.address+device.shopname}}</text>
+				<text class="content-right sign-border-text">{{device.address}}</text>
 			</view>
 			
 			<view class="blod">二、出资方式、出资比例</view>
@@ -184,9 +184,6 @@
 		},
 		onLoad(event) {
 			this.csPhone = event.cs_phone;
-			if (typeof(event.device) != 'undefined') {
-				this.device = JSON.parse(decodeURIComponent(event.device));
-			}
 			if (typeof(event.device_id) != 'undefined') {
 				this.device.device_id = Number(event.device_id);
 				this.deviceDetail();
@@ -431,6 +428,8 @@
 					method: 'GET',
 					success: (res) => {
 						self.device = res.data.data; //赋值
+						self.company_out=(res.data.data.sale_price/2).toFixed(2);
+						self.person_out=(res.data.data.sale_price/2).toFixed(2);
 					}
 				});
 			}

@@ -205,7 +205,7 @@
 <style>
 	.map {
 		width: 100%;
-		height: 320rpx;
+		height: 400rpx;
 	}
 	.notdevice{
 		font-size:16px;

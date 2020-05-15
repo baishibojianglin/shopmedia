@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view>
-			<video class="vedio-con" src="https://sustock-app.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true" :loop="false" :controls="true"></video>
+			<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true" :loop="false" :controls="true"></video>
 		</view>
 
 		<view>
@@ -29,7 +29,7 @@
 			<view class="navcon-item" @click="usead()">
 				<text class="iconposition icon color-blue iconbg">&#xe636;</text>
 				<br />
-				<text>投放广告</text>
+				<text>广告投放咨询</text>
 			</view>
 			<view @click="toRole(2)" class="navcon-item">
 				<text class="iconposition icon color-red iconbg">&#xe637;</text>
@@ -338,6 +338,9 @@
 
 	.vedio-con {
 		width: 100%;
+		margin: 0;
+		padding: 0;
+		height: 205px;
 	}
 
 	.view-grid-con {
