@@ -202,13 +202,18 @@ class Company extends Base
 	public function createCompany(){
 		$form=input();
 		//添加分公司基本信息
-        $form['data']['createtime']=date('Y-m-d H:i:s');
-        if($form['company_id']!=''){ //更新
+		//try{
+        $form['data']['create_time']=time();
+        if(!empty($form['company_id'])){ //更新
         	$mapcompany['company_id']=$form['company_id'];
         	$number=Db::name('company')->where($mapcompany)->update($form['data']);
         }else{ //新增
         	$number=Db::name('company')->insert($form['data']);
         }
+        //}
+       // catch(\Exception $e){
+        	//return json($e->getMessage());
+        //}
         
 		
 		if($number>0){
