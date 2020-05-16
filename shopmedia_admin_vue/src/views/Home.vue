@@ -4,7 +4,8 @@
 			
 			<el-col :span="24" class="homeheader color-white"> <!--header s-->
 				<el-col :span="5">
-				   <div class="hometitle">{{name}}</div>
+				   <div class="hometitle" v-if="name">{{name}}</div>
+				   <div class="hometitle" v-else>店通传媒总平台</div>
 				</el-col>
 			</el-col> <!--header e-->
 
