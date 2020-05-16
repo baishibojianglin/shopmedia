@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		   <view>
+<!-- 		   <view>
 				<map 
 					class="map"
 					:scale='9'
@@ -10,16 +10,28 @@
 					:enable-satellite="false"
 				>	
 				</map>	
-			</view>
-							
+			</view> -->
+			<view class="sale-title main-color">— 我的邀请码 —</view>
 			<view class="countcon">
-				<view class="countcon-item">
-					<text>屏总数：{{5040+salecount}} 台</text>
+				<view class="countcon-item">客户邀请码：<text class="uni-bold">{{sale_info.invitation_code}}</text></view>
+				<view class="countcon-item">业务员邀请码：<text class="uni-bold">{{sale_info.son_invitation_code}}</text></view>
+			</view>
+			
+			<view class="sale-title main-color">— 我的战绩 —</view>
+			<view class="countcon">
+				<view class="countcon-item">销售：<text class="uni-bold">{{sale_number}} 台</text></view>
+				<view class="countcon-item">总收入：<text class="uni-bold">{{sale_info.income}}</text></view>
+			</view>
+			<view class="countcon">
+				<view class="countcon-item">已提现：<text class="uni-bold">{{sale_info.cash}}</text></view>
+				<view class="countcon-item">余额：<text class="uni-bold">{{sale_info.money}}</text></view>
+			</view>
+						
+			<view class="countcon">
+				<view class="countcon-item bg-qgray-color">
+					<text>可销售设备</text>
 				</view>
-				<view class="countcon-item">
-					<text>可合作：{{salecount}} 台</text>
-				</view>
-			</view>	
+			</view>
 			<uni-card :is-shadow="true">
 					<view>
 						<view class="listcon">
@@ -68,17 +80,68 @@
 						longitude: 104.065840,//经度
 						markers:[],	//地图图标
 						salecount:0,//合作屏数量
-						devicelist:[] //设备列表
+						devicelist:[],//设备列表
+						sale_info:{} ,//业务员基本信息
+						sale_number:0 //广告机数量
 					   }
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
               this.getmarkers();
+			  this.getSaleInfo();
+			  this.getSaleCount();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
 		},
 		methods: {
+			
+			/**
+			 * 获取业务员销售屏数量
+			 */
+			getSaleCount(){
+				let self=this;
+				uni.request({
+					url: this.$serverUrl+'api/sale_count',
+					data: {
+						user_id:this.userInfo.user_id,
+						role_id:4
+					},
+					method:'POST',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
+					success: (res) => {
+                         self.sale_number=res.data.data;
+					}
+				});			
+			},			
+			
+			
+			
+			
+			/**
+			 * 获取业务员信息
+			 */
+			getSaleInfo(){
+				let self=this;
+				uni.request({
+					url: this.$serverUrl+'api/sale_info',
+					data: {
+						user_id:this.userInfo.user_id,
+						role_id:4
+					},
+					method:'POST',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
+					success: (res) => {
+                       self.sale_info=res.data.data;
+					}
+				});			
+			},
 			/**
 			 * 获取广告屏位置列表
 			 */
@@ -91,15 +154,18 @@
 						'access-user-token':this.userInfo.token
 					},
 					success: (res) => {
-						self.salecount=res.data.data.length;//可合作数量
-						self.devicelist=res.data.data; //可合作设备列表
-						res.data.data.forEach((value,index)=>{
-							self.$set(self.markers,index,{
-								title:value.device_id+' '+value.shop_name,
-								longitude:value.longitude,
-								latitude:value.latitude
-								});
-						})
+						if(res.data.data){
+							self.salecount=res.data.data.length;//可合作数量
+							self.devicelist=res.data.data; //可合作设备列表
+							res.data.data.forEach((value,index)=>{
+								self.$set(self.markers,index,{
+									title:value.device_id+' '+value.shop_name,
+									longitude:value.longitude,
+									latitude:value.latitude
+									});
+							})							
+						}
+
 					}
 				});
 			},
@@ -115,6 +181,9 @@
 </script>
 
 <style>
+.sale-title{
+	line-height: 50px;
+}
 .content{
 	margin: 0;
 	padding: 0;
@@ -129,7 +198,6 @@
 	flex-direction:row;
 	justify-content:center;
 	border-bottom: 1px solid #E7E6DF;
-	font-weight: bold;
 }
 .countcon-item{
     flex: 1;
