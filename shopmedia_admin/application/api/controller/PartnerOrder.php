@@ -46,7 +46,7 @@ class PartnerOrder extends AuthBase
             try {
                 $data = model('PartnerOrder')->getPartnerOrder($map, (int)$this->size);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+                return show(config('code.error'), '请求异常', [], 500); // $e->getMessage()
             }
 
             if ($data) {
@@ -136,7 +136,7 @@ class PartnerOrder extends AuthBase
                     // 更新用户名称为签约名称
                     //@model('User')->allowField(true)->save(['user_name' => trim($data['user_name'])], ['user_id' => $data['user_id']]);
                 } catch (\Exception $e) {
-                    return show(config('code.error'), $e->getCode().'网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
+                    return show(config('code.error'), $e->getCode().'请求异常', '', 500); // $e->getMessage()
                 }
                 if ($id) {
                     return show(config('code.success'), '签约成功', $data['order_sn'], 201);
@@ -148,8 +148,8 @@ class PartnerOrder extends AuthBase
                 // 启动事务
                 Db::startTrans();
                 try {
-                    // 创建广告屏合作商
-                    $salesman = Db::name('user_salesman')->field('id')->where(['role_id' => 4, 'company_id' => 0, 'parent_id' => 0])->find(); // 获取广告屏合作商业务员
+                    // 创建广告屏合作商（默认绑定在 company_id = 1 分公司下面）
+                    $salesman = Db::name('user_salesman')->field('id')->where(['role_id' => 4, 'company_id' => 1, 'parent_id' => 0])->find(); // 获取广告屏合作商业务员
                     $partnerData['user_id'] = $data['user_id'];
                     $partnerData['salesman_id'] = $salesman['id'];
                     $partnerData['role_id'] = 2;
@@ -188,7 +188,7 @@ class PartnerOrder extends AuthBase
                 } catch (\Exception $e) {
                     // 回滚事务
                     Db::rollback();
-                    return show(config('code.error'), '网络忙，请重试', '', 500);
+                    return show(config('code.error'), '请求异常', '', 500);
                 }
                 /* 手动控制事务 e */
             }
@@ -239,7 +239,7 @@ class PartnerOrder extends AuthBase
                     $data = Db::name('partner_order')->where($map)->find();
                 }
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+                return show(config('code.error'), '请求异常', '', 500); // $e->getMessage()
             }
 
             if ($data) {

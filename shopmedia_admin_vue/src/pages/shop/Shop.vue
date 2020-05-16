@@ -26,7 +26,7 @@
 				</el-row>
 				<!-- 用户信息 s -->
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="24"><el-tag type="" effect="plain">店家：{{user_name}}</el-tag></el-col>
+					<el-col :span="24"><el-tag type="" effect="plain"><span v-if="formInline.role_id == 3">店家</span><span v-if="formInline.role_id == 6">店铺业务员</span>：{{user_name}}</el-tag></el-col>
 				</el-row>
 				<!-- 用户信息 e -->
 			</div>
@@ -80,7 +80,9 @@
 		data() {
 			return {
 				formInline: {
+					role_id: '', // 用户角色ID
 					shopkeeper_id: '', // 店家ID
+					salesman_id: '', // 店铺业务员ID
 					shop_name: '', // 店铺名称
 					status: '' // 店铺状态
 				},
@@ -99,7 +101,12 @@
 			 * 获取路由带过来的参数
 			 */
 			getParams() {
-				this.formInline.shopkeeper_id = this.$route.query.shopkeeper_id;
+				// 用户角色ID
+				this.formInline.role_id = this.$route.query.role_id;
+				// 店家
+				this.formInline.shopkeeper_id = this.formInline.role_id == 3 ? this.$route.query.shopkeeper_id : '';
+				// 店铺业务员
+				this.formInline.salesman_id = this.formInline.role_id == 6 ? this.$route.query.salesman_id : '';
 				this.user_name = this.$route.query.user_name;
 			},
 			
@@ -110,7 +117,9 @@
 				let self = this;
 				this.$axios.get(this.$url + 'shop', {
 					params: {
+						role_id: this.formInline.role_id,
 						shopkeeper_id: this.formInline.shopkeeper_id,
+						salesman_id: this.formInline.salesman_id,
 						shop_name: this.formInline.shop_name,
 						status: this.formInline.status,
 						page: this.listPagination.current_page,

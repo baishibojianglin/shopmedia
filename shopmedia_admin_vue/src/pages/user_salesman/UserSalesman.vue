@@ -89,16 +89,17 @@
 					<el-table-column prop="status" label="状态" width="90">
 					<!-- <el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }]" :filter-method="filterStatus" filter-placement="bottom-end"> --><!-- 替换上面 prop="status" 可用于筛选状态 -->
 						<template slot-scope="scope">
-							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="login_time" label="登录时间" width="180"></el-table-column>
 					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="210">
 						<template slot-scope="scope">
+							<el-button v-if="scope.row.role_id == 6" type="infor" size="mini" plain @click="toShopList(scope.row)">店铺</el-button>
 							<el-button type="infor" size="mini" plain @click="toSonUser(scope.row)">下级</el-button>
 							<el-button type="primary" size="mini" plain @click="toUserEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button>
+							<!-- <el-button type="danger" size="mini" plain @click="deleteUser(scope)">删除</el-button> -->
 						</template>
 					</el-table-column>
 				</el-table>
@@ -363,6 +364,21 @@
 						message: error.response.data.message,
 						type: 'warning'
 					});
+				});
+			},
+			
+			/**
+			 * 跳转店家店铺列表页
+			 * @param {Object} row
+			 */
+			toShopList(row) {
+				this.$router.push({
+					path: "shop",
+					query: {
+						role_id: row.role_id,
+						salesman_id: row.id,
+						user_name: row.user_name
+					}
 				});
 			}
 		}

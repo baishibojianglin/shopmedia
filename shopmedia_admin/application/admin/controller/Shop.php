@@ -31,8 +31,11 @@ class Shop extends Base
             if (isset($param['status']) && trim($param['status']) != null) {
                 $map['s.status'] = intval($param['status']);
             }
-            if (!empty($param['shopkeeper_id'])) { // 店家ID
+            if (!empty($param['shopkeeper_id']) && intval($param['role_id']) == 3) { // 店家ID
                 $map['s.shopkeeper_id'] = intval($param['shopkeeper_id']);
+            }
+            if (!empty($param['salesman_id']) && intval($param['role_id']) == 6) { // 店铺业务员ID
+                $map['usa.id'] = intval($param['salesman_id']);
             }
 
             // 获取分页page、size
