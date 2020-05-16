@@ -3,13 +3,18 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>店家店铺列表</span></el-col>
+					<el-col :span="6"><span>店铺列表</span></el-col>
 					<el-col :span="15">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-select v-model="formInline.status" placeholder="状态">
-									<el-option v-for="(item, index) in {0: '禁用', 1: '启用'}" :key="index" :label="item" :value="Number(index)"></el-option>
+								<el-select v-model="formInline.status" clearable placeholder="状态">
+									<el-option v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :key="index" :label="item" :value="Number(index)"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="">
+								<el-select v-model="formInline.is_commission" clearable placeholder="业务提成">
+									<el-option v-for="(item, index) in {0: '未提成', 1: '已提成'}" :key="index" :label="item" :value="Number(index)"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="">
@@ -26,13 +31,17 @@
 				</el-row>
 				<!-- 用户信息 s -->
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="24"><el-tag type="" effect="plain">店家：{{user_name}}</el-tag></el-col>
+					<el-col :span="24">
+						<el-tag type="" effect="plain"><span v-if="formInline.role_id == 3">店家</span><span v-if="formInline.role_id == 6">店铺业务员</span>：{{user_name}}</el-tag>
+						<el-tag v-if="formInline.role_id == 6" type="danger" effect="plain" style="margin-left: 5px;">店铺状态合计：启用 {{count.status_enable_count}}，禁用 {{count.status_disable_count}}，待审核 {{count.status_pending_count}}，驳回 {{count.status_reject_count}}</el-tag>
+						<el-tag v-if="formInline.role_id == 6" type="danger" effect="plain" style="margin-left: 5px;">店铺业务员提成状态合计：未提成 {{count.not_commission_count}}，已提成 {{count.is_commission_count}}</el-tag>
+					</el-col>
 				</el-row>
 				<!-- 用户信息 e -->
 			</div>
 			<div class="">
 				<!-- 店铺列表 s -->
-				<el-table :data="shopList" empty-text="数据加载中…" max-height="500" border style="width: 100%">
+				<el-table :data="shopList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="shop_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="shop_name" label="店铺名称" fixed width="120"></el-table-column>
 					<el-table-column prop="address" label="详细地址" width="180" show-overflow-tooltip></el-table-column>
@@ -42,9 +51,14 @@
 						<el-table-column prop="county" label="区县" width="120"></el-table-column>
 						<el-table-column prop="town" label="乡镇街道" width="120"></el-table-column>
 					</el-table-column>
-					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success', 2: 'text-warning', 3: 'text-danger'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="is_commission" label="店铺业务员提成状态" :fixed="formInline.role_id == 6 ? 'right' : false" width="120">
+						<template slot-scope="scope">
+							<span v-for="(item, index) in {0: 'text-warning', 1: 'text-success'}" :key="index" v-if="scope.row.is_commission == index" :class="item">{{scope.row.is_commission_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
@@ -80,12 +94,16 @@
 		data() {
 			return {
 				formInline: {
+					role_id: '', // 用户角色ID
 					shopkeeper_id: '', // 店家ID
+					salesman_id: '', // 店铺业务员ID
 					shop_name: '', // 店铺名称
-					status: '' // 店铺状态
+					status: '', // 店铺状态
+					is_commission: '' // 店铺业务员提成状态
 				},
 				shopList: [], // 店铺列表
 				listPagination: {}, // 列表分页参数
+				count: {}, // 统计数据
 				
 				user_name: '' // 用户名称
 			}
@@ -93,13 +111,19 @@
 		mounted() {
 			this.getParams();
 			this.getShopList(); // 获取店铺列表
+			this.getShopCount(); // 统计店铺数据
 		},
 		methods: {
 			/**
 			 * 获取路由带过来的参数
 			 */
 			getParams() {
-				this.formInline.shopkeeper_id = this.$route.query.shopkeeper_id;
+				// 用户角色ID
+				this.formInline.role_id = this.$route.query.role_id;
+				// 店家
+				this.formInline.shopkeeper_id = this.formInline.role_id == 3 ? this.$route.query.shopkeeper_id : '';
+				// 店铺业务员
+				this.formInline.salesman_id = this.formInline.role_id == 6 ? this.$route.query.salesman_id : '';
 				this.user_name = this.$route.query.user_name;
 			},
 			
@@ -110,9 +134,12 @@
 				let self = this;
 				this.$axios.get(this.$url + 'shop', {
 					params: {
+						role_id: this.formInline.role_id,
 						shopkeeper_id: this.formInline.shopkeeper_id,
+						salesman_id: this.formInline.salesman_id,
 						shop_name: this.formInline.shop_name,
 						status: this.formInline.status,
+						is_commission: this.formInline.is_commission,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}
@@ -173,6 +200,39 @@
 			 */
 			filterStatus(value, row) {
 				return row.status === value;
+			},
+			
+			/**
+			 * 统计店铺数据
+			 */
+			getShopCount() {
+				let self = this;
+				this.$axios.get(this.$url + 'shop_count', {
+					params: {
+						role_id: this.formInline.role_id,
+						// shopkeeper_id: this.formInline.shopkeeper_id,
+						salesman_id: this.formInline.salesman_id,
+						// status: this.formInline.status,
+						// is_commission: this.formInline.is_commission
+					}
+				})
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 统计数据
+						self.count = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
 			},
 			
 			/**

@@ -50,7 +50,7 @@ import UserShopkeeperEdit from '@/pages/user_shopkeeper/UserShopkeeperEdit.vue'
 // 用户（广告主）管理
 import UserAdvertiser from '@/pages/user_advertiser/UserAdvertiser.vue'
 import UserAdvertiserEdit from '@/pages/user_advertiser/UserAdvertiserEdit.vue'
-// 店家店铺
+// 店铺
 import Shop from '@/pages/shop/Shop.vue'
 import ShopEdit from '@/pages/shop/ShopEdit.vue'
 // 广告管理
@@ -129,9 +129,9 @@ const routes = [
 			// 2--用户（店家）管理
 			{path: 'user_shopkeeper', name: 'user_shopkeeper', component: UserShopkeeper}, // 用户列表
 			{path: 'user_shopkeeper_edit', name: 'user_shopkeeper_edit', component: UserShopkeeperEdit}, // 编辑用户
-			// 2--店家店铺
-			{path: 'shop', name: 'shop', component: Shop}, // 店家店铺列表
-			{path: 'shop_edit', name: 'shop_edit', component: ShopEdit}, // 编辑店家店铺
+			// 2--店铺
+			{path: 'shop', name: 'shop', component: Shop}, // 店铺列表
+			{path: 'shop_edit', name: 'shop_edit', component: ShopEdit}, // 编辑店铺
 			// 2--用户（广告主）管理
 			{path: 'user_advertiser', name: 'user_advertiser', component: UserAdvertiser}, // 用户列表
 			{path: 'user_advertiser_edit', name: 'user_advertiser_edit', component: UserAdvertiserEdit}, // 编辑用户

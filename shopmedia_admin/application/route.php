@@ -75,6 +75,7 @@ Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（�
 
 // 店家店铺
 Route::resource('shop', 'admin/Shop');
+Route::get('shop_count', 'admin/Shop/getShopCount'); // 统计店铺数据
 // 店铺类别
 Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
 

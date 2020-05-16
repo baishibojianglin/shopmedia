@@ -53,7 +53,7 @@ class Shop extends AuthBase
                 'shop_pic' => $data['image'],
                 'environment' => intval($data['environment']),
                 'shop_describe' => $data['shop_describe'],
-                'status' => config('code.status_enable'),
+                'status' => config('code.status_pending'),
                 'create_time' => time()
             ];
 

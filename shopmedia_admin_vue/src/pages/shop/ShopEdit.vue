@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>编辑店家店铺</span></el-col>
+					<el-col :span="6"><span>编辑店铺</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -81,7 +81,12 @@
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">
-							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+						</el-radio-group>
+					</el-form-item>
+					<el-form-item prop="is_commission" label="店铺业务员提成状态">
+						<el-radio-group v-model="form.is_commission">
+							<el-radio v-for="(item, index) in {0: '未提成', 1: '已提成'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item>
@@ -275,7 +280,8 @@
 							longitude: this.form.longitude,
 							latitude: this.form.latitude,
 							shop_area: this.form.shop_area,
-							status: this.form.status
+							status: this.form.status,
+							is_commission: this.form.is_commission
 						})
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';

@@ -31,8 +31,14 @@ class Shop extends Base
             if (isset($param['status']) && trim($param['status']) != null) {
                 $map['s.status'] = intval($param['status']);
             }
-            if (!empty($param['shopkeeper_id'])) { // 店家ID
+            if (!empty($param['shopkeeper_id']) && intval($param['role_id']) == 3) { // 店家ID
                 $map['s.shopkeeper_id'] = intval($param['shopkeeper_id']);
+            }
+            if (!empty($param['salesman_id']) && intval($param['role_id']) == 6) { // 店铺业务员ID
+                $map['usa.id'] = intval($param['salesman_id']);
+            }
+            if (isset($param['is_commission']) && trim($param['is_commission']) != null) {
+                $map['s.is_commission'] = intval($param['is_commission']);
             }
 
             // 获取分页page、size
@@ -44,15 +50,70 @@ class Shop extends Base
                 return show(config('code.error'), 'Not Found', '', 404);
             }
             $status = config('code.status');
+            $isCommission = config('code.is_commission'); // 业务员提成状态
             foreach ($data as $key => $value) {
                 // 处理数据
                 $data[$key]['status_msg'] = $status[$value['status']]; // 定义status_msg
+                $data[$key]['is_commission_msg'] = $isCommission[$value['is_commission']]; // 定义is_commission_msg
             }
 
             return show(config('code.success'), 'OK', $data);
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }
+    }
+
+    /**
+     * 统计店铺数据
+     * @return \think\response\Json
+     */
+    public function getShopCount()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        $count = [];
+        if (!empty($param['salesman_id']) && intval($param['role_id']) == 6) { // 店铺业务员ID
+            // 店铺已启用
+            $statusEnableCountMap =  ['s.status' => config('code.status_enable'), 's.is_delete' => config('code.not_delete'), 'usa.id' => intval($param['salesman_id'])];
+            $statusEnableCount = model('Shop')->shopCount('s.status', $statusEnableCountMap);
+
+            // 店铺已禁用
+            $statusDisableCountMap =  ['s.status' => config('code.status_disable'), 's.is_delete' => config('code.not_delete'), 'usa.id' => intval($param['salesman_id'])];
+            $statusDisableCount = model('Shop')->shopCount('s.status', $statusDisableCountMap);
+
+            // 店铺待审核
+            $statusPendingCountMap =  ['s.status' => config('code.status_pending'), 's.is_delete' => config('code.not_delete'), 'usa.id' => intval($param['salesman_id'])];
+            $statusPendingCount = model('Shop')->shopCount('s.status', $statusPendingCountMap);
+
+            // 店铺被驳回
+            $statusRejectCountMap =  ['s.status' => config('code.status_reject'), 's.is_delete' => config('code.not_delete'), 'usa.id' => intval($param['salesman_id'])];
+            $statusRejectCount = model('Shop')->shopCount('s.status', $statusRejectCountMap);
+
+            // 店铺业务员已提成
+            $isCommissionCountMap =  ['s.is_commission' => 1, 's.is_delete' => config('code.not_delete'), 'usa.id' => intval($param['salesman_id'])];
+            $isCommissionCount = model('Shop')->shopCount('s.is_commission', $isCommissionCountMap);
+
+            // 店铺业务员未提成
+            $notCommissionCountMap =  ['s.is_commission' => 0, 's.is_delete' => config('code.not_delete'), 'usa.id' => intval($param['salesman_id'])];
+            $notCommissionCount = model('Shop')->shopCount('s.is_commission', $notCommissionCountMap);
+
+            $count = [
+                'status_enable_count' => $statusEnableCount,
+                'status_disable_count' => $statusDisableCount,
+                'status_pending_count' => $statusPendingCount,
+                'status_reject_count' => $statusRejectCount,
+                'is_commission_count' => $isCommissionCount,
+                'not_commission_count' => $notCommissionCount
+            ];
+        }
+
+        return show(config('code.success'), 'OK', $count);
     }
 
     /**
@@ -140,6 +201,9 @@ class Shop extends Base
             }
             if (isset($param['status'])) { // 不能用 !empty() ，否则 status = 0 时也判断为空
                 $data['status'] = input('param.status', null, 'intval');
+            }
+            if (isset($param['is_commission'])) { // 店铺业务员提成状态
+                $data['is_commission'] = input('param.is_commission', null, 'intval');
             }
 
             if (empty($data)) {

@@ -79,7 +79,9 @@ class Device extends AuthBase
         }
 
         if(!empty($device)){
+            $shopCate = config('code.shop_cate');
             $shopEnvironment = config('code.shop_environment');
+            $device['shop_cate_name'] = $device['shop_cate'] ? $shopCate[$device['shop_cate']] : '';
             $device['environment'] = $device['environment'] ? $shopEnvironment[$device['environment']] : '';
             $message['data'] = $device;
             $message['status'] = 1;
