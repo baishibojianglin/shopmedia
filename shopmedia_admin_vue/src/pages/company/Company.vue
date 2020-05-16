@@ -45,7 +45,7 @@
 						<template slot-scope="scope">
 							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="toCompanyEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
 							<el-button style="margin:0 5px 5px 0;" type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
-							<el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button>
+							<!-- <el-button style="margin:0 5px 5px 0;" type="danger" size="mini" plain @click="deleteCompany(scope)">删除</el-button> -->
 						</template>
 					</el-table-column>
 				</el-table>
