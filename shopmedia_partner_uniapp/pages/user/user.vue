@@ -4,16 +4,19 @@
 			<uni-card is-full is-shadow>
 				<view class="uni-flex uni-row userData">
 					<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
-						<image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image>
+						<!-- <image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image> -->
+					         <image class="headimg"  mode="aspectFit" :src="logourl"></image>
 					</view>
-					<view class="uni-flex uni-column" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: space-between;justify-content: space-between;">
-						<view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
-							<view class="text uni-bold">{{userData.user_name}}</view>
+					<view class="uni-flex uni-column">
+						<view class="uni-flex uni-row">
+							<!-- <view class="text uni-bold">{{userData.user_name}}</view> -->
 							<!-- <view class="text" @click="goUserInfo()"><text class="uni-icon uni-icon-compose"></text></view> -->
 						</view>
 						<view class="uni-flex uni-row">
-							<view class="text" style="-webkit-flex: 1;flex: 1;">{{userData.phone}}</view>
-							<view class="text" style="-webkit-flex: 1;flex: 1;"><!-- （占位） --></view>
+							<view class="text">账号：{{userData.phone}}</view>
+						</view>
+						<view class="uni-flex uni-row">
+							<view class="text">注册：{{userData.create_time}}</view>
 						</view>
 					</view>
 				</view>
@@ -40,7 +43,8 @@
 	export default {
 		data() {
 			return {
-				userData: {}
+				userData: {},
+				logourl:'/static/img/logoheadimg.png'
 			}
 		},
 		computed: {
@@ -181,7 +185,14 @@
 
 <style lang="scss">
 	/* @import '../../common/uni-nvue.css'; */
-	
+	.headimg{
+		width: 60px;
+		height: 60px;
+		border-radius: 60px;
+		background-color: #F2F2F2;
+		padding: 10px;
+		margin-top:5px;
+	}
 	.userData .text {
 		/* margin: 10upx 5upx; */
 		padding: 0 2upx;

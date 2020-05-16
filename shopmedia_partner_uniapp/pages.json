@@ -109,6 +109,7 @@
 
 			"path": "pages/user/user",
 			"style": {
+				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "个人中心"
 			}
 		},
