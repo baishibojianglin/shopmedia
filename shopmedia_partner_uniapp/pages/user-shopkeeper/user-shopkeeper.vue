@@ -7,7 +7,18 @@
 		</view>
 		
 		<view class="uni-common-mt mb">
-			<uni-card v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
+			<uni-card v-if="!shopList.length" is-shadow>
+				<view class="uni-center">有店铺，想安装智能广告屏？</view>
+				<view><button  class="main-color ask-mt">有什么好处</button></view>
+			    <uni-list>
+			        <uni-list-item title="获得30%的广告收入" :show-arrow="false"></uni-list-item>
+			        <uni-list-item title="超低优惠打广告" :show-arrow="false"></uni-list-item>
+			        <uni-list-item title="利用店通智能数据分析提升销量" :show-arrow="false"></uni-list-item>
+			        <uni-list-item title="遇到支持你的生意伙伴"  :show-arrow="false"></uni-list-item>
+			    </uni-list>
+				<view><button @click="shopask()" class="main-color ask-mt">联系安装</button></view>
+			</uni-card>
+			<uni-card v-else v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
 				<uni-list>
 					<uni-list-item :title="item.shop_name" :note="Number(item.device_list.length) != 0 ? '合计 ' + Number(item.device_list.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>
 					<uni-grid v-if="item.device_list.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
@@ -46,6 +57,7 @@
 				</template>
 			</uni-card>
 		</view>
+		
 	</view>
 </template>
 
@@ -71,8 +83,6 @@
 			// 获取参数
 			this.userId = event.user_id;
 			this.roleId = event.role_id;
-			
-			this.getShopList();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
@@ -81,6 +91,14 @@
 			this.getShopList();
 		},
 		methods: {
+			/**
+			 * 咨询安装广告屏
+			 */
+			shopask(){
+				uni.makePhoneCall({
+					phoneNumber: '13693444308'
+				});
+			},
 			/**
 			 * 获取店家拥有的店铺列表
 			 */
@@ -145,7 +163,7 @@
 <style>
 	.map {
 		width: 100%;
-		height: 320rpx;
+		height: 400rpx;
 	}
 	
 	/* uni-card s */
@@ -157,4 +175,7 @@
 		flex-direction: row;
 	}
 	/* uni-card e */
+	.ask-mt{
+		margin-top: 10px;
+	}
 </style>
