@@ -24,7 +24,7 @@
 			</div>
 			<div class="">
 				<!-- 用户反馈列表 s -->
-				<el-table :data="feedbackList" empty-text="数据加载中…" max-height="500" border style="width: 100%">
+				<el-table :data="feedbackList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="user_name" label="用户名称" width="120"></el-table-column>
 					<el-table-column prop="phone" label="用户电话" width="120"></el-table-column>

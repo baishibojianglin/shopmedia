@@ -22,7 +22,7 @@
 							</el-form-item>
 							<el-form-item label="">
 								<el-select v-model="formInline.status" clearable placeholder="状态">
-									<el-option v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :label="item" :value="Number(index)"></el-option>
+									<el-option v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :key="index" :label="item" :value="Number(index)"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="">
@@ -368,7 +368,7 @@
 			},
 			
 			/**
-			 * 跳转店家店铺列表页
+			 * 跳转店铺列表页
 			 * @param {Object} row
 			 */
 			toShopList(row) {

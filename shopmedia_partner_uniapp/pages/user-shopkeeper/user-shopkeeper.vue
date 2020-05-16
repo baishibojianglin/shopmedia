@@ -34,7 +34,7 @@
 					</uni-grid>
 					<uni-grid v-if="item.device_list.length == 0" class="uni-center" :column="1" :showBorder="false" :square="false">
 						<uni-grid-item>
-							<text>暂无数据</text>
+							<text>暂无广告屏</text>
 						</uni-grid-item>
 					</uni-grid>
 				</uni-list>

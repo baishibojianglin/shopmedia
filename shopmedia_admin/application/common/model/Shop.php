@@ -51,4 +51,21 @@ class Shop extends Base
             'rt.region_name town'
         ];
     }
+
+    /**
+     * 统计店铺数据
+     * @param string $field
+     * @param array $map
+     * @return int|string
+     * @throws \think\Exception
+     */
+    public function shopCount($field = '', $map = [])
+    {
+        $count = $this->alias('s')
+            ->join('__USER_SHOPKEEPER__ us', 's.shopkeeper_id = us.id', 'LEFT') // 店家
+            ->join('__USER_SALESMAN__ usa', 'us.salesman_id = usa.id', 'LEFT') // 店铺业务员
+            ->where($map)
+            ->count($field);
+        return $count;
+    }
 }

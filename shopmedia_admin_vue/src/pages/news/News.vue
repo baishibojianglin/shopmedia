@@ -28,7 +28,7 @@
 			</div>
 			<div class="">
 				<!-- 新闻列表 s -->
-				<el-table :data="newsList" empty-text="数据加载中…" max-height="500" border style="width: 100%">
+				<el-table :data="newsList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="news_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="title" label="标题" fixed min-width="180"></el-table-column>
 					<el-table-column prop="cate_name" label="新闻类别" width="120"></el-table-column>

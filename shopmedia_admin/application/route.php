@@ -75,6 +75,7 @@ Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（�
 
 // 店家店铺
 Route::resource('shop', 'admin/Shop');
+Route::get('shop_count', 'admin/Shop/getShopCount'); // 统计店铺数据
 // 店铺类别
 Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
 
@@ -127,6 +128,8 @@ Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');
 Route::get('api/getMoneyShop', 'api/UserSalesman/getMoneyShop');
 Route::get('api/get_role_status', 'api/UserSalesman/getRoleStatus');
 Route::post('api/apply_salesman', 'api/UserSalesman/applySalesman'); // 申请成为业务员
+Route::post('api/sale_info', 'api/UserSalesman/getSaleInfo');
+Route::post('api/sale_count', 'api/UserSalesman/getSaleCount');
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
 Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');

@@ -234,7 +234,7 @@
 			},
 			
 			/**
-			 * 跳转店家店铺列表页
+			 * 跳转店铺列表页
 			 * @param {Object} row
 			 */
 			toShopList(row) {
