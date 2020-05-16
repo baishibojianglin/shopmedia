@@ -68,7 +68,7 @@
 		{ // 业务员首页
 			"path": "pages/saleperson/index",
 			"style": {
-				"navigationBarTitleText": "智能广告屏分布",
+				"navigationBarTitleText": "智能屏销售业务",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{

@@ -16,6 +16,51 @@ class UserSalesman extends AuthBase
 {
 
 
+  /**
+  *获取广告屏业务员销售数量
+  */
+  public function getSaleCount(){
+         $form=input();
+         $match['uid']=$form['user_id'];
+         $match['role_id']=$form['role_id'];
+         $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
+         if(!empty($list)){
+             $matchid['salesman_id']=$list['id'];
+             $partner=Db::name('user_partner')->where($matchid)->field('user_id')->select();//该业务员发展的客户
+             $ordercount=0;
+             if(!empty($partner)){
+                foreach ($partner as $key => $value) {
+                    $matchorder['user_id']=$value['user_id'];
+                    $matchorder['order_status']=1;
+                    $ordercount=$ordercount + Db::name('partner_order')->where($matchorder)->count();  
+                }
+             }
+             return show(config('code.success'), 'OK',$ordercount);
+            
+         }else{
+             return show(config('code.error'), '业务员不存在', '', 404);
+         }
+  }
+
+
+
+
+  /**
+  *获取广告屏业务员基本信息
+  */
+  public function getSaleInfo(){
+         $form=input();
+         $match['uid']=$form['user_id'];
+         $match['role_id']=$form['role_id'];
+         $list=Db::name('user_salesman')->where($match)->find();
+         if(!empty($list)){
+             return show(config('code.success'), 'OK', $list);
+         }else{
+             return show(config('code.error'), '业务员不存在', '', 404);
+         }
+  }
+
+
    /**
    *获取业务员角色状态
    */
@@ -69,13 +114,13 @@ class UserSalesman extends AuthBase
         $match['salesman_id']=$form['user_id'];
         $sumincome=0;
         $userlist=Db::name('user_partner')->where($match)->field('income')->select();
+        
         //未开单
         if(empty($userlist)){
             $message['status']=1;
             $message['data']=$sumincome;
             return json($message);
         }
-
         foreach($userlist as $key=>$value){
             $sumincome += $value['income'];
         }
