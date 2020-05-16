@@ -4,7 +4,7 @@
 			<swiper class="swiper" :autoplay="true" :interval="3000" :circular="true" :indicator-dots="true" indicator-active-color="#fff">
 				<swiper-item v-for="(value, key) in imglist" :key="key">
 					<view class="swiper-item">
-						<image :src="value"></image>
+						<image :src="value.url"></image>
 					</view>
 				</swiper-item>
 			</swiper>
@@ -27,15 +27,15 @@
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">店铺：</text>
-					<text class="datalist-content">{{datalist.shopname}}</text>
+					<text class="datalist-content">{{datalist.shop_name}}</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">店铺面积：</text>
-					<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
+					<text class="datalist-content">{{datalist.shop_area}} ㎡</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">所属行业：</text>
-					<text class="datalist-content">{{datalist.shopcate}}</text>
+					<text class="datalist-content">{{datalist.shop_cate_name}}</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">位置：</text>
@@ -120,7 +120,6 @@
 				deviceId: 0, // 广告屏ID
 				datalist: {}, // 广告屏信息
 				imglist: [], // 实景图列表
-				shopCateList: {}, // 店铺类别列表
 				csPhone: '', // 客服电话
 				partnerDeviceId: 0,
 				partnerDevice: {}, // 合作商合作的广告屏
@@ -135,7 +134,6 @@
 			this.partnerDeviceId = options.partner_device_id;
 			this.partnerId = options.partner_id;
 			this.deviceId = options.device_id; // 获取广告屏ID
-			this.getShopCateList(); // 获取店铺类别列表
 			this.getDeviceDetail(); // 获取广告屏信息
 			this.getPartnerDevice(); // 获取广告屏合作商合作的广告屏信息
 			this.getPartnerOrder(); // 获取广告屏合作商订单信息
@@ -145,23 +143,6 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
-			/**
-			 * 获取店铺类别列表
-			 */
-			getShopCateList() {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/shop_cate_list',
-					header: {
-						'commonheader': this.$store.state.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'GET',
-					success: (res) => {
-						self.shopCateList = res.data.data;
-					}
-				});
-			},
 			
 			/**
 			 * 获取广告屏信息
@@ -180,7 +161,6 @@
 					method: 'GET',
 					success: (res) => {
 						self.datalist = res.data.data; //赋值
-						self.datalist.shopcate = self.shopCateList[self.datalist.shopcate].cate_name; // 店铺类别
 						//取实景图
                         self.imglist = JSON.parse(res.data.data.url_image);
 					},

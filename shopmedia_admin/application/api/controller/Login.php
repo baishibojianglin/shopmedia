@@ -229,7 +229,7 @@ class Login extends Common
                 // 原始用户的新增数据
                 $data['token'] = $token; // token
                 $data['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
-                $data['user_name'] = 'Sustock-' . trim($param['phone']); // 定义默认用户名
+                $data['user_name'] = 'sustock-' . trim($param['phone']); // 定义默认用户名
                 $data['role_ids'] = implode(',', array_unique([$roleId, 7])); // 用户角色ID集合，默认创建广告主角色
                 $data['phone'] = trim($param['phone']);
                 $data['phone_verified'] = 1; // 手机号已验证

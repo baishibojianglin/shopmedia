@@ -55,7 +55,7 @@
 									</button>
 								</navigator>						
 								<button v-if="role.shop_words" class="text-grid work-button bg-gray-color color-white">	
-									{{role.device_words}} 	
+									{{role.shop_words}} 	
 								</button>							
 							</uni-grid-item>
 						<!--开拓店铺业务 e-->   
@@ -296,6 +296,7 @@
 														 self.role.shop_words='停用';
 														 break;
 										  } 
+										  console.log(self.role.shop_words);
 										  return false;
 									}	
 								}

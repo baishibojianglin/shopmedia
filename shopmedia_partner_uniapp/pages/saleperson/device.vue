@@ -5,7 +5,7 @@
 			<swiper class="swiper" :autoplay="true" :interval="3000" :circular="true" :indicator-dots="true" indicator-active-color="#fff">
 				<swiper-item v-for="(value, key) in imglist" :key="key">
 					<view class="swiper-item">
-			           <image :src="value"></image>
+			           <image :src="value.url"></image>
 					</view>
 				</swiper-item>
 			</swiper>
@@ -38,15 +38,15 @@
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">店铺：</text>
-					<text class="datalist-content">{{datalist.shopname}}</text>
+					<text class="datalist-content">{{datalist.shop_name}}</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">店铺面积：</text>
-					<text class="datalist-content">{{datalist.shopsize}} ㎡</text>
+					<text class="datalist-content">{{datalist.shop_area}} ㎡</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">所属行业：</text>
-					<text class="datalist-content">{{datalist.shopcate}}</text>
+					<text class="datalist-content">{{datalist.shop_cate_name}}</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">位置：</text>
@@ -78,15 +78,12 @@
                      device_id:0 ,//设备id
 					 datalist:{}, //设备信息列表
 					 imglist:[] ,//实景图列表
-					 shopcatelist:{} //店铺行业列表
 				}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(options) {
            //获取设备id
            this.device_id=options.device_id;
-		   //获取店铺行业配置信息
-		   this.getCate()
 		   //获取设备信息
 		   this.deviceDetail();
 		},
@@ -94,21 +91,6 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
-			//获取行业配置信息
-			getCate(){
-			  let self=this;
-			  uni.request({
-			  	url: this.$serverUrl+'api/shop_cate_list',
-			  	method:'GET',
-			  	header: {
-			  		'commonheader': this.commonheader,
-			  		'access-user-token':this.userInfo.token
-			  	},
-			  	success: (res) => {
-					 self.shopcatelist=res.data.data;
-			  	}
-			  });
-			},
 			//获取设备详细信息
 			deviceDetail(){
 				let self=this;
@@ -122,7 +104,6 @@
 					},
 					success: (res) => {
 					   self.datalist=res.data.data; //赋值
-					   self.datalist.shopcate=self.shopcatelist[self.datalist.shopcate].cate_name; //展示店铺行业
 					   //取实景图
                        self.imglist = JSON.parse(res.data.data.url_image);
 					},
