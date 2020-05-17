@@ -79,12 +79,12 @@
 					<el-form-item prop="shop_area" label="店铺面积/㎡">
 						<el-input-number v-model="form.shop_area" :step="1" :precision="2" controls-position="right" style="width: 200px;"></el-input-number>
 					</el-form-item>
-					<el-form-item prop="status" label="状态">
+					<el-form-item v-if="!isCommission" prop="status" label="状态">
 						<el-radio-group v-model="form.status">
 							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item prop="is_commission" label="店铺业务员提成状态">
+					<el-form-item v-if="!isCommission" prop="is_commission" label="店铺业务员提成状态">
 						<el-radio-group v-model="form.is_commission">
 							<el-radio v-for="(item, index) in {0: '未提成', 1: '已提成'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
@@ -109,7 +109,8 @@
 					city_id:'', // 区域（市级）
 					county_id:'', // 区域（区县）
 					town_id:'', // 区域（乡镇街道）
-					status: '' // 店铺状态
+					status: '', // 店铺状态
+					is_commission: '' // 店铺业务员提成状态
 				},
 				rules: { // 验证规则
 					shop_name: [
@@ -133,6 +134,8 @@
 				cityList: [],
 				countyList: [],
 				townList: [],
+				
+				isCommission: 0 // 区别于 form.is_commission，用于控制 prop="is_commission" 的存在状态
 			}
 		},
 		created() {
@@ -238,7 +241,8 @@
 					if (res.data.status == 1) {
 						// 店铺信息
 						self.form = res.data.data;
-						console.log(2221, self.form)
+						console.log(1, self.form)
+						self.isCommission = res.data.data.is_commission;
 						
 						// 区域回显
 						self.region(self.form.province_id, 2);
@@ -265,7 +269,6 @@
 			 */
 			submitForm(formName) {
 				let self = this;
-				console.log(22211, this.form);
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
 						this.$axios.put(this.$url + 'shop/' + this.form.shop_id, {

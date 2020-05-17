@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\lib\exception\ApiException;
+use think\Db;
 use think\Request;
 
 /**
@@ -202,24 +203,75 @@ class Shop extends Base
             if (isset($param['status'])) { // 不能用 !empty() ，否则 status = 0 时也判断为空
                 $data['status'] = input('param.status', null, 'intval');
             }
-            if (isset($param['is_commission'])) { // 店铺业务员提成状态
-                $data['is_commission'] = input('param.is_commission', null, 'intval');
+            if (isset($param['is_commission']) && intval($param['is_commission']) == 1) { // 店铺业务员提成状态
+                // 判断店铺状态（入参）是否启用
+                if (intval($param['status']) != config('code.status_enable')) {
+                    return show(config('code.error'), '店铺未启用，店铺业务员无法提成', '', 401);
+                }
+                // 判断店铺业务员是否已提成
+                $shop = Db::name('shop')->field('shopkeeper_id, status, is_commission')->find($id);
+                if ($shop['is_commission'] == 1) { // 店铺业务员已提成
+                    return show(config('code.error'), '店铺业务员已经提成，禁止重复操作', '', 403);
+                } else { // 店铺业务员未提成
+                    $data['is_commission'] = intval($param['is_commission']);
+
+                    // 获取店铺业务员ID
+                    $userPartner = Db::name('user_shopkeeper')->field('salesman_id')->find($shop['shopkeeper_id']);
+                    $salesmanID = $userPartner['salesman_id'];
+                    // 获取店铺业务员原始用户ID
+                    $userSalesman = Db::name('user_salesman')->field('uid')->find($salesmanID);
+                }
             }
 
             if (empty($data)) {
                 return show(config('code.error'), '数据不合法', '', 404);
             }
 
-            // 更新
-            try {
-                $result = model('Shop')->save($data, ['shop_id' => $id]); // 更新
-            } catch (\Exception $e) {
-                throw new ApiException($e->getMessage(), 500, config('code.error'));
-            }
-            if (false === $result) {
-                return show(config('code.error'), '更新失败', '', 403);
+            // 入库操作
+            // 当给店铺业务员提成时，同时启用店铺、更新店铺业务员提成状态为已提成等店铺信息
+            if (isset($data['is_commission']) && $data['is_commission'] == 1) {
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    // 启用店铺、更新店铺业务员提成状态为已提成等店铺信息
+                    $res[0] = Db::name('shop')->where(['shop_id' => $id])->update($data);
+
+                    /* 店铺业务员提成 s */
+                    $salesmanCommission = config('commission.shopkeeper_salesman_commission');
+                    // 更新广告屏合作商业务员余额、收入
+                    $res[1] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('money', $salesmanCommission);
+                    $res[2] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('income', $salesmanCommission);
+                    // 更新广告屏合作商业务员原始用户余额、收入
+                    $res[3] = Db::name('user')->where(['user_id' => $userSalesman['uid']])->setInc('money', $salesmanCommission);
+                    $res[4] = Db::name('user')->where(['user_id' => $userSalesman['uid']])->setInc('income', $salesmanCommission);
+                    /* 店铺业务员提成 e */
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '店铺业务员提成失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+                    return show(config('code.success'), '店铺业务员提成成功', '', 201);
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    return show(config('code.error'), '请求异常', '', 500);
+                }
+                /* 手动控制事务 e */
             } else {
-                return show(config('code.success'), '更新成功', '', 201);
+                try {
+                    $result = model('Shop')->save($data, ['shop_id' => $id]); // 更新
+                } catch (\Exception $e) {
+                    throw new ApiException($e->getMessage(), 500, config('code.error'));
+                }
+                if (false === $result) {
+                    return show(config('code.error'), '更新失败', '', 403);
+                } else {
+                    return show(config('code.success'), '更新成功', '', 201);
+                }
             }
         }else {
             return show(config('code.error'), '请求不合法', '', 400);

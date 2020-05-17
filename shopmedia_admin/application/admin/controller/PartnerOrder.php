@@ -267,8 +267,8 @@ class PartnerOrder extends Base
                     // 新增该订单对应的合作商广告屏数据
                     $res[1] = Db::name('partner_device')->insert($data1);
 
-                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成￥50） s */
-                    $salesmanCommission = 50;
+                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成￥100） s */
+                    $salesmanCommission = config('commission.partner_salesman_commission');
                     // 更新广告屏合作商业务员余额、收入
                     $res[2] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('money', $salesmanCommission);
                     $res[3] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('income', $salesmanCommission);

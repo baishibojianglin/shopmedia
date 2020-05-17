@@ -5,4 +5,5 @@ thinkphp
 /application/database.php
 /application/common.php
 /application/extra/app.php
+/application/extra/commission.php
 /application/common/lib/Aes.php
