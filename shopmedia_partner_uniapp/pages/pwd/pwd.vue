@@ -35,7 +35,6 @@
 </template>
 
 <script>
-	import common from '@/common/common.js';
 	import {mapState, mapMutations} from 'vuex';
 	export default {
 		components: {},

@@ -106,6 +106,18 @@
         "router" : {
             "mode" : "history",
             "base" : "/h5/"
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        },
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : "2QJBZ-6ZDWI-P7YGI-5DECR-RQUC2-XKBNP"
+                }
+            }
         }
     }
 }

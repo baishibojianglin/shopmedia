@@ -38,7 +38,6 @@
 
 <script>
 	import {mapState, mapMutations} from 'vuex';
-	import common from '@/common/common.js';
 	import Aes from '@/common/Aes.js';
 	export default {
 		data() {
