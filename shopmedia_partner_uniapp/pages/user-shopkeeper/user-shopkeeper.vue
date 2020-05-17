@@ -104,11 +104,11 @@
 					data: {
 						user_id: this.userId
 					},
-					method:'POST',
 					header: {
 						'commonheader': this.$store.state.commonheader,
 						'access-user-token': this.userInfo.token
 					},
+					method: 'GET',
 					success: (res) => {
 						self.shopList=res.data
 						self.shopCount = self.shopList.length;
@@ -131,8 +131,8 @@
 				uni.openLocation({
 					longitude: Number(item.shop.longitude),
 					latitude: Number(item.shop.latitude),
-					name: item.shop_name,
-					address: item.address
+					name: item.shop.shop_name,
+					address: item.shop.address
 				});
 			},
 			
