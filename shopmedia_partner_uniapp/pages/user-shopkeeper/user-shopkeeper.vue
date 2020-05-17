@@ -7,7 +7,7 @@
 		</view>
 		
 		<view class="uni-common-mt mb">
-			<uni-card v-if="!shopList.length" is-shadow>
+			<uni-card v-if="!shopCount" is-shadow>
 				<view class="uni-center">有店铺，想安装智能广告屏？</view>
 				<view><button  class="main-color ask-mt">有什么好处</button></view>
 			    <uni-list>
@@ -18,10 +18,10 @@
 			    </uni-list>
 				<view><button @click="shopask()" class="main-color ask-mt">联系安装</button></view>
 			</uni-card>
-			<uni-card v-else v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
+			<uni-card v-else  v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
 				<uni-list>
-					<uni-list-item :title="item.shop_name" :note="Number(item.device_list.length) != 0 ? '合计 ' + Number(item.device_list.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>
-					<uni-grid v-if="item.device_list.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
+					<uni-list-item :title="item.shop.shop_name" :note="Number(item.device.length) != 0 ? '合计 ' + Number(item.device.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>					
+					<uni-grid v-if="item.device.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
 						<uni-grid-item>
 							<text class="">广告屏编号</text>
 						</uni-grid-item>
@@ -32,7 +32,7 @@
 							<text class="">今日收入(￥)</text>
 						</uni-grid-item>
 					</uni-grid>
-					<uni-grid v-if="item.device_list.length != 0" v-for="(value, key) in item.device_list" :key="key" class="uni-center" :column="3" :showBorder="true" :square="false">
+					<uni-grid v-if="item.device.length != 0" v-for="(value, key) in item.device" :key="key" class="uni-center" :column="3" :showBorder="true" :square="false">
 						<uni-grid-item>
 							<text class="">{{value.device_id}}</text>
 						</uni-grid-item>
@@ -43,19 +43,14 @@
 							<text class="color-red">{{value.today_income}}</text>
 						</uni-grid-item>
 					</uni-grid>
-					<uni-grid v-if="item.device_list.length == 0" class="uni-center" :column="1" :showBorder="false" :square="false">
-						<uni-grid-item>
-							<text>暂无广告屏</text>
-						</uni-grid-item>
-					</uni-grid>
 				</uni-list>
-				
 				<template slot="footer">
 					<view class="footer-box">
-						<view @click.stop="footerClick(item)"> <button class="mini-btn" :type="item.party_b_signature ? 'default' : 'warn'" size="mini" :plain="false">{{item.party_b_signature ? '查看协议' : '签署协议'}}</button></view>
+ 						<view v-if="!item.shop.party_b_signature" @click.stop="footerClick(item)"> <button class="mini-btn" :type="item.shop.party_b_signature ? 'default' : 'warn'" size="mini" :plain="false">{{item.shop.party_b_signature ? '查看协议' : '签署协议'}}</button></view>
 					</view>
 				</template>
 			</uni-card>
+						
 		</view>
 		
 	</view>
@@ -109,20 +104,14 @@
 					data: {
 						user_id: this.userId
 					},
+					method:'POST',
 					header: {
 						'commonheader': this.$store.state.commonheader,
 						'access-user-token': this.userInfo.token
 					},
 					success: (res) => {
-						self.shopCount = res.data.data.total;
-						self.shopList = res.data.data.data;
-						self.shopList.forEach((item, index) => {
-							self.$set(self.markers, index, {
-								title: item.shop_name,
-								longitude: item.longitude,
-								latitude: item.latitude
-							});
-						})
+						self.shopList=res.data
+						self.shopCount = self.shopList.length;
 					},
 					fail(error) {
 						uni.showToast({
@@ -140,8 +129,8 @@
 			openLocation(item) {
 				// 使用应用内置地图查看位置
 				uni.openLocation({
-					longitude: Number(item.longitude),
-					latitude: Number(item.latitude),
+					longitude: Number(item.shop.longitude),
+					latitude: Number(item.shop.latitude),
 					name: item.shop_name,
 					address: item.address
 				});
@@ -152,8 +141,13 @@
 			 * @param {Object} item
 			 */
 			footerClick(item) {
+				let device_count=item.device.length;
+				let total_price=0;
+				item.device.forEach((value,index)=>{
+					total_price=total_price+parseFloat(value.sale_price);
+				})
 				uni.navigateTo({
-					url: '/pages/shop/shop-agreement?shop=' + encodeURIComponent(JSON.stringify(item))
+					url: '/pages/shop/shop-agreement?shop_name='+item.shop.shop_name+'&device_count='+device_count+'&address='+item.shop.address+'&total_price='+total_price+'&shop_id='+item.shop.shop_id
 				})
 			}
 		}

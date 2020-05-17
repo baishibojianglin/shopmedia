@@ -80,7 +80,9 @@
 			}
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo', 'commonheader']),
-		onLoad() {},
+		onLoad() {
+			
+		},
 		onShow() {
 			//调用-判断用户角色
 			this.is_role();
@@ -174,12 +176,12 @@
 					// }
 					/**有条件的限制进入版块 暂时未使用 e--*/
 				}
-
+               
 				//店铺合作者
 				if (role_ids == 3) {
 					//进入店铺主页
 					uni.navigateTo({
-						url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id=3'
+						url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id='+self.userInfo.role_ids
 					});
 					// if (this.role.shop == true) { //已经是店铺合作者			
 					// 	//账号该角色是否可用

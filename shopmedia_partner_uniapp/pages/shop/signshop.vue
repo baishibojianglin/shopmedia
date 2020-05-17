@@ -2,7 +2,7 @@
 	<view class="wrapper uni-padding-wrap">
 		<!-- 协议书 s -->
 		<view class="blod uni-center title">
-			店铺安装广告屏合作协议书
+			店铺智能屏安装合作协议书
 		</view>
 
 		<view class="content-con">
@@ -18,19 +18,22 @@
 			<view class="text-space">甲、乙双方依据中华人民共和国相关法律法规，经平等、友好协商达成如下合作协议：</view>
 			<view class="blod">一、合作内容</view>
 			<view class="content-text">
+				<text class="content-left-text">设备编号：</text>
+				<input class="content-right sign-border"  placeholder="" :disabled="inputDisabled" />
+			</view>
+			<view class="content-text">
 				<text class="content-left-text">安装数量：</text>
-				<input class="content-right sign-border" v-model="shop.device_quantity"  placeholder="" :disabled="inputDisabled" />
+				<input class="content-right sign-border"  placeholder="" :disabled="inputDisabled" />
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">安装位置：</text>
-				<text class="content-right sign-border-text">{{shop.address}}</text>
+				<text class="content-right sign-border-text"></text>
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">设备总价：</text>
-				<text class="content-right sign-border-text">{{shop.device_price}}</text>
+				<text class="content-right sign-border-text"></text>
 			</view>
-			<view class="content-text">甲方将店通广告屏安装到乙方店内，并将该广告机 <text class="fix-text">{{party_b_share}}</text>%广告利润收入支付乙方,乙方每年享有一次在店通传媒<text class="fix-text">2</text>折投放广告的优惠权利。</view>
-
+			<view class="content-text">甲方将店通广告屏安装到乙方店内，并将该广告机 <text class="fix-text">{{party_b_share}}</text>%广告利润收入支付乙方，乙方在店通传媒每年享有一次<text class="fix-text">2</text>折投放广告的优惠权利。</view>
 
 			<view class="blod">二、权利与义务</view>
 			<view>1、甲方承担设备的运营、管理、维修责任;</view>
@@ -81,7 +84,7 @@
 			</view>
 			<view class="handCenter">
 				<canvas class="handWriting" disable-scroll="true" @touchstart="uploadScaleStart" @touchmove="uploadScaleMove"
-				 @touchend="uploadScaleEnd" @tap="mouseDown" canvas-id="handWriting">
+				 @touchend="uploadScaleEnd"  canvas-id="handWriting">
 				</canvas>
 			</view>
 
@@ -92,9 +95,6 @@
 		</view>
 		<!--电子签名 e-->
 
-		<view class="goods-carts" v-if="!shop.party_b_signature">
-			<uni-goods-nav :options="[]" :button-group="buttonGroup" :fill="true" @click="onClick" @buttonClick="buttonClick" />
-		</view>
 	</view>
 </template>
 
@@ -108,11 +108,10 @@
 				csPhone: '', // 客服电话
 				// 店铺（协议书）信息
 				shop: {
-					shop_id:'',//店铺id
-					shop_name:'',//店铺名字
+					device_ids: '', // 广告屏编号集合
 					device_quantity: '', // 安装广告屏数量
-					address:'',//安装位置
-					device_price: ''// 广告屏总价格
+					device_price: '', // 广告屏总价格
+					party_b_share: '', // 广告收益乙方（店铺）提成比例
 				},
 				party_b_share: 30,
 				
@@ -148,18 +147,6 @@
 			this.$common.actionSheetTap();
 		},
 		onLoad(event) {
-			 this.shop.shop_id=event.shop_id;
-			 this.shop.shop_name=event.shop_name;
-			 this.shop.device_quantity=event.device_count;
-			 this.shop.address=event.address;
-			 this.shop.device_price=event.total_price;
-			
-			// 判断是否已签约
-			if (this.shop.party_b_signature) {
-				this.party_b_share = this.shop.party_b_share * 100;
-				this.showimg = this.shop.party_b_signature;
-				this.inputDisabled = true;
-			}
 			
 			// 电子签名
 			this.$nextTick(function() {
@@ -169,6 +156,9 @@
 					canvasName: 'handWriting',
 				})
 			})
+			
+	
+
 		},
 		methods: {
 			/* 电子签名 s */
@@ -216,131 +206,8 @@
 				});
 			},
 			/* 电子签名 e */
+        }
 
-			/* GoodsNav 商品导航 s */
-			/**
-			 * GoodsNav 左侧点击事件
-			 * @param {Object} e
-			 */
-			onClick(e) {
-				// 联系客服
-				if (e.index == 0) {
-					this.callPhone(this.csPhone);
-				}
-			},
-			/**
-			 * GoodsNav 右侧按钮组点击事件
-			 * @param {Object} e
-			 */
-			buttonClick(e) {
-				let self = this;
-				if (this.showimg == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请签名后在提交',
-						duration: 2000
-					});
-					return false;
-				}
-				// 确认合作
-				if (e.index == 0) {
-					uni.showModal({
-						title: `${e.content.text}`,
-						content: '阅读并确定签约合作。',
-						// cancelText: '联系客服',
-						success: function(res) {
-							if (res.confirm) {
-								self.submitAgreement();
-							}
-							/* if (res.cancel) {
-								self.callPhone(self.csPhone);
-							} */
-						}
-					});
-				}
-			},
-			/* GoodsNav 商品导航 e */
-
-			/**
-			 * 拨打电话
-			 * @param {Object} phone
-			 */
-			callPhone(phone) {
-				uni.makePhoneCall({
-					phoneNumber: phone
-				});
-			},
-
-			/**
-			 * 提交协议
-			 */
-			submitAgreement() {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/shop/' + this.shop.shop_id,
-					data: {
-						// device_ids: this.shop.device_ids,
-						device_quantity: this.shop.device_quantity,
-						device_price: this.shop.device_price,
-						party_b_share: this.party_b_share,
-						party_b_name: this.shop.user_name, // 乙方用户名称
-						party_b_signature: this.showimg // 合同乙方签名
-					},
-					header: {
-						'commonheader': this.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'PUT',
-					success: function(res) {
-						if (res.data.status == 1) {
-							uni.showToast({
-								icon: 'none',
-								title: '签署成功',
-								success: function(res) {
-									uni.navigateBack();
-								}
-							});
-						} else {
-							uni.showModal({
-								title: '提交失败',
-								content: res.data.message,
-								confirmText: '联系客服',
-								success: function(res) {
-									if (res.confirm) {
-										self.callPhone(self.csPhone);
-									}
-								}
-							});
-						}
-					}
-				})
-			},
-			
-			/**
-			 * 获取店铺（协议书）信息
-			 */
-			getShop() {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/shop/' + this.shop.shop_id,
-					header: {
-						'commonheader': this.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'GET',
-					success: function(res) {
-						if (res.data.status == 1) {
-							this.shop = res.data.data;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message
-							});
-						}
-					}
-				})
-			}
-		}
 	}
 </script>
 
@@ -561,8 +428,6 @@
 	.fix-text{
 		border-bottom:1px solid #000;
         font-weight: bold;
-		width: 30px;
-		text-align: center;
-		display: inline-block;
+		padding: 0 10px;
 	}
 </style>

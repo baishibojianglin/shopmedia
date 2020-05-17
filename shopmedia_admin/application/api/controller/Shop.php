@@ -212,7 +212,6 @@ class Shop extends AuthBase
         if (request()->isPut()) {
             // 传入的参数
             $param = input('param.');
-
             // 判断数据是否存在
             $data = [];
             if (!empty($param['device_ids'])) {
@@ -245,7 +244,8 @@ class Shop extends AuthBase
             try {
                 $result = model('Shop')->save($data, ['shop_id' => $id]); // 更新
             } catch (\Exception $e) {
-                throw new ApiException($e->getMessage(), 500, config('code.error'));
+                //throw new ApiException($e->getMessage(), 500, config('code.error'));
+                return show(config('code.error'), $e->getMessage(), '', 403);
             }
             if (false === $result) {
                 return show(config('code.error'), '更新失败', '', 403);

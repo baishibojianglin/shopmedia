@@ -38,43 +38,19 @@ class UserShopkeeper extends AuthBase
      */
     public function shopList()
     {
-        // 判断为GET请求
-        if (!request()->isGet()) {
-            return show(config('code.error'), '请求不合法', '', 400);
-        }
-
-        // 传入的参数
-        $param = input('param.');
-
-        // 查询条件
-        $map = [];
-        $map['s.status'] = config('code.status_enable');
-        if (isset($param['user_id'])) {
-            $map['s.user_id'] = intval($param['user_id']);
-        }
-
-        // 获取分页page、size
-        $this->getPageAndSize($param);
-
-        // 获取用户（店家）拥有的店铺分页列表数据 模式一：基于paginate()自动化分页
-        try {
-            $data = model('Shop')->getShop($map, $this->size);
-        } catch (\Exception $e) {
-            return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
-        }
-        if ($data) {
-            // 处理数据
-            foreach ($data as $key => $value) {
-                // 获取店铺对应广告屏列表
-                try {
-                    $deviceList = model('ShopDevice')->getShopDeviceList(['sd.shop_id' => $value['shop_id']]);
-                } catch (\Exception $e) {
-                    return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
-                }
-                $data[$key]['device_list'] = $deviceList;
-            }
-        }
-
-        return show(config('code.success'), 'OK', $data);
+       $form=input();
+       $matchuserid['user_id']=$form['user_id'];
+       $shoplist=Db::name('shop')->where($matchuserid)->field('shop_id,shop_name,address,party_b_signature,longitude,latitude')->select();//查询用户的店铺列表
+       $data=[];//初始化返回前台数据
+       if(!empty($shoplist)){   
+           foreach ($shoplist as $key => $value) {  //每个店铺类的设备列表
+               $matchshop['shop_id']=$value['shop_id'];
+               $devicelist= Db::name('device')->where($matchshop)->field('device_id,today_income,total_income,sale_price')->select();
+               $list['shop']=$value;//店铺信息
+               $list['device']=$devicelist;//设备信息
+               array_push($data,$list);
+           }  
+        }    
+       return json($data); 
     }
 }
