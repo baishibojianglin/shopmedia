@@ -24,6 +24,12 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
+					<el-form-item prop="environment" label="周边环境">
+						<el-select v-model="form.environment" clearable filterable>
+							<el-option v-for="item in shopEnvironmentList" :key="item.en_id" :label="item.en_name" :value="item.en_id">
+							</el-option>
+						</el-select>
+					</el-form-item>
 					<!-- <el-form-item prop="region" label="店铺所在区域">
 						<el-input v-model="form.province + '，' + form.city + '，' + form.county + '，' + form.town" disabled style="width:350px;"></el-input>
 					</el-form-item> -->
@@ -79,13 +85,16 @@
 					<el-form-item prop="shop_area" label="店铺面积/㎡">
 						<el-input-number v-model="form.shop_area" :step="1" :precision="2" controls-position="right" style="width: 200px;"></el-input-number>
 					</el-form-item>
-					<el-form-item v-if="!isCommission" prop="status" label="状态">
-						<el-radio-group v-model="form.status">
+					<el-form-item prop="shop_describe" label="店铺描述">
+						<el-input type="textarea" :rows="5" v-model="form.shop_describe" placeholder="输入店铺描述" clearable></el-input>
+					</el-form-item>
+					<el-form-item prop="status" label="状态">
+						<el-radio-group v-model="form.status" :disabled="isCommission">
 							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item v-if="!isCommission" prop="is_commission" label="店铺业务员提成状态">
-						<el-radio-group v-model="form.is_commission">
+					<el-form-item prop="is_commission" label="店铺业务员提成状态">
+						<el-radio-group v-model="form.is_commission" :disabled="isCommission" @change="isCommissionRadioChange">
 							<el-radio v-for="(item, index) in {0: '未提成', 1: '已提成'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
@@ -128,6 +137,7 @@
 				},
 				
 				shopCateList: [], // 店铺类别列表
+				shopEnvironmentList: [], // 店铺周边环境列表
 				
 				// 区域列表
 				provinceList: [],
@@ -135,7 +145,7 @@
 				countyList: [],
 				townList: [],
 				
-				isCommission: 0 // 区别于 form.is_commission，用于控制 prop="is_commission" 的存在状态
+				isCommission: false // 区别于 form.is_commission，用于控制 prop="is_commission" 的禁用状态
 			}
 		},
 		created() {
@@ -147,6 +157,7 @@
 			
 			this.getParams();
 			this.getShopCateList(); // 获取店铺类别列表
+			this.getShopEnvironmentList(); // 获取店铺周边环境列表
 			this.getShop(); // 获取指定的店铺信息
 		},
 		methods: {
@@ -167,6 +178,31 @@
 					if (res.data.status == 1) {
 						// 店铺类别列表
 						self.shopCateList = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
+			/**
+			 * 获取店铺周边环境列表
+			 */
+			getShopEnvironmentList() {
+				let self = this;
+				this.$axios.get(this.$url + 'shop_environment')
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 店铺周边环境列表
+						self.shopEnvironmentList = res.data.data;
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -241,8 +277,7 @@
 					if (res.data.status == 1) {
 						// 店铺信息
 						self.form = res.data.data;
-						console.log(1, self.form)
-						self.isCommission = res.data.data.is_commission;
+						self.isCommission = res.data.data.is_commission == 1 ? true :false;
 						
 						// 区域回显
 						self.region(self.form.province_id, 2);
@@ -264,6 +299,29 @@
 			},
 			
 			/**
+			 * 改变店铺业务员提成状态时触发
+			 * @param {Object} event
+			 */
+			isCommissionRadioChange(event) {
+				if (event == 1) {
+					this.$confirm('确认店铺业务员是否已经提成？确认后提交表单，将变更该店铺业务员账户金额。', '店铺业务员提成', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then((aa) => {
+						// 确认已经提成
+						// this.form.is_commission = 1;
+					}).catch(() => {
+						this.form.is_commission = 0;
+						this.$message({
+							type: 'info',
+							message: '已取消提成'
+						});
+					});
+				}
+			},
+			
+			/**
 			 * 编辑店铺信息提交表单
 			 * @param {Object} formName
 			 */
@@ -271,21 +329,41 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'shop/' + this.form.shop_id, {
-							// 参数
-							shop_name: this.form.shop_name,
-							cate_id: this.form.cate,
-							province_id: this.form.province_id,
-							city_id: this.form.city_id,
-							county_id: this.form.county_id,
-							town_id: this.form.town_id,
-							address: this.form.address,
-							longitude: this.form.longitude,
-							latitude: this.form.latitude,
-							shop_area: this.form.shop_area,
-							status: this.form.status,
-							is_commission: this.form.is_commission
-						})
+						// 参数
+						let params = {};
+						if (this.isCommission == 1) {
+							params = {
+								shop_name: this.form.shop_name,
+								cate_id: this.form.cate,
+								environment: this.form.environment,
+								province_id: this.form.province_id,
+								city_id: this.form.city_id,
+								county_id: this.form.county_id,
+								town_id: this.form.town_id,
+								address: this.form.address,
+								longitude: this.form.longitude,
+								latitude: this.form.latitude,
+								shop_area: this.form.shop_area,
+								shop_describe: this.form.shop_describe
+							}
+						} else {
+							params = {
+								shop_name: this.form.shop_name,
+								cate_id: this.form.cate,
+								province_id: this.form.province_id,
+								city_id: this.form.city_id,
+								county_id: this.form.county_id,
+								town_id: this.form.town_id,
+								address: this.form.address,
+								longitude: this.form.longitude,
+								latitude: this.form.latitude,
+								shop_area: this.form.shop_area,
+								status: this.form.status,
+								is_commission: this.form.is_commission
+							} 
+						}
+						
+						this.$axios.put(this.$url + 'shop/' + this.form.shop_id, params)
 						.then(function(res) {
 							let type = res.data.status == 1 ? 'success' : 'warning';
 							self.$message({

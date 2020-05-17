@@ -176,6 +176,9 @@ class Shop extends Base
             if (!empty($param['cate_id'])) {
                 $data['cate'] = intval($param['cate_id']);
             }
+            if (!empty($param['environment'])) {
+                $data['environment'] = intval($param['environment']);
+            }
             if (!empty($param['province_id'])) {
                 $data['province_id'] = intval($param['province_id']);
             }
@@ -199,6 +202,9 @@ class Shop extends Base
             }
             if (!empty($param['shop_area'])) {
                 $data['shop_area'] = floatval($param['shop_area']);
+            }
+            if (!empty($param['shop_describe'])) {
+                $data['shop_describe'] = trim($param['shop_describe']);
             }
             if (isset($param['status'])) { // 不能用 !empty() ，否则 status = 0 时也判断为空
                 $data['status'] = input('param.status', null, 'intval');

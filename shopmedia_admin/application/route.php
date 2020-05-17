@@ -78,6 +78,8 @@ Route::resource('shop', 'admin/Shop');
 Route::get('shop_count', 'admin/Shop/getShopCount'); // 统计店铺数据
 // 店铺类别
 Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
+// 店铺周边环境
+Route::get('shop_environment', 'admin/ShopCate/shopEnvironment'); // 店铺环境列表（不分页）
 
 // 新闻
 Route::resource('news', 'admin/News');
@@ -137,13 +139,14 @@ Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');
 Route::resource('api/partner_order', 'api/PartnerOrder');
 
 // 用户（店家）
-Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
+Route::post('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
 Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 
 // 店家店铺
 Route::resource('api/shop', 'api/Shop');
 // 店铺类别
 Route::get('api/shop_cate_list', 'api/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
+// 店铺周边环境
 Route::get('api/shop_environment', 'api/ShopCate/shopEnvironment'); // 店铺环境列表（不分页）
 
 // 新闻
