@@ -52,7 +52,7 @@
 		components: {},
 		data() {
 			return {
-				invitation_code:266666, // 邀请码
+				invitation_code:'', // 邀请码
 				phone: '', // 手机号
 				password: '', // 密码
 				verify_code:'', // 验证码

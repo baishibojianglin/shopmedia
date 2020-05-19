@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view>
-			<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true" :loop="false" :controls="true"></video>
+			<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true"  :loop="false" :controls="true"></video>
 		</view>
 
 		<view>
@@ -81,7 +81,6 @@
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo', 'commonheader']),
 		onLoad() {
-			
 		},
 		onShow() {
 			//调用-判断用户角色
@@ -105,11 +104,25 @@
 				let self = this;
 				//广告屏合作商
 				if (role_ids == 2) {
-					uni.setStorageSync('role_id', role_ids); // 将用户角色 role_id 存储在本地缓存中（同步）
-					//进入合作设备列表
-					uni.navigateTo({
-						url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
-					});
+					if(this.role.shop == true){ //店家暂不支持
+							uni.showModal({
+								title: '提示',
+								content: '咨询合作智能屏？',
+								success: function(res) {
+									if (res.confirm) {
+                                        self.usead();
+									} else if (res.cancel) {
+						
+									}
+								}
+							});
+					}else{
+						//进入合作设备列表
+						uni.navigateTo({
+							url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
+						});
+					}
+
 					/**有条件的限制进入版块 暂时未使用 s--*/
 					// if (this.role.device == true) { //已经是广告屏合作者			
 					// 	//账号该角色是否可用

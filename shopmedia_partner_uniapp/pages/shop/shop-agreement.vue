@@ -50,7 +50,9 @@
 		<view class="sign-con">
 			<view class="sign-con-item">
 				<view class="blod">甲方（公章）：</view>
-				<view></view>
+				<view>
+					<image :src="gz"  style="width:120px;height:120px; margin: 5px 10px 0 0;"></image>
+				</view>
 			</view>
 			<view class="sign-con-item">
 				<view class="blod">乙方（签名）：</view>
@@ -106,6 +108,7 @@
 		data() {
 			return {
 				csPhone: '', // 客服电话
+				gz:'../../static/img/yz.png',//公章url
 				// 店铺（协议书）信息
 				shop: {
 					shop_id:'',//店铺id

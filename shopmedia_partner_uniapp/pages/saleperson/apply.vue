@@ -32,7 +32,7 @@
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad(options){
 			this.role_id=options.role_id;
-			this.applycode=options.code;
+			//this.applycode=options.code;
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();

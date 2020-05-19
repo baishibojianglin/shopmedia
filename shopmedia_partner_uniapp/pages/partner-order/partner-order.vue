@@ -85,7 +85,7 @@
 				<view class="sign-con-item">
 					<view class="blod">甲方（公章）：</view>
 					<view>
-						<image :src="gz"  style="width:120px;height:120px;"></image>
+						<image :src="gz"  style="width:120px;height:120px; margin: 5px 10px 0 0;"></image>
 					</view>
 				</view>
 				<view class="sign-con-item">
@@ -144,7 +144,7 @@
 			return {
 				csPhone: '02865272616', // 客服电话
 				device: {}, // 广告屏信息
-				gz:'../../static/img/gz.png',//公章url
+				gz:'../../static/img/yz.png',//公章url
 
 				/* GoodsNav 商品导航 s */
 				options: [{

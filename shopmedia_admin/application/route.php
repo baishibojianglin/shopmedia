@@ -132,6 +132,7 @@ Route::get('api/get_role_status', 'api/UserSalesman/getRoleStatus');
 Route::post('api/apply_salesman', 'api/UserSalesman/applySalesman'); // 申请成为业务员
 Route::post('api/sale_info', 'api/UserSalesman/getSaleInfo');
 Route::post('api/sale_count', 'api/UserSalesman/getSaleCount');
+Route::post('api/shop_count', 'api/UserSalesman/getShopCount');
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
 Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');

@@ -17,6 +17,42 @@ class UserSalesman extends AuthBase
 
 
   /**
+  *获取店铺业务员开拓店铺数量
+  */
+  public function getShopCount(){
+         $form=input();
+         $match['uid']=$form['user_id'];
+         $match['role_id']=$form['role_id'];
+         $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
+         if(!empty($list)){
+             $matchid['salesman_id']=$list['id'];
+             $partner=Db::name('user_shopkeeper')->where($matchid)->field('user_id')->select();//该业务员发展的客户
+             $ordercount=0;
+             if(!empty($partner)){
+                foreach ($partner as $key => $value) {
+                    $matchorder['user_id']=$value['user_id'];
+                    $matchorder['status']=1;
+                    $ordercount=$ordercount + Db::name('shop')->where($matchorder)->count();  
+                }
+             }
+             return show(config('code.success'), 'OK',$ordercount);
+            
+         }else{
+             return show(config('code.error'), '业务员不存在', '', 404);
+         }
+  }
+
+
+
+
+
+
+
+
+
+
+
+  /**
   *获取广告屏业务员销售数量
   */
   public function getSaleCount(){
@@ -59,6 +95,10 @@ class UserSalesman extends AuthBase
              return show(config('code.error'), '业务员不存在', '', 404);
          }
   }
+
+
+
+
 
 
    /**

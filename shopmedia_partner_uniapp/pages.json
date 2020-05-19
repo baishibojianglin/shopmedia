@@ -285,7 +285,20 @@
 					}
 				}
 			}
-        }	
+        },
+        { // 业务员版块店铺推广主页
+            "path" : "pages/saleperson/shopindex",
+            "style" : {
+				"navigationBarTitleText": "开拓店铺业务",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",
