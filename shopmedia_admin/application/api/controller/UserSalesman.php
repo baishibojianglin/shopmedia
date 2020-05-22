@@ -14,97 +14,85 @@ use think\Model;
  */
 class UserSalesman extends AuthBase
 {
-
-
-  /**
-  *获取店铺业务员开拓店铺数量
-  */
-  public function getShopCount(){
-         $form=input();
-         $match['uid']=$form['user_id'];
-         $match['role_id']=$form['role_id'];
-         $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
-         if(!empty($list)){
-             $matchid['salesman_id']=$list['id'];
-             $partner=Db::name('user_shopkeeper')->where($matchid)->field('user_id')->select();//该业务员发展的客户
-             $ordercount=0;
-             if(!empty($partner)){
+    /**
+     * 获取店铺业务员开拓店铺数量
+     * @return \think\response\Json
+     * @throws \think\Exception
+     */
+    public function getShopCount()
+    {
+        $form=input();
+        $match['uid']=$form['user_id'];
+        $match['role_id']=$form['role_id'];
+        $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
+        if(!empty($list)){
+            $matchid['salesman_id']=$list['id'];
+            $partner=Db::name('user_shopkeeper')->where($matchid)->field('user_id')->select();//该业务员发展的客户
+            $ordercount=0;
+            if(!empty($partner)){
                 foreach ($partner as $key => $value) {
                     $matchorder['user_id']=$value['user_id'];
                     $matchorder['status']=1;
-                    $ordercount=$ordercount + Db::name('shop')->where($matchorder)->count();  
+                    $ordercount=$ordercount + Db::name('shop')->where($matchorder)->count();
                 }
-             }
-             return show(config('code.success'), 'OK',$ordercount);
-            
-         }else{
-             return show(config('code.error'), '业务员不存在', '', 404);
-         }
-  }
+            }
+            return show(config('code.success'), 'OK',$ordercount);
 
+        }else{
+            return show(config('code.error'), '业务员不存在', '', 404);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-  /**
-  *获取广告屏业务员销售数量
-  */
-  public function getSaleCount(){
-         $form=input();
-         $match['uid']=$form['user_id'];
-         $match['role_id']=$form['role_id'];
-         $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
-         if(!empty($list)){
-             $matchid['salesman_id']=$list['id'];
-             $partner=Db::name('user_partner')->where($matchid)->field('user_id')->select();//该业务员发展的客户
-             $ordercount=0;
-             if(!empty($partner)){
+    /**
+     * 获取广告屏业务员销售数量
+     * @return \think\response\Json
+     * @throws \think\Exception
+     */
+    public function getSaleCount()
+    {
+        $form=input();
+        $match['uid']=$form['user_id'];
+        $match['role_id']=$form['role_id'];
+        $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
+        if(!empty($list)){
+            $matchid['salesman_id']=$list['id'];
+            $partner=Db::name('user_partner')->where($matchid)->field('user_id')->select();//该业务员发展的客户
+            $ordercount=0;
+            if(!empty($partner)){
                 foreach ($partner as $key => $value) {
                     $matchorder['user_id']=$value['user_id'];
                     $matchorder['order_status']=1;
-                    $ordercount=$ordercount + Db::name('partner_order')->where($matchorder)->count();  
+                    $ordercount=$ordercount + Db::name('partner_order')->where($matchorder)->count();
                 }
-             }
-             return show(config('code.success'), 'OK',$ordercount);
-            
-         }else{
-             return show(config('code.error'), '业务员不存在', '', 404);
-         }
-  }
+            }
+            return show(config('code.success'), 'OK',$ordercount);
 
+        }else{
+            return show(config('code.error'), '业务员不存在', '', 404);
+        }
+    }
 
+    /**
+     * 获取广告屏业务员基本信息
+     * @return \think\response\Json
+     */
+    public function getSaleInfo(){
+        $form=input();
+        $match['uid']=$form['user_id'];
+        $match['role_id']=$form['role_id'];
+        $list=Db::name('user_salesman')->where($match)->find();
+        if(!empty($list)){
+            return show(config('code.success'), 'OK', $list);
+        }else{
+            return show(config('code.error'), '业务员不存在', '', 404);
+        }
+    }
 
-
-  /**
-  *获取广告屏业务员基本信息
-  */
-  public function getSaleInfo(){
-         $form=input();
-         $match['uid']=$form['user_id'];
-         $match['role_id']=$form['role_id'];
-         $list=Db::name('user_salesman')->where($match)->find();
-         if(!empty($list)){
-             return show(config('code.success'), 'OK', $list);
-         }else{
-             return show(config('code.error'), '业务员不存在', '', 404);
-         }
-  }
-
-
-
-
-
-
-   /**
-   *获取业务员角色状态
-   */
-   public function getRoleStatus(){
+    /**
+     * 获取业务员角色状态
+     * @return \think\response\Json
+     */
+    public function getRoleStatus(){
         $form=input();
         $match['uid']=$form['user_id'];
         $match['role_id']=$form['role_id'];
@@ -112,10 +100,7 @@ class UserSalesman extends AuthBase
         $data['status']=$list['status'];
         return show(config('code.success'), 'OK', $data);
 
-   }
-
-
-
+    }
 
     /**
      * 获取收入
@@ -139,10 +124,7 @@ class UserSalesman extends AuthBase
             $message['words']='获取失败';
             return json($message);
         }
-
     }
-
-
 
     /**
      * 获取业务员推广广告屏的收入
@@ -168,10 +150,7 @@ class UserSalesman extends AuthBase
         $message['status']=1;
         $message['data']=$sumincome;
         return json($message);
-
-
     }
-
 
     /**
      * 获取业务员推广店铺的收入
@@ -195,57 +174,6 @@ class UserSalesman extends AuthBase
             $message['words']='获取失败';
             return json($message);
         }
-
-
-    }
-
-
-
-
-
-    /**
-     * 获取指定的广告屏合作商业务员
-     *
-     * @return \think\Response
-     */
-    public function partnerSalesman()
-    {
-        // 判断为GET请求
-        if (!request()->isGet()) {
-            return show(config('code.error'), '请求不合法', '', 400);
-        }
-
-        // 传入的参数
-        $param = input('param.');
-
-        // 获取广告屏合作商信息
-        $partnerMap = []; // 查询条件
-        if (isset($param['user_id'])) {
-            $partnerMap['user_id'] = intval($param['user_id']);
-        }
-        if (isset($param['role_id']) && intval($param['role_id']) == 2) {
-            $partnerMap['role_id'] = intval($param['role_id']);
-        }
-        $partner = Db::name('user_partner')->field('salesman_id')->where($partnerMap)->find();
-
-        // 获取广告屏合作商业务员信息
-        if ($partner['salesman_id']) {
-            try {
-                $data = Db::name('user_salesman')->alias('us')
-                    ->field('u.user_name, u.phone')
-                    ->join('__USER__ u', 'us.uid = u.user_id', 'LEFT')
-                    ->where(['us.id' => $partner['salesman_id']])
-                    ->find();
-            } catch (\Exception $e) {
-                return show(config('code.error'), $e->getMessage(), '', 500);
-                //throw new ApiException($e->getMessage(), 500, config('code.error'));
-            }
-        }
-        if (!$data) {
-            return show(config('code.error'), '业务员不存在', '', 404);
-        }
-
-        return show(config('code.success'), 'OK', $data);
     }
 
     /**
@@ -350,5 +278,145 @@ class UserSalesman extends AuthBase
             return show(config('code.error'), '网络忙，请重试', '', 500);
         }
         /* 手动控制事务 e */
+    }
+
+    /**
+     * 获取广告屏合作商业务员列表
+     */
+    public function partnerSalesmanList()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 查询条件
+        $map = [];
+        $map['us.role_id'] = 4; // 广告屏合作商业务员
+        if (isset($param['parent_id'])) {
+            $map['us.parent_id'] = intval($param['parent_id']);
+        }
+
+        // 广告屏合作商业务员列表
+        $data = Db::name('user_salesman')->alias('us')
+            ->field('us.*, u.phone')
+            ->join('__USER__ u', 'us.uid = u.user_id', 'LEFT') // 所属用户
+            ->where($map)->select();
+        foreach ($data as $key => $value) {
+            // 获取广告屏合作商ID集合
+            $partnerIds = Db::name('user_partner')->where(['salesman_id' => $value['id']])->column('id');
+
+            // 统计广告屏今日销售数量
+            /*$beginToday = mktime(0, 0, 0, date('m'), date('d'), date('Y')); // 今日开始时间
+            $endToday = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1; // 今日结束时间*/
+            $data[$key]['today_count'] = Db::name('partner_order')->distinct('device_id')
+                ->where([
+                    'partner_id' => ['in', $partnerIds],
+                    'order_status' => 1,
+                    'pay_time' => 'today' //'pay_time' => ['between time', [$beginToday, $endToday]]
+                ])
+                ->count('device_id');
+
+            // 统计广告屏累计销售数量
+            $data[$key]['total_count'] = Db::name('partner_order')->distinct('device_id')
+                ->where([
+                    'partner_id' => ['in', $partnerIds],
+                    'order_status' => 1
+                ])
+                ->count('device_id');
+        }
+
+        return show(config('code.success'), 'OK', $data);
+    }
+
+    /**
+     * 获取指定的广告屏合作商业务员
+     *
+     * @return \think\Response
+     */
+    public function partnerSalesman()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 获取广告屏合作商信息
+        $partnerMap = []; // 查询条件
+        if (isset($param['user_id'])) {
+            $partnerMap['user_id'] = intval($param['user_id']);
+        }
+        if (isset($param['role_id']) && intval($param['role_id']) == 2) {
+            $partnerMap['role_id'] = intval($param['role_id']);
+        }
+        $partner = Db::name('user_partner')->field('salesman_id')->where($partnerMap)->find();
+
+        // 获取广告屏合作商业务员信息
+        if ($partner['salesman_id']) {
+            try {
+                $data = Db::name('user_salesman')->alias('us')
+                    ->field('u.user_name, u.phone')
+                    ->join('__USER__ u', 'us.uid = u.user_id', 'LEFT')
+                    ->where(['us.id' => $partner['salesman_id']])
+                    ->find();
+            } catch (\Exception $e) {
+                return show(config('code.error'), $e->getMessage(), '', 500);
+                //throw new ApiException($e->getMessage(), 500, config('code.error'));
+            }
+        }
+        if (!$data) {
+            return show(config('code.error'), '业务员不存在', '', 404);
+        }
+
+        return show(config('code.success'), 'OK', $data);
+    }
+
+    /**
+     * 获取店铺业务员列表
+     * @return \think\response\Json
+     * @throws \think\Exception
+     */
+    public function shopkeeperSalesmanList()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 查询条件
+        $map = [];
+        $map['us.role_id'] = 6; // 店铺业务员
+        if (isset($param['parent_id'])) {
+            $map['us.parent_id'] = intval($param['parent_id']);
+        }
+
+        // 广告屏合作商业务员列表
+        $data = Db::name('user_salesman')->alias('us')
+            ->field('us.*, u.phone')
+            ->join('__USER__ u', 'us.uid = u.user_id', 'LEFT') // 所属用户
+            ->where($map)->select();
+        foreach ($data as $key => $value) {
+            // 获取店家ID集合
+            $shopkeeperIds = Db::name('user_shopkeeper')->where(['salesman_id' => $value['id']])->column('id');
+
+            // 统计店铺业务员开拓的店铺数量
+            $data[$key]['total_count'] = Db::name('shop')->distinct('shop_id')
+                ->where([
+                    'shopkeeper_id' => ['in', $shopkeeperIds],
+                    'status' => ['not in', [2, 3]]
+                ])
+                ->count('shop_id');
+        }
+
+        return show(config('code.success'), 'OK', $data);
     }
 }
