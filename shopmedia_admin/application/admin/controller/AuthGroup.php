@@ -97,6 +97,14 @@ class AuthGroup extends Base
                     }
                 }
             }
+
+            // 获取超级管理员角色
+            $authGroupList0 = model('AuthGroup')->field('id, title, company_id')->where(['id' => 1, 'company_id' => 0])->select();
+            // 向数组 $data 头部追加总平台的 Select 选择器分组属性 label、options 值
+            array_unshift($data, [
+                'label' => '公司总平台', // 定义 Select 选择器的分组名 label
+                'options' => $authGroupList0 // 定义 Select 选择器 options
+            ]);
         }
         // 当Auth用户组属于总平台且总平台管理员登录时
         if (isset($param['company_id']) && $param['company_id'] == config('admin.platform_company_id')) {

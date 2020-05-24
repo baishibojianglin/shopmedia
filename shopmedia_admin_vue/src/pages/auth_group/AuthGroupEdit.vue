@@ -96,7 +96,7 @@
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
 					} */
 				})
-				.then(function(res) {console.log('role', res)
+				.then(function(res) {
 					if (res.data.status == 1) {
 						// 角色信息
 						self.form = res.data.data;
@@ -120,7 +120,6 @@
 			 */
 			getAuthGroupTree() {
 				let self = this;
-				console.log('pid', this.form.parent_id)
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					params: {
 						parent_id: this.form.parent_id,
@@ -133,7 +132,7 @@
 					} */
 				})
 				.then(function(res) {
-					if (res.data.status == 1) {console.log('pidd', self.form.parent_id)
+					if (res.data.status == 1) {
 						self.authGroupOptions = res.data.data;
 					} else {
 						self.$message({
