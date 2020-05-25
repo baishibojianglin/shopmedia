@@ -19,7 +19,7 @@ Route::put('config_auth_group_rule/:id', 'admin/auth_group/configAuthGroupRule')
 // Auth权限规则
 Route::resource('auth_rule', 'admin/auth_rule');
 Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规则列表树
-Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
+Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthRuleTree'); // 懒加载Auth权限规则树形列表
 
 // 管理员
 Route::resource('admin', 'admin/admin');
