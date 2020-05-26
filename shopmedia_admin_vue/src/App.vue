@@ -18,7 +18,7 @@
 		methods: {
 			/**
 			 * 公用请求头配置
-			 * 其中登录页还未生成缓存，不传入以下请求头
+			 * 其中登录页还未生成缓存，不传入以下请求头；home页需要单独传入以下请求头，否则会出错
 			 */
 			commonHeaders() {
 				if (localStorage.getItem('admin_user')) {

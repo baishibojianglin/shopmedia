@@ -41,6 +41,11 @@ class Base extends Common
             throw new ApiException('未登录', 401);
             //return show(config('code.error'), '未登录', '', 401);
         }
+
+        // 初始化参数
+        $this->module = request()->module(); // 模块
+        // Auth权限认证：对节点进行认证
+        //$this->checkAuth();
     }
 
     /**
