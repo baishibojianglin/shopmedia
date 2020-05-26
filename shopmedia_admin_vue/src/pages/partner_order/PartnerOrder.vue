@@ -32,6 +32,7 @@
 						<el-table-column prop="phone" label="合作商电话" width="120"></el-table-column>
 					</el-table-column>
 					<el-table-column label="广告屏" header-align="center">
+						<el-table-column prop="device_id" label="广告屏序号" width="120"></el-table-column>
 						<el-table-column prop="shopname" label="店铺名称" width="120"></el-table-column>
 						<el-table-column prop="device_price" label="广告屏总价/元" width="120"></el-table-column>
 					</el-table-column>

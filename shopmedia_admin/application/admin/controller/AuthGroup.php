@@ -97,6 +97,14 @@ class AuthGroup extends Base
                     }
                 }
             }
+
+            // 获取超级管理员角色
+            $authGroupList0 = model('AuthGroup')->field('id, title, company_id')->where(['id' => 1, 'company_id' => 0])->select();
+            // 向数组 $data 头部追加总平台的 Select 选择器分组属性 label、options 值
+            array_unshift($data, [
+                'label' => '公司总平台', // 定义 Select 选择器的分组名 label
+                'options' => $authGroupList0 // 定义 Select 选择器 options
+            ]);
         }
         // 当Auth用户组属于总平台且总平台管理员登录时
         if (isset($param['company_id']) && $param['company_id'] == config('admin.platform_company_id')) {
@@ -144,7 +152,7 @@ class AuthGroup extends Base
             try {
                 $id = model('AuthGroup')->add($data, 'id'); // 新增
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
             }
             // 判断是否新增成功：获取id
             if ($id) {
@@ -171,7 +179,7 @@ class AuthGroup extends Base
 //                $data = model('AuthGroup')->alias('ag')->field('ag.*, c.company_name')->join('__COMPANY__ c', 'ag.company_id = c.company_id', 'LEFT')->find($id);
                 $data = model('AuthGroup')->alias('ag')->field('ag.*')->find($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
             }
 
             if ($data) {
@@ -239,7 +247,7 @@ class AuthGroup extends Base
         try {
             $result = model('AuthGroup')->save($data, ['id' => $id]); // 更新
         } catch (\Exception $e) {
-            return show(config('code.error'), '网络忙，请重试', '', 500);
+            return show(config('code.error'), '请求异常', '', 500);
         }
         if (false === $result) {
             return show(config('code.error'), '更新失败', [], 403);
@@ -266,7 +274,15 @@ class AuthGroup extends Base
 
         // 判断参数是否存在
         if (!empty($param['rules'])) { // 用户组拥有的权限规则
-            $data['rules'] = implode(',', $param['rules']);
+            // 用户组拥有的规则id
+            $data['rules'] = array_reduce($param['rules'], 'array_merge', array()); // 二维数组转一维数组
+            $data['rules'] = implode(',', $data['rules']);
+
+            // 全选与半选的Auth权限规则id
+            $data['checked_half_rules'] = json_encode([
+                'checked' => $param['rules'][0], // 全选
+                'half' => $param['rules'][1] // 半选
+            ]);
         }
 
         if (empty($data)) {
@@ -277,7 +293,7 @@ class AuthGroup extends Base
         try {
             $result = model('AuthGroup')->save($data, ['id' => $id]); // 更新
         } catch (\Exception $e) {
-            return show(config('code.error'), '网络忙，请重试', '', 500);
+            return show(config('code.error'), '请求异常', '', 500);
         }
         if (false === $result) {
             return show(config('code.error'), '权限规则配置失败', '', 403);
@@ -301,7 +317,7 @@ class AuthGroup extends Base
                 $data = model('AuthGroup')->find($id);
                 //return show(config('code.success'), 'ok', $data);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
                 //throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
 
@@ -329,7 +345,7 @@ class AuthGroup extends Base
             try {
                 $result = model('AuthGroup')->destroy($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
             }
             if (!$result) {
                 return show(config('code.error'), '删除失败', '', 403);

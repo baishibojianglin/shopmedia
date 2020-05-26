@@ -45,7 +45,7 @@
 							{{scope.row.company_id == 0 ? '-' : scope.row.company_name}}
 						</template>
 					</el-table-column>
-					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'info'" size="mini">{{scope.row.status_msg}}</el-tag> -->
 							<span :class="scope.row.status === 1 ? 'text-success' : 'text-info'">{{scope.row.status_msg}}</span>
@@ -58,7 +58,7 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="240">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toAuthGroupRule(scope.row)">权限配置</el-button>
+							<el-button type="primary" size="mini" plain @click="toAuthGroupRule(scope.row)">配置权限</el-button>
 							<el-button type="primary" size="mini" plain @click="toAuthGroupEdit(scope.row)">编辑</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteAuthGroup(scope)">删除</el-button>
 						</template>

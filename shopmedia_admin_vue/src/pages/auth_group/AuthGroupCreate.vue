@@ -12,7 +12,7 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item label="所属分公司" prop="company_id">
+					<el-form-item prop="company_id" label="所属分公司">
 						<el-select v-model="form.company_id" placeholder="请选择…" filterable @change="getAuthGroupTree"><!-- :disabled="companySelectDisabled" -->
 							<el-option-group v-for="group in companyOptions" :key="group.label" :label="group.label">
 								<el-option
@@ -24,7 +24,7 @@
 							</el-option-group>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="上级角色" prop="parent_id">
+					<el-form-item prop="parent_id" label="上级角色">
 						<el-select v-model="form.parent_id" placeholder="请选择…" filterable>
 							<el-option-group v-for="group in authGroupOptions" :key="group.label" :label="group.label">
 								<el-option
@@ -45,7 +45,7 @@
 							<el-radio :label="0">禁用</el-radio>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item label="授权配置下级权限">
+					<el-form-item prop="auth_rules" label="授权配置下级权限">
 						<el-switch v-model="form.auth_rules" active-text="允许" inactive-text="禁止" :active-value="1" :inactive-value="0"></el-switch>
 					</el-form-item>
 					<el-form-item>

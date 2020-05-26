@@ -12,10 +12,10 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item label="平台或分公司" prop="company_id">
-						<el-select v-model="form.company_id" :disabled="companySelectDisabled" placeholder="请选择…" filterable @change="getAuthGroupTree">
+					<el-form-item prop="company_id" label="所属分公司">
+						<el-select v-model="form.company_id" :disabled="companySelectDisabled" filterable @change="getAuthGroupTree">
 							<el-option-group key="平台" label="平台">
-								<el-option label="公司总平台" value="0"></el-option>
+								<el-option label="公司总平台" :value="0"></el-option>
 							</el-option-group>
 							<el-option-group key="分公司" label="分公司">
 								<el-option
@@ -48,22 +48,14 @@
 							<el-radio :label="0">禁用</el-radio>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item label="角色" prop="group_id">
-						<el-select v-model="form.group_id" placeholder="请选择…" filterable>
-							<el-option-group key="通用角色" label="通用角色">
+					<el-form-item prop="group_id" label="角色">
+						<el-select v-model="form.group_id" filterable>
+							<el-option-group v-for="group in authGroupOptions" :key="group.label" :label="group.label">
 								<el-option
-									v-for="item in authGroupOptions"
+									v-for="item in group.options"
 									:key="item.id"
 									:label="item.title"
-									:value="item.id" v-if="item.type == 1">
-								</el-option>
-							</el-option-group>
-							<el-option-group key="私有角色" label="私有角色">
-								<el-option
-									v-for="item in authGroupOptions"
-									:key="item.id"
-									:label="item.title"
-									:value="item.id" v-if="item.type == 0">
+									:value="item.id">
 								</el-option>
 							</el-option-group>
 						</el-select>
@@ -159,6 +151,7 @@
 			 * @param {Object} company_id
 			 */
 			getAuthGroupTree(company_id) {
+				this.form.group_id = ''; // 初始化角色ID
 				let self = this;
 				this.$axios.get(this.$url + 'auth_group_tree', {
 					params: {

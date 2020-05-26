@@ -19,7 +19,7 @@ Route::put('config_auth_group_rule/:id', 'admin/auth_group/configAuthGroupRule')
 // Auth权限规则
 Route::resource('auth_rule', 'admin/auth_rule');
 Route::get('auth_rule_tree', 'admin/auth_rule/authRuleTree'); // Auth权限规则列表树
-Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthGroupTree'); // 懒加载Auth权限规则树形列表
+Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthRuleTree'); // 懒加载Auth权限规则树形列表
 
 // 管理员
 Route::resource('admin', 'admin/admin');
@@ -125,6 +125,8 @@ Route::get('api/device_detail','api/Device/deviceDetail');
 
 // 业务员
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
+Route::get('api/partner_salesman_list', 'api/UserSalesman/partnerSalesmanList'); // 获取广告屏合作商业务员列表
+Route::get('api/shopkeeper_salesman_list', 'api/UserSalesman/shopkeeperSalesmanList'); // 获取店铺业务员列表
 Route::get('api/getMoney', 'api/UserSalesman/getMoney');
 Route::get('api/getMoneyDevice', 'api/UserSalesman/getMoneyDevice');
 Route::get('api/getMoneyShop', 'api/UserSalesman/getMoneyShop');

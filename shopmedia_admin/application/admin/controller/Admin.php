@@ -142,9 +142,9 @@ class Admin extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-                $data = model('Admin')->alias('a')->field('a.id, a.account, a.company_id, a.status, aga.group_id')->join('__AUTH_GROUP_ACCESS__ aga', 'a.id = aga.uid', 'LEFT')->find($id);
+                $data = model('Admin')->alias('a')->field('a.id, a.account, a.phone, a.company_id, a.status, aga.group_id')->join('__AUTH_GROUP_ACCESS__ aga', 'a.id = aga.uid', 'LEFT')->find($id);
             } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
+                return show(config('code.error'), '请求异常', '', 500);
             }
 
             if ($data) {

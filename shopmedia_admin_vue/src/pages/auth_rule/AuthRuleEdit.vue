@@ -30,7 +30,7 @@
 					<el-form-item prop="module" label="规则所属模块">
 						<el-input v-model="form.module" placeholder="输入权限规则所属模块，默认为 admin" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item label="上级规则/序号" prop="pid">
+					<el-form-item prop="pid" label="上级规则/序号">
 						<el-select v-model="form.pid" placeholder="请选择…" filterable>
 							<el-option :key="0" label="（顶级规则）" :value="0"></el-option>
 							<el-option
@@ -222,6 +222,7 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
+				this.getAuthRule();
 			},
 			
 			/**

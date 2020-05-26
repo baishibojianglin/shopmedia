@@ -15,15 +15,44 @@
 				<view class="countcon-item">已提现：<text class="uni-bold">{{sale_info.cash}}</text></view>
 				<view class="countcon-item">余额：<text class="uni-bold">{{sale_info.money}}</text></view>
 			</view>
-						
+			
+			<!-- 我的团队 s -->
+			<view class="">
+				<view class="countcon">
+					<view class="countcon-item bg-qgray-color">
+						<text>我的团队</text>
+					</view>
+				</view>
+				<uni-card :is-shadow="true">
+					<view>
+						<view class="listcon">
+							<view class="countcon-item">
+								<text>电话</text>
+							</view>
+							<view class="countcon-item">
+								<text>开拓店铺</text>
+							</view>
+						</view>	 
+						<view class="listcon" v-for="item in salesmanList">
+							<view class="countcon-item">
+								<text>{{item.phone}}</text>
+							</view>
+							<view class="countcon-item">
+								<text>{{item.total_count}}</text>
+							</view>
+						</view>
+					</view>
+				</uni-card>
+			</view>
+			<!-- 我的团队 e -->
+			
 			<view class="uni-padding-wrap uni-common-mt">
-					<navigator url="./shop" hover-class="none">
-						<button class="bg-main-color color-white">	
-							开展业务 	
-						</button>
-					</navigator>
-			</view>				
-							
+				<navigator url="./shop" hover-class="none">
+					<button class="bg-main-color color-white">
+						开展业务
+					</button>
+				</navigator>
+			</view>
 	</view>
 </template>
 
@@ -32,23 +61,24 @@
 	import {mapState, mapMutations} from 'vuex';
 	export default {
 		data() {
-				return {
-						salecount:0,//合作屏数量
-						devicelist:[],//设备列表
-						sale_info:{} ,//业务员基本信息
-						sale_number:0 //广告机数量
-					   }
+			return {
+				salecount:0,//合作屏数量
+				devicelist:[],//设备列表
+				sale_info:{} ,//业务员基本信息
+				sale_number:0, //广告机数量
+				salesmanList: [] // 下级业务员列表
+			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
 		onLoad() {
 			  this.getSaleInfo();
 			  this.getSaleCount();
+			  this.getSalesmanList();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
 		},
 		methods: {
-			
 			/**
 			 * 获取业务员销售屏数量
 			 */
@@ -71,9 +101,6 @@
 				});			
 			},			
 			
-			
-			
-			
 			/**
 			 * 获取业务员信息
 			 */
@@ -95,12 +122,33 @@
 					}
 				});			
 			},
-
 			
 			//跳转到设备详情
 			toDevice(device_id){
 				uni.navigateTo({
 				    url:'device?device_id='+device_id
+				});
+			},
+			
+			/**
+			 * 获取下级业务员列表
+			 */
+			getSalesmanList() {
+				let self=this;
+				uni.request({
+					url: this.$serverUrl + 'api/shopkeeper_salesman_list',
+					data: {
+						parent_id: this.userInfo.user_id
+					},
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token':this.userInfo.token
+					},
+					success: (res) => {
+						if(res.data.status == 1){
+							self.salesmanList = res.data.data;
+						}
+					}
 				});
 			}
 		}

@@ -308,7 +308,7 @@ class AuthRule extends Base
      * 懒加载Auth权限规则树形列表
      * @return \think\response\Json
      */
-    public function lazyLoadAuthGroupTree()
+    public function lazyLoadAuthRuleTree()
     {
         // 判断为GET请求
         if (!request()->isGet()) {
@@ -329,7 +329,7 @@ class AuthRule extends Base
         try {
             $data = model('AuthRule')->field('id, name, title, pid, level')->where($map)->select();
         } catch (\Exception $e) {
-            return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+            return show(config('code.error'), '请求异常', '', 500); // $e->getMessage()
         }
         if ($data) {
             foreach ($data as $key => $value) {
