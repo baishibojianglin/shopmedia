@@ -48,8 +48,8 @@
 					<el-table-column prop="login_ip" label="登录IP" width="130"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toCompanyUserEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteCompanyUser(scope)">删除</el-button>
+							<el-button type="primary" size="mini" plain @click="toAdminEdit(scope.row)">编辑</el-button>
+							<el-button type="danger" size="mini" plain @click="deleteAdmin(scope)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -167,7 +167,7 @@
 			 * 跳转管理员编辑页
 			 * @param {Object} row
 			 */
-			toCompanyUserEdit(row) {
+			toAdminEdit(row) {
 				this.$router.push({path: "admin_edit", query: {id: row.id}});
 			},
 			
@@ -175,7 +175,7 @@
 			 * 删除管理员
 			 * @param {Object} scope
 			 */
-			deleteCompanyUser(scope) {
+			deleteAdmin(scope) {
 				this.$confirm('此操作将永久删除该管理员, 是否继续?', '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',

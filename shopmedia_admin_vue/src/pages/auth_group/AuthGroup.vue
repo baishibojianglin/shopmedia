@@ -58,7 +58,7 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="240">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toAuthGroupRule(scope.row)">权限配置</el-button>
+							<el-button type="primary" size="mini" plain @click="toAuthGroupRule(scope.row)">配置权限</el-button>
 							<el-button type="primary" size="mini" plain @click="toAuthGroupEdit(scope.row)">编辑</el-button>
 							<el-button type="danger" size="mini" plain @click="deleteAuthGroup(scope)">删除</el-button>
 						</template>

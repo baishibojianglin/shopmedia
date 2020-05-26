@@ -12,7 +12,7 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item label="上级角色" prop="parent_id" v-if="form.id == 1 ? false : true"><!-- 供应商总管理员不更新parent_id、status、auth_rules字段 -->
+					<el-form-item prop="parent_id" label="上级角色" v-if="form.id == 1 ? false : true"><!-- 供应商总管理员不更新parent_id、status、auth_rules字段 -->
 						<el-select v-model="form.parent_id" placeholder="请选择…" filterable>
 							<el-option-group v-for="group in authGroupOptions" :key="group.label" :label="group.label">
 								<el-option
@@ -34,7 +34,7 @@
 							<el-radio :label="0">禁用</el-radio>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item label="授权配置下级权限">
+					<el-form-item prop="auth_rules" label="授权配置下级权限">
 						<el-switch v-model="form.auth_rules" :disabled="form.id == 1 ? true : false" active-text="允许" inactive-text="禁止" :active-value="1" :inactive-value="0"></el-switch>
 					</el-form-item>
 					<el-form-item>
@@ -75,7 +75,7 @@
 		created() {
 			this.getParams();
 			this.getAuthGroup(); // 获取指定的角色信息
-			this.getAuthGroupTree(); // 获取角色列表树
+			// this.getAuthGroupTree(); // 获取角色列表树
 		},
 		methods: {
 			/**
@@ -100,6 +100,7 @@
 					if (res.data.status == 1) {
 						// 角色信息
 						self.form = res.data.data;
+						self.getAuthGroupTree(); // 获取角色列表树
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -200,6 +201,7 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
+				this.getAuthGroup();
 			},
 			
 			/**
