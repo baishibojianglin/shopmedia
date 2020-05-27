@@ -8,8 +8,8 @@
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询权限规则" v-model="formInline.title" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getAuthRuleList()"></el-button>
+								<el-input placeholder="规则名称" v-model="formInline.title" clearable>
+									<el-button slot="append" icon="el-icon-search" @click="getAuthRuleList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>

@@ -31,6 +31,9 @@ class Device extends Base
 
 			// 查询条件
 			$map = [];
+			if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有数据，分公司只能查看自有数据
+				$map['c.company_id'] = $this->adminUser['company_id'];
+			}
 			if (!empty($param['company_name'])) { // 分公司名称
 				$map['c.company_name'] = ['like', '%' . trim($param['company_name']) . '%'];
 			}

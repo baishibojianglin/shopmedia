@@ -93,7 +93,7 @@
 						self.form.checked_half_rules = JSON.parse(self.form.checked_half_rules);
 						self.expandedRulesKeys = self.form.checked_half_rules.half; // 半选时，默认展开
 						self.checkedRulesKeys = self.form.checked_half_rules.checked; // 全选时，默认勾选
-						
+						self.form.rules = [self.checkedRulesKeys, self.expandedRulesKeys]; // 未执行handleCheck()方法时
 						//console.log('auth_group：', self.form)
 					} else {
 						self.$message({
