@@ -1,66 +1,71 @@
 <template>
 	<view class="content">
-		<view>
+		<view class="tvcon">
 			<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true"  :loop="false" :controls="true"></video>
 		</view>
 
 		<view>
-			<uni-grid class="view-grid-con" :column="3">
-				<uni-grid-item>
-					<text class="text-grid-title">广告屏</text>
-					<text class="text-grid">20000+</text>
-				</uni-grid-item>
-				<uni-grid-item>
-					<text class="text-grid-title">覆盖城市</text>
-					<text class="text-grid">3</text>
-				</uni-grid-item>
-				<uni-grid-item>
-					<text class="text-grid-title">服务商家</text>
-					<text class="text-grid">5000+</text>
-				</uni-grid-item>
-			</uni-grid>
+			<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
+				<uni-grid class="view-grid-con totalcontentbg" :column="3">
+					<uni-grid-item>
+						<text class="text-grid-title">广告屏</text>
+						<text class="text-grid">{{totaldata.addevice}}</text>
+					</uni-grid-item>
+					<uni-grid-item>
+						<text class="text-grid-title">覆盖城市</text>
+						<text class="text-grid">{{totaldata.city}}</text>
+					</uni-grid-item>
+					<uni-grid-item>
+						<text class="text-grid-title">服务商家</text>
+						<text class="text-grid">{{totaldata.shop}}</text>
+					</uni-grid-item>
+				</uni-grid>
+			</uni-card>
 		</view>
 
 		<view>
-			<text class="user-title"> <text class="color-blue">—</text> 店通服务 <text class="color-blue">—</text></text>
+			<text class="user-title"> <text class="color-blue">—</text> <span style="padding: 0 5px;">店通服务</span> <text class="color-blue">—</text></text>
 		</view>
 
-		<view class="navcon">
-			<view class="navcon-item" @click="usead()">
-				<text class="iconposition icon color-blue iconbg">&#xe636;</text>
-				<br />
-				<text>广告投放咨询</text>
-			</view>
-			<view @click="toRole(2)" class="navcon-item">
-				<text class="iconposition icon color-red iconbg">&#xe637;</text>
-				<br />
-				<text>合作经营</text>
-			</view>
-			<view @click="toRole(3)" class="navcon-item">
-				<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
-				<br />
-				<text>店铺合作</text>
-			</view>
-			<view @click="toRole(1)" class="navcon-item">
-				<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
-				<br />
-				<text>业务申请</text>
-			</view>
-			<view class="navcon-item">
-				<navigator url="/pages/news/news">
-					<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
+        <uni-card  :is-shadow='true'>
+			<view class="navcon">
+				<view class="navcon-item" @click="usead()">
+					<text class="iconposition icon color-blue iconbg">&#xe636;</text>
 					<br />
-					<text>店通资讯</text>
-				</navigator>
+					<text>投放广告</text>
+				</view>
+				<view @click="toRole(2)" class="navcon-item">
+					<text class="iconposition icon color-red iconbg">&#xe637;</text>
+					<br />
+					<text>合作经营</text>
+				</view>
+				<view @click="toRole(3)" class="navcon-item">
+					<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
+					<br />
+					<text>店铺合作</text>
+				</view>
+				<view @click="toRole(1)" class="navcon-item">
+					<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
+					<br />
+					<text>业务申请</text>
+				</view>
+				<view class="navcon-item">
+					<navigator url="/pages/news/news">
+						<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
+						<br />
+						<text>店通资讯</text>
+					</navigator>
+				</view>
+				<view class="navcon-item">
+					<navigator url="/pages/feedback/feedback">
+						<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
+						<br/>
+						<text>投诉建议</text>
+					</navigator>
+				</view>
 			</view>
-			<view class="navcon-item">
-				<navigator url="/pages/feedback/feedback">
-					<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
-					<br/>
-					<text>投诉建议</text>
-				</navigator>
-			</view>
-		</view>
+		</uni-card>
+		
 	</view>
 </template>
 
@@ -76,17 +81,46 @@
 					device: false, //广告屏合作者
 					shop: false, //店铺
 					saleperson: false //业务员
+				},
+				totaldata:{
+					addevice:'',//广告屏数量
+					city:'',//城市数量
+					shop:''//客户数量
 				}
 			}
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo', 'commonheader']),
 		onLoad() {
+			//获取整体数据
+			this.getTotalData();
 		},
 		onShow() {
 			//调用-判断用户角色
 			this.is_role();
 		},
 		methods: {
+			/**
+			 * 获取广告屏数量、城市、服务商家
+			*/
+		   getTotalData(){
+			   let self=this;
+			   //获取角色信息
+			   	uni.request({
+			   		url: this.$serverUrl + 'api/get-total-data',
+			   		header: {
+			   			'commonheader': this.commonheader,
+			   			'access-user-token': this.userInfo.token
+			   		},
+			   		method: 'GET',
+			   		success: function(res) {
+                         self.totaldata.addevice=res.data.device;
+						 self.totaldata.city=res.data.city;
+						 self.totaldata.shop=res.data.shop;
+			   		}
+			   	})
+			   
+		   },
+			
 			/**
 			 * 投放广告
 			 */
@@ -352,9 +386,12 @@
 	}
 
 	.vedio-con {
-		width: 100%;
-		margin: 0;
-		padding: 0;
+		width: 98%;
+		margin:0px;
+		padding: 0px;
+		border:15px solid #57585C;
+		box-sizing: border-box;
+		border-radius: 7px;
 		height: 205px;
 	}
 
@@ -397,5 +434,12 @@
 	.navcon-item {
 		flex: 0 0 33%;
 		padding: 10px 0;
+	}
+	.tvcon{
+		width:98%;
+		padding:1%;
+	}
+	.totalcontentbg{
+		background-color: #fff;
 	}
 </style>
