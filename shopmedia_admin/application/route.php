@@ -162,4 +162,7 @@ Route::resource('api/feedback', 'api/Feedback');
 Route::post('api/upload', 'api/Upload/upload');
 Route::put('api/deleimg', 'api/Upload/deleimg');
 
+//获取整体广告屏、城市、商家数据
+Route::get('api/get-total-data', 'api/Index/getTotalData');
+
 /* -------------------- 客户端路由 -------------------- e */
