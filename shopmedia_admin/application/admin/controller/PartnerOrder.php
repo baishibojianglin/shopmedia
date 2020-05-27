@@ -31,6 +31,9 @@ class PartnerOrder extends Base
 
             // 查询条件
             $map = [];
+            if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有数据，分公司只能查看自有数据
+                $map['us.company_id'] = $this->adminUser['company_id'];
+            }
             if (!empty($param['order_sn'])) { // 订单编号
                 $map['o.order_sn'] = ['like', '%' . trim($param['order_sn']) . '%'];
             }
