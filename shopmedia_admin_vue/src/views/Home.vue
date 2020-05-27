@@ -121,7 +121,7 @@
 						</dl>
 						
 						<!-- 以下是动态数据 menus -->
-						<dl v-show="false" class="m0" v-for="(item, index) in menus" :key="index" v-if="item.level == 1" style="color: #C0C4CC;">
+						<dl class="m0" v-for="(item, index) in menus" :key="index" v-if="item.level == 1" style="color: #C0C4CC;">
 							<dt @click="menush(item.id)">
 								<span :class="item.icon" :id="'menu' + item.id"> {{item.title}}</span>
 								<span class="fr derection" :class="menuvalue[item.id]?derectionup:derectiondown"></span>
@@ -265,10 +265,11 @@
 			getAuthRuleMenus() {
 				let self = this;
 				this.$axios.get(this.$url + 'auth_rule_menus', {
-					/* headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
+					// headers请求头，不能注释掉，否则会出错
+					headers: {
+						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
 						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
-					} */
+					}
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
