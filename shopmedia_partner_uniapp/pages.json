@@ -298,6 +298,19 @@
 					}
 				}
 			}
+        },
+        { // 投放广告-选择广告机
+            "path" : "pages/ad/findad",
+            "style" : {
+				"navigationBarTitleText": "选择广告机",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
         }
     ],
 	"tabBar": {

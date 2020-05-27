@@ -115,3 +115,10 @@ button.primary {
 	right: 0;
 	bottom: 0;
 }
+/*行高*/
+.line3{
+	line-height: 30px;
+}
+.line4{
+	line-height: 40px;
+}

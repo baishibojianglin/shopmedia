@@ -34,17 +34,17 @@
 					<br />
 					<text>投放广告</text>
 				</view>
-				<view @click="toRole(2)" class="navcon-item">
+				<view v-if="role.device" @click="toRole(2)" class="navcon-item">
 					<text class="iconposition icon color-red iconbg">&#xe637;</text>
 					<br />
 					<text>合作经营</text>
 				</view>
-				<view @click="toRole(3)" class="navcon-item">
+				<view v-if="role.shop" @click="toRole(3)" class="navcon-item">
 					<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
 					<br />
 					<text>店铺合作</text>
 				</view>
-				<view @click="toRole(1)" class="navcon-item">
+				<view v-if="role.saleperson" @click="toRole(1)" class="navcon-item">
 					<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
 					<br />
 					<text>业务申请</text>
@@ -125,9 +125,16 @@
 			 * 投放广告
 			 */
 			usead() {
-				uni.makePhoneCall({
-					phoneNumber: '02865272616'
-				});
+				
+				// uni.makePhoneCall({
+				// 	phoneNumber: '02865272616'
+				// });
+
+				uni.navigateTo({
+					url: '../ad/findad'
+				});	
+				
+				
 			},
 			
 			/**
@@ -138,193 +145,23 @@
 				let self = this;
 				//广告屏合作商
 				if (role_ids == 2) {
-					if(this.role.shop == true){ //店家暂不支持
-							uni.showModal({
-								title: '提示',
-								content: '咨询合作智能屏？',
-								success: function(res) {
-									if (res.confirm) {
-                                        self.usead();
-									} else if (res.cancel) {
-						
-									}
-								}
-							});
-					}else{
-						//进入合作设备列表
-						uni.navigateTo({
-							url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
-						});
-					}
-
-					/**有条件的限制进入版块 暂时未使用 s--*/
-					// if (this.role.device == true) { //已经是广告屏合作者			
-					// 	//账号该角色是否可用
-					// 	uni.request({
-					// 		url: this.$serverUrl + 'api/partnerRole',
-					// 		data: {
-					// 			user_id: this.userInfo.user_id,
-					// 		},
-					// 		header: {
-					// 			'commonheader': this.commonheader,
-					// 			'access-user-token': this.userInfo.token
-					// 		},
-					// 		method: 'PUT',
-					// 		success: function(res) {
-					// 			if (res.data.status == 1) {
-					// 				if (res.data.data.status == 0) { //禁用
-					// 					uni.showToast({
-					// 						icon: 'none',
-					// 						title: '账号该功能被禁用',
-					// 						duration: 2000
-					// 					});
-					// 					return false;
-					// 				}
-					// 				if (res.data.data.status == 2) { //待审核
-					// 					uni.showToast({
-					// 						icon: 'none',
-					// 						title: '申请审核中...',
-					// 						duration: 2000
-					// 					});
-					// 					return false;
-					// 				}
-					// 				if (res.data.data.status == 3) { //驳回
-					// 					uni.showToast({
-					// 						icon: 'none',
-					// 						title: '该账号不支持该申请',
-					// 						duration: 2000
-					// 					});
-					// 					return false;
-					// 				}
-					// 				//进入申请页
-					// 				uni.navigateTo({
-					// 					url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
-					// 				});
-
-					// 			}
-					// 		}
-					// 	})
-
-
-					// } else { //还不是广告屏合作者
-					// 	uni.showModal({
-					// 		title: '提示',
-					// 		content: '您还不是广告屏合作者,申请加入？',
-					// 		success: function(res) {
-					// 			if (res.confirm) {
-					// 				uni.navigateTo({
-					// 					url: "../user/apply-partner"
-					// 				});
-					// 			} else if (res.cancel) {
-
-					// 			}
-					// 		}
-					// 	});
-					// }
-					/**有条件的限制进入版块 暂时未使用 e--*/
+					uni.navigateTo({
+						url: '../user-partner/user-partner?user_id=' + self.userInfo.user_id + '&role_id=2'
+					});				
 				}
                
 				//店铺合作者
 				if (role_ids == 3) {
-					//进入店铺主页
 					uni.navigateTo({
 						url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id='+self.userInfo.role_ids
 					});
-					// if (this.role.shop == true) { //已经是店铺合作者			
-					// 	//账号该角色是否可用
-					// 	uni.request({
-					// 		url: this.$serverUrl + 'api/shopRole',
-					// 		data: {
-					// 			user_id: this.userInfo.user_id,
-					// 		},
-					// 		header: {
-					// 			'commonheader': this.commonheader,
-					// 			'access-user-token': this.userInfo.token
-					// 		},
-					// 		method: 'PUT',
-					// 		success: function(res) {
-					// 			if (res.data.status == 1) {
-					// 				if (res.data.data.status == 0) { //禁用
-					// 					uni.showToast({
-					// 						icon: 'none',
-					// 						title: '账号该功能被禁用',
-					// 						duration: 2000
-					// 					});
-					// 					return false;
-					// 				}
-					// 				if (res.data.data.status == 2) { //待审核
-					// 					uni.showToast({
-					// 						icon: 'none',
-					// 						title: '申请审核中...',
-					// 						duration: 2000
-					// 					});
-					// 					return false;
-					// 				}
-					// 				if (res.data.data.status == 3) { //驳回
-					// 					uni.showToast({
-					// 						icon: 'none',
-					// 						title: '该账号不支持该申请',
-					// 						duration: 2000
-					// 					});
-					// 					return false;
-					// 				}
-					// 				//进入申请页
-					// 				uni.navigateTo({
-					// 					url: '../user-shopkeeper/user-shopkeeper?user_id=' + self.userInfo.user_id + '&role_id=3'
-					// 				});
-
-					// 			}
-					// 		}
-					// 	})
-
-
-					// } else { //还不是店铺合作者
-					// 	uni.showModal({
-					// 		title: '提示',
-					// 		content: '申请店铺安装智能屏？',
-					// 		success: function(res) {
-					// 			if (res.confirm) {
-					// 				uni.navigateTo({
-					// 					url: "../user/apply-shopkeeper"
-					// 				});
-					// 			} else if (res.cancel) {
-
-					// 			}
-					// 		}
-					// 	});
-					// }
 				}
 
 				//业务员
-				if (role_ids == 1) {
-					
+				if (role_ids == 1) {				
 					uni.navigateTo({
 						url: '../saleperson/center'
 					});				
-				/**有条件的限制进入版块 暂时未使用 s--*/	
-					// if (this.role.saleperson == true) { //已经是业务员			
-
-					// 	//进入业务员首页
-					// 	uni.navigateTo({
-					// 		url: '../saleperson/center'
-					// 	});
-
-					// } else { //还不是业务员
-					// 	uni.showModal({
-					// 		title: '提示',
-					// 		content: '咨询官方如何参与店通业务？',
-					// 		success: function(res) {
-					// 			if (res.confirm) {
-					// 				uni.makePhoneCall({
-					// 					phoneNumber: '13693444308'
-					// 				});
-					// 			} else if (res.cancel) {
-					// 				//不操作
-					// 			}
-					// 		}
-					// 	});
-					// }
-				/**有条件的限制进入版块 暂时未使用 e--*/
 				}
 				
 				
