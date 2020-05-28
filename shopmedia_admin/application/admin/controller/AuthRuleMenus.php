@@ -50,8 +50,8 @@ class AuthRuleMenus extends Base
         if (isset($_authList[$uid . $t])) {
             return $_authList[$uid . $t];
         }
-        if (2 == $type && Session::has('_auth_list_' /*. $uid*/ . $t, config('admin.session_admin_scope'))) {
-            return Session::get('_auth_list_' /*. $uid*/ . $t, config('admin.session_admin_scope'));
+        if (2 == $type && Session::has('_auth_list_' . $uid . $t, config('admin.session_admin_auth_rule_scope'))) {
+            return Session::get('_auth_list_' . $uid . $t, config('admin.session_admin_auth_rule_scope'));
         }
         //读取用户所属用户组
         $groups = $auth->getGroups($uid);
@@ -111,7 +111,7 @@ class AuthRuleMenus extends Base
         $_authList[$uid . $t] = $authList;
         if (2 == $type) {
             //规则列表结果保存到session
-            Session::set('_auth_list_' /*. $uid*/ . $t, $authList, config('admin.session_admin_scope'));
+            Session::set('_auth_list_' . $uid . $t, $authList, config('admin.session_admin_auth_rule_scope'));
         }
 
         return array_unique($authList);

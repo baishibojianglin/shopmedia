@@ -17,7 +17,7 @@
 					</el-col>
 					<el-col :span="12">
 						<!-- 新增 s -->
-						<router-link to="auth_rule_create"><el-button size="mini" icon="el-icon-plus">新增权限规则</el-button></router-link>
+						<router-link to="auth_rule_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增权限规则</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>

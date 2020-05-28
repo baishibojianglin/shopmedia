@@ -196,7 +196,7 @@ class AuthRule extends Base
                 return show(config('code.error'), '更新失败', '', 403);
             } else {
                 @cache('auth_rule_tree', null); // 删除缓存
-                @session('_auth_list_' /*. $this->adminUser->id*/ . 2, null, config('admin.session_admin_scope'));
+                @session(null, config('admin.session_admin_auth_rule_scope'));
                 return show(config('code.success'), '更新成功', '', 201);
             }
         } else {
