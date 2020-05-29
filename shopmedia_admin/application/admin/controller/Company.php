@@ -245,24 +245,4 @@ class Company extends Base
 		}
 		return json($message);
 	}
-
-	/**
-	 * 获取区域数据
-	 * @return \think\response\Json
-	 */
-	public function getzone()
-	{
-		$param = input();
-		$map['parent_id'] = $param['parent_id'];
-	    $regionList = model('Region')->where($map)->cache(true, 10)->select();
-
-		if(!empty($regionList)){
-			$message['data'] = $regionList;
-			$message['status'] = 1;
-		}else{
-			$message['data'] = [];
-			$message['status'] = 0;
-		}
-		return json($message);
-	}
 }

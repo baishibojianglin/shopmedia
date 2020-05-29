@@ -29,13 +29,13 @@ Route::resource('admin', 'admin/admin');
 // 区域
 Route::resource('region', 'admin/region');
 Route::get('lazy_load_region_tree', 'admin/region/lazyLoadRegionTree'); // 懒加载区域树形数据
+Route::get('get_region_list', 'admin/Region/getRegionList'); // 获取区域列表数据（用于级联选择器等）
 
 // 分公司
 Route::resource('company', 'admin/company');
 Route::get('company_tree', 'admin/company/companyTree'); // 分公司列表树
 Route::post('createCompany', 'admin/Company/createCompany'); // 创建分公司
 Route::post('getCompany', 'admin/Company/getCompany'); // 获取分公司基本信息
-Route::post('getzone', 'admin/Company/getzone');
 
 // 用户角色
 Route::resource('user_role', 'admin/UserRole');

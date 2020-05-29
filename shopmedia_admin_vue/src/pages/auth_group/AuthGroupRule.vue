@@ -17,7 +17,7 @@
 					</el-form-item>
 					<el-form-item prop="rules" label="选择权限规则">
 						<!-- Tree 树形控件（可选择层级） s -->
-						<el-tree node-key="id" :props="props" :load="loadNode" :default-expanded-keys="expandedRulesKeys" :default-checked-keys="checkedRulesKeys" lazy show-checkbox @check="handleCheck" ref="tree"></el-tree>
+						<el-tree node-key="id" :props="props" :load="loadNode" default-expand-all :default-checked-keys="checkedRulesKeys" lazy show-checkbox check-strictly @check="handleCheck" ref="tree"></el-tree><!-- :default-expanded-keys="expandedRulesKeys" -->
 						<!-- Tree 树形控件 e -->
 					</el-form-item>
 					<el-form-item>
@@ -118,6 +118,7 @@
 			loadNode(node, resolve) {
 				let self = this;
 				if (node.data) {
+					// console.log(123, node.data)
 					this.parent_id = node.data.id;
 					this.level = node.data.level + 1;
 				} else {
