@@ -145,7 +145,7 @@ class AuthGroup extends Base
 
             // 处理数据
             $data['status'] = isset($data['status']) ? $data['status'] : config('code.status_disable');
-            $data['rules'] = isset($data['rules']) ? implode(',', $data['rules'] = [1,2,3,4]) : '';
+            //$data['rules'] = isset($data['rules']) ? implode(',', $data['rules'] = [1,2,3,4]) : '';
 
             // 新增
             // 捕获异常
@@ -176,8 +176,8 @@ class AuthGroup extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-//                $data = model('AuthGroup')->alias('ag')->field('ag.*, c.company_name')->join('__COMPANY__ c', 'ag.company_id = c.company_id', 'LEFT')->find($id);
-                $data = model('AuthGroup')->alias('ag')->field('ag.*')->find($id);
+                $data = model('AuthGroup')->alias('ag')->field('ag.*, c.company_name')->join('__COMPANY__ c', 'ag.company_id = c.company_id', 'LEFT')->find($id);
+                //$data = model('AuthGroup')->alias('ag')->field('ag.*')->find($id);
             } catch (\Exception $e) {
                 return show(config('code.error'), '请求异常', '', 500);
             }
@@ -188,9 +188,9 @@ class AuthGroup extends Base
                 $status = config('code.status');
                 $data['status_msg'] = $status[$data['status']];
 
-                /*if ($data['company_id'] == config('admin.platform_company_id')) {
-                    $data[''];
-                }*/
+                if ($data['company_id'] == config('admin.platform_company_id')) {
+                    $data['company_name'] = '公司总平台';
+                }
 
                 return show(config('code.success'), 'ok', $data);
             }
@@ -273,21 +273,16 @@ class AuthGroup extends Base
         $param = input('param.');
 
         // 判断参数是否存在
-        if (!empty($param['rules'])) { // 用户组拥有的权限规则
-            // 用户组拥有的规则id
-            $data['rules'] = array_reduce($param['rules'], 'array_merge', array()); // 二维数组转一维数组
-            $data['rules'] = implode(',', $data['rules']);
-
-            // 全选与半选的Auth权限规则id
-            $data['checked_half_rules'] = json_encode([
-                'checked' => $param['rules'][0], // 全选
-                'half' => $param['rules'][1] // 半选
-            ]);
+        if (isset($param['rules'])) { // 用户组拥有的权限规则ID集合，可以为空
+            if (is_array($param['rules'])) {
+                $param['rules'] = implode(',', $param['rules']);
+            }
+            $data['rules'] = $param['rules'];
         }
 
-        if (empty($data)) {
+        /*if (empty($data)) {
             return show(config('code.error'), '数据不合法', '', 404);
-        }
+        }*/
 
         // 更新
         try {

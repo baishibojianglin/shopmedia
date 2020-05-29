@@ -11,13 +11,16 @@
 			</div>
 			<div class="">
 				<!-- Form 表单 s -->
-				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
+				<el-form ref="ruleForm" :model="form" :rules="formRules" label-width="200px" size="small" class="demo-form-inline">
 					<el-form-item prop="title" label="角色名称">
 						<el-input v-model="form.title" clearable style="width:350px;" readonly></el-input>
 					</el-form-item>
+					<el-form-item prop="company_name" label="所属分公司">
+						<el-input v-model="form.company_name" clearable style="width:350px;" readonly></el-input>
+					</el-form-item>
 					<el-form-item prop="rules" label="选择权限规则">
 						<!-- Tree 树形控件（可选择层级） s -->
-						<el-tree node-key="id" :props="props" :load="loadNode" default-expand-all :default-checked-keys="checkedRulesKeys" lazy show-checkbox check-strictly @check="handleCheck" ref="tree"></el-tree><!-- :default-expanded-keys="expandedRulesKeys" -->
+						<el-tree node-key="id" :props="props" :load="loadNode" default-expand-all :default-checked-keys="form.rules" lazy show-checkbox check-strictly @check="handleCheck" ref="tree"></el-tree>
 						<!-- Tree 树形控件 e -->
 					</el-form-item>
 					<el-form-item>
@@ -39,8 +42,6 @@
 					label: 'title',
 					isLeaf: 'leaf' // 指定节点是否为叶子节点
 				},
-				expandedRulesKeys: [], // 默认展开的权限规则节点的 key 的数组
-				checkedRulesKeys: [], // 默认勾选的权限规则节点的 key 的数组
 
 				parent_id: '', // 父级ID
 				level: '', // 层级
@@ -50,8 +51,8 @@
 					title: '', // 角色名称
 					rules: [] // 权限规则ID集合（数组）
 				},
-				rules: { // 验证规则
-					rules: [{required: true, message: '请选择权限规则', trigger: 'change'}]
+				formRules: { // 表单验证规则
+					// rules: [{required: true, message: '请选择权限规则', trigger: 'change'}]
 				}
 			};
 		},
@@ -82,19 +83,16 @@
 					if (res.data.status == 1) {
 						// 角色信息
 						self.form = res.data.data;
-						/* if (self.form.rules) {
+						if (self.form.rules) {
 							self.form.rules = self.form.rules.split(",");
 							self.form.rules.forEach((item, index) =>{
 								self.form.rules[index] = parseInt(self.form.rules[index]); // 将字符串数组转换成数字数组
 							})
-						} */
+						} else {
+							self.form.rules = [];
+						}
 						
-						// 权限规则
-						self.form.checked_half_rules = JSON.parse(self.form.checked_half_rules);
-						self.expandedRulesKeys = self.form.checked_half_rules.half; // 半选时，默认展开
-						self.checkedRulesKeys = self.form.checked_half_rules.checked; // 全选时，默认勾选
-						self.form.rules = [self.checkedRulesKeys, self.expandedRulesKeys]; // 未执行handleCheck()方法时
-						//console.log('auth_group：', self.form)
+						// console.log('auth_group：', self.form)
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -131,6 +129,7 @@
 					params: {
 						parent_id: this.parent_id,
 						level: this.level,
+						group_id: this.form.id
 					},
 					headers: {
 						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).user_id,
@@ -177,8 +176,7 @@
 			handleCheck(data, checkedObj) {
 				// 获取权限规则ID集合（含全选与半选）
 				let checkedRules = this.$refs.tree.getCheckedKeys(); // 被选中的节点的 key 所组成的数组
-				let halfCheckedRules = this.$refs.tree.getHalfCheckedKeys(); // 半选中的节点的 key 所组成的数组
-				this.form.rules = checkedRules.length != 0 ? [checkedRules, halfCheckedRules] : []; // 判断全选是否为空 checkedRules.length ?= 0，用于验证 Tree 树形在表单中的选中状态
+				this.form.rules = checkedRules.length != 0 ? checkedRules : []; // 判断全选是否为空 checkedRules.length ?= 0，用于验证 Tree 树形在表单中的选中状态
 			},
 
 			/**

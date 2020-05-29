@@ -321,6 +321,10 @@ class AuthRule extends Base
 
         // 查询条件
         $map = [];
+        if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有数据，分公司只能查看自有数据（被分配的权限规则）
+            $rules = $this->getAuthGroupRulesAndAncestors();
+            $map['id'] = ['in', $rules];
+        }
         $map['pid'] = $param['parent_id'] ? : 0; // 父级ID
         $map['level'] = $param['level'] ? : 1; // 级别
         $map['status'] = 1; // 启用状态
@@ -343,5 +347,33 @@ class AuthRule extends Base
         } else {
             return show(config('code.error'), 'Not Found', '', 404);
         }
+    }
+
+    /**
+     * 获取当前登录管理员所有用户组的权限规则及规则的祖先级
+     * @return array
+     */
+    public function getAuthGroupRulesAndAncestors()
+    {
+        // 获取当前登录管理员所有的用户组ID
+        $authGroupIds = model('AuthGroupAccess')->where(['uid' => $this->adminUser['id']])->column('group_id');
+
+        // 获取当前角色拥有的权限规则ID集合
+        $authGroup = model('AuthGroup')->field('rules')->where(['id' => ['in', $authGroupIds]])->select();
+        $_selfRules = [];
+        foreach ($authGroup as $k => $v) {
+            $_selfRules[] = explode(',', $v['rules']);
+        }
+        $selfRules = array_unique(array_reduce($_selfRules, 'array_merge', []));
+
+        // 获取当前权限规则及规则的祖先级
+        $_rules = []; // 定义当前规则及规则的祖先级
+        foreach ($selfRules as $key => $value) {
+            $_rules[] = model('AuthRule')->getParentId($value);
+        }
+        $rules = array_unique(array_reduce($_rules, 'array_merge', [])); // 二维数组转一维数组并去重
+        sort($rules); // 正序重排索引
+
+        return $rules;
     }
 }
