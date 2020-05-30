@@ -1,8 +1,11 @@
 <template>
 	<view class="content">
-		<view class="tvcon">
-			<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true"  :loop="false" :controls="true"></video>
-		</view>
+		
+		<uni-card  :is-shadow='true'>
+			<view class="tvcon">
+				<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true"  :loop="false" :controls="true"></video>
+			</view>
+		</uni-card>
 
 		<view>
 			<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
@@ -223,7 +226,7 @@
 	}
 
 	.vedio-con {
-		width: 98%;
+		width:100%;
 		margin:0px;
 		padding: 0px;
 		border:15px solid #57585C;
@@ -273,8 +276,7 @@
 		padding: 10px 0;
 	}
 	.tvcon{
-		width:98%;
-		padding:1%;
+		width:100%;
 	}
 	.totalcontentbg{
 		background-color: #fff;

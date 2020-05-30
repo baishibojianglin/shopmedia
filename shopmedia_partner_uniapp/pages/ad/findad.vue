@@ -8,12 +8,23 @@
 					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
 					<picker @change="bindCatePickerChange" class="input-line-height-2" :value="CateIndex" :range="CateList" range-key="cate_name">
 						<view style="font-size: 15px; padding-left: 15px;">{{CateList[CateIndex].cate_name}}</view>
-						<input v-show="false" type="text" v-model="cate" />
 					</picker>
 				</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
 					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number"  v-model="days" />天
+				</view>
+				<view class="input-line-height">
+					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
+					<view class="input-line-height-2">
+				 
+					</view>
+					<uni-calendar
+					ref="calendar"
+					:insert="false"
+					@confirm="confirm"
+					 />	
+					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
 				</view>
 			</view>	
 		</uni-card>
@@ -65,6 +76,13 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
+			        open(){
+			            this.$refs.calendar.open();
+			        },
+			        confirm(e) {
+			            console.log(e);
+			        },
+			
 			/**
 			 * 获取省份
 			 */
