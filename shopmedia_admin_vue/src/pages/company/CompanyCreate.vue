@@ -117,8 +117,10 @@
 					parent_id=t_parent_id;
 				}
                 self.ruleForm.city_id=''; //清楚上次选择的市级数据
-				this.$axios.post(this.$url+'getzone',{
-					parent_id:parent_id
+				this.$axios.get(this.$url + 'get_region_list', {
+					params: {
+						parent_id: parent_id
+					}
 				}).then(function(res){
 				   if(res.data.status==1){
 					   if(parent_id==0){  //省级

@@ -276,4 +276,24 @@ class Region extends Base
             return show(config('code.error'), '请求不合法', [], 400);
         }
     }
+
+    /**
+     * 获取区域列表数据（用于级联选择器等）
+     * @return \think\response\Json
+     */
+    public function getRegionList()
+    {
+        $param = input();
+        $map['parent_id'] = $param['parent_id'];
+        $regionList = model('Region')->where($map)->cache(true, 10)->select();
+
+        if(!empty($regionList)){
+            $message['data'] = $regionList;
+            $message['status'] = 1;
+        }else{
+            $message['data'] = [];
+            $message['status'] = 0;
+        }
+        return json($message);
+    }
 }

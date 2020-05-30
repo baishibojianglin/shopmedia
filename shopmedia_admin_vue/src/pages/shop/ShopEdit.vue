@@ -223,8 +223,10 @@
 			 */
 			region(parent_id, level) {
 				let self = this;
-				this.$axios.post(this.$url + 'getzone', {
-					parent_id: parent_id
+				this.$axios.get(this.$url + 'get_region_list', {
+					params: {
+						parent_id: parent_id
+					}
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
