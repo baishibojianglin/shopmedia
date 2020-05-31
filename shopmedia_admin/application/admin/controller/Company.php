@@ -92,6 +92,83 @@ class Company extends Base
 	}
 
 	/**
+	 * 保存新建的分公司资源
+	 *
+	 * @param  \think\Request  $request
+	 * @return \think\Response
+	 */
+	public function save(Request $request)
+	{
+		// 判断为POST请求
+		if(request()->isPost()){
+			// 传入的参数
+			$data = input('post.');
+
+			// 处理数据
+			//$form['data']['create_time'] = time();
+
+			// 入库操作
+			try {
+				//$id = Db::name('company')->insert($data['data']);
+				$id = model('Company')->add($data['data'], 'company_id');
+			} catch (\Exception $e) {
+				return show(config('code.error'), '请求异常'.$e->getMessage(), '', 500); // $e->getMessage()
+			}
+			if ($id) {
+				return show(config('code.success'), '新增成功', '', 201);
+			} else {
+				return show(config('code.error'), '新增失败', '', 403);
+			}
+		} else {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+	}
+
+	/**
+	 * 保存更新的分公司资源
+	 *
+	 * @param  \think\Request  $request
+	 * @param  int  $id
+	 * @return \think\Response
+	 */
+	public function update(Request $request, $id)
+	{
+		// 判断为PUT请求
+		if (!request()->isPut()) {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+
+		// 传入的数据
+		$param = input('param.');
+
+		// 判断数据是否存在
+		$data = [];
+		if (isset($param['data'])) {
+			$data = $param['data'];
+		}
+		// 当为还原软删除的数据时
+		if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
+			$data['is_delete'] = config('code.not_delete');
+		}
+
+		if (empty($data)) {
+			return show(config('code.error'), '数据不合法', '', 404);
+		}
+
+		// 更新
+		try {
+			$result = model('Company')->save($data, ['company_id' => $id]); // 更新
+		} catch (\Exception $e) {
+			return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+		}
+		if (false === $result) {
+			return show(config('code.error'), '更新失败', '', 403);
+		} else {
+			return show(config('code.success'), '更新成功', '', 201);
+		}
+	}
+
+	/**
 	 * 删除指定分公司资源
 	 * @param int $id
 	 * @return \think\response\Json
@@ -138,64 +215,23 @@ class Company extends Base
 			}
 
 			// 真删除
-            try {
-                $result = model('Company')->destroy($id);
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试', '', 500);
-            }
-            if (!$result) {
-                return show(config('code.error'), '删除失败', '', 403);
-            } else {
-                return show(config('code.success'), '删除成功');
-            }
+			try {
+				$result = model('Company')->destroy($id);
+			} catch (\Exception $e) {
+				return show(config('code.error'), '网络忙，请重试', '', 500);
+			}
+			if (!$result) {
+				return show(config('code.error'), '删除失败', '', 403);
+			} else {
+				return show(config('code.success'), '删除成功');
+			}
 		} else {
 			return show(config('code.error'), '请求不合法', '', 400);
 		}
 	}
 
 	/**
-	 * 保存更新的分公司资源
-	 *
-	 * @param  \think\Request  $request
-	 * @param  int  $id
-	 * @return \think\Response
-	 */
-	public function update(Request $request, $id)
-	{
-		// 判断为PUT请求
-		if (!request()->isPut()) {
-			return show(config('code.error'), '请求不合法', '', 400);
-		}
-
-		// 传入的数据
-		$param = input('param.');
-
-		// 判断数据是否存在
-		$data = [];
-		// 当为还原软删除的数据时
-		if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
-			$data['is_delete'] = config('code.not_delete');
-		}
-
-		if (empty($data)) {
-			return show(config('code.error'), '数据不合法', '', 404);
-		}
-
-		// 更新
-		try {
-			$result = model('Company')->save($data, ['company_id' => $id]); // 更新
-		} catch (\Exception $e) {
-			return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
-		}
-		if (false === $result) {
-			return show(config('code.error'), '更新失败', '', 403);
-		} else {
-			return show(config('code.success'), '更新成功', '', 201);
-		}
-	}
-
-	/**
-	 * 创建（更新）分公司
+	 * 创建或更新分公司（弃用，已由新建save()、更新update()代替）
 	 * @return \think\response\Json
 	 * @throws \think\Exception
 	 */
