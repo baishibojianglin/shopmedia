@@ -45,8 +45,8 @@ class Company extends Base
 			try {
 				$data = model('Company')->getCompany($map, (int)$this->size);
 			} catch (\Exception $e) {
-				return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
-				//throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
+				return show(config('code.error'), '请求异常'.$e->getMessage(), '', 500); // $e->getMessage()
+				//throw new ApiException('请求异常', 500, config('code.error')); // $e->getMessage()
 			}
 
 			if ($data) {
@@ -75,7 +75,7 @@ class Company extends Base
 		try {
 			$data = model('Company')->field('company_id, company_name')->select(); // TODO：待处理，暂时这样写
 		} catch (\Exception $e) {
-			return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+			return show(config('code.error'), '请求异常', [], 500); // $e->getMessage()
 		}
 
 		/*if ($data) {
@@ -125,6 +125,32 @@ class Company extends Base
 	}
 
 	/**
+	 * 显示指定的分公司资源
+	 *
+	 * @param  int  $id
+	 * @return \think\Response
+	 */
+	public function read($id)
+	{
+		// 判断为GET请求
+		if (request()->isGet()) {
+			try {
+				$data = model('Company')->field(true)->find($id);
+			} catch (\Exception $e) {
+				return show(config('code.error'), '请求异常', '', 500); // $e->getMessage()
+			}
+
+			if ($data) {
+				return show(config('code.success'), 'OK', $data);
+			} else {
+				return show(config('code.error'), 'Not Found', '', 404);
+			}
+		} else {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+	}
+
+	/**
 	 * 保存更新的分公司资源
 	 *
 	 * @param  \think\Request  $request
@@ -144,7 +170,12 @@ class Company extends Base
 		// 判断数据是否存在
 		$data = [];
 		if (isset($param['data'])) {
-			$data = $param['data'];
+			$data['company_name'] = $param['data']['company_name'];
+			$data['province_id'] = $param['data']['province_id'];
+			$data['city_id'] = $param['data']['city_id'];
+			$data['person_name'] = $param['data']['person_name'];
+			$data['phone'] = $param['data']['phone'];
+			$data['status'] = $param['data']['status'];
 		}
 		// 当为还原软删除的数据时
 		if (isset($param['is_delete']) && $param['is_delete'] == config('code.is_delete')) {
@@ -159,7 +190,7 @@ class Company extends Base
 		try {
 			$result = model('Company')->save($data, ['company_id' => $id]); // 更新
 		} catch (\Exception $e) {
-			return show(config('code.error'), '网络忙，请重试', '', 500); // $e->getMessage()
+			return show(config('code.error'), '请求异常'.$e->getMessage(), '', 500); // $e->getMessage()
 		}
 		if (false === $result) {
 			return show(config('code.error'), '更新失败', '', 403);
@@ -183,7 +214,7 @@ class Company extends Base
 				$data = model('Company')->find($id);
 				//return show(config('code.success'), 'ok', $data);
 			} catch (\Exception $e) {
-				return show(config('code.error'), '网络忙，请重试', '', 500);
+				return show(config('code.error'), '请求异常', '', 500);
 				//throw new ApiException($e->getMessage(), 500, config('code.error'));
 			}
 
@@ -218,7 +249,7 @@ class Company extends Base
 			try {
 				$result = model('Company')->destroy($id);
 			} catch (\Exception $e) {
-				return show(config('code.error'), '网络忙，请重试', '', 500);
+				return show(config('code.error'), '请求异常', '', 500);
 			}
 			if (!$result) {
 				return show(config('code.error'), '删除失败', '', 403);
@@ -250,7 +281,6 @@ class Company extends Base
        // catch(\Exception $e){
         	//return json($e->getMessage());
         //}
-        
 		
 		if($number>0){
 			$message['status']=1;
@@ -258,26 +288,6 @@ class Company extends Base
 		}else{
 			$message['status']=0;
 			$message['words']='创建失败';
-		}
-		return json($message);
-	}
-
-	/**
-	 * 获取分公司基本信息
-	 * @return \think\response\Json
-	 */
-	public function getCompany(){
-		$form=input();
-		$mapcompany['company_id']=$form['company_id'];
-        $companylist=Db::name('company')->where($mapcompany)->find();
-		
-		if(!empty($companylist)){
-			$message['data']=$companylist;
-			$message['status']=1;
-			$message['words']='获取成功';
-		}else{
-			$message['status']=0;
-			$message['words']='获取失败';
 		}
 		return json($message);
 	}

@@ -118,9 +118,8 @@
 			 */
 			getdata() {
 				let self = this;
-				this.$axios.post(this.$url + 'getCompany', {
-					company_id: this.$route.query.company_id
-				}).then(function(res) {
+				this.$axios.get(this.$url + 'company/' + this.$route.query.company_id)
+				.then(function(res) {
 					if (res.data.status == 1) {
 						self.company_id = res.data.data.company_id;
 						delete res.data.data.company_id;
@@ -198,6 +197,12 @@
 								});
 							}
 						})
+						.catch(function (error) {
+							self.$message({
+								message: error.response.data.message,
+								type: 'warning'
+							});
+						});
 					} else {
 						return false;
 					}
