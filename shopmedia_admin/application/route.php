@@ -9,8 +9,8 @@ Route::post('login', 'admin/Login/login');
 Route::get('code', 'admin/Login/createverifycode');
 
 // 上传、删除图片
-Route::post('upload', 'admin/upload/uploadimg');
-Route::post('deleteimages', 'admin/upload/deleteimg');
+Route::post('upload', 'admin/Upload/uploadimg');
+Route::post('deleteimages', 'admin/Upload/deleteimg');
 
 // Auth用户组
 Route::resource('auth_group', 'admin/auth_group');
@@ -24,21 +24,21 @@ Route::get('lazy_load_auth_rule_tree', 'admin/auth_rule/lazyLoadAuthRuleTree'); 
 Route::get('auth_rule_menus', 'admin/AuthRuleMenus/authRuleMenus'); // 权限规则菜单
 
 // 管理员
-Route::resource('admin', 'admin/admin');
+Route::resource('admin', 'admin/Admin');
 
 // 区域
-Route::resource('region', 'admin/region');
-Route::get('lazy_load_region_tree', 'admin/region/lazyLoadRegionTree'); // 懒加载区域树形数据
+Route::resource('region', 'admin/Region');
+Route::get('lazy_load_region_tree', 'admin/Region/lazyLoadRegionTree'); // 懒加载区域树形数据
 Route::get('get_region_list', 'admin/Region/getRegionList'); // 获取区域列表数据（用于级联选择器等）
 
 // 分公司
-Route::resource('company', 'admin/company');
-Route::get('company_tree', 'admin/company/companyTree'); // 分公司列表树
+Route::resource('company', 'admin/Company');
+Route::get('company_tree', 'admin/Company/companyTree'); // 分公司列表树
 //Route::post('createCompany', 'admin/Company/createCompany'); // 创建分公司
 
 // 用户角色
 Route::resource('user_role', 'admin/UserRole');
-Route::get('user_role_list', 'admin/UserRole/UserRoleList'); // 用户角色列表（不分页）
+Route::get('user_role_list', 'admin/UserRole/userRoleList'); // 用户角色列表（不分页）
 
 // 用户（业务员）
 Route::resource('user_salesman', 'admin/UserSalesman');
