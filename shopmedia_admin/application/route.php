@@ -42,7 +42,6 @@ Route::get('user_role_list', 'admin/UserRole/userRoleList'); // 用户角色列�
 
 // 用户（业务员）
 Route::resource('user_salesman', 'admin/UserSalesman');
-Route::put('user_salesman', 'admin/UserSalesman');
 Route::get('son_salesman', 'admin/UserSalesman/sonSalesman'); // 获取指定角色的下级业务员销售数据列表
 // 用户（广告屏合作商）
 Route::resource('user_partner', 'admin/UserPartner');
