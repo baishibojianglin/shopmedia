@@ -83,8 +83,24 @@
 		},
 		mounted() {
 			this.getNewsList(); // 获取新闻列表
+			this.test();
 		},
 		methods: {
+			test() {
+				let self = this;
+				this.$axios.get(this.$url + 'admin/Test/index')
+				.then(function(res) {
+					console.log('test success', res);
+				})
+				.catch(function (error) {
+					console.log('test error', error);
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
 			/**
 			 * 获取新闻列表
 			 * @param {Object} is_delete
