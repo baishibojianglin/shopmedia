@@ -105,7 +105,40 @@ class Device extends Base
 	}
 
 	/**
-	 * 新增（更新）广告屏
+	 * 保存新建的广告屏资源
+	 *
+	 * @param  \think\Request  $request
+	 * @return \think\Response
+	 */
+	public function save(Request $request)
+	{
+		// 判断为POST请求
+		if(request()->isPost()){
+			// 传入的参数
+			$data = input('post.');
+
+			// 处理数据
+			//$form['data']['create_time'] = time();
+
+			// 入库操作
+			try {
+				//$id = Db::name('Device')->insert($data['data']);
+				$id = model('Device')->add($data['data'], 'device_id');
+			} catch (\Exception $e) {
+				return show(config('code.error'), '请求异常'.$e->getMessage(), '', 500); // $e->getMessage()
+			}
+			if ($id) {
+				return show(config('code.success'), '新建成功', '', 201);
+			} else {
+				return show(config('code.error'), '新建失败', '', 403);
+			}
+		} else {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+	}
+
+	/**
+	 * 新增（更新）广告屏（弃用，已由新建save()、更新update()代替）
 	 * @return \think\Response
 	 * @throws ApiException
 	 */
@@ -132,20 +165,19 @@ class Device extends Base
 
 	/**
 	 * 获取广告屏基本信息
+	 * @param $id
 	 * @return \think\response\Json
 	 */
-	public function getDevice(){
-		$form=input();
-		$mapdevice['device_id']=$form['device_id'];
-        $devicelist=Db::name('device')->where($mapdevice)->find();
+	public function read($id){
+        $device = Db::name('device')->find($id);
 		
-		if(!empty($devicelist)){
-			$message['data']=$devicelist;
-			$message['status']=1;
-			$message['words']='获取成功';
+		if (!empty($device)) {
+			$message['data'] = $device;
+			$message['status'] = 1;
+			$message['words'] = '获取成功';
 		}else{
-			$message['status']=0;
-			$message['words']='获取失败';
+			$message['status'] = 0;
+			$message['words'] = '获取失败';
 		}
 		return json($message);
 	}
