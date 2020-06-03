@@ -58,7 +58,6 @@ Route::resource('user_advertiser', 'admin/UserAdvertiser');
 // 广告屏管理
 Route::resource('device', 'admin/Device');
 Route::get('device_list', 'admin/Device/deviceList');  // 广告屏列表（不分页）
-Route::post('addDevice', 'admin/Device/addDevice');
 Route::get('get_device_brand', 'admin/Device/getDeviceBrand');
 Route::post('get_device_model', 'admin/Device/getDeviceModel');
 Route::get('get_device_size', 'admin/Device/getDeviceSize');

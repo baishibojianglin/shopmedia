@@ -501,13 +501,13 @@
 				this.ruleForm.url_image = JSON.stringify(this.url_image_list); //将图片地址处理成json字符串
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.post(this.$url + 'addDevice', {
-							data: this.ruleForm,
-							device_id: this.device_id
-						}).then(function(res) {
+						this.$axios.put(this.$url + 'device/' + this.device_id, {
+							data: this.ruleForm
+						})
+						.then(function(res) {
 							if (res.data.status == 1) {
 								self.$message({
-									message: '设备添加成功',
+									message: res.data.message,
 									type: 'success'
 								});
 								self.$router.push({
@@ -518,6 +518,12 @@
 								});
 							}
 						})
+						.catch(function (error) {
+							self.$message({
+								message: error.response.data.message,
+								type: 'warning'
+							});
+						});
 					} else {
 						return false;
 					}

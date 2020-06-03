@@ -138,7 +138,67 @@ class Device extends Base
 	}
 
 	/**
-	 * 新增（更新）广告屏（弃用，已由新建save()、更新update()代替）
+	 * 获取广告屏基本信息
+	 * @param $id
+	 * @return \think\response\Json
+	 */
+	public function read($id){
+		$device = Db::name('device')->find($id);
+
+		if (!empty($device)) {
+			$message['data'] = $device;
+			$message['status'] = 1;
+			$message['words'] = '获取成功';
+		}else{
+			$message['status'] = 0;
+			$message['words'] = '获取失败';
+		}
+		return json($message);
+	}
+
+	/**
+	 * 保存更新的广告屏资源
+	 *
+	 * @param  \think\Request  $request
+	 * @param  int  $id
+	 * @return \think\Response
+	 */
+	public function update(Request $request, $id)
+	{
+		// 判断为PUT请求
+		if (!request()->isPut()) {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+
+		// 传入的数据
+		$param = input('param.');
+
+		// 判断数据是否存在
+		$data = [];
+		if (isset($param['data'])) {
+			$data = $param['data'];
+		}
+
+		if (empty($data)) {
+			return show(config('code.error'), '数据不合法', '', 404);
+		}
+
+		// 更新
+		try {
+			$result = Db::name('device')->where(['device_id' => $id])->update($data);
+			//$result = model('Device')->save($data, ['device_id' => $id]); // 更新
+		} catch (\Exception $e) {
+			return show(config('code.error'), '请求异常' . $e->getMessage(), '', 500); // $e->getMessage()
+		}
+		if (false === $result) {
+			return show(config('code.error'), '更新失败', '', 403);
+		} else {
+			return show(config('code.success'), '更新成功', '', 201);
+		}
+	}
+
+	/**
+	 * 新增或更新广告屏（弃用，已由新建save()、更新update()代替）
 	 * @return \think\Response
 	 * @throws ApiException
 	 */
@@ -159,25 +219,6 @@ class Device extends Base
 		}else{
 			$message['status']=0;
 			$message['words']='添加失败';
-		}
-		return json($message);
-	}
-
-	/**
-	 * 获取广告屏基本信息
-	 * @param $id
-	 * @return \think\response\Json
-	 */
-	public function read($id){
-        $device = Db::name('device')->find($id);
-		
-		if (!empty($device)) {
-			$message['data'] = $device;
-			$message['status'] = 1;
-			$message['words'] = '获取成功';
-		}else{
-			$message['status'] = 0;
-			$message['words'] = '获取失败';
 		}
 		return json($message);
 	}
@@ -205,8 +246,7 @@ class Device extends Base
 	 * 获取广告屏品牌
 	 * @return \think\response\Json
 	 */
-
-   public function getDeviceBrand()
+	public function getDeviceBrand()
     {
         $brand= config('code.device_brand'); 
         $data = []; // 定义二维数组列表
@@ -222,8 +262,7 @@ class Device extends Base
 	 * 获取广告屏型号
 	 * @return \think\response\Json
 	 */
-
-   public function getDeviceModel()
+	public function getDeviceModel()
     {
         $form=input();
         $model= config('code.device_model'); 
@@ -241,7 +280,7 @@ class Device extends Base
 	 * 获取广告屏尺寸
 	 * @return \think\response\Json
 	 */
-   public function getDeviceSize()
+	public function getDeviceSize()
     {
         $size= config('code.device_size'); 
         $data = []; // 定义二维数组列表
@@ -256,7 +295,7 @@ class Device extends Base
 	 * 获取广告屏状态
 	 * @return \think\response\Json
 	 */
-   public function getDeviceStatus()
+	public function getDeviceStatus()
     {
         $status= config('code.device_status'); 
         $data = []; // 定义二维数组列表
@@ -272,7 +311,7 @@ class Device extends Base
 	 * 获取广告屏等级
 	 * @return \think\response\Json
 	 */
-   public function getDeviceLevel()
+	public function getDeviceLevel()
     {
         $level= config('code.device_level'); 
         $data = []; // 定义二维数组列表
@@ -283,32 +322,24 @@ class Device extends Base
         return show(config('code.success'), 'OK', $data);
     }
 
-
 	/**
 	 * 获取店铺列表
 	 * @return \think\response\Json
 	 */
-   public function getDeviceShop()
+	public function getDeviceShop()
     {
-        $match['status']=1;
-        $shoplist=Db::name('shop')->where($match)->field('shop_id,shop_name,device_quantity,plan_quantity')->select();
-		
-	    if(!empty($shoplist)){
-            
-            foreach ($shoplist as $key => $value){
-            	  if($value['device_quantity']>=$value['plan_quantity']){
-            	  	      array_splice($shoplist,$key,1);
-            	  }
+        $map['status'] = 1;
+        $shopList = Db::name('shop')->where($map)->field('shop_id,shop_name,device_quantity,plan_quantity')->select();
+
+	    if (!empty($shopList)) {
+            foreach ($shopList as $key => $value){
+				if ($value['device_quantity'] >= $value['plan_quantity']) {
+					array_splice($shopList, $key, 1);
+				}
             }
-            return show(config('code.success'), 'OK', $shoplist);
-
-		}else{   
-			$data['words']="没有店铺有空闲安装";
-            return show(config('code.error'), 'OK', $data);
+            return show(config('code.success'), 'OK', $shopList);
+		} else {
+            return show(config('code.error'), '没有店铺有空闲安装', [], 404);
 		}
-
     }
-
-
-
 }
