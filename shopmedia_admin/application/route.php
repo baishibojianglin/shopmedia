@@ -79,6 +79,9 @@ Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列�
 // 店铺周边环境
 Route::get('shop_environment', 'admin/ShopCate/shopEnvironment'); // 店铺环境列表（不分页）
 
+// 活动
+Route::resource('activity', 'admin/Activity');
+
 // 新闻
 Route::resource('news', 'admin/News');
 // 新闻类别

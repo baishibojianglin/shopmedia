@@ -75,6 +75,16 @@
 								</div>
 							</el-collapse-transition>
 							
+							<dt @click="menush(10)">
+								<span class="el-icon-present" id="menu10"> 活动管理</span>
+								<span class="fr derection" :class="menuvalue[10]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[10]">
+									<router-link to="/home/activity"><dd id='menu101' :class="activevalue[101]?activeclass:''"  @click="menuactive(101,10,1)">活动</dd></router-link>
+								</div>
+							</el-collapse-transition>
+							
 							<dt @click="menush(8)">
 								<span class="el-icon-news" id="menu8"> 新闻管理</span>
 								<span class="fr derection" :class="menuvalue[8]?derectionup:derectiondown"></span>
