@@ -86,6 +86,7 @@ class AuthRule extends Base
             // 判断是否新增成功：获取id
             if ($id) {
                 @cache('auth_rule_tree', null); // 删除缓存
+                @session(null, config('admin.session_admin_auth_rule_scope'));
                 return show(config('code.success'), '权限规则新增成功', '', 201);
             } else {
                 return show(config('code.error'), '权限规则新增失败', '', 403);
@@ -244,6 +245,7 @@ class AuthRule extends Base
                 return show(config('code.error'), '删除失败', '', 403);
             } else {
                 @cache('auth_rule_tree', null); // 删除缓存
+                @session(null, config('admin.session_admin_auth_rule_scope'));
                 return show(config('code.success'), '删除成功', '');
             }
         } else {

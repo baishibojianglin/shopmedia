@@ -30,7 +30,7 @@
 					</el-col>
 				</el-row>
 				<!-- 用户信息 s -->
-				<el-row :gutter="20" type="flex" justify="space-between">
+				<el-row v-if="formInline.role_id" :gutter="20" type="flex" justify="space-between">
 					<el-col :span="24">
 						<el-tag type="" effect="plain"><span v-if="formInline.role_id == 3">店家</span><span v-if="formInline.role_id == 6">店铺业务员</span>：{{user_name}}</el-tag>
 						<el-tag v-if="formInline.role_id == 6" type="danger" effect="plain" style="margin-left: 5px;">店铺状态合计：启用 {{count.status_enable_count}}，禁用 {{count.status_disable_count}}，待审核 {{count.status_pending_count}}，驳回 {{count.status_reject_count}}</el-tag>
