@@ -31,14 +31,15 @@
 				<el-table :data="activityList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="act_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="act_name" label="活动名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '草稿', value: 0 }, { text: '通过', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }, { text: '发布', value: 4 }, { text: '下架', value: 5 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="start_time" label="开始时间" width="180"></el-table-column>
+					<el-table-column prop="end_time" label="结束时间" width="180"></el-table-column>
+					<el-table-column prop="times" label="每人每天抽奖限制次数" width="180"></el-table-column>
+					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
+					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span v-for="(item, index) in {0: 'text-info', 4: 'text-success', 2: 'text-warning', 3: 'text-danger'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
-					<el-table-column prop="update_time" label="更新时间" width="180"></el-table-column>
-					<el-table-column prop="publish_time" label="发布时间" width="180"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toActivityEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>

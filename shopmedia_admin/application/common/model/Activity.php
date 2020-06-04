@@ -11,6 +11,12 @@ use think\Model;
  */
 class Activity extends Base
 {
+    // 数据库配置
+    protected $connection = [
+        // 时间字段取出后的默认时间格式
+        'datetime_format' => false
+    ];
+
     /**
      * 获取活动列表数据（基于paginate()自动化分页）
      * @param array $map

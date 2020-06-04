@@ -41,6 +41,7 @@ class Activity extends Base
                 return show(config('code.error'), 'Not Found', '', 404);
             }
             $status = config('code.status');
+            try {
             foreach ($data as $key => $value) {
                 // 处理数据
                 $data[$key]['start_time'] = date('Y-m-d H:i:s', $value['start_time']); // 活动开始时间
@@ -48,7 +49,9 @@ class Activity extends Base
                 $data[$key]['create_time'] = date('Y-m-d H:i:s', $value['create_time']); // 活动创建时间
                 $data[$key]['status_msg'] = $status[$value['status']]; // 定义status_msg
             }
-
+            } catch (\Exception $e) {
+                return show(config('code.error'), $e->getMessage(), '');
+            }
             return show(config('code.success'), 'OK', $data);
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
@@ -56,7 +59,7 @@ class Activity extends Base
     }
 
     /**
-     * 保存新建的新闻资源
+     * 保存新建的活动资源
      * @param Request $request
      * @return \think\response\Json
      * @throws ApiException
@@ -68,32 +71,36 @@ class Activity extends Base
             // 传入的参数
             $data = input('post.');
 
-            // validate验证
-            /*$validate = validate('News');
+            // TODO：validate验证
+            /*$validate = validate('');
             if (!$validate->check($data)) {
                 return show(config('code.error'), $validate->getError(), [], 403);
             }*/
 
-            // TODO：处理数据
+            // 处理数据
+            if (isset($data['act_datetime']) && !empty($data['act_datetime'])) {
+                $data['start_time'] = strtotime($data['act_datetime'][0]); // 活动开始时间
+                $data['end_time'] = strtotime($data['act_datetime'][1]); // 活动结束时间
+            }
 
-            // 新增
+            // 入库操作
             // 捕获异常
             try {
-                $id = model('News')->add($data, 'news_id'); // 新增
+                $id = model('Activity')->add($data, 'act_id'); // 新增
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
             // 判断是否新增成功：获取id
             if ($id) {
-                return show(config('code.success'), '新闻新增成功', '', 201);
+                return show(config('code.success'), '新增成功', '', 201);
             } else {
-                return show(config('code.error'), '新闻新增失败', '', 403);
+                return show(config('code.error'), '新增失败', '', 403);
             }
         }
     }
 
     /**
-     * 显示指定的新闻资源
+     * 显示指定的活动资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -103,7 +110,7 @@ class Activity extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-                $data = model('News')->find($id);
+                $data = model('Activity')->find($id);
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
@@ -111,11 +118,13 @@ class Activity extends Base
             if ($data) {
                 // 处理数据
                 // 定义status_msg
-                $articleStatus = config('code.article_status');
-                $data['status_msg'] = $articleStatus[$data['status']];
+                $status = config('code.status');
+                $data['status_msg'] = $status[$data['status']];
 
                 return show(config('code.success'), 'ok', $data);
             }
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
         }
     }
 
@@ -128,6 +137,11 @@ class Activity extends Base
      */
     public function update(Request $request, $id)
     {
+        // 判断为PUT请求
+        if (!request()->isPut()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
         // 传入的参数
         $param = input('param.');
 
@@ -203,6 +217,11 @@ class Activity extends Base
      */
     public function delete($id)
     {
+        // 判断为DELETE请求
+        if (!request()->isDelete()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
         // 显示指定的新闻资源
         try {
             $data = model('News')->find($id);

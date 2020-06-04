@@ -24,9 +24,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="ad_datetime" label="投放时间">
-						<el-date-picker v-model="form.ad_datetime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
-						 end-placeholder="结束日期">
-						</el-date-picker>
+						<el-date-picker v-model="form.ad_datetime" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
 					</el-form-item>
 					<el-form-item prop="ad_time" label="每日播放时间段">
 						<el-time-picker is-range v-model="form.ad_time" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间"
@@ -115,7 +113,7 @@
 					],
 					ad_cate_id: [{required: true, message: '请选择广告类别', trigger: 'change'}],
 					ad_price: [{required: true, message: '请输入广告价格', trigger: 'blur'}],
-					ad_datetime: [{ /* type: 'date', */ required: true, message: '请选择投放时间',trigger: 'change'}],
+					ad_datetime: [{ /* type: 'date', */ required: true, message: '请选择投放时间', trigger: 'change'}],
 					ad_time: [{ /* type: 'date', */ required: true, message: '每日播放时间段', trigger: 'change'}],
 					play_times: [{required: true, message: '请输入每日播放次数', trigger: 'blur'}],
 					advertiser: [

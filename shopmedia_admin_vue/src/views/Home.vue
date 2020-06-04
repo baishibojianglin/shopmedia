@@ -39,7 +39,7 @@
 							
 							
 							<dt @click="menush(6)">
-								<span class="el-icon-wind-power" id="menu6"> 广告管理</span>
+								<span class="el-icon-s-flag" id="menu6"> 广告管理</span>
 								<span class="fr derection" :class="menuvalue[6]?derectionup:derectiondown"></span>
 							</dt>
 							<el-collapse-transition>
