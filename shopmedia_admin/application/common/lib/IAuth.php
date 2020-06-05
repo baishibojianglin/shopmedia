@@ -66,14 +66,14 @@ class IAuth
         if(config('app_debug') == false) { // TODO：生产环境关闭应用调试模式
             // sign有效时间判定(该验证存在客户端和服务端时间不统一的bug,先不做验证)
             if ((time() - ceil($arr['time'] / 1000)) > config('app.app_sign_time')) {
-                return false;
+                //return false;
             }
 
             // sign唯一性判定
             if (Cache::get($data['commonheader']['sign'])) {
-                return false; // 表示sign只能请求一次
+                //return false; // 表示sign只能请求一次
             }
-         }
+        }
         return true;
     }
 

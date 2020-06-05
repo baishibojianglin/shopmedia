@@ -61,6 +61,10 @@ import AdEdit from '@/pages/ad/AdEdit.vue'
 import PartnerOrder from '@/pages/partner_order/PartnerOrder.vue'
 import PartnerOrderCreate from '@/pages/partner_order/PartnerOrderCreate.vue'
 import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
+// 活动管理
+import Activity from '@/pages/activity/Activity.vue'
+import ActivityCreate from '@/pages/activity/ActivityCreate.vue'
+import ActivityEdit from '@/pages/activity/ActivityEdit.vue'
 // 新闻管理
 import News from '@/pages/news/News.vue'
 import NewsCreate from '@/pages/news/NewsCreate.vue'
@@ -143,6 +147,10 @@ const routes = [
 			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告屏合作商订单
 			{path: 'partner_order_create', name: 'partner_order_create', component: PartnerOrderCreate}, // 创建广告屏合作商订单
 			{path: 'partner_order_edit', name: 'partner_order_edit', component: PartnerOrderEdit}, // 编辑广告屏合作商订单
+			// 2--活动管理
+			{path: 'activity', name: 'activity', component: Activity}, // 活动列表
+			{path: 'activity_create', name: 'activity_create', component: ActivityCreate}, // 新增活动
+			{path: 'activity_edit', name: 'activity_edit', component: ActivityEdit}, // 编辑活动
 			// 2--新闻管理
 			{path: 'news', name: 'news', component: News}, // 新闻列表
 			{path: 'news_create', name: 'news_create', component: NewsCreate}, // 新增新闻

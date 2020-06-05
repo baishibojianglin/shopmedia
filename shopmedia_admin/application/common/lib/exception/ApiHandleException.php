@@ -42,6 +42,6 @@ class ApiHandleException extends Handle
         }
 
         //return json($e->getMessage(), $this->httpCode);
-        return show(0, $e->getMessage(), '', $this->httpCode);
+        return show(0, $e->getMessage(), [], $this->httpCode);
     }
 }

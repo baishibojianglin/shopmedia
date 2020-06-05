@@ -332,6 +332,9 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarBackgroundColor": "#409EFF", // #3F44F3
-		"backgroundColor": "#fff"
+		"backgroundColor": "#fff",
+		"usingComponents": {
+			"ly-tree-node": "/components/ly-tree/ly-tree-node"
+		}
 	}
 }

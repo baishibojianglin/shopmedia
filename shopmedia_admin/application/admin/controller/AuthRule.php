@@ -86,6 +86,7 @@ class AuthRule extends Base
             // 判断是否新增成功：获取id
             if ($id) {
                 @cache('auth_rule_tree', null); // 删除缓存
+                @session(null, config('admin.session_admin_auth_rule_scope'));
                 return show(config('code.success'), '权限规则新增成功', '', 201);
             } else {
                 return show(config('code.error'), '权限规则新增失败', '', 403);
@@ -244,6 +245,7 @@ class AuthRule extends Base
                 return show(config('code.error'), '删除失败', '', 403);
             } else {
                 @cache('auth_rule_tree', null); // 删除缓存
+                @session(null, config('admin.session_admin_auth_rule_scope'));
                 return show(config('code.success'), '删除成功', '');
             }
         } else {
@@ -332,12 +334,14 @@ class AuthRule extends Base
 
         // 查询
         try {
-            $data = model('AuthRule')->field('id, name, title, pid, level')->where($map)->select();
+            $data = model('AuthRule')->field('id, name, title, type, pid, level')->where($map)->select();
         } catch (\Exception $e) {
             return show(config('code.error'), '请求异常', '', 500); // $e->getMessage()
         }
         if ($data) {
             foreach ($data as $key => $value) {
+                $type = $data[$key]['type'] == 1 ? 'url' : ($data[$key]['type'] == 2 ? 'menu' : '其他'); // 规则类型
+                $data[$key]['title_type'] = $data[$key]['title'] . '/' . $type; // 定义规则中文名称与类型
                 // 判断是否存在子级Auth权限规则
                 $sonAuthRuleCount = model('AuthRule')->field('id')->where(['pid' => $value['id']])->count();
                 $data[$key]['children_count'] = $sonAuthRuleCount; // 定义 children_count

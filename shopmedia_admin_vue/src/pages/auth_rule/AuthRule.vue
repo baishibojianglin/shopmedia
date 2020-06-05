@@ -31,7 +31,7 @@
 					<el-table-column prop="type" label="权限规则类型" min-width="120"></el-table-column>
 					<el-table-column prop="pid" label="上级序号" width="90"></el-table-column>
 					<el-table-column prop="level" label="级别" width="90"></el-table-column>
-					<el-table-column prop="icon" label="图标" width="90">
+					<el-table-column prop="icon" label="图标" width="70">
 						<template slot-scope="scope"><i :class="scope.row.icon" :title="scope.row.icon"></i></template>
 					</el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">

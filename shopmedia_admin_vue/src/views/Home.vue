@@ -39,7 +39,7 @@
 							
 							
 							<dt @click="menush(6)">
-								<span class="el-icon-wind-power" id="menu6"> 广告管理</span>
+								<span class="el-icon-s-flag" id="menu6"> 广告管理</span>
 								<span class="fr derection" :class="menuvalue[6]?derectionup:derectiondown"></span>
 							</dt>
 							<el-collapse-transition>
@@ -72,6 +72,16 @@
 							<el-collapse-transition>
 								<div v-show="menuvalue[7]">
 									<router-link to="/home/partner_order"><dd id='menu71' :class="activevalue[71]?activeclass:''"  @click="menuactive(71,7,1)">合作商订单</dd></router-link>
+								</div>
+							</el-collapse-transition>
+							
+							<dt @click="menush(10)">
+								<span class="el-icon-present" id="menu10"> 活动管理</span>
+								<span class="fr derection" :class="menuvalue[10]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[10]">
+									<router-link to="/home/activity"><dd id='menu101' :class="activevalue[101]?activeclass:''"  @click="menuactive(101,10,1)">活动</dd></router-link>
 								</div>
 							</el-collapse-transition>
 							

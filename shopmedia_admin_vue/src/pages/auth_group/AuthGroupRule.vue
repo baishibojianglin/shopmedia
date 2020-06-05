@@ -39,7 +39,7 @@
 		data() {
 			return {
 				props: {
-					label: 'title',
+					label: 'title_type',
 					isLeaf: 'leaf' // 指定节点是否为叶子节点
 				},
 

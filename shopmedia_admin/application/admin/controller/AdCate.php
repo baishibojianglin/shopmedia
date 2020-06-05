@@ -13,16 +13,6 @@ use think\Request;
 class AdCate extends Base
 {
     /**
-     * 显示广告类别资源列表
-     *
-     * @return \think\Response
-     */
-    public function index()
-    {
-        
-    }
-
-    /**
      * 广告类别列表（不分页，用于 Select 选择器等）
      * @return \think\response\Json
      */
