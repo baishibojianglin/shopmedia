@@ -31,5 +31,20 @@ class Ad extends AuthBase
              
     }
 
+      /**
+     * 获取广告屏数量
+     * @return \think\response\Json
+     */
+    public function getDeviceNumber()
+    {
+
+         $match['status']=1;
+         $devicenumber=Db::name('device')->where($match)->count();
+         if(!empty($devicenumber)){
+            return json($devicenumber);
+         }
+             
+    }  
+
 
 }

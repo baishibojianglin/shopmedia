@@ -34,7 +34,7 @@ Route::get('get_region_list', 'admin/Region/getRegionList'); // 获取区域列�
 // 分公司
 Route::resource('company', 'admin/company');
 Route::get('company_tree', 'admin/company/companyTree'); // 分公司列表树
-Route::post('createCompany', 'admin/Company/createCompany'); // 创建分公司
+//Route::post('createCompany', 'admin/Company/createCompany'); // 创建分公司
 Route::post('getCompany', 'admin/Company/getCompany'); // 获取分公司基本信息
 
 // 用户角色
@@ -168,5 +168,6 @@ Route::put('api/deleimg', 'api/Upload/deleimg');
 Route::get('api/get-total-data', 'api/Index/getTotalData');
 //获取省份
 Route::post('api/get-province', 'api/Ad/getzonelist');
+Route::get('api/get-device-number', 'api/Ad/getDeviceNumber');//获取广告屏数量
 
 /* -------------------- 客户端路由 -------------------- e */
