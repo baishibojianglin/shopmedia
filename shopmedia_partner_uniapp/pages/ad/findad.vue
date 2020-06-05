@@ -31,7 +31,22 @@
 		
 		<view class="line4 fon16 main-color">选择投放区域</view>
 		<uni-card :is-shadow="true">
+			
+			<!-- SegmentedControl 分段器 s -->
 			<view>
+				<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
+				<view class="">
+					<view v-if="segmentedControl.current === 0">
+						<ly-tree v-if="isReady" :props="props" node-key="name" :load="loadNode" lazy />
+					</view>
+					<view v-if="segmentedControl.current === 1">
+						1
+					</view>
+				</view>
+			</view>
+			<!-- SegmentedControl 分段器 e -->
+			
+			<view v-if="false">
 				<view class="input-line-height" >
 					<view class="input-line-height-1">投放省份 <text class="main-color line-blue">|</text></view>
 					<picker @change="bindProvincePickerChange" class="input-line-height-2" :value="ProvinceIndex" :range="ProvinceList" range-key="province_name">
@@ -41,17 +56,19 @@
 				</view>
 			</view>	
 		</uni-card>
-
-		
-
-
 	</view>
 </template>
 
 <script>
 	import {mapState} from 'vuex';
+	import LyTree from '@/components/ly-tree/ly-tree.vue'
+	
+	var _self;
 	
 	export default {
+		components: {
+			LyTree
+		},
 		data() {
 			return {
 				cate:'',//广告类别id
@@ -62,7 +79,20 @@
 				CateIndex:0,
 				
 				ProvinceList:[{region_id:'',region_name:''}],
-				ProvinceIndex:0
+				ProvinceIndex:0,
+				
+				// SegmentedControl 分段器
+				segmentedControl: {
+					items: ['全区域', '附近'],
+					current: 0
+				},
+				
+				isReady: false,
+				props: {
+					label: 'name',
+					children: 'zones',
+					isLeaf: 'leaf'
+				}
 			}
 		},
 		computed: {
@@ -71,6 +101,9 @@
 		onLoad() {
 			this.getShopCateList();
 			this.getProvince(0);
+			
+			_self = this;
+			this.isReady = true;
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
@@ -143,8 +176,6 @@
 					}
 				})
 			},
-	
-			
 
 			/**
 			 * 广告类别
@@ -165,7 +196,40 @@
 				this.province=e.target.value;
 			},
 
-
+			/**
+			 * SegmentedControl 分段器组件触发点击事件时触发
+			 * @param {Object} e
+			 */
+			onClickItem(e) {
+				if (this.segmentedControl.current !== e.currentIndex) {
+					this.segmentedControl.current = e.currentIndex;
+				}
+			},
+			
+			loadNode(node, resolve) {
+				// _self.xxx; 这里用_self而不是this
+				
+				if (node.level === 0) {
+					setTimeout(() => {
+						resolve([{
+							name: 'region'
+						}]);
+					}, 1000);
+				} else {
+					if (node.level > 1) return resolve([]);
+					
+					setTimeout(() => {
+						const data = [{
+							name: 'leaf',
+							leaf: true
+						}, {
+							name: 'zone'
+						}];
+					
+						resolve(data);
+					}, 500);
+				}
+			}
 		}
 	}
 </script>

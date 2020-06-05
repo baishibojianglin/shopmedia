@@ -13,27 +13,6 @@ use think\Request;
  */
 class Ad extends Base
 {
-
-    /**
-     * 显示广告资源列表
-     *
-     * @return \think\Response
-     */
-    public function getAdCate()
-    {
-        $adcate= config('code.ad_cate'); 
-        $data = []; // 定义二维数组列表
-        // 处理数据，将一维数组转成二维数组
-        foreach ($adcate as $key => $value) {
-            $data[] = ['adcate_id' => $key, 'adcate_name' => $value];
-        }
-        return show(config('code.success'), 'OK', $data);
-    }
-
-
-
-
-
     /**
      * 显示广告资源列表
      *

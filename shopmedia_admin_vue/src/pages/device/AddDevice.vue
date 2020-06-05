@@ -313,12 +313,12 @@
 			 */
 			getadcate() {
 				let self = this;
-				this.$axios.get(this.$url + 'get_ad_cate')
+				this.$axios.get(this.$url + 'ad_cate_list')
 				.then(function(response) {
 					response.data.data.forEach((value, index) => {
 						self.$set(self.remove_options, index, {
-							value: value.adcate_id,
-							label: value.adcate_name
+							value: value.cate_id,
+							label: value.cate_name
 						});
 					})
 				})

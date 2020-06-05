@@ -334,12 +334,14 @@ class AuthRule extends Base
 
         // 查询
         try {
-            $data = model('AuthRule')->field('id, name, title, pid, level')->where($map)->select();
+            $data = model('AuthRule')->field('id, name, title, type, pid, level')->where($map)->select();
         } catch (\Exception $e) {
             return show(config('code.error'), '请求异常', '', 500); // $e->getMessage()
         }
         if ($data) {
             foreach ($data as $key => $value) {
+                $type = $data[$key]['type'] == 1 ? 'url' : ($data[$key]['type'] == 2 ? 'menu' : '其他'); // 规则类型
+                $data[$key]['title_type'] = $data[$key]['title'] . '/' . $type; // 定义规则中文名称与类型
                 // 判断是否存在子级Auth权限规则
                 $sonAuthRuleCount = model('AuthRule')->field('id')->where(['pid' => $value['id']])->count();
                 $data[$key]['children_count'] = $sonAuthRuleCount; // 定义 children_count
