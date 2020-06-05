@@ -32,9 +32,11 @@ Route::get('lazy_load_region_tree', 'admin/Region/lazyLoadRegionTree'); // 懒�
 Route::get('get_region_list', 'admin/Region/getRegionList'); // 获取区域列表数据（用于级联选择器等）
 
 // 分公司
+
 Route::resource('company', 'admin/Company');
 Route::get('company_tree', 'admin/Company/companyTree'); // 分公司列表树
 //Route::post('createCompany', 'admin/Company/createCompany'); // 创建分公司
+
 
 // 用户角色
 Route::resource('user_role', 'admin/UserRole');

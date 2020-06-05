@@ -1,6 +1,5 @@
 <template>
 	<view class="content">
-
 		<view class="line4 fon16 main-color">填写基本信息</view>
 		<uni-card :is-shadow="true">
 			<view>
@@ -12,8 +11,7 @@
 				</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="days" />天
-				</view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="days" />天</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
 					<view class="input-line-height-2">
@@ -90,7 +88,7 @@
 					region_name: ''
 				}],
 				ProvinceIndex: 0,
-
+				
 				// SegmentedControl 分段器
 				segmentedControl: {
 					items: ['全区域', '附近'],
@@ -118,7 +116,14 @@
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad() {
-			this.getShopCateList();
+			this.getShopCateList();//类别
+			//初始化日历
+			let mydate=new Date();
+			let month=mydate.getMonth()+1;
+			this.startdate=mydate.getFullYear()+'-'+month+'-'+mydate.getDate();
+			//广告屏数量
+			this.getDeviceNumber();
+			//获取区域
 			this.getProvince(0);
 
 			_self = this;
@@ -128,15 +133,42 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
-			open() {
-				this.$refs.calendar.open();
-			},
-			confirm(e) {
-				console.log(e);
+			/**
+			 * 获取广告屏数量
+			 */
+			getDeviceNumber(){
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/get-device-number',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						self.device_number=res.data;
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})							
 			},
 
 			/**
-			 * 获取省份
+			 * 日历
+			 */
+			open(){
+				this.$refs.calendar.open();
+			},
+			confirm(e) {
+				this.startdate=e.fulldate;
+			},
+			
+			/**
+			 * 获取区域
 			 */
 			getProvince(parent_id) {
 				let self = this;
@@ -210,6 +242,15 @@
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.CateIndex = e.target.value;
 				this.cate = e.target.value;
+			},
+			/**
+			 * 投放范围
+			 * @param {Object} e
+			 */
+			bindRangePickerChange: function(e) {
+				// console.log('picker发送选择改变，携带值为', e.target.value)
+				this.RangeIndex = e.target.value;
+				this.range=e.target.value;
 			},
 			/**
 			 * 选择地区

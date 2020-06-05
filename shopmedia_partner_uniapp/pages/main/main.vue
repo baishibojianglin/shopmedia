@@ -33,7 +33,7 @@
         <uni-card  :is-shadow='true'>
 			<view class="navcon">
 				<view class="navcon-item" @click="usead()">
-					<text class="iconposition icon color-blue iconbg">&#xe636;</text>
+					<text class="iconposition icon color-white iconbg-ad">&#xe636;</text>
 					<br />
 					<text>投放广告</text>
 				</view>
@@ -263,7 +263,15 @@
 		line-height: 50px;
 		display: inline-block;
 	}
-
+	.iconbg-ad{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color: #409EFF;
+	}
 	.navcon {
 		display: flex;
 		flex-flow: row wrap;
