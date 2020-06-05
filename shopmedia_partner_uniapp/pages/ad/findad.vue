@@ -1,6 +1,8 @@
 <template>
 	<view class="content">
+
 		<view class="line4 fon16 main-color">填写基本信息</view>
+
 		<uni-card :is-shadow="true">
 			<view>
 				<view class="input-line-height">
@@ -10,6 +12,7 @@
 					</picker>
 				</view>
 				<view class="input-line-height">
+
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
 					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="days" />天</view>
 				<view class="input-line-height">
@@ -19,6 +22,7 @@
 					</view>
 					<uni-calendar ref="calendar" :insert="false" @confirm="confirm" />
 					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
+
 				</view>
 			</view>
 		</uni-card>
@@ -56,7 +60,10 @@
 						<input v-show="false" type="text" v-model="cate" />
 					</picker>
 				</view>
+
 			</view>
+
+
 		</uni-card>
 	</view>
 </template>
@@ -73,6 +80,7 @@
 		},
 		data() {
 			return {
+
 				cate: '', //广告类别id
 				days: '', //投放天数
 				province: '', //省份id
@@ -89,6 +97,7 @@
 				}],
 				ProvinceIndex: 0,
 				
+
 				// SegmentedControl 分段器
 				segmentedControl: {
 					items: ['全区域', '附近'],
@@ -133,6 +142,7 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
+
 			/**
 			 * 获取广告屏数量
 			 */
@@ -168,6 +178,7 @@
 			},
 			
 			/**
+
 			 * 获取区域
 			 */
 			getProvince(parent_id) {
@@ -242,6 +253,15 @@
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.CateIndex = e.target.value;
 				this.cate = e.target.value;
+			},
+			/**
+			 * 投放范围
+			 * @param {Object} e
+			 */
+			bindRangePickerChange: function(e) {
+				// console.log('picker发送选择改变，携带值为', e.target.value)
+				this.RangeIndex = e.target.value;
+				this.range=e.target.value;
 			},
 			/**
 			 * 投放范围
