@@ -1,35 +1,28 @@
 <template>
 	<view class="content">
-
 		<view class="line4 fon16 main-color">填写基本信息</view>
-
 		<uni-card :is-shadow="true">
 			<view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
-					<picker @change="bindCatePickerChange" class="input-line-height-2" :value="CateIndex" :range="CateList" range-key="cate_name">
-						<view style="font-size: 15px; padding-left: 15px;">{{CateList[CateIndex].cate_name}}</view>
+					<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
+						<view style="font-size: 15px; padding-left: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
 					</picker>
 				</view>
 				<view class="input-line-height">
-
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
 					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="days" />天</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
-					<view class="input-line-height-2">
-
-					</view>
+					<view class="input-line-height-2"></view>
 					<uni-calendar ref="calendar" :insert="false" @confirm="confirm" />
 					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
-
 				</view>
 			</view>
 		</uni-card>
 
 		<view class="line4 fon16 main-color">选择投放区域</view>
 		<uni-card :is-shadow="true">
-
 			<!-- SegmentedControl 分段器 s -->
 			<view>
 				<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem"
@@ -50,18 +43,20 @@
 				</view>
 			</view>
 			<!-- SegmentedControl 分段器 e -->
-
-			<view v-if="false">
-				<view class="input-line-height">
-					<view class="input-line-height-1">投放省份 <text class="main-color line-blue">|</text></view>
-					<picker @change="bindProvincePickerChange" class="input-line-height-2" :value="ProvinceIndex" :range="ProvinceList"
-					 range-key="province_name">
-						<view style="font-size: 15px; padding-left: 15px;">{{ProvinceList[ProvinceIndex].region_name}}</view>
-						<input v-show="false" type="text" v-model="cate" />
-					</picker>
-				</view>
+		</uni-card>
+		
+		<view class="line4 fon16 main-color">选择投放广告屏</view>
+		<uni-card :is-shadow="true">
+			<view class="uni-list">
+				<checkbox-group @change="deviceCheckboxChange">
+					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.value">
+						<view>
+							<checkbox :value="item.value" :checked="item.checked" />
+						</view>
+						<view>{{item.name}}</view>
+					</label>
+				</checkbox-group>
 			</view>
-
 		</uni-card>
 	</view>
 </template>
@@ -78,23 +73,11 @@
 		},
 		data() {
 			return {
+				cate: '', // 店铺类别id
+				days: '', // 投放天数
 
-				cate: '', //广告类别id
-				days: '', //投放天数
-				province: '', //省份id
-
-				CateList: [{
-					cate_id: '',
-					cate_name: ''
-				}], // 广告类别列表
-				CateIndex: 0,
-
-				ProvinceList: [{
-					region_id: '',
-					region_name: ''
-				}],
-				ProvinceIndex: 0,
-				
+				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
+				shopCateIndex: 0,
 
 				// SegmentedControl 分段器
 				segmentedControl: {
@@ -115,23 +98,37 @@
 					label: 'region_name',
 					// children: 'zones',
 					isLeaf: 'leaf'
-				}
+				},
 				/* 区域 Tree 树形数据 e */
+				
+				deviceList: [
+					{
+						value: 'CHN',
+						name: '中国',
+						checked: 'true'
+					},
+					{
+						value: 'BRA',
+						name: '巴西'
+					},
+					{
+						value: 'JPN',
+						name: '日本'
+					}
+				], // 广告屏列表
 			}
 		},
 		computed: {
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad() {
-			this.getShopCateList();//类别
+			this.getShopCateList();
 			//初始化日历
 			let mydate=new Date();
 			let month=mydate.getMonth()+1;
 			this.startdate=mydate.getFullYear()+'-'+month+'-'+mydate.getDate();
 			//广告屏数量
 			this.getDeviceNumber();
-			//获取区域
-			this.getProvince(0);
 
 			_self = this;
 			this.isReady = true;
@@ -140,7 +137,6 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
-
 			/**
 			 * 获取广告屏数量
 			 */
@@ -174,43 +170,6 @@
 			confirm(e) {
 				this.startdate=e.fulldate;
 			},
-			
-			/**
-
-			 * 获取区域
-			 */
-			getProvince(parent_id) {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/get-province',
-					data: {
-						parent_id: parent_id
-					},
-					header: {
-						'commonheader': this.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'POST',
-					success: function(res) {
-						res.data.forEach((value, index) => {
-							//省级
-							if (value.level == 1) {
-								self.$set(self.ProvinceList, index, {
-									region_id: value.region_id,
-									region_name: value.region_name
-								});
-							}
-						})
-
-					},
-					fail(error) {
-						uni.showToast({
-							icon: 'none',
-							title: '请求异常'
-						});
-					}
-				})
-			},
 
 			/**
 			 * 获取店铺类别列表
@@ -227,7 +186,7 @@
 					success: function(res) {
 						if (res.data.status == 1) {
 							res.data.data.forEach((value, index) => {
-								self.$set(self.CateList, index, {
+								self.$set(self.shopCateList, index, {
 									cate_id: value.cate_id,
 									cate_name: value.cate_name
 								});
@@ -244,13 +203,12 @@
 			},
 
 			/**
-			 * 广告类别
+			 * 改变选择店铺类别
 			 * @param {Object} e
 			 */
-			bindCatePickerChange: function(e) {
+			bindShopCatePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.CateIndex = e.target.value;
-				this.cate = e.target.value;
+				this.shopCateIndex = e.target.value;
 			},
 			/**
 			 * 投放范围
@@ -269,15 +227,6 @@
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.RangeIndex = e.target.value;
 				this.range=e.target.value;
-			},
-			/**
-			 * 选择地区
-			 * @param {Object} e
-			 */
-			bindProvincePickerChange: function(e) {
-				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.ProvinceIndex = e.target.value;
-				this.province = e.target.value;
 			},
 
 			/**
@@ -318,7 +267,7 @@
 				// _self.xxx; 这里用_self而不是this
 				console.log(221, node)
 				// 首次进入查询第一级
-				let parent_id = 33008; // 四川省
+				let parent_id = 33008; // 成都市
 				let level = 3;
 				if (node.data) { // 逐级查询
 					parent_id = node.data.region_id;
@@ -371,8 +320,41 @@
 				// }
 				
 				console.log('handleCheck', obj);
-			}
+				this.getDeviceList();
+			},
 			/* 区域 Tree 树形数据 e */
+			
+			/**
+			 * 获取广告屏列表
+			 */
+			getDeviceList() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/device_list',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						console.log('deviceList', res)
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
+			},
+			
+			/**
+			 * 改变选择广告屏
+			 * @param {Object} e
+			 */
+			deviceCheckboxChange(e) {
+				console.log('deviceCheckboxChange', e)
+			}
 		}
 	}
 </script>

@@ -69,7 +69,7 @@ Route::resource('ad', 'admin/Ad');
 // 广告类别
 Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（不分页）
 
-// 店家店铺
+// 店铺
 Route::resource('shop', 'admin/Shop');
 Route::get('shop_count', 'admin/Shop/getShopCount'); // 统计店铺数据
 // 店铺类别
@@ -144,7 +144,7 @@ Route::resource('api/partner_order', 'api/PartnerOrder');
 Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
 Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 
-// 店家店铺
+// 店铺
 Route::resource('api/shop', 'api/Shop');
 // 店铺类别
 Route::get('api/shop_cate_list', 'api/ShopCate/shopCateList'); // 店铺类别列表（不分页）
@@ -163,8 +163,6 @@ Route::put('api/deleimg', 'api/Upload/deleimg');
 
 //获取整体广告屏、城市、商家数据
 Route::get('api/get-total-data', 'api/Index/getTotalData');
-//获取省份
-Route::post('api/get-province', 'api/Ad/getzonelist');
 Route::get('api/get-device-number', 'api/Ad/getDeviceNumber');//获取广告屏数量
 
 // 区域
