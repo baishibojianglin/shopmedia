@@ -340,8 +340,8 @@ class AuthRule extends Base
         }
         if ($data) {
             foreach ($data as $key => $value) {
-                $type = $data[$key]['type'] == 1 ? 'url' : ($data[$key]['type'] == 2 ? 'menu' : '其他'); // 规则类型
-                $data[$key]['title_type'] = $data[$key]['title'] . '/' . $type; // 定义规则中文名称与类型
+                $type = $data[$key]['type'] == 2 ? '【menu】' : ''; // 规则类型
+                $data[$key]['title_type'] = $data[$key]['title'] . $type; // 定义规则中文名称与类型
                 // 判断是否存在子级Auth权限规则
                 $sonAuthRuleCount = model('AuthRule')->field('id')->where(['pid' => $value['id']])->count();
                 $data[$key]['children_count'] = $sonAuthRuleCount; // 定义 children_count
