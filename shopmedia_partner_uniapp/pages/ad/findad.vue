@@ -60,9 +60,7 @@
 						<input v-show="false" type="text" v-model="cate" />
 					</picker>
 				</view>
-
 			</view>
-
 
 		</uni-card>
 	</view>
@@ -360,30 +358,6 @@
 					}
 				})
 			},
-			/* loadNode(node, resolve) {
-				// _self.xxx; 这里用_self而不是this
-
-				if (node.level === 0) {
-					setTimeout(() => {
-						resolve([{
-							name: 'region'
-						}]);
-					}, 1000);
-				} else {
-					if (node.level > 1) return resolve([]);
-
-					setTimeout(() => {
-						const data = [{
-							name: 'leaf',
-							leaf: true
-						}, {
-							name: 'zone'
-						}];
-
-						resolve(data);
-					}, 500);
-				}
-			} */
 			
 			// 只有在"点击"修改的指定节点会触发(也就是说这个方法只会触发一次)，obj中包含当前选中
 			handleCheck(obj) {
