@@ -34,7 +34,6 @@ Route::get('get_region_list', 'admin/Region/getRegionList'); // 获取区域列�
 // 分公司
 Route::resource('company', 'admin/Company');
 Route::get('company_tree', 'admin/Company/companyTree'); // 分公司列表树
-//Route::post('createCompany', 'admin/Company/createCompany'); // 创建分公司
 
 // 用户角色
 Route::resource('user_role', 'admin/UserRole');
@@ -74,7 +73,7 @@ Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（�
 Route::resource('shop', 'admin/Shop');
 Route::get('shop_count', 'admin/Shop/getShopCount'); // 统计店铺数据
 // 店铺类别
-Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
+Route::get('shop_cate_list', 'admin/ShopCate/shopCateList'); // 店铺类别列表（不分页）
 // 店铺周边环境
 Route::get('shop_environment', 'admin/ShopCate/shopEnvironment'); // 店铺环境列表（不分页）
 
@@ -148,7 +147,7 @@ Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 // 店家店铺
 Route::resource('api/shop', 'api/Shop');
 // 店铺类别
-Route::get('api/shop_cate_list', 'api/ShopCate/shopCateList'); // 店铺类别列表（不分页）// 管理员
+Route::get('api/shop_cate_list', 'api/ShopCate/shopCateList'); // 店铺类别列表（不分页）
 // 店铺周边环境
 Route::get('api/shop_environment', 'api/ShopCate/shopEnvironment'); // 店铺环境列表（不分页）
 
