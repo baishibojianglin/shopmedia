@@ -53,6 +53,11 @@ class Device extends AuthBase
         }
         
         if(!empty($devicelist)){
+            // 处理数据
+            $deviceLevel = config('code.device_level'); // 广告屏等级（用于计算广告单价）
+            foreach ($devicelist as $key => $value) {
+                $devicelist[$key]['ad_unit_price'] = $deviceLevel[$value['level']]; // 定义广告单价（每条广告每天的价格）
+            }
             return show(config('code.success'), '获取成功', $devicelist);
         }else{
             return show(config('code.error'), '获取失败', [], 404);

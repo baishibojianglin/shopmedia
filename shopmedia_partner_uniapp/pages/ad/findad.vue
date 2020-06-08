@@ -4,16 +4,6 @@
 		<uni-card :is-shadow="true">
 			<view>
 				<view class="input-line-height">
-					<view class="input-line-height-1">广告名称 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="text" v-model="form.ad_name" />
-				</view>
-				<view class="input-line-height">
-					<view class="input-line-height-1">广告类别 <text class="main-color line-blue">|</text></view>
-					<picker @change="bindAdCatePickerChange" class="input-line-height-2" :value="adCateIndex" :range="adCateList" range-key="cate_name">
-						<view style="font-size: 15px; padding-left: 15px;">{{adCateList[adCateIndex].cate_name}}</view>
-					</picker>
-				</view>
-				<view class="input-line-height">
 					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
 					<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
 						<view style="font-size: 15px; padding-left: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
@@ -28,9 +18,6 @@
 					<uni-calendar ref="calendar" :insert="false" @confirm="confirm" />
 					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
 				</view>
-				<view class="input-line-height">
-					<view class="input-line-height-1">播放次数 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_times" />次/天</view>
 			</view>
 		</uni-card>
 
@@ -51,7 +38,20 @@
 						<!-- scroll-view 纵向滚动 e -->
 					</view>
 					<view v-if="segmentedControl.current === 1">
-						1
+						<view class="input-line-height">
+							<view class="input-line-height-1">投放距离 <text class="main-color line-blue">|</text></view>
+							<picker @change="bindDistancePickerChange" class="input-line-height-2" :value="distanceIndex" :range="distanceList" range-key="distance">
+								<view style="font-size: 15px; padding-left: 15px;">{{distanceList[distanceIndex].distance}}㎞</view>
+							</picker>
+						</view>
+						
+						<!-- scroll-view 纵向滚动 s -->
+						<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
+							<!-- 区域 Tree 树形数据 -->
+							<ly-tree ref="tree" v-if="isReady" :props="props" node-key="region_id" :load="loadNode" lazy show-checkbox @check="handleCheck" />
+						</scroll-view>
+						<view v-if="old.scrollTop > 200" @tap="goTop" class="uni-link uni-center uni-common-mt">返回顶部</view>
+						<!-- scroll-view 纵向滚动 e -->
 					</view>
 				</view>
 			</view>
@@ -64,11 +64,18 @@
 				<checkbox-group @change="deviceCheckboxChange">
 					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id">
 						<view>
-							<checkbox :value="item.device_id" />
+							<checkbox :value="item.device_id" :checked="item.checked" />
 						</view>
 						<view>屏编号：{{item.device_id}}，店铺：{{item.shop_name}}（地址：{{item.address}}）</view>
 					</label>
 				</checkbox-group>
+			</view>
+		</uni-card>
+		
+		<uni-card :is-shadow="true">
+			<view class="uni-bold">
+				广告总价：
+				<text class="color-red">￥{{form.ad_price}}</text>
 			</view>
 		</uni-card>
 		
@@ -91,18 +98,13 @@
 		data() {
 			return {
 				form: {
-					ad_name: '', // 广告名称
-					ad_cate_id: '', // 广告类别ID
-					play_days: '', // 投放天数
+					play_days: 7, // 投放天数
 					startdate: '', // 开始日期
-					play_times: '', // 每日播放次数
 					region_ids: [], // 区域ID集合（数组）
 					shop_cate_ids: [], // 投放店铺类别ID集合 // cate: '', // 店铺类别id
-					device_ids: [] // 投放广告设备ID集合
+					device_ids: [], // 投放广告设备ID集合
+					ad_price: '' // 广告价格
 				},
-
-				adCateList: [{cate_id: '', cate_name: ''}], // 广告类别列表
-				adCateIndex: 0,
 
 				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
 				shopCateIndex: 0,
@@ -112,6 +114,11 @@
 					items: ['全区域', '附近'],
 					current: 0
 				},
+				
+				distanceList: [{distance_id: 1, distance: 5}, {distance_id: 2, distance: 10}], // 投放距离列表
+				distanceIndex: 0,
+				longitude: '', // 经度
+				latitude: '', // 纬度
 
 				/* scroll-view 纵向滚动 s */
 				scrollTop: 0,
@@ -136,7 +143,6 @@
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad() {
-			this.getAdCateList();
 			this.getShopCateList();
 			//初始化日历
 			let mydate=new Date();
@@ -187,37 +193,6 @@
 			},
 
 			/**
-			 * 获取广告类别列表
-			 */
-			getAdCateList() {
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/ad_cate_list',
-					header: {
-						'commonheader': this.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'GET',
-					success: function(res) {
-						if (res.data.status == 1) {
-							res.data.data.forEach((value, index) => {
-								self.$set(self.adCateList, index, {
-									cate_id: value.cate_id,
-									cate_name: value.cate_name
-								});
-							})
-						}
-					},
-					fail(error) {
-						uni.showToast({
-							icon: 'none',
-							title: '请求异常'
-						});
-					}
-				})
-			},
-
-			/**
 			 * 获取店铺类别列表
 			 */
 			getShopCateList() {
@@ -249,15 +224,6 @@
 			},
 
 			/**
-			 * 改变选择广告类别
-			 * @param {Object} e
-			 */
-			bindAdCatePickerChange: function(e) {
-				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.adCateIndex = e.target.value;
-			},
-
-			/**
 			 * 改变选择店铺类别
 			 * @param {Object} e
 			 */
@@ -268,14 +234,14 @@
 					this.getDeviceList();
 				}
 			},
+			
 			/**
-			 * 投放范围
+			 * 改变选择广告投放距离
 			 * @param {Object} e
 			 */
-			bindRangePickerChange: function(e) {
+			bindDistancePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.RangeIndex = e.target.value;
-				this.range=e.target.value;
+				this.distanceIndex = e.target.value;
 			},
 
 			/**
@@ -285,9 +251,40 @@
 			onClickItem(e) {
 				if (this.segmentedControl.current !== e.currentIndex) {
 					this.segmentedControl.current = e.currentIndex;
+					
+					// 当选择附近区域时，获取当前地理位置
+					if (this.segmentedControl.current == 1) {
+						this.getLocation();
+					}
 				}
 			},
-
+			
+			/**
+			 * 获取当前地理位置
+			 */
+			getLocation() {
+				let self = this;
+				uni.showModal({
+					title: '授权定位',
+					content: '获取你的地理位置',
+					success: function (res) {
+						if (res.confirm) {
+							uni.getLocation({
+							    type: 'wgs84',
+							    success: function (res1) {
+							        console.log('当前位置的经度：' + res1.longitude);
+							        console.log('当前位置的纬度：' + res1.latitude);
+									self.longitude = res1.longitude;
+									self.latitude = res1.latitude;
+							    }
+							});
+						} else if (res.cancel) {
+							self.segmentedControl.current = 0;
+						}
+					}
+				});
+			},
+			
 			/* scroll-view 纵向滚动 s */
 			scroll: function(e) {
 				// console.log(e)
@@ -314,7 +311,9 @@
 			 */
 			loadNode(node, resolve) {
 				// _self.xxx; 这里用_self而不是this
-				
+				console.log('longitude', this.longitude)
+				console.log('latitude', this.latitude)
+				console.log('distance', this.distanceList[this.distanceIndex].distance)
 				// 首次进入查询第一级
 				let parent_id = 33008; // 成都市
 				let level = 3;
@@ -326,7 +325,10 @@
 				uni.request({
 					url: this.$serverUrl + 'api/lazy_load_region_tree',
 					data: {
-						parent_id: parent_id //父级ID
+						parent_id: parent_id, //父级ID
+						longitude: this.longitude, // 经度
+						latitude: this.latitude, // 纬度
+						distance: this.distanceList[this.distanceIndex].distance // 投放距离
 					},
 					header: {
 						'commonheader': this.commonheader,
@@ -401,14 +403,22 @@
 						success: function(res) {
 							self.deviceList = []; // 初始化设备列表
 							if (res.data.status == 1) {
+								console.log(123, res.data)
 								// self.deviceList = res.data.data;
+								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
 									self.$set(self.deviceList, index, {
 										device_id: value.device_id.toString(),
 										shop_name: value.shop_name,
-										address: value.address
+										address: value.address,
+										ad_unit_price: value.ad_unit_price,
+										checked: true
 									});
+									if (self.deviceList[index].checked == true) {
+										adPrice = adPrice + value.ad_unit_price;
+									}
 								})
+								self.form.ad_price = (adPrice * self.form.play_days).toFixed(2);
 							}
 						},
 						fail(error) {
@@ -428,8 +438,19 @@
 			 * @param {Object} e
 			 */
 			deviceCheckboxChange(e) {
-				// console.log('deviceCheckboxChange', e)
+				console.log('deviceCheckboxChange', e)
 				this.form.device_ids = e.detail.value;
+				
+				// 计算广告总价
+				let adPrice = 0;
+				this.form.device_ids.forEach((item, index) => {
+					this.deviceList.forEach((value, key) => {
+						if (Number(item) === Number(value.device_id)) {
+							adPrice = adPrice + value.ad_unit_price;
+						}
+					})
+				})
+				this.form.ad_price = (adPrice * this.form.play_days).toFixed(2);
 			},
 			
 			/**
@@ -437,21 +458,6 @@
 			 */
 			submitForm() {
 				// 自定义验证表单
-				if (this.form.ad_name == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请输入广告名称'
-					});
-					return false;
-				}
-				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
-				if (this.form.ad_cate_id == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请选择广告类别'
-					});
-					return false;
-				}
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
 				if (this.form.shop_cate_ids == '') {
 					uni.showToast({
@@ -464,20 +470,6 @@
 					uni.showToast({
 						icon: 'none',
 						title: '请输入投放天数'
-					});
-					return false;
-				}
-				if (this.form.play_days == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请输入投放天数'
-					});
-					return false;
-				}
-				if (this.form.play_times == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请输入每日播放次数'
 					});
 					return false;
 				}
@@ -500,15 +492,12 @@
 				uni.request({
 					url: this.$serverUrl + 'api/ad',
 					data: {
-						ad_name: this.form.ad_name,
-						ad_cate_id: this.form.ad_cate_id,
-						// ad_price: this.form.ad_price,
 						play_days: this.form.play_days,
 						startdate: this.form.startdate,
-						play_times: this.form.play_times,
 						region_ids: this.form.region_ids,
 						shop_cate_ids: this.form.shop_cate_ids,
-						device_ids: this.form.device_ids
+						device_ids: this.form.device_ids,
+						ad_price: this.form.ad_price
 					},
 					header:{
 						'commonheader': this.commonheader,
