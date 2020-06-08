@@ -54,7 +54,7 @@ class Device extends Base
 				$status = config('code.device_status'); // 状态
 				$brand = config('code.device_brand'); // 品牌
 				$model = config('code.device_model'); // 型号
-				$size = config('code.device_size'); // 型号
+				$size = config('code.device_size'); // 尺寸
 				foreach ($data as $key => $value) {
 					$data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
 					$data[$key]['brand_msg']=$brand[$value['brand']]; //定义品牌信息

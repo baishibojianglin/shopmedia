@@ -122,6 +122,11 @@ Route::post('api/get_user_role', 'api/User/getUserRole');
 Route::get('api/device_list','api/Device/getDeviceList');
 Route::get('api/device_detail','api/Device/deviceDetail');
 
+// 广告
+Route::resource('api/ad', 'api/Ad');
+// 广告类别
+Route::get('api/ad_cate_list', 'api/AdCate/adCateList'); // 广告类别列表（不分页）
+
 // 业务员
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
 Route::get('api/partner_salesman_list', 'api/UserSalesman/partnerSalesmanList'); // 获取广告屏合作商业务员列表

@@ -22,20 +22,28 @@ class Device extends AuthBase
      */
     public function getDeviceList()
     {
-        // 获取未付款和已付款订单ID集合
-        $orderDeviceIds = Db::name('partner_order')
-            ->where(['order_status' => ['in', '0,1']])
-            ->column('device_id');
-        $orderDeviceIds = array_unique($orderDeviceIds); // 去重
+        // 传入的参数
+        $param = input('param.');
 
         // 查询条件
         $map = [];
-        $map['d.device_id'] = ['not in', $orderDeviceIds]; // 若广告屏已经生成订单，取订单被取消对应的广告屏
+        $map['d.status'] = config('code.status_enable');
+        $map['d.is_delete'] = config('code.not_delete');
+        // 获取未付款和已付款订单ID集合
+        $orderDeviceIds = Db::name('partner_order')->where(['order_status' => ['in', '0,1']])->column('device_id');
+        $orderDeviceIds = array_unique($orderDeviceIds); // 去重
+        $map['d.device_id'] = ['not in', $orderDeviceIds]; // 可合作的广告屏（包含若广告屏已经生成订单，取订单被取消对应的广告屏）
+        if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
+            $map['s.province_id|s.city_id|s.county_id|s.town_id'] = ['in', $param['region_ids']];
+        }
+        if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
+            $map['s.cate'] = $param['shop_cate_ids']; // ['in', $param['shop_cate_ids']]
+        }
 
         // 广告屏列表
         try{
             $devicelist = Db::name('device')->alias('d')
-                ->field('d.*, po.order_id, po.order_status, s.shop_name, s.cate shop_cate')
+                ->field('d.*, po.order_id, po.order_status, s.shop_name, s.cate shop_cate, s.address')
                 ->join('__PARTNER_ORDER__ po', 'd.device_id = po.device_id', 'LEFT') // 广告屏已经生成的订单
                 ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
                 ->where($map)
@@ -45,14 +53,10 @@ class Device extends AuthBase
         }
         
         if(!empty($devicelist)){
-            $message['data'] = $devicelist;
-            $message['status'] = 1;
-            $message['words'] = '获取成功';
+            return show(config('code.success'), '获取成功', $devicelist);
         }else{
-            $message['status'] = 0;
-            $message['words'] = '获取失败';
+            return show(config('code.error'), '获取失败', [], 404);
         }
-        return json($message);
     }
 
     /**

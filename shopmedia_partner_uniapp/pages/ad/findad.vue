@@ -4,6 +4,16 @@
 		<uni-card :is-shadow="true">
 			<view>
 				<view class="input-line-height">
+					<view class="input-line-height-1">广告名称 <text class="main-color line-blue">|</text></view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="text" v-model="form.ad_name" />
+				</view>
+				<view class="input-line-height">
+					<view class="input-line-height-1">广告类别 <text class="main-color line-blue">|</text></view>
+					<picker @change="bindAdCatePickerChange" class="input-line-height-2" :value="adCateIndex" :range="adCateList" range-key="cate_name">
+						<view style="font-size: 15px; padding-left: 15px;">{{adCateList[adCateIndex].cate_name}}</view>
+					</picker>
+				</view>
+				<view class="input-line-height">
 					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
 					<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
 						<view style="font-size: 15px; padding-left: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
@@ -11,13 +21,16 @@
 				</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="days" />天</view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" />天</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
-					<view class="input-line-height-2"></view>
+					<view class="input-line-height-2" style="font-size: 15px; padding-left: 15px;">{{form.startdate}}</view>
 					<uni-calendar ref="calendar" :insert="false" @confirm="confirm" />
 					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
 				</view>
+				<view class="input-line-height">
+					<view class="input-line-height-1">播放次数 <text class="main-color line-blue">|</text></view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_times" />次/天</view>
 			</view>
 		</uni-card>
 
@@ -32,7 +45,7 @@
 						<!-- scroll-view 纵向滚动 s -->
 						<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
 							<!-- 区域 Tree 树形数据 -->
-							<ly-tree v-if="isReady" :props="props" node-key="region_id" :load="loadNode" lazy show-checkbox @check="handleCheck" />
+							<ly-tree ref="tree" v-if="isReady" :props="props" node-key="region_id" :load="loadNode" lazy show-checkbox @check="handleCheck" />
 						</scroll-view>
 						<view v-if="old.scrollTop > 200" @tap="goTop" class="uni-link uni-center uni-common-mt">返回顶部</view>
 						<!-- scroll-view 纵向滚动 e -->
@@ -49,15 +62,19 @@
 		<uni-card :is-shadow="true">
 			<view class="uni-list">
 				<checkbox-group @change="deviceCheckboxChange">
-					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.value">
+					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id">
 						<view>
-							<checkbox :value="item.value" :checked="item.checked" />
+							<checkbox :value="item.device_id" />
 						</view>
-						<view>{{item.name}}</view>
+						<view>屏编号：{{item.device_id}}，店铺：{{item.shop_name}}（地址：{{item.address}}）</view>
 					</label>
 				</checkbox-group>
 			</view>
 		</uni-card>
+		
+		<view class="uni-padding-wrap uni-common-mt mb">
+			<button @click="submitForm()" class="bg-main-color color-white">提 交</button>
+		</view>
 	</view>
 </template>
 
@@ -73,8 +90,19 @@
 		},
 		data() {
 			return {
-				cate: '', // 店铺类别id
-				days: '', // 投放天数
+				form: {
+					ad_name: '', // 广告名称
+					ad_cate_id: '', // 广告类别ID
+					play_days: '', // 投放天数
+					startdate: '', // 开始日期
+					play_times: '', // 每日播放次数
+					region_ids: [], // 区域ID集合（数组）
+					shop_cate_ids: [], // 投放店铺类别ID集合 // cate: '', // 店铺类别id
+					device_ids: [] // 投放广告设备ID集合
+				},
+
+				adCateList: [{cate_id: '', cate_name: ''}], // 广告类别列表
+				adCateIndex: 0,
 
 				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
 				shopCateIndex: 0,
@@ -101,32 +129,19 @@
 				},
 				/* 区域 Tree 树形数据 e */
 				
-				deviceList: [
-					{
-						value: 'CHN',
-						name: '中国',
-						checked: 'true'
-					},
-					{
-						value: 'BRA',
-						name: '巴西'
-					},
-					{
-						value: 'JPN',
-						name: '日本'
-					}
-				], // 广告屏列表
+				deviceList: [], // 广告屏列表 [{device_id: '', shop_name: ''}]
 			}
 		},
 		computed: {
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad() {
+			this.getAdCateList();
 			this.getShopCateList();
 			//初始化日历
 			let mydate=new Date();
 			let month=mydate.getMonth()+1;
-			this.startdate=mydate.getFullYear()+'-'+month+'-'+mydate.getDate();
+			this.form.startdate=mydate.getFullYear()+'-'+month+'-'+mydate.getDate();
 			//广告屏数量
 			this.getDeviceNumber();
 
@@ -168,7 +183,38 @@
 				this.$refs.calendar.open();
 			},
 			confirm(e) {
-				this.startdate=e.fulldate;
+				this.form.startdate = e.fulldate;
+			},
+
+			/**
+			 * 获取广告类别列表
+			 */
+			getAdCateList() {
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/ad_cate_list',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						if (res.data.status == 1) {
+							res.data.data.forEach((value, index) => {
+								self.$set(self.adCateList, index, {
+									cate_id: value.cate_id,
+									cate_name: value.cate_name
+								});
+							})
+						}
+					},
+					fail(error) {
+						uni.showToast({
+							icon: 'none',
+							title: '请求异常'
+						});
+					}
+				})
 			},
 
 			/**
@@ -203,21 +249,24 @@
 			},
 
 			/**
+			 * 改变选择广告类别
+			 * @param {Object} e
+			 */
+			bindAdCatePickerChange: function(e) {
+				// console.log('picker发送选择改变，携带值为', e.target.value)
+				this.adCateIndex = e.target.value;
+			},
+
+			/**
 			 * 改变选择店铺类别
 			 * @param {Object} e
 			 */
 			bindShopCatePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.shopCateIndex = e.target.value;
-			},
-			/**
-			 * 投放范围
-			 * @param {Object} e
-			 */
-			bindRangePickerChange: function(e) {
-				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.RangeIndex = e.target.value;
-				this.range=e.target.value;
+				if (typeof(this.shopCateIndex) != 'undefined') {
+					this.getDeviceList();
+				}
 			},
 			/**
 			 * 投放范围
@@ -265,7 +314,7 @@
 			 */
 			loadNode(node, resolve) {
 				// _self.xxx; 这里用_self而不是this
-				console.log(221, node)
+				
 				// 首次进入查询第一级
 				let parent_id = 33008; // 成都市
 				let level = 3;
@@ -319,7 +368,13 @@
 				// 	node: Node {...} // 当前节点实例
 				// }
 				
-				console.log('handleCheck', obj);
+				// console.log('handleCheck', obj);
+				
+				// 获取投放区域ID集合（含全选与半选）
+				let checkedRegionIds = this.$refs.tree.getCheckedKeys(); // 被选中的节点的 key 所组成的数组
+				let halfCheckedRegionIds = this.$refs.tree.getHalfCheckedKeys(); // 半选中的节点的 key 所组成的数组
+				this.form.region_ids = checkedRegionIds.length != 0 ? [checkedRegionIds, halfCheckedRegionIds] : []; // 判断全选是否为空 checkedRegionIds.length ?= 0，用于验证 Tree 树形在表单中的选中状态
+				
 				this.getDeviceList();
 			},
 			/* 区域 Tree 树形数据 e */
@@ -329,23 +384,43 @@
 			 */
 			getDeviceList() {
 				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/device_list',
-					header: {
-						'commonheader': this.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'GET',
-					success: function(res) {
-						console.log('deviceList', res)
-					},
-					fail(error) {
-						uni.showToast({
-							icon: 'none',
-							title: '请求异常'
-						});
-					}
-				})
+				this.form.device_ids = ''; // 初始化选中的广告屏
+				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
+				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids) {
+					uni.request({
+						url: this.$serverUrl + 'api/device_list',
+						data: {
+							region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
+							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合（这里只有一个值）
+						},
+						header: {
+							'commonheader': this.commonheader,
+							'access-user-token': this.userInfo.token
+						},
+						method: 'GET',
+						success: function(res) {
+							self.deviceList = []; // 初始化设备列表
+							if (res.data.status == 1) {
+								// self.deviceList = res.data.data;
+								res.data.data.forEach((value, index) => {
+									self.$set(self.deviceList, index, {
+										device_id: value.device_id.toString(),
+										shop_name: value.shop_name,
+										address: value.address
+									});
+								})
+							}
+						},
+						fail(error) {
+							uni.showToast({
+								icon: 'none',
+								title: '请求异常'
+							});
+						}
+					})
+				} else {
+					this.deviceList = []; // 初始化设备列表
+				}
 			},
 			
 			/**
@@ -353,7 +428,119 @@
 			 * @param {Object} e
 			 */
 			deviceCheckboxChange(e) {
-				console.log('deviceCheckboxChange', e)
+				// console.log('deviceCheckboxChange', e)
+				this.form.device_ids = e.detail.value;
+			},
+			
+			/**
+			 * 投放广告提交表单
+			 */
+			submitForm() {
+				// 自定义验证表单
+				if (this.form.ad_name == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入广告名称'
+					});
+					return false;
+				}
+				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
+				if (this.form.ad_cate_id == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请选择广告类别'
+					});
+					return false;
+				}
+				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
+				if (this.form.shop_cate_ids == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请选择所属行业'
+					});
+					return false;
+				}
+				if (this.form.play_days == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入投放天数'
+					});
+					return false;
+				}
+				if (this.form.play_days == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入投放天数'
+					});
+					return false;
+				}
+				if (this.form.play_times == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入每日播放次数'
+					});
+					return false;
+				}
+				if (this.form.region_ids == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请选择投放区域'
+					});
+					return false;
+				}
+				if (this.form.device_ids == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请选择投放广告屏'
+					});
+					return false;
+				}
+				
+				// 发起网络请求，提交服务端
+				uni.request({
+					url: this.$serverUrl + 'api/ad',
+					data: {
+						ad_name: this.form.ad_name,
+						ad_cate_id: this.form.ad_cate_id,
+						// ad_price: this.form.ad_price,
+						play_days: this.form.play_days,
+						startdate: this.form.startdate,
+						play_times: this.form.play_times,
+						region_ids: this.form.region_ids,
+						shop_cate_ids: this.form.shop_cate_ids,
+						device_ids: this.form.device_ids
+					},
+					header:{
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'POST',
+					success: function(res) {
+						if (0 == res.data.status) { // 提交失败
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+							return;
+						} else { // 提交成功跳转
+						   uni.showModal({
+						       title: '提示',
+						       content: '广告投放成功',
+							   showCancel: false,
+						       success: function (res) {
+						           if (res.confirm == true) {
+										uni.switchTab({
+											url: '/pages/user/user'
+										})
+						           }
+						       }
+						   })
+						}
+					},
+					fail: function(error) {
+						
+					}
+				})
 			}
 		}
 	}

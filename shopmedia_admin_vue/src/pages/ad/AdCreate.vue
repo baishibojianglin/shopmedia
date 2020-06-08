@@ -331,7 +331,7 @@
 			},
 
 			/**
-			 * 新增广告类别提交表单
+			 * 新增广告提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
