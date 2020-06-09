@@ -24,7 +24,7 @@ class Ad extends Base
         }
 
         $result = $this->alias('a')
-            ->field('a.ad_id, a.ad_cate_id, a.ad_name, a.ad_pic, a.start_datetime, a.end_datetime, a.start_time, a.end_time, a.play_times, a.ad_price, a.advertiser, a.phone, a.shop_cate_ids, a.audit_id, a.audit_status, a.audit_time, a.is_show, a.sort, a.is_delete')
+            ->field('a.ad_id, a.ad_cate_id, a.ad_name, a.ad_pic, a.play_days, a.start_datetime, a.end_datetime, a.start_time, a.end_time, a.play_times, a.ad_price, a.advertiser, a.phone, a.shop_cate_ids, a.audit_id, a.audit_status, a.audit_time, a.is_show, a.sort, a.is_delete')
             ->where($map)
             ->cache(true, 10)
             ->paginate($size);

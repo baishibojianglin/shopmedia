@@ -85,10 +85,10 @@ class Device extends Base
 		$map['d.status'] = config('code.status_enable');
 		$map['d.is_delete'] = config('code.not_delete');
 		if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
-			$map['d.province_id|d.city_id|d.area_id|d.street_id'] = ['in', $param['region_ids']];
+			$map['s.province_id|s.city_id|s.county_id|s.town_id'] = ['in', $param['region_ids']];
 		}
 		if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
-			$map['d.shopcate'] = ['in', $param['shop_cate_ids']];
+			$map['s.cate'] = ['in', $param['shop_cate_ids']];
 		}
 
 		// 获取广告屏列表数据

@@ -34,6 +34,7 @@
 					<el-table-column prop="ad_cate_name" label="广告类别" width="120"></el-table-column>
 					<el-table-column prop="ad_price" label="广告价格/元" width="120"></el-table-column>
 					<el-table-column label="投放时间" header-align="center">
+						<el-table-column prop="play_days" label="投放天数" width="90"></el-table-column>
 						<el-table-column prop="start_datetime" label="投放开始时间" width="180"></el-table-column>
 						<el-table-column prop="end_datetime" label="投放结束时间" width="180"></el-table-column>
 					</el-table-column>

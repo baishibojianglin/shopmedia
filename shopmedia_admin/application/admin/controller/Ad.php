@@ -54,15 +54,17 @@ class Ad extends Base
                 $shopCate = config('code.shop_cate'); // 店铺类别
                 foreach ($data as $key => $value) {
                     $data[$key]['audit_status_msg'] = $auditStatus[$value['audit_status']]; // 定义审核状态信息
-                    $data[$key]['ad_cate_name'] = $adCate[$value['ad_cate_id']]; // 定义广告类别名称
+                    $data[$key]['ad_cate_name'] = $value['ad_cate_id'] ? $adCate[$value['ad_cate_id']] : ''; // 定义广告类别名称
 
                     // 定义店铺类别名称集合
                     $shopCateNames = [];
-                    $shopCateIds = explode(',', $value['shop_cate_ids']);
-                    foreach ($shopCate as $k => $v) {
-                        foreach ($shopCateIds as $k1 => $v1) {
-                            if ($k == $v1) {
-                                $shopCateNames[] = $shopCate[$v1];
+                    if ($value['shop_cate_ids']) {
+                        $shopCateIds = explode(',', $value['shop_cate_ids']);
+                        foreach ($shopCate as $k => $v) {
+                            foreach ($shopCateIds as $k1 => $v1) {
+                                if ($k == $v1) {
+                                    $shopCateNames[] = $shopCate[$v1];
+                                }
                             }
                         }
                     }
