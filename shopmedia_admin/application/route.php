@@ -168,7 +168,6 @@ Route::put('api/deleimg', 'api/Upload/deleimg');
 
 //获取整体广告屏、城市、商家数据
 Route::get('api/get-total-data', 'api/Index/getTotalData');
-Route::get('api/get-device-number', 'api/Ad/getDeviceNumber');//获取广告屏数量
 
 // 区域
 Route::get('api/lazy_load_region_tree', 'api/Region/lazyLoadRegionTree'); // 懒加载区域树形数据

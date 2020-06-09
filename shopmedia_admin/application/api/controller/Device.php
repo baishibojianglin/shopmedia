@@ -39,6 +39,28 @@ class Device extends AuthBase
         if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
             $map['s.cate'] = $param['shop_cate_ids']; // ['in', $param['shop_cate_ids']]
         }
+        // 判断是否投放附近区域
+        if (isset($param['longitude']) && isset($param['latitude']) && isset($param['distance'])) {
+            // 获取全部店铺列表数据
+            $shopList = model('Shop')->field('shop_id, longitude, latitude')->where(['status' => config('code.status_enable')])->select();
+
+            // 定义经纬度集合
+            $mapLongitude = [];
+            $mapLatitude = [];
+
+            foreach ($shopList as $key => $value) {
+                // 根据两点的经纬度计算距离，此处用于获取指定距离的经纬度集合
+                $shopList[$key]['distance'] = round(distance($param['latitude'], $param['longitude'], $value['latitude'], $value['longitude']), 3);
+
+                // 获取指定距离 $param['distance'] 的经纬度集合
+                if ($shopList[$key]['distance'] <= $param['distance']) {
+                    $mapLongitude[] = $value['longitude'];
+                    $mapLatitude[] = $value['latitude'];
+                }
+            }
+            $map['s.longitude'] = ['in', $mapLongitude]; // 经度集合
+            $map['s.latitude'] = ['in', $mapLatitude]; // 纬度集合
+        }
 
         // 广告屏列表
         try{

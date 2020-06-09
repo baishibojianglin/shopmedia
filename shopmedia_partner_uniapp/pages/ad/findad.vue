@@ -29,22 +29,14 @@
 				 style-type="button" active-color="#409EFF"></uni-segmented-control>
 				<view class="">
 					<view v-if="segmentedControl.current === 0">
-						<!-- scroll-view 纵向滚动 s -->
-						<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
-							<!-- 区域 Tree 树形数据 -->
-							<ly-tree ref="tree" v-if="isReady" :props="props" node-key="region_id" :load="loadNode" lazy show-checkbox @check="handleCheck" />
-						</scroll-view>
-						<view v-if="old.scrollTop > 200" @tap="goTop" class="uni-link uni-center uni-common-mt">返回顶部</view>
-						<!-- scroll-view 纵向滚动 e -->
-					</view>
-					<view v-if="segmentedControl.current === 1">
 						<view class="input-line-height">
 							<view class="input-line-height-1">投放距离 <text class="main-color line-blue">|</text></view>
 							<picker @change="bindDistancePickerChange" class="input-line-height-2" :value="distanceIndex" :range="distanceList" range-key="distance">
 								<view style="font-size: 15px; padding-left: 15px;">{{distanceList[distanceIndex].distance}}㎞</view>
 							</picker>
 						</view>
-						
+					</view>
+					<view v-if="segmentedControl.current === 1">
 						<!-- scroll-view 纵向滚动 s -->
 						<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scroll="scroll">
 							<!-- 区域 Tree 树形数据 -->
@@ -111,7 +103,7 @@
 
 				// SegmentedControl 分段器
 				segmentedControl: {
-					items: ['全区域', '附近'],
+					items: ['附近', '全区域'],
 					current: 0
 				},
 				
@@ -144,12 +136,13 @@
 		},
 		onLoad() {
 			this.getShopCateList();
+			
 			//初始化日历
 			let mydate=new Date();
 			let month=mydate.getMonth()+1;
 			this.form.startdate=mydate.getFullYear()+'-'+month+'-'+mydate.getDate();
-			//广告屏数量
-			this.getDeviceNumber();
+			
+			this.getLocation();
 
 			_self = this;
 			this.isReady = true;
@@ -158,30 +151,6 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
-			/**
-			 * 获取广告屏数量
-			 */
-			getDeviceNumber(){
-				let self = this;
-				uni.request({
-					url: this.$serverUrl + 'api/get-device-number',
-					header: {
-						'commonheader': this.commonheader,
-						'access-user-token': this.userInfo.token
-					},
-					method: 'GET',
-					success: function(res) {
-						self.device_number=res.data;
-					},
-					fail(error) {
-						uni.showToast({
-							icon: 'none',
-							title: '请求异常'
-						});
-					}
-				})							
-			},
-
 			/**
 			 * 日历
 			 */
@@ -242,6 +211,9 @@
 			bindDistancePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.distanceIndex = e.target.value;
+				if (typeof(this.distanceIndex) != 'undefined') {
+					this.getDeviceList();
+				}
 			},
 
 			/**
@@ -253,7 +225,8 @@
 					this.segmentedControl.current = e.currentIndex;
 					
 					// 当选择附近区域时，获取当前地理位置
-					if (this.segmentedControl.current == 1) {
+					if (this.segmentedControl.current == 0) {
+						this.deviceList = [];
 						this.getLocation();
 					}
 				}
@@ -267,19 +240,21 @@
 				uni.showModal({
 					title: '授权定位',
 					content: '获取你的地理位置',
+					showCancel: false,
 					success: function (res) {
 						if (res.confirm) {
 							uni.getLocation({
 							    type: 'wgs84',
 							    success: function (res1) {
-							        console.log('当前位置的经度：' + res1.longitude);
-							        console.log('当前位置的纬度：' + res1.latitude);
+									// console.log('当前位置的经度：' + res1.longitude);
+									// console.log('当前位置的纬度：' + res1.latitude);
 									self.longitude = res1.longitude;
 									self.latitude = res1.latitude;
+									if (self.longitude && self.latitude) {
+										self.getDeviceList();
+									}
 							    }
 							});
-						} else if (res.cancel) {
-							self.segmentedControl.current = 0;
 						}
 					}
 				});
@@ -311,9 +286,7 @@
 			 */
 			loadNode(node, resolve) {
 				// _self.xxx; 这里用_self而不是this
-				console.log('longitude', this.longitude)
-				console.log('latitude', this.latitude)
-				console.log('distance', this.distanceList[this.distanceIndex].distance)
+				
 				// 首次进入查询第一级
 				let parent_id = 33008; // 成都市
 				let level = 3;
@@ -325,10 +298,7 @@
 				uni.request({
 					url: this.$serverUrl + 'api/lazy_load_region_tree',
 					data: {
-						parent_id: parent_id, //父级ID
-						longitude: this.longitude, // 经度
-						latitude: this.latitude, // 纬度
-						distance: this.distanceList[this.distanceIndex].distance // 投放距离
+						parent_id: parent_id //父级ID
 					},
 					header: {
 						'commonheader': this.commonheader,
@@ -386,15 +356,28 @@
 			 */
 			getDeviceList() {
 				let self = this;
+				this.deviceList = []; // 初始化设备列表
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
-				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids) {
+				let _data = {}; // 定义请求接口 data 参数
+				// 判断是否投放附近区域
+				if (this.segmentedControl.current === 0 && this.longitude && this.latitude && this.distanceList[this.distanceIndex].distance) { // 附近区域
+					_data = {
+						shop_cate_ids: this.form.shop_cate_ids, // 投放店铺类别ID集合（这里只有一个值）
+						longitude: this.longitude,
+						latitude: this.latitude,
+						distance: this.distanceList[this.distanceIndex].distance
+					}
+				} else if (this.segmentedControl.current === 1 && this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids) { // 全区域
+					_data = {
+						region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
+						shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合（这里只有一个值）
+					}
+				}
+				if (_data) {
 					uni.request({
 						url: this.$serverUrl + 'api/device_list',
-						data: {
-							region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
-							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合（这里只有一个值）
-						},
+						data: _data,
 						header: {
 							'commonheader': this.commonheader,
 							'access-user-token': this.userInfo.token
@@ -402,8 +385,8 @@
 						method: 'GET',
 						success: function(res) {
 							self.deviceList = []; // 初始化设备列表
+							
 							if (res.data.status == 1) {
-								console.log(123, res.data)
 								// self.deviceList = res.data.data;
 								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
@@ -419,6 +402,12 @@
 									}
 								})
 								self.form.ad_price = (adPrice * self.form.play_days).toFixed(2);
+							} else {
+								uni.showModal({
+									title: '获取广告屏失败',
+									content: '请重新选择“所属行业”或“投放距离”',
+									showCancel: false
+								});
 							}
 						},
 						fail(error) {
@@ -438,7 +427,7 @@
 			 * @param {Object} e
 			 */
 			deviceCheckboxChange(e) {
-				console.log('deviceCheckboxChange', e)
+				// console.log('deviceCheckboxChange', e)
 				this.form.device_ids = e.detail.value;
 				
 				// 计算广告总价
@@ -473,7 +462,7 @@
 					});
 					return false;
 				}
-				if (this.form.region_ids == '') {
+				if (this.segmentedControl.current === 1 && this.form.region_ids == '') {
 					uni.showToast({
 						icon: 'none',
 						title: '请选择投放区域'
