@@ -226,7 +226,12 @@
 					this.segmentedControl.current = e.currentIndex;
 					
 					// 当选择附近区域时，获取当前地理位置
-					this.deviceList = []; // 初始化设备列表
+					// this.deviceList.splice(0, this.deviceList.length); // 初始化设备列表
+					this.deviceList.forEach((item, index) => {
+						this.$set(this.deviceList, index, {})
+					})
+					this.deviceList = [];
+					
 					if (this.segmentedControl.current == 0) {
 						this.getLocation();
 					}
@@ -348,7 +353,14 @@
 			 */
 			getDeviceList() {
 				let self = this;
-				this.deviceList = []; // 初始化设备列表
+				
+				// 初始化设备列表
+				this.deviceList.forEach((item, index) => {
+					// console.log(12311, typeof(item));return;
+					this.$set(this.deviceList, index, {})
+				})
+				this.deviceList = [];
+				
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
 				let _data = {}; // 定义请求接口 data 参数

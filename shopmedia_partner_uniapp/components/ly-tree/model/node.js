@@ -339,7 +339,8 @@ export default class Node {
 		this.checked = value === true;
 		
 		if (this.checked) {
-			this.expand(null, true)
+			// TODO: 展开项后续逻辑调整
+			// this.expand(null, true)
 		}
 		
 		if (this.store().checkStrictly) return;
