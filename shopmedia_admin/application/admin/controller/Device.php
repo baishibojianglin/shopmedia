@@ -92,12 +92,16 @@ class Device extends Base
 		}
 
 		// 获取广告屏列表数据
-		$data = model('Device')->getDeviceList($map);
+		try {
+			$data = model('Device')->getDeviceList($map);
+		} catch (\Exception $e) {
+			return show(config('code.error'), $e->getMessage());
+		}
 		if ($data) {
 			// 处理数据
 			$shopCate = config('code.shop_cate'); // 店铺类别
 			foreach ($data as $key => $value) {
-				$data[$key]['shop_cate_name'] = $shopCate[$value['shopcate']] ? : '（其他）';
+				$data[$key]['shop_cate_name'] = $value['shopcate'] ? $shopCate[$value['shopcate']] : '（其他）';
 			}
 		}
 

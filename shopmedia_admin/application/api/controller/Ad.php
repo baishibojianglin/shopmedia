@@ -34,9 +34,20 @@ class Ad extends AuthBase
                 $data['shop_cate_ids'] = implode(',', $data['shop_cate_ids']);
             }*/
             if (!empty($data['region_ids'])) { // 投放区域ID集合（含全选与半选）
+                // 通过半选区域ID集合获取上级区域ID集合，重新组装半选区域ID集合
+                $regionIdsHalf = $data['region_ids'][1];
+                $parentIds = [];
+                foreach ($regionIdsHalf as $key => $value) {
+                    if ($value != 0) {
+                        $parentIds[] = model('Region')->getParentId($value);
+                    }
+                }
+                $parentIds = array_unique(array_reduce($parentIds, 'array_merge', array())); // 二维数组转一维数组并去重
+                sort($parentIds); // 正序重排索引
+
                 $data['region_ids'] = json_encode([
                     'checked' => $data['region_ids'][0], // 全选
-                    'half' => $data['region_ids'][1] // 半选
+                    'half' => $parentIds // 半选
                 ]);
             }
             if (!empty($data['device_ids'])) { // 投放广告屏ID集合

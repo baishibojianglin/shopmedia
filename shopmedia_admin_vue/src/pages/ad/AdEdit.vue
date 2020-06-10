@@ -71,7 +71,7 @@
 					<el-form-item prop="device_ids" label="投放广告屏">
 						<el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange" v-if="deviceList.length != 0 ? true : false">全选</el-checkbox>
 						<el-checkbox-group v-model="form.device_ids" @change="handleCheckedDeviceChange">
-							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'店铺类别：' + item.shop_cate_name + '，' + '店铺：' + item.shopname + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
+							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'广告屏：' + item.device_id + '，' + '店铺类别：' + item.shop_cate_name + '，' + '店铺：' + item.shop_name + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
 						</el-checkbox-group>
 					</el-form-item>
 					<el-form-item prop="ad_price" label="广告价格/元">

@@ -58,7 +58,8 @@
 						<view>
 							<checkbox :value="item.device_id" :checked="item.checked" />
 						</view>
-						<view>屏编号：{{item.device_id}}，店铺：{{item.shop_name}}（地址：{{item.address}}）</view>
+						<view>店铺：{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
+						<text class="uni-icon uni-icon-arrowright fon14" @click.stop="toDeviceDetail2(item.device_id)"></text>
 					</label>
 				</checkbox-group>
 			</view>
@@ -225,8 +226,8 @@
 					this.segmentedControl.current = e.currentIndex;
 					
 					// 当选择附近区域时，获取当前地理位置
+					this.deviceList = []; // 初始化设备列表
 					if (this.segmentedControl.current == 0) {
-						this.deviceList = [];
 						this.getLocation();
 					}
 				}
@@ -237,24 +238,15 @@
 			 */
 			getLocation() {
 				let self = this;
-				uni.showModal({
-					title: '授权定位',
-					content: '获取你的地理位置',
-					showCancel: false,
+				uni.getLocation({
+					type: 'wgs84',
 					success: function (res) {
-						if (res.confirm) {
-							uni.getLocation({
-							    type: 'wgs84',
-							    success: function (res1) {
-									// console.log('当前位置的经度：' + res1.longitude);
-									// console.log('当前位置的纬度：' + res1.latitude);
-									self.longitude = res1.longitude;
-									self.latitude = res1.latitude;
-									if (self.longitude && self.latitude) {
-										self.getDeviceList();
-									}
-							    }
-							});
+						// console.log('当前位置的经度：' + res.longitude);
+						// console.log('当前位置的纬度：' + res.latitude);
+						self.longitude = res.longitude;
+						self.latitude = res.latitude;
+						if (self.longitude && self.latitude) {
+							self.getDeviceList();
 						}
 					}
 				});
@@ -519,6 +511,13 @@
 						
 					}
 				})
+			},
+			
+			//跳转到设备详情
+			toDeviceDetail2(device_id) {
+				uni.navigateTo({
+					url: '/pages/device/device-detail2?device_id=' + device_id
+				});
 			}
 		}
 	}

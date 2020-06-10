@@ -166,7 +166,20 @@
 				}
 			}
         },
-        { // 智能广告屏订单合作签约
+		{
+            "path" : "pages/device/device-detail2",
+            "style" : {
+            	"navigationBarTitleText": "智能广告屏详情",
+            	"app-plus": {
+            		"titleNView": {
+            			"buttons": [{
+            				"type": "menu"
+            			}]
+            		}
+            	}
+            }
+        },
+		{ // 智能广告屏订单合作签约
             "path" : "pages/partner-order/partner-order",
             "style" : {
 				"navigationBarTitleText": "广告屏合作签约",
