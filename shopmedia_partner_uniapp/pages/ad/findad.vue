@@ -11,7 +11,7 @@
 				</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" />天</view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" @blur="playDaysInputBlur" />天</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
 					<view class="input-line-height-2" style="font-size: 15px; padding-left: 15px;">{{form.startdate}}</view>
@@ -35,6 +35,8 @@
 								<view style="font-size: 15px; padding-left: 15px;">{{distanceList[distanceIndex].distance}}㎞</view>
 							</picker>
 						</view>
+						
+						<map :latitude="latitude" :longitude="longitude" :scale="scale" :circles="circles"></map>
 					</view>
 					<view v-if="segmentedControl.current === 1">
 						<!-- scroll-view 纵向滚动 s -->
@@ -112,6 +114,8 @@
 				distanceIndex: 0,
 				longitude: '', // 经度
 				latitude: '', // 纬度
+				scale: 12,
+				circles: [],
 
 				/* scroll-view 纵向滚动 s */
 				scrollTop: 0,
@@ -160,6 +164,14 @@
 			},
 			confirm(e) {
 				this.form.startdate = e.fulldate;
+			},
+			
+			/**
+			 * 投放天数输入框失去焦点时触发
+			 * @param {Object} event
+			 */
+			playDaysInputBlur(event) {
+				this.form.play_days = event.detail.value;
 			},
 
 			/**
@@ -214,6 +226,7 @@
 				this.distanceIndex = e.target.value;
 				if (typeof(this.distanceIndex) != 'undefined') {
 					this.getDeviceList();
+					this.getLocation();
 				}
 			},
 
@@ -231,6 +244,7 @@
 						this.$set(this.deviceList, index, {})
 					})
 					this.deviceList = [];
+					this.form.ad_price = '';
 					
 					if (this.segmentedControl.current == 0) {
 						this.getLocation();
@@ -252,6 +266,16 @@
 						self.latitude = res.latitude;
 						if (self.longitude && self.latitude) {
 							self.getDeviceList();
+							
+							self.scale = self.distanceList[self.distanceIndex].distance * 2.4;
+							self.circles = [{
+								latitude: self.latitude,
+								longitude: self.longitude,
+								radius: self.distanceList[self.distanceIndex].distance * 1000,
+								strokeWidth: 2,
+								color: '#409EFF',
+								fillColor: '#409EFF33'
+							}]
 						}
 					}
 				});
@@ -360,10 +384,11 @@
 					this.$set(this.deviceList, index, {})
 				})
 				this.deviceList = [];
+				this.form.ad_price = '';
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
-				let _data = {}; // 定义请求接口 data 参数
+				let _data; // 定义请求接口 data 参数
 				// 判断是否投放附近区域
 				if (this.segmentedControl.current === 0 && this.longitude && this.latitude && this.distanceList[this.distanceIndex].distance) { // 附近区域
 					_data = {
@@ -388,10 +413,9 @@
 						},
 						method: 'GET',
 						success: function(res) {
-							self.deviceList = []; // 初始化设备列表
+							// self.deviceList = []; // 初始化设备列表
 							
 							if (res.data.status == 1) {
-								// self.deviceList = res.data.data;
 								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
 									self.$set(self.deviceList, index, {
@@ -423,6 +447,7 @@
 					})
 				} else {
 					this.deviceList = []; // 初始化设备列表
+					this.form.ad_price = '';
 				}
 			},
 			
