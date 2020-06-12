@@ -36,7 +36,7 @@ class Device extends AuthBase
         if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
             $map['s.province_id|s.city_id|s.county_id|s.town_id'] = ['in', $param['region_ids']];
         }
-        if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
+        if (isset($param['shop_cate_ids'])) { // 投放店铺类别ID集合
             $map['s.cate'] = $param['shop_cate_ids']; // ['in', $param['shop_cate_ids']]
         }
         // 判断是否投放附近区域
@@ -65,7 +65,7 @@ class Device extends AuthBase
         // 广告屏列表
         try{
             $devicelist = Db::name('device')->alias('d')
-                ->field('d.*, po.order_id, po.order_status, s.shop_name, s.cate shop_cate, s.address')
+                ->field('d.*, po.order_id, po.order_status, s.shop_name, s.cate shop_cate, s.address, s.longitude, s.latitude')
                 ->join('__PARTNER_ORDER__ po', 'd.device_id = po.device_id', 'LEFT') // 广告屏已经生成的订单
                 ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT') // 店铺
                 ->where($map)
