@@ -114,7 +114,7 @@
 				distanceIndex: 0,
 				longitude: '', // 经度
 				latitude: '', // 纬度
-				scale: 12,
+				scale: 11,
 				circles: [],
 
 				/* scroll-view 纵向滚动 s */
@@ -267,7 +267,6 @@
 						if (self.longitude && self.latitude) {
 							self.getDeviceList();
 							
-							self.scale = self.distanceList[self.distanceIndex].distance * 2.4;
 							self.circles = [{
 								latitude: self.latitude,
 								longitude: self.longitude,
@@ -413,6 +412,7 @@
 						},
 						method: 'GET',
 						success: function(res) {
+							console.log(221, res)
 							// self.deviceList = []; // 初始化设备列表
 							
 							if (res.data.status == 1) {
