@@ -10,10 +10,12 @@
 		<view>
 			<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
 				<uni-grid class="view-grid-con totalcontentbg" :column="3">
-					<uni-grid-item>
-						<text class="text-grid-title">广告屏</text>
-						<text class="text-grid">{{totaldata.addevice}}</text>
-					</uni-grid-item>
+					<navigator url="/pages/total/device_total">
+						<uni-grid-item>					
+							<text class="text-grid-title">广告屏</text>
+							<text class="text-grid">{{totaldata.addevice}}</text>				
+						</uni-grid-item>
+					</navigator>
 					<uni-grid-item>
 						<text class="text-grid-title">覆盖城市</text>
 						<text class="text-grid">{{totaldata.city}}</text>
@@ -38,7 +40,7 @@
 					<text>投放广告</text>
 				</view>
 				<view v-if="role.device" @click="toRole(2)" class="navcon-item">
-					<text class="iconposition icon color-red iconbg">&#xe637;</text>
+					<text class="iconposition icon color-white iconbg-parnter">&#xe637;</text>
 					<br />
 					<text>合作经营</text>
 				</view>
@@ -48,20 +50,20 @@
 					<text>店铺合作</text>
 				</view>
 				<view v-if="role.saleperson" @click="toRole(1)" class="navcon-item">
-					<text class="iconposition icon color-blue iconbg" style="color:#205C6D;">&#xe63d;</text>
+					<text class="iconposition icon color-white iconbg-sale">&#xe63d;</text>
 					<br />
 					<text>业务申请</text>
 				</view>
 				<view class="navcon-item">
 					<navigator url="/pages/news/news">
-						<text class="iconposition icon color-blue iconbg" style="color:#F7D810;">&#xe652;</text>
+						<text class="iconposition icon color-white iconbg-notice">&#xe652;</text>
 						<br />
 						<text>店通资讯</text>
 					</navigator>
 				</view>
 				<view class="navcon-item">
 					<navigator url="/pages/feedback/feedback">
-						<text class="iconposition icon color-blue iconbg" style="color:#04EAFB;">&#xe74f;</text>
+						<text class="iconposition icon color-white iconbg-advice">&#xe74f;</text>
 						<br/>
 						<text>投诉建议</text>
 					</navigator>
@@ -271,6 +273,42 @@
 		line-height: 45px;
 		display: inline-block;
 		background-color: #409EFF;
+	}
+	.iconbg-parnter{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color: #EB795B;
+	}
+	.iconbg-sale{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color: #C9D269;
+	}
+	.iconbg-notice{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color: #F7D810;
+	}
+	.iconbg-advice{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color:#7EECF9;
 	}
 	.navcon {
 		display: flex;
