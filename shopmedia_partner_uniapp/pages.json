@@ -153,6 +153,19 @@
 				}
 			}
         },
+		{
+		    "path" : "pages/device/device-all-list",
+		    "style" : {
+				"navigationBarTitleText": "智能广告屏列表",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
         { // 智能广告屏详情
             "path" : "pages/device/device-detail",
             "style" : {

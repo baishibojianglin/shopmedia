@@ -274,7 +274,7 @@
 								longitude: self.longitude,
 								radius: self.distanceList[self.distanceIndex].distance * 1000,
 								strokeWidth: 2,
-								color: '#409EFF',
+								color: '#409EFF01',
 								fillColor: '#409EFF33'
 							}]
 						}

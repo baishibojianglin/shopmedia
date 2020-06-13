@@ -12,7 +12,7 @@
 				<uni-grid class="view-grid-con totalcontentbg" :column="3">
 					<uni-grid-item>
 						<text class="text-grid-title">广告屏</text>
-						<text class="text-grid">{{totaldata.addevice}}</text>
+						<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}</text>
 					</uni-grid-item>
 					<uni-grid-item>
 						<text class="text-grid-title">覆盖城市</text>
@@ -123,6 +123,15 @@
 			   	})
 			   
 		   },
+			
+			/**
+			 * 跳转广告屏列表页
+			 */
+			toDeviceList() {
+				uni.navigateTo({
+					url: '/pages/device/device-all-list'
+				})
+			},
 			
 			/**
 			 * 投放广告

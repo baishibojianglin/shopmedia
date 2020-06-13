@@ -17,6 +17,50 @@ use think\Db;
 class Device extends AuthBase
 {
     /**
+     * 获取所有广告屏列表数据（懒加载）
+     * @return \think\response\Json
+     */
+    public function index()
+    {
+        // 判断为GET请求
+        if (request()->isGet()) {
+            // 传入的参数
+            $param = input('param.');
+
+            // 查询条件
+            $map = ['d.status' => 1, 'd.is_delete' => config('code.not_delete')];
+
+            // 获取分页page、size
+            $this->getPageAndSize($param);
+
+            // 根据传入的广告屏ID加载更多
+            if (!empty($param['minId'])) {
+                // 获取广告屏最大（倒序时为最小）ID（除 $map['device_id'] 外的其他 $map 条件必须带上）
+                $maxId = model('Device')->getMin(['status' => 1, 'is_delete' => config('code.not_delete')], 'device_id');
+
+                // 判断传入的广告屏ID是否为最大（倒序时为最小）ID，即数据是否全部加载
+                if ($param['minId'] == $maxId) {
+                    return show(config('code.error'), '加载完成', ['maxId' => $maxId], 404);
+                }
+
+                // 获取大于（倒序时为小于）传入的广告屏ID的集合
+                $map['d.device_id'] = ['lt', $param['minId']];
+            }
+
+            // 获取广告屏列表数据 模式二：page当前页，size每页条数，from每页从第几条开始 => 'limit from,size'
+            $deviceList = model('Device')->getDeviceByCondition($map, $this->from, $this->size);
+
+            if (!$deviceList) {
+                return show(config('code.error'), 'Not Found', '', 404);
+            }
+            $data = ['data' => $deviceList];
+            return show(config('code.success'), 'OK', $data);
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+    }
+
+    /**
      * 获取广告屏列表信息
      * @return \think\response\Json
      */
