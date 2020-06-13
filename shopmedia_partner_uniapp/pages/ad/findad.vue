@@ -36,7 +36,7 @@
 							</picker>
 						</view>
 						
-						<map :latitude="latitude" :longitude="longitude" :scale="scale" :circles="circles"></map>
+						<map :latitude="latitude" :longitude="longitude" :scale="scale" :markers='markers' :circles="circles" style="height: 500rpx;"></map>
 					</view>
 					<view v-if="segmentedControl.current === 1">
 						<!-- scroll-view 纵向滚动 s -->
@@ -114,7 +114,7 @@
 				distanceIndex: 0,
 				longitude: '', // 经度
 				latitude: '', // 纬度
-				scale: 12,
+				scale: 11,
 				circles: [],
 
 				/* scroll-view 纵向滚动 s */
@@ -134,6 +134,7 @@
 				/* 区域 Tree 树形数据 e */
 				
 				deviceList: [], // 广告屏列表 [{device_id: '', shop_name: ''}]
+				markers: [] //地图标记点
 			}
 		},
 		computed: {
@@ -244,6 +245,7 @@
 						this.$set(this.deviceList, index, {})
 					})
 					this.deviceList = [];
+					this.markers = [];
 					this.form.ad_price = '';
 					
 					if (this.segmentedControl.current == 0) {
@@ -267,7 +269,6 @@
 						if (self.longitude && self.latitude) {
 							self.getDeviceList();
 							
-							self.scale = self.distanceList[self.distanceIndex].distance * 2.4;
 							self.circles = [{
 								latitude: self.latitude,
 								longitude: self.longitude,
@@ -384,6 +385,7 @@
 					this.$set(this.deviceList, index, {})
 				})
 				this.deviceList = [];
+				this.markers = [];
 				this.form.ad_price = '';
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
@@ -418,12 +420,19 @@
 							if (res.data.status == 1) {
 								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
+									// 广告屏列表
 									self.$set(self.deviceList, index, {
 										device_id: value.device_id.toString(),
 										shop_name: value.shop_name,
 										address: value.address,
 										ad_unit_price: value.ad_unit_price,
 										checked: true
+									});
+									// 地图标记点
+									self.$set(self.markers, index, {
+										title: value.device_id + ' ' + value.shop_name,
+										longitude: value.longitude,
+										latitude: value.latitude
 									});
 									if (self.deviceList[index].checked == true) {
 										adPrice = adPrice + value.ad_unit_price;
@@ -447,6 +456,7 @@
 					})
 				} else {
 					this.deviceList = []; // 初始化设备列表
+					this.markers = [];
 					this.form.ad_price = '';
 				}
 			},
