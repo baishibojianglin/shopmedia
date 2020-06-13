@@ -153,10 +153,10 @@
 				}
 			}
         },
-		{
+		{ // 全部广告屏
 		    "path" : "pages/device/device-all-list",
 		    "style" : {
-				"navigationBarTitleText": "智能广告屏列表",
+				"navigationBarTitleText": "店通广告屏",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
@@ -328,7 +328,7 @@
         { // 投放广告-选择广告机
             "path" : "pages/ad/findad",
             "style" : {
-				"navigationBarTitleText": "选择广告机",
+				"navigationBarTitleText": "选择广告屏",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
