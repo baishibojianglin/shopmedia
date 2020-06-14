@@ -30,10 +30,10 @@
 	  export default {
 	    data(){
 	      return {
-	        account:'admin',  //登录账号
-			password:'111111',  //登录密码
-			verifycode:'', //验证码
-			tips:'获取验证码'  //验证码框提示信息
+	        account: '',  //登录账号
+			password: '',  //登录密码
+			verifycode: '', //验证码
+			tips: '获取验证码' //验证码框提示信息
 	      }
 	    },
         methods:{

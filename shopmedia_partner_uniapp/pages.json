@@ -153,6 +153,19 @@
 				}
 			}
         },
+		{ // 全部广告屏
+		    "path" : "pages/device/device-all-list",
+		    "style" : {
+				"navigationBarTitleText": "店通广告屏",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
         { // 智能广告屏详情
             "path" : "pages/device/device-detail",
             "style" : {
@@ -324,20 +337,7 @@
 					}
 				}
 			}
-        },
-		{ // 统计总共的广告屏
-		    "path" : "pages/total/device_total",
-		    "style" : {
-				"navigationBarTitleText": "店通广告屏",
-				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-							"type": "menu"
-						}]
-					}
-				}
-			}
-		}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

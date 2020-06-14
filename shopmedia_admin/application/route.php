@@ -119,6 +119,7 @@ Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper'); // 申请成为
 Route::post('api/get_user_role', 'api/User/getUserRole');
 
 // 广告屏
+Route::get('api/device_all_list','api/Device/index');
 Route::get('api/device_list','api/Device/getDeviceList');
 Route::get('api/device_detail','api/Device/deviceDetail');
 

@@ -10,12 +10,10 @@
 		<view>
 			<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
 				<uni-grid class="view-grid-con totalcontentbg" :column="3">
-					<navigator url="/pages/total/device_total">
-						<uni-grid-item>					
-							<text class="text-grid-title">广告屏</text>
-							<text class="text-grid">{{totaldata.addevice}}</text>				
-						</uni-grid-item>
-					</navigator>
+					<uni-grid-item>
+						<text class="text-grid-title">广告屏</text>
+						<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}</text>
+					</uni-grid-item>
 					<uni-grid-item>
 						<text class="text-grid-title">覆盖城市</text>
 						<text class="text-grid">{{totaldata.city}}</text>
@@ -125,6 +123,15 @@
 			   	})
 			   
 		   },
+			
+			/**
+			 * 跳转广告屏列表页
+			 */
+			toDeviceList() {
+				uni.navigateTo({
+					url: '/pages/device/device-all-list'
+				})
+			},
 			
 			/**
 			 * 投放广告
