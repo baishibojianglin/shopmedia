@@ -4,7 +4,11 @@
 		<uni-card  :is-shadow='true'>
 			<view class="tvcon">
 				<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true"  :loop="false" :controls="true"></video>
+				<view class="vedio-logo">
+					— 店通传媒 —
+				</view>
 			</view>
+
 		</uni-card>
 
 		<view>
@@ -239,6 +243,7 @@
 		margin:0px;
 		padding: 0px;
 		border:15px solid #57585C;
+		border-bottom: 30px solid #57585C;
 		box-sizing: border-box;
 		border-radius: 7px;
 		height: 205px;
@@ -330,8 +335,16 @@
 	}
 	.tvcon{
 		width:100%;
+		position: relative;
 	}
 	.totalcontentbg{
 		background-color: #fff;
+	}
+	.vedio-logo{
+		width: 100%;
+		position: absolute;
+		bottom:10px;
+		text-align: center;
+		color:#fff;
 	}
 </style>
