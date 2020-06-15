@@ -17,18 +17,30 @@ use think\Db;
 class Index extends AuthBase
 {
     /**
-     * 获取整体广告屏数量、城市、店家数据
+     * 获取整体广告屏数量
      * @return \think\response\Json
      */
     public function getTotalData()
     {
              $match['status']=1;
-             $data['device']=Db::name('shop')->where($match)->count()+10000;
+             $data['device']=Db::name('shop')->where($match)->count()+100;
              $data['city']=Db::name('company')->where($match)->count()+2;
-             $data['shop']=Db::name('ad')->count()+5000;
+             $data['shop']=Db::name('ad')->count()+20;
              return json($data);
 
     }
+
+    /**
+     * 获取城市
+     * @return \think\response\Json
+     */
+    public function getCity()
+    {
+        $city = config('code.fix_city'); // 广告类别
+        return json($city);
+
+    }
+
 
 
 }
