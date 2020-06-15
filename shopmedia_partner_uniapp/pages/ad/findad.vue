@@ -1,26 +1,5 @@
 <template>
 	<view class="content">
-		<view class="line4 fon16 main-color">填写基本信息</view>
-		<uni-card :is-shadow="true">
-			<view>
-				<view class="input-line-height">
-					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
-					<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
-						<view style="font-size: 15px; padding-left: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
-					</picker>
-				</view>
-				<view class="input-line-height">
-					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" @blur="playDaysInputBlur" />天</view>
-				<view class="input-line-height">
-					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
-					<view class="input-line-height-2" style="font-size: 15px; padding-left: 15px;">{{form.startdate}}</view>
-					<uni-calendar ref="calendar" :insert="false" @confirm="confirm" />
-					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
-				</view>
-			</view>
-		</uni-card>
-
 		<view class="line4 fon16 main-color">选择投放区域</view>
 		<uni-card :is-shadow="true">
 			<!-- SegmentedControl 分段器 s -->
@@ -52,9 +31,31 @@
 			<!-- SegmentedControl 分段器 e -->
 		</uni-card>
 		
+		<view class="line4 fon16 main-color">填写基本信息</view>
+		<uni-card :is-shadow="true">
+			<view>
+				<view class="input-line-height">
+					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
+					<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
+						<view style="font-size: 15px; padding-left: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
+					</picker>
+				</view>
+				<view class="input-line-height">
+					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" @blur="playDaysInputBlur" />天</view>
+				<view class="input-line-height">
+					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
+					<view class="input-line-height-2" style="font-size: 15px; padding-left: 15px;">{{form.startdate}}</view>
+					<uni-calendar ref="calendar" :insert="false" @confirm="confirm" />
+					<button style="font-size: 15px;width: 80px;" @click="open">选择</button>
+				</view>
+			</view>
+		</uni-card>
+		
 		<view class="line4 fon16 main-color">选择投放广告屏</view>
 		<uni-card :is-shadow="true">
-			<view class="uni-list">
+			<text v-if="deviceList.length == 0">广告屏数量：0</text>
+			<view v-if="deviceList.length != 0" class="uni-list">
 				<checkbox-group @change="deviceCheckboxChange">
 					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id">
 						<view>
@@ -98,7 +99,7 @@
 					region_ids: [], // 区域ID集合（数组）
 					shop_cate_ids: [], // 投放店铺类别ID集合 // cate: '', // 店铺类别id
 					device_ids: [], // 投放广告设备ID集合
-					ad_price: '' // 广告价格
+					ad_price: 0 // 广告价格
 				},
 
 				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
@@ -246,7 +247,7 @@
 					})
 					this.deviceList = [];
 					this.markers = [];
-					this.form.ad_price = '';
+					this.form.ad_price = 0;
 					
 					if (this.segmentedControl.current == 0) {
 						this.getLocation();
@@ -386,11 +387,12 @@
 				})
 				this.deviceList = [];
 				this.markers = [];
-				this.form.ad_price = '';
+				this.form.ad_price = 0;
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
 				let _data; // 定义请求接口 data 参数
+				let showModalContent = '';
 				// 判断是否投放附近区域
 				if (this.segmentedControl.current === 0 && this.longitude && this.latitude && this.distanceList[this.distanceIndex].distance) { // 附近区域
 					_data = {
@@ -399,11 +401,14 @@
 						latitude: this.latitude,
 						distance: this.distanceList[this.distanceIndex].distance
 					}
+					
+					showModalContent = '请重新选择“投放距离”或“所属行业”';
 				} else if (this.segmentedControl.current === 1 && this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids) { // 全区域
 					_data = {
 						region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
 						shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合（这里只有一个值）
 					}
+					showModalContent = '请重新选择“投放区域”或“所属行业”';
 				}
 				if (_data) {
 					uni.request({
@@ -442,7 +447,7 @@
 							} else {
 								uni.showModal({
 									title: '获取广告屏失败',
-									content: '请重新选择“所属行业”或“投放距离”',
+									content: showModalContent,
 									showCancel: false
 								});
 							}
@@ -457,7 +462,7 @@
 				} else {
 					this.deviceList = []; // 初始化设备列表
 					this.markers = [];
-					this.form.ad_price = '';
+					this.form.ad_price = 0;
 				}
 			},
 			
