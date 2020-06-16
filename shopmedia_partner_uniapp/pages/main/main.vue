@@ -18,10 +18,12 @@
 						<text class="text-grid-title">广告屏</text>
 						<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}</text>
 					</uni-grid-item>
-					<uni-grid-item>
-						<text class="text-grid-title">覆盖城市</text>
-						<text class="text-grid">{{totaldata.city}}</text>
-					</uni-grid-item>
+					<navigator url="/pages/city/city">
+						<uni-grid-item>
+							<text class="text-grid-title">覆盖城市</text>
+							<text class="text-grid">{{totaldata.city}}</text>
+						</uni-grid-item>
+					</navigator>
 					<uni-grid-item>
 						<text class="text-grid-title">服务商家</text>
 						<text class="text-grid">{{totaldata.shop}}</text>
