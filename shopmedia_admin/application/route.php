@@ -172,6 +172,7 @@ Route::get('api/get-total-data', 'api/Index/getTotalData');
 
 // 区域
 Route::get('api/lazy_load_region_tree', 'api/Region/lazyLoadRegionTree'); // 懒加载区域树形数据
+Route::get('api/get_region_list', 'api/Region/getRegionList'); // 获取区域列表数据（用于级联选择器等）
 
 // 获取店通已开通的城市
 Route::get('api/get_fix_city', 'api/Index/getCity'); // 懒加载区域树形数据

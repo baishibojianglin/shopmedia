@@ -33,6 +33,18 @@ class Device extends AuthBase
             // 获取分页page、size
             $this->getPageAndSize($param);
 
+            if (!empty($param['province_id'])) { // 省级
+                $map['s.province_id'] = $param['province_id'];
+            }
+            if (!empty($param['city_id'])) { // 市级
+                $map['s.city_id'] = $param['city_id'];
+            }
+            if (!empty($param['county_id'])) { // 区县
+                $map['s.county_id'] = $param['county_id'];
+            }
+            if (!empty($param['town_id'])) { // 乡镇街道
+                $map['s.town_id'] = $param['town_id'];
+            }
             // 根据传入的广告屏ID加载更多
             if (!empty($param['minId'])) {
                 // 获取广告屏最大（倒序时为最小）ID（除 $map['device_id'] 外的其他 $map 条件必须带上）
