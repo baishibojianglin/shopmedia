@@ -68,11 +68,18 @@
 			</view>
 		</uni-card>
 		
-		<uni-card :is-shadow="true">
-			<view class="uni-bold">
-				<text>广告屏数量：{{deviceList.length}}，</text>
-				<text>广告总价：</text>
-				<text class="color-red">￥{{form.ad_price}}</text>
+		<uni-card :is-shadow="true" class="uni-bold">
+			<view class="uni-flex uni-row">
+				<view class="text-right" style="width: 360rpx;">广告屏总数量</view>
+				<view class="uni-common-pl text-left" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}台</view>
+			</view>
+			<view class="uni-flex uni-row">
+				<view class="text-right" style="width: 360rpx;">已投放</view>
+				<view class="uni-common-pl text-left" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}台</view>
+			</view>
+			<view class="uni-flex uni-row">
+				<view class="text-right" style="width: 360rpx;">广告总价</view>
+				<view class="uni-common-pl text-left color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
 			</view>
 		</uni-card>
 		
@@ -136,7 +143,8 @@
 				/* 区域 Tree 树形数据 e */
 				
 				deviceList: [], // 广告屏列表 [{device_id: '', shop_name: ''}]
-				markers: [] //地图标记点
+				markers: [], //地图标记点
+				checkedDeviceCount: 0 // 选中的广告屏数量
 			}
 		},
 		computed: {
@@ -249,6 +257,7 @@
 					this.deviceList = [];
 					this.markers = [];
 					this.form.ad_price = 0;
+					this.checkedDeviceCount = 0;
 					
 					if (this.segmentedControl.current == 0) {
 						this.getLocation();
@@ -389,6 +398,7 @@
 				this.deviceList = [];
 				this.markers = [];
 				this.form.ad_price = 0;
+				this.checkedDeviceCount = 0;
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
@@ -421,7 +431,6 @@
 						},
 						method: 'GET',
 						success: function(res) {
-							// self.deviceList = []; // 初始化设备列表
 							if (res.data.status == 1) {
 								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
@@ -443,6 +452,7 @@
 									});
 									if (self.deviceList[index].checked == true) {
 										adPrice = adPrice + value.ad_unit_price;
+										self.checkedDeviceCount = self.deviceList.length;
 									}
 								})
 								self.form.ad_price = (adPrice * self.form.play_days).toFixed(2);
@@ -465,6 +475,7 @@
 					this.deviceList = []; // 初始化设备列表
 					this.markers = [];
 					this.form.ad_price = 0;
+					this.checkedDeviceCount = 0;
 				}
 			},
 			
@@ -475,6 +486,7 @@
 			deviceCheckboxChange(e) {
 				// console.log('deviceCheckboxChange', e)
 				this.form.device_ids = e.detail.value;
+				this.checkedDeviceCount = e.detail.value.length;
 				
 				// 计算广告总价
 				let adPrice = 0;

@@ -1,17 +1,17 @@
 <template>
 	<view>
-		<!-- <view class="uni-list" style="position: fixed;top: 89rpx;z-index: 99;">
+		<view class="uni-list" style="position: fixed;top: 89rpx;z-index: 99;">
 			<view class="uni-list-cell">
 				<view class="uni-list-cell-left">
 					选择区域
 				</view>
 				<view class="uni-list-cell-db">
-					<picker mode="multiSelector" @columnchange="bindMultiPickerColumnChange" :value="multiIndex" :range="multiArray">
-						<view class="uni-input">1，2，3</view>
+					<picker :value="provinceIndex" :range="provinceArray" range-key="province_name" @change="bindProvincePickerChange">
+						<view class="uni-input">{{provinceArray[provinceIndex].province_name}}</view>
 					</picker>
 				</view>
 			</view>
-		</view> -->
+		</view>
 		
 		<view class="uni-list" style="margin-top: 100rpx;">
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in listData" :key="key" @click="toDeviceDetail2(value.device_id)">
@@ -40,6 +40,11 @@
 	export default {
 		data() {
 			return {
+				/* 选择区域 s */
+				provinceArray: [{province_id: 1, province_name:'中国'},{province_id: 2, province_name: '美国'}, {province_id: 3, province_name:'巴西'}, {province_id: 3, province_name:'日本'}],
+				provinceIndex: 0,
+				/* 选择区域 e */
+				
 				/* 广告屏列表 s */
 				listData: [],
 				last_id: '',
@@ -72,6 +77,15 @@
 			this.$common.actionSheetTap();
 		},
 		methods: {
+			/**
+			 * 改变选择省级区域
+			 * @param {Object} e
+			 */
+			bindProvincePickerChange: function(e) {
+				console.log('picker发送选择改变，携带值为：' + e.detail.value)
+				this.index = e.detail.value
+			},
+			
 			/**
 			 * 广告屏列表
 			 */

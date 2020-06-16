@@ -47,4 +47,21 @@ class Region extends AuthBase
             return show(config('code.error'), 'Not Found', '', 404);
         }
     }
+
+    /**
+     * 获取区域列表数据（用于级联选择器等）
+     * @return \think\response\Json
+     */
+    public function getRegionList()
+    {
+        $param = input('param.');
+        $map['parent_id'] = $param['parent_id'];
+        $regionList = model('Region')->where($map)->cache(true, 10)->select();
+
+        if(!empty($regionList)){
+            return show(config('code.success'), 'OK', $regionList);
+        }else{
+            return show(config('code.error'), 'Not Found', [], 404);
+        }
+    }
 }
