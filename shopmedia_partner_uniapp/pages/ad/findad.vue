@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="line4 fon16 main-color">选择投放区域</view>
+		<!-- <view class="line4 fon16 main-color">选择投放区域</view> -->
 		<uni-card :is-shadow="true">
 			<!-- SegmentedControl 分段器 s -->
 			<view>
@@ -31,7 +31,7 @@
 			<!-- SegmentedControl 分段器 e -->
 		</uni-card>
 		
-		<view class="line4 fon16 main-color">填写基本信息</view>
+		<!-- <view class="line4 fon16 main-color">填写基本信息</view> -->
 		<uni-card :is-shadow="true">
 			<view>
 				<view class="input-line-height">
@@ -52,16 +52,16 @@
 			</view>
 		</uni-card>
 		
-		<view class="line4 fon16 main-color">选择投放广告屏</view>
-		<uni-card :is-shadow="true">
-			<text v-if="deviceList.length == 0">广告屏数量：0</text>
-			<view v-if="deviceList.length != 0" class="uni-list">
+		<!-- <view class="line4 fon16 main-color">选择投放广告屏</view> -->
+		<uni-card title="选择投放广告屏" :is-shadow="true" v-if="deviceList.length != 0">
+			<view class="uni-list">
 				<checkbox-group @change="deviceCheckboxChange">
 					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id">
 						<view>
 							<checkbox :value="item.device_id" :checked="item.checked" />
 						</view>
-						<view>店铺：{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
+						<image class="uni-media-list-logo" :src="item.thumb"></image>
+						<view>【店铺】{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
 						<text class="uni-icon uni-icon-arrowright fon14" @click.stop="toDeviceDetail2(item.device_id)"></text>
 					</label>
 				</checkbox-group>
@@ -70,7 +70,8 @@
 		
 		<uni-card :is-shadow="true">
 			<view class="uni-bold">
-				广告总价：
+				<text>广告屏数量：{{deviceList.length}}，</text>
+				<text>广告总价：</text>
 				<text class="color-red">￥{{form.ad_price}}</text>
 			</view>
 		</uni-card>
@@ -392,7 +393,7 @@
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
 				let _data; // 定义请求接口 data 参数
-				let showModalContent = '';
+				// let showModalContent = '';
 				// 判断是否投放附近区域
 				if (this.segmentedControl.current === 0 && this.longitude && this.latitude && this.distanceList[this.distanceIndex].distance) { // 附近区域
 					_data = {
@@ -402,13 +403,13 @@
 						distance: this.distanceList[this.distanceIndex].distance
 					}
 					
-					showModalContent = '请重新选择“投放距离”或“所属行业”';
+					// showModalContent = '请重新选择“投放距离”或“所属行业”';
 				} else if (this.segmentedControl.current === 1 && this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids) { // 全区域
 					_data = {
 						region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
 						shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合（这里只有一个值）
 					}
-					showModalContent = '请重新选择“投放区域”或“所属行业”';
+					// showModalContent = '请重新选择“投放区域”或“所属行业”';
 				}
 				if (_data) {
 					uni.request({
@@ -421,16 +422,17 @@
 						method: 'GET',
 						success: function(res) {
 							// self.deviceList = []; // 初始化设备列表
-							
 							if (res.data.status == 1) {
 								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
 									// 广告屏列表
+									let thumb = typeof(JSON.parse(value.url_image)[0]) != 'undefined' ? JSON.parse(value.url_image)[0].url : '';
 									self.$set(self.deviceList, index, {
 										device_id: value.device_id.toString(),
 										shop_name: value.shop_name,
 										address: value.address,
 										ad_unit_price: value.ad_unit_price,
+										thumb: thumb,
 										checked: true
 									});
 									// 地图标记点
@@ -444,13 +446,13 @@
 									}
 								})
 								self.form.ad_price = (adPrice * self.form.play_days).toFixed(2);
-							} else {
+							}/* else {
 								uni.showModal({
 									title: '获取广告屏失败',
 									content: showModalContent,
 									showCancel: false
 								});
-							}
+							} */
 						},
 						fail(error) {
 							uni.showToast({
