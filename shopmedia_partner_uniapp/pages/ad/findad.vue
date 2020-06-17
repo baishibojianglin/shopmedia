@@ -70,16 +70,16 @@
 		
 		<uni-card :is-shadow="true" class="uni-bold">
 			<view class="uni-flex uni-row">
-				<view class="text-right" style="width: 360rpx;">广告屏总数量</view>
-				<view class="uni-common-pl text-left" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}台</view>
+				<view class="text-left" style="width: 360rpx;">广告屏总计</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}台</view>
 			</view>
 			<view class="uni-flex uni-row">
-				<view class="text-right" style="width: 360rpx;">已投放</view>
-				<view class="uni-common-pl text-left" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}台</view>
+				<view class="text-left" style="width: 360rpx;">已投放</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}台</view>
 			</view>
 			<view class="uni-flex uni-row">
-				<view class="text-right" style="width: 360rpx;">广告总价</view>
-				<view class="uni-common-pl text-left color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
+				<view class="text-left" style="width: 360rpx;">广告总价</view>
+				<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
 			</view>
 		</uni-card>
 		
