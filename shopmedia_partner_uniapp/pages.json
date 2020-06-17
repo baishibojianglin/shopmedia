@@ -157,6 +157,7 @@
 		    "path" : "pages/device/device-all-list",
 		    "style" : {
 				"navigationBarTitleText": "店通广告屏",
+				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{

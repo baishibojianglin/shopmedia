@@ -1,32 +1,32 @@
 <template>
-	<view>
+	<view class="uni-comment-body">
 		<view class="uni-list" style="position: fixed;top: 89rpx;z-index: 99;">
 			<view class="uni-list-cell">
-				<view class="uni-list-cell-left">
+				<!-- <view class="uni-list-cell-left">
 					<text class="uni-text-gray">选择区域</text>
-				</view>
+				</view> -->
 				<!-- 省级 -->
 				<view class="uni-list-cell-db uni-ellipsis">
 					<picker :value="provinceIndex" :range="provinceArray" range-key="region_name" @change="bindRegionPickerChange($event, 1)">
-						<view class="uni-input">{{provinceArray[provinceIndex].region_name}}</view>
+						<view class="uni-input">{{provinceArray[provinceIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
 				</view>
 				<!-- 市级 -->
-				<view class="uni-list-cell-db uni-ellipsis">
+				<view class="uni-list-cell-db uni-ellipsis" v-if="provinceIndex">
 					<picker :value="cityIndex" :range="cityArray" range-key="region_name" @change="bindRegionPickerChange($event, 2)">
-						<view class="uni-input">{{cityArray[cityIndex].region_name}}</view>
+						<view class="uni-input">{{cityArray[cityIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
 				</view>
 				<!-- 区县 -->
-				<view class="uni-list-cell-db uni-ellipsis">
+				<view class="uni-list-cell-db uni-ellipsis" v-if="cityIndex">
 					<picker :value="countyIndex" :range="countyArray" range-key="region_name" @change="bindRegionPickerChange($event, 3)">
-						<view class="uni-input">{{countyArray[countyIndex].region_name}}</view>
+						<view class="uni-input">{{countyArray[countyIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
 				</view>
 				<!-- 乡镇街道 -->
-				<view class="uni-list-cell-db uni-ellipsis">
+				<view class="uni-list-cell-db uni-ellipsis" v-if="countyIndex">
 					<picker :value="townIndex" :range="townArray" range-key="region_name" @change="bindRegionPickerChange($event, 4)">
-						<view class="uni-input">{{townArray[townIndex].region_name}}</view>
+						<view class="uni-input">{{townArray[townIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
 				</view>
 			</view>
@@ -79,7 +79,13 @@
 					contentdown: '上拉加载更多',
 					contentrefresh: '加载中',
 					contentnomore: '没有更多'
-				}
+				},
+				
+				// 区域查询条件
+				shop_province_id: '',
+				shop_city_id: '',
+				shop_county_id: '',
+				shop_town_id: ''
 				/* 广告屏列表 e */
 			};
 		},
@@ -123,16 +129,16 @@
 						if (res.data.status == 1) {
 							if (parent_id == 0 && typeof(level) == 'undefined') {
 								self.provinceArray = res.data.data;
-								self.provinceArray.unshift({region_id: 0, region_name: '请选择…'});
+								self.provinceArray.unshift({region_id: 0, region_name: '全国'});
 							} else if(level == 2) {
 								self.cityArray = res.data.data;
-								self.cityArray.unshift({region_id: 0, region_name: '请选择…'});
+								self.cityArray.unshift({region_id: 0, region_name: '请选择'});
 							} else if(level == 3) {
 								self.countyArray = res.data.data;
-								self.countyArray.unshift({region_id: 0, region_name: '请选择…'});
+								self.countyArray.unshift({region_id: 0, region_name: '请选择'});
 							} else if(level == 4) {
 								self.townArray = res.data.data;
-								self.townArray.unshift({region_id: 0, region_name: '请选择…'});
+								self.townArray.unshift({region_id: 0, region_name: '请选择'});
 							}
 						}
 					}
@@ -146,28 +152,34 @@
 			bindRegionPickerChange: function(e, _level) {
 				// console.log('picker发送选择改变，携带值为：' + e.detail.value)
 				// console.log('_level：', _level)
-				if (_level == 1) {
+				let region_id;
+				let level;
+				if (_level == 1) { // 省
 					this.provinceIndex = e.detail.value;
-					let parent_id = this.provinceArray[this.provinceIndex].region_id;
-					let level = this.provinceArray[this.provinceIndex].level + 1;
-					this.getRegionList(parent_id, level);
-					// console.log('省', this.provinceArray[this.provinceIndex].region_id)
-				} else if (_level == 2) {
+					region_id = this.provinceArray[this.provinceIndex].region_id;
+					level = this.provinceArray[this.provinceIndex].level + 1;
+					this.getRegionList(region_id, level);
+					// console.log('省', this.provinceArray[this.provinceIndex].region_id);
+					this.shop_province_id = region_id;
+				} else if (_level == 2) { // 市
 					this.cityIndex = e.detail.value;
-					let parent_id = this.cityArray[this.cityIndex].region_id;
-					let level = this.cityArray[this.cityIndex].level + 1;
-					this.getRegionList(parent_id, level);
+					region_id = this.cityArray[this.cityIndex].region_id;
+					level = this.cityArray[this.cityIndex].level + 1;
+					this.getRegionList(region_id, level);
 					// console.log('市', this.cityArray[this.cityIndex].region_id)
-				} else if (_level == 3) {
+					this.shop_city_id = region_id;
+				} else if (_level == 3) { // 区县
 					this.countyIndex = e.detail.value;
-					let parent_id = this.countyArray[this.countyIndex].region_id;
-					let level = this.countyArray[this.countyIndex].level + 1;
-					this.getRegionList(parent_id, level);
+					region_id = this.countyArray[this.countyIndex].region_id;
+					level = this.countyArray[this.countyIndex].level + 1;
+					this.getRegionList(region_id, level);
 					// console.log('区县', this.countyArray[this.countyIndex].region_id)
-				} else if (_level == 4) {
+					this.shop_county_id = region_id;
+				} else if (_level == 4) { // 乡镇街道
 					this.townIndex = e.detail.value;
-					let town_id = this.townArray[this.townIndex].region_id;
+					region_id = this.townArray[this.townIndex].region_id;
 					// console.log('乡镇街道', this.townArray[this.townIndex].region_id)
+					this.shop_town_id = region_id;
 				}
 				this.getList();
 			},
@@ -178,12 +190,13 @@
 			getList() {
 				var data = {};
 				// 区域查询条件
-				console.log(123, this.last_id)
-				if (this.provinceArray[this.provinceIndex].region_id) {
-					// this.listData = [];
-					data.province_id = this.provinceArray[this.provinceIndex].region_id;
-				} else if (this.cityArray[this.cityIndex].region_id) {
-					data.city_id = this.cityArray[this.cityIndex].region_id;
+				data.province_id = this.shop_province_id; // 省
+				data.city_id = this.shop_city_id; // 市
+				data.county_id = this.shop_county_id; // 区县
+				data.town_id = this.shop_town_id; // 乡镇街道
+				if (this.shop_province_id || this.shop_city_id || this.shop_county_id ||  this.shop_town_id) {
+					this.listData = [];
+					this.last_id = '';
 				}
 				if (this.last_id) {
 					//说明已有数据，目前处于上拉加载
@@ -208,7 +221,7 @@
 							this.reload = false;
 						} else if (res.statusCode == 404) {
 							// 判断数据已经全部加载
-							if (this.last_id == res.data.data.maxId) {
+							if (this.last_id == res.data.data.maxId || !this.last_id) {
 								this.status = '';
 								return;
 							}
