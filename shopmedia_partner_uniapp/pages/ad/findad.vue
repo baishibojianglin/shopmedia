@@ -74,7 +74,7 @@
 				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}台</view>
 			</view>
 			<view class="uni-flex uni-row">
-				<view class="text-left" style="width: 360rpx;">已投放</view>
+				<view class="text-left" style="width: 360rpx;">选择投放</view>
 				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}台</view>
 			</view>
 			<view class="uni-flex uni-row">
@@ -84,7 +84,7 @@
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button @click="submitForm()" class="bg-main-color color-white">提 交</button>
+			<button @click="submitForm()" class="bg-main-color color-white">确认投放</button>
 		</view>
 	</view>
 </template>
