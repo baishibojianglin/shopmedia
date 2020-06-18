@@ -36,9 +36,9 @@ class Index extends AuthBase
      */
     public function getCity()
     {
-        $city = config('code.fix_city'); // 广告类别
-        return json($city);
-
+       $match['status']=1;
+       $data=Db::name('company')->alias('a')->where($match)->join('region b','b.region_id=a.city_id')->field('region_name')->select();
+       return json($data);
     }
 
 
