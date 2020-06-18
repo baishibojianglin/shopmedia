@@ -1,12 +1,12 @@
 <template>
 	<view class="content">
-	
-
 		<view>
-
+				<uni-grid :column="3">
+					<uni-grid-item v-for="value in city"> 
+						<text class="text-grid">{{value.region_name}}</text>
+					</uni-grid-item>
+				</uni-grid>
 		</view>
-
-		
 	</view>
 </template>
 
@@ -17,7 +17,7 @@
 	export default {
 		data() {
 			return {
-
+                city:[] //城市列表
 			}
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo', 'commonheader']),
@@ -40,7 +40,7 @@
 			   		},
 			   		method: 'GET',
 			   		success: function(res) {
-						
+						self.city=res.data;
 			   		}
 			   	})
 			   
@@ -51,5 +51,8 @@
 </script>
 
 <style>
-
+ .text-grid{
+	 text-align: center;
+	 line-height: 120px;
+ }
 </style>
