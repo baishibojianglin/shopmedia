@@ -326,10 +326,10 @@
 				}
 			}
         },
-        { // 投放广告-选择广告机
+        { // 投放广告：选择投放区域、行业、广告屏等
             "path" : "pages/ad/findad",
             "style" : {
-				"navigationBarTitleText": "选择广告屏",
+				"navigationBarTitleText": "投放广告",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
