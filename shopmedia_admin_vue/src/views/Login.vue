@@ -127,6 +127,7 @@
 	.title{
 		margin-top:10%;
 		text-align: center;
+		color:#fff;
 	}
 	.content{
         width:30%;

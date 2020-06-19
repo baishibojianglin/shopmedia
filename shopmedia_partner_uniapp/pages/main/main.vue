@@ -49,7 +49,7 @@
 					<text>合作经营</text>
 				</view>
 				<view v-if="role.shop" @click="toRole(3)" class="navcon-item">
-					<text class="iconposition icon iconbg" style="color:#1AA034;">&#xe61b;</text>
+					<text class="iconposition icon color-white iconbg-shop">&#xe61b;</text>
 					<br />
 					<text>店铺合作</text>
 				</view>
@@ -323,6 +323,15 @@
 		line-height: 45px;
 		display: inline-block;
 		background-color:#7EECF9;
+	}
+	.iconbg-shop{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color: #8CE050;
 	}
 	.navcon {
 		display: flex;
