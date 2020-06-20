@@ -10,20 +10,28 @@
 			<view class="uni-padding-wrap">
 				<uni-grid :column="4" :square="false">
 					<uni-grid-item>
-						合计
-						<view class="uni-bold">{{shop_number.total_shop_count}}</view>
+						<navigator url="/pages/saleperson/salesman-shop-list">
+							合计
+							<view class="uni-bold">{{shop_number.total_shop_count}}</view>
+						</navigator>
 					</uni-grid-item>
 					<uni-grid-item>
-						启用
-						<view class="uni-bold">{{shop_number.enable_shop_count}}</view>
+						<navigator url="/pages/saleperson/salesman-shop-list?shop_status=1">
+							启用
+							<view class="uni-bold">{{shop_number.enable_shop_count}}</view>
+						</navigator>
 					</uni-grid-item>
 					<uni-grid-item>
-						待审核
-						<view class="uni-bold">{{shop_number.pending_shop_count}}</view>
+						<navigator url="/pages/saleperson/salesman-shop-list?shop_status=2">
+							待审核
+							<view class="uni-bold">{{shop_number.pending_shop_count}}</view>
+						</navigator>
 					</uni-grid-item>
 					<uni-grid-item>
-						驳回
-						<view class="uni-bold">{{shop_number.pending_shop_count}}</view>
+						<navigator url="/pages/saleperson/salesman-shop-list?shop_status=3">
+							驳回
+							<view class="uni-bold">{{shop_number.reject_shop_count}}</view>
+						</navigator>
 					</uni-grid-item>
 				</uni-grid>
 			</view>

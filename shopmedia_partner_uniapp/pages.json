@@ -326,6 +326,19 @@
 				}
 			}
         },
+		{ // 业务员开拓店铺列表
+		    "path" : "pages/saleperson/salesman-shop-list",
+		    "style" : {
+				"navigationBarTitleText": "开拓店铺列表",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
         { // 投放广告：选择投放区域、行业、广告屏等
             "path" : "pages/ad/findad",
             "style" : {

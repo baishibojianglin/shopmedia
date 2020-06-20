@@ -48,6 +48,48 @@ class UserSalesman extends AuthBase
     }
 
     /**
+     * 获取店铺业务员开拓店铺列表
+     */
+    public function getSalesmanShopList()
+    {
+        // 判断为GET请求
+        if (request()->isGet()) {
+            // 传入的参数
+            $param = input('param.');
+
+            // 查询条件
+            $map = [];
+            $map['usa.uid'] = $param['user_id'];
+            $map['usa.role_id'] = $param['role_id'];
+            if (isset($param['shop_status'])) {
+                $map['s.status'] = (int)$param['shop_status'];
+            }
+
+            // 获取店铺列表数据
+            $data = model('Shop')->alias('s')
+                ->field('s.*')
+                ->join('__USER_SHOPKEEPER__ usk', 's.shopkeeper_id = usk.id')
+                ->join('__USER_SALESMAN__ usa', 'usk.salesman_id = usa.id')
+                ->where($map)
+                ->select();
+            if (!$data) {
+                return show(config('code.error'), 'Not Found', '', 404);
+            }
+
+            $status = config('code.status');
+            foreach ($data as $key => $value) {
+                // 处理数据
+                $data[$key]['status_msg'] = $status[$value['status']]; // 定义status_msg
+            }
+
+
+            return show(config('code.success'), 'OK', $data);
+        } else {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+    }
+
+    /**
      * 获取广告屏业务员销售数量
      * @return \think\response\Json
      * @throws \think\Exception
