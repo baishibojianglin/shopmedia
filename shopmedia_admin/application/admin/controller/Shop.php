@@ -208,6 +208,15 @@ class Shop extends Base
             }
             if (isset($param['status'])) { // 不能用 !empty() ，否则 status = 0 时也判断为空
                 $data['status'] = input('param.status', null, 'intval');
+                if ($data['status'] == config('code.status_reject')) {
+                    if (!empty($param['reject_reason'])) { // 驳回原因
+                        $data['reject_reason'] = trim($param['reject_reason']);
+                    } else {
+                        return show(config('code.error'), '请填写驳回原因', '', 401);
+                    }
+                } else {
+                    $data['reject_reason'] = '';
+                }
             }
             if (isset($param['is_commission']) && intval($param['is_commission']) == 1) { // 店铺业务员提成状态
                 // 判断店铺状态（入参）是否启用
