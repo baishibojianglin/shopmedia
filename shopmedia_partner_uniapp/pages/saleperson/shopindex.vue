@@ -7,14 +7,49 @@
 			</view>
 			
 			<view class="sale-title main-color">— 开拓店铺 —</view>
-			<view class="countcon">
-				<view class="countcon-item">店铺：<text class="uni-bold">{{sale_number}} 个</text></view>
-				<view class="countcon-item">总收入：<text class="uni-bold">{{sale_info.income}}</text></view>
+			<view class="uni-padding-wrap">
+				<uni-grid :column="4" :square="false">
+					<uni-grid-item>
+						合计
+						<view class="uni-bold">{{shop_number.total_shop_count}}</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						启用
+						<view class="uni-bold">{{shop_number.enable_shop_count}}</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						待审核
+						<view class="uni-bold">{{shop_number.pending_shop_count}}</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						驳回
+						<view class="uni-bold">{{shop_number.pending_shop_count}}</view>
+					</uni-grid-item>
+				</uni-grid>
 			</view>
-			<view class="countcon">
+			
+			<view class="sale-title main-color">— 我的资金 —</view>
+			<view class="uni-padding-wrap uni-common-mb">
+				<uni-grid :column="3" :square="false">
+					<uni-grid-item>
+						总收入
+						<view class="uni-bold">{{sale_info.income}}</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						已提现
+						<view class="uni-bold">{{sale_info.cash}}</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						余额
+						<view class="uni-bold">{{sale_info.money}}</view>
+					</uni-grid-item>
+				</uni-grid>
+			</view>
+			<!-- <view class="countcon">
+				<view class="countcon-item">总收入：<text class="uni-bold">{{sale_info.income}}</text></view>
 				<view class="countcon-item">已提现：<text class="uni-bold">{{sale_info.cash}}</text></view>
 				<view class="countcon-item">余额：<text class="uni-bold">{{sale_info.money}}</text></view>
-			</view>
+			</view> -->
 			
 			<!-- 我的团队 s -->
 			<view class="">
@@ -65,7 +100,7 @@
 				salecount:0,//合作屏数量
 				devicelist:[],//设备列表
 				sale_info:{} ,//业务员基本信息
-				sale_number:0, //广告机数量
+				shop_number: [], //店铺数量
 				salesmanList: [] // 下级业务员列表
 			}
 		},
@@ -96,7 +131,7 @@
 						'access-user-token':this.userInfo.token
 					},
 					success: (res) => {
-                         self.sale_number=res.data.data;
+						self.shop_number = res.data.data;
 					}
 				});			
 			},			

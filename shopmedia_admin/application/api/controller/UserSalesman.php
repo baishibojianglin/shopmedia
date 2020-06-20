@@ -21,23 +21,27 @@ class UserSalesman extends AuthBase
      */
     public function getShopCount()
     {
-        $form=input();
-        $match['uid']=$form['user_id'];
-        $match['role_id']=$form['role_id'];
-        $list=Db::name('user_salesman')->where($match)->find();//获取业务员主键id
+        $form = input();
+        $match['uid'] = $form['user_id'];
+        $match['role_id'] = $form['role_id'];
+        $list = Db::name('user_salesman')->where($match)->find();//获取业务员主键id
         if(!empty($list)){
-            $matchid['salesman_id']=$list['id'];
-            $partner=Db::name('user_shopkeeper')->where($matchid)->field('user_id')->select();//该业务员发展的客户
-            $ordercount=0;
+            $matchid['salesman_id'] = $list['id'];
+            $partner = Db::name('user_shopkeeper')->where($matchid)->field('user_id')->select();//该业务员发展的客户
+            $totalShopCount = 0; // 店铺数量合计
+            $enableShopCount = 0; // 启用的店铺数量
+            $pendingShopCount = 0; // 待审核的店铺数量
+            $rejectShopCount = 0; // 驳回的店铺数量
             if(!empty($partner)){
                 foreach ($partner as $key => $value) {
-                    $matchorder['user_id']=$value['user_id'];
-                    $matchorder['status']=1;
-                    $ordercount=$ordercount + Db::name('shop')->where($matchorder)->count();
+                    $totalShopCount = $totalShopCount + Db::name('shop')->where(['user_id' => $value['user_id']])->count();
+                    $enableShopCount = $enableShopCount + Db::name('shop')->where(['user_id' => $value['user_id'], 'status' => 1])->count();
+                    $pendingShopCount = $pendingShopCount + Db::name('shop')->where(['user_id' => $value['user_id'], 'status' => 2])->count();
+                    $rejectShopCount = $rejectShopCount + Db::name('shop')->where(['user_id' => $value['user_id'], 'status' => 3])->count();
                 }
             }
-            return show(config('code.success'), 'OK',$ordercount);
-
+            $data = ['total_shop_count' => $totalShopCount, 'enable_shop_count' => $enableShopCount, 'pending_shop_count' => $pendingShopCount, 'reject_shop_count' => $rejectShopCount];
+            return show(config('code.success'), 'OK', $data);
         }else{
             return show(config('code.error'), '业务员不存在', '', 404);
         }
