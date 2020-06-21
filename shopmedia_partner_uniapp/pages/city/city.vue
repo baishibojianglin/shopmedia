@@ -1,11 +1,13 @@
 <template>
 	<view class="content">
 		<view>
+			 <uni-card  :is-shadow='true'>
 				<uni-grid :column="3">
 					<uni-grid-item v-for="value in city"> 
 						<text class="text-grid">{{value.region_name}}</text>
 					</uni-grid-item>
 				</uni-grid>
+			</uni-card>
 		</view>
 	</view>
 </template>
@@ -53,6 +55,6 @@
 <style>
  .text-grid{
 	 text-align: center;
-	 line-height: 120px;
+	 line-height: 105px;
  }
 </style>

@@ -180,4 +180,29 @@ class Device extends AuthBase
         }
         return json($message);
     }
+
+
+    /**
+     * 获取广告屏尺寸
+     * @return \think\response\Json
+     */
+    public function getSize()
+    {
+        $size = config('code.device_size');
+        return json($size);
+    }
+
+
+    /**
+     * 获取广告屏价格
+     * @return \think\response\Json
+     */
+    public function getPrice()
+    {
+        $price = config('code.device_level');
+        return json($price);
+    }
+
+
+
 }

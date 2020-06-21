@@ -122,6 +122,9 @@ Route::post('api/get_user_role', 'api/User/getUserRole');
 Route::get('api/device_all_list','api/Device/index');
 Route::get('api/device_list','api/Device/getDeviceList');
 Route::get('api/device_detail','api/Device/deviceDetail');
+Route::get('api/device_size','api/Device/getSize');
+Route::get('api/device_price','api/Device/getPrice');
+
 
 // 广告
 Route::resource('api/ad', 'api/Ad');
