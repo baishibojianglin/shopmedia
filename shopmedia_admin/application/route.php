@@ -79,6 +79,10 @@ Route::get('shop_environment', 'admin/ShopCate/shopEnvironment'); // 店铺环�
 
 // 活动
 Route::resource('activity', 'admin/Activity');
+Route::get('activity_list', 'admin/Activity/activityList');  // 活动列表（不分页）
+// 活动奖品
+Route::resource('act_prize', 'admin/ActPrize');
+Route::get('act_prize_level', 'admin/ActPrize/actPrizeLevelList'); // 活动奖品等级列表
 
 // 新闻
 Route::resource('news', 'admin/News');

@@ -59,6 +59,27 @@ class Activity extends Base
     }
 
     /**
+     * 获取活动列表（不分页，用于 Select 选择器等）
+     * @return \think\response\Json
+     */
+    public function activityList()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 查询条件
+        $map = [];
+        $map['status'] = config('code.status_enable');
+        $map['is_delete'] = config('code.not_delete');
+
+        $data = model('Activity')->where($map)->select();
+
+        return show(config('code.success'), 'OK', $data);
+    }
+
+    /**
      * 保存新建的活动资源
      * @param Request $request
      * @return \think\response\Json

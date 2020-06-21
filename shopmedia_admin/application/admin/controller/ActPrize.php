@@ -252,4 +252,20 @@ class ActPrize extends Base
             }
         }
     }
+
+    /**
+     * 活动奖品等级列表（不分页，用于 Select 选择器等）
+     * @return \think\response\Json
+     */
+    public function actPrizeLevelList()
+    {
+        $actPrizeLevel = config('activity.act_prize_level');
+        $data = []; // 定义二维数组列表
+        // 处理数据，将一维数组转成二维数组
+        foreach ($actPrizeLevel as $key => $value) {
+            $data[] = ['level_id' => $key, 'level_name' => $value];
+        }
+
+        return show(config('code.success'), 'OK', $data);
+    }
 }
