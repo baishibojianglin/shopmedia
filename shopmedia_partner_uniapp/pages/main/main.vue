@@ -16,7 +16,7 @@
 				<uni-grid class="view-grid-con totalcontentbg" :column="3">
 					<uni-grid-item>
 						<text class="text-grid-title">广告屏</text>
-						<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}</text>
+						<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}+</text>
 					</uni-grid-item>
 					<navigator url="/pages/city/city">
 						<uni-grid-item>
@@ -26,7 +26,7 @@
 					</navigator>
 					<uni-grid-item>
 						<text class="text-grid-title">服务商家</text>
-						<text class="text-grid">{{totaldata.shop}}</text>
+						<text class="text-grid">{{totaldata.shop}}+</text>
 					</uni-grid-item>
 				</uni-grid>
 			</uni-card>

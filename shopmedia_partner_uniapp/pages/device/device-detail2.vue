@@ -19,14 +19,10 @@
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">屏尺寸：</text>
-					<text class="datalist-content">{{datalist.size}} 寸</text>
+					<text class="datalist-content">{{device_size[datalist.size]}} 寸</text>
 				</view>
 				<view class="datalist">
-					<text class="datalist-title">数据系统：</text>
-					<text class="datalist-content">店通智能大数据系统</text>
-				</view>
-				<view class="datalist">
-					<text class="datalist-title">店铺：</text>
+					<text class="datalist-title">安装店铺：</text>
 					<text class="datalist-content">{{datalist.shop_name}}</text>
 				</view>
 				<view class="datalist">
@@ -39,11 +35,15 @@
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">位置：</text>
-					<view class="datalist-content uni-text-small" @click="openLocation()"><text class="uni-icon uni-icon-location-filled"></text>{{datalist.address}}</view>
+					<view class="datalist-content" @click="openLocation()"><text style="position: relative;top:6px;"><text class="uni-icon uni-icon-location-filled color-blue"></text> {{datalist.address}}</text></view>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">周围环境：</text>
 					<text class="datalist-content">{{datalist.environment}}</text>
+				</view>
+				<view class="datalist">
+					<text class="datalist-title">投放价格：</text>
+					<text class="datalist-content color-red">{{device_price[datalist.level]}} 元/天</text>
 				</view>
 			</view>
 		</uni-card>
@@ -61,7 +61,9 @@
 				device_id: 0, //设备id
 				datalist: {}, //设备详细信息
 				cate_name: '', //行业名字
-				imglist: [] //实景图列表
+				imglist: [] ,//实景图列表
+				device_size:{} ,//设备尺寸
+				device_price:{} //投放价格
 			}
 		},
 		computed: {
@@ -74,6 +76,9 @@
 			this.getCate()
 			//获取设备信息
 			this.deviceDetail();
+			//获取设备尺寸、价格
+			this.getSize();
+			this.getPrice();
 		},
 		onNavigationBarButtonTap(e) {
 			this.$common.actionSheetTap();
@@ -94,7 +99,45 @@
 					}
 				});
 			},
-			
+
+			//获取屏尺寸
+			getSize(){
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/device_size',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: (res) => {
+						self.device_size = res.data;
+					}
+				});
+			},
+
+			//获取屏价格
+			getPrice(){
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/device_price',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: (res) => {
+						self.device_price = res.data;
+						console.log(self.device_price)
+					}
+				});
+			},
+
+
+
+
+
+	
 			//获取设备详细信息
 			deviceDetail() {
 				let self = this;

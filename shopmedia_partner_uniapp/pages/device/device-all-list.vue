@@ -1,16 +1,16 @@
 <template>
 	<view class="uni-comment-body">
-		<view class="uni-list" style="position: fixed;top: 89rpx;z-index: 99;">
+		<view class="uni-list" style="position: fixed;top:5rpx;z-index: 99;">
 			<view class="uni-list-cell">
 				<!-- <view class="uni-list-cell-left">
 					<text class="uni-text-gray">选择区域</text>
 				</view> -->
 				<!-- 省级 -->
-				<view class="uni-list-cell-db uni-ellipsis">
+<!-- 				<view class="uni-list-cell-db uni-ellipsis">
 					<picker :value="provinceIndex" :range="provinceArray" range-key="region_name" @change="bindRegionPickerChange($event, 1)">
 						<view class="uni-input">{{provinceArray[provinceIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
-				</view>
+				</view> -->
 				<!-- 市级 -->
 				<view class="uni-list-cell-db uni-ellipsis" v-if="provinceIndex">
 					<picker :value="cityIndex" :range="cityArray" range-key="region_name" @change="bindRegionPickerChange($event, 2)">
@@ -32,18 +32,18 @@
 			</view>
 		</view>
 		
-		<view class="uni-list" style="margin-top: 100rpx;">
+		<view class="uni-list" style="margin-top:5rpx;">
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in listData" :key="key" @click="toDeviceDetail2(value.device_id)">
 				<view class="uni-media-list">
 					<image class="uni-media-list-logo" :src="value.thumb"></image>
 					<view class="uni-media-list-body">
 						<view class="uni-media-list-text-top">
-							<text>屏编号{{ value.device_id }}</text>
+							<text>屏编号：{{ value.device_id }}</text>
 							<text class="uni-common-pl">【店铺】{{ value.shop_name }}</text>
 						</view>
 						<view class="uni-media-list-text-bottom">
 							<!-- <text>{{ value.device_id }}</text> -->
-							<text class="uni-ellipsis">{{ value.address }}</text>
+							<text class="uni-ellipsis">地址：{{ value.address }}</text>
 						</view>
 					</view>
 				</view>
