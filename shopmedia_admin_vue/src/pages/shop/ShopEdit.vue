@@ -18,6 +18,17 @@
 					<el-form-item prop="shop_name" label="店铺名称">
 						<el-input v-model="form.shop_name" clearable style="width:350px;"></el-input>
 					</el-form-item>
+					
+					<el-form-item prop="shop_pic" label="店铺图片">
+						<div class="block" v-for="(item, index) in shopPic" :key="index" style="display: inline-block;">
+							<el-image
+						      style="width: 100px; height: 100px; padding-right: 10px;"
+						      :src="item.url"
+							  :preview-src-list="shopPicPreviewSrcList"
+						      fit="fill"></el-image>
+						</div>
+					</el-form-item>
+					
 					<el-form-item prop="cate_id" label="店铺类别">
 						<el-select v-model="form.cate" clearable filterable>
 							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id">
@@ -93,6 +104,9 @@
 							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用', 2: '待审核', 3: '驳回'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
+					<el-form-item v-if="form.status == 3" prop="reject_reason" label="驳回原因">
+						<el-input v-model="form.reject_reason" clearable style="width:350px;"></el-input>
+					</el-form-item>
 					<el-form-item prop="is_commission" label="店铺业务员提成状态">
 						<el-radio-group v-model="form.is_commission" :disabled="isCommission" @change="isCommissionRadioChange">
 							<el-radio v-for="(item, index) in {0: '未提成', 1: '已提成'}" :key="index" :label="Number(index)">{{item}}</el-radio>
@@ -119,7 +133,8 @@
 					county_id:'', // 区域（区县）
 					town_id:'', // 区域（乡镇街道）
 					status: '', // 店铺状态
-					is_commission: '' // 店铺业务员提成状态
+					is_commission: '', // 店铺业务员提成状态
+					reject_reason: '' // 驳回原因
 				},
 				rules: { // 验证规则
 					shop_name: [
@@ -145,7 +160,10 @@
 				countyList: [],
 				townList: [],
 				
-				isCommission: false // 区别于 form.is_commission，用于控制 prop="is_commission" 的禁用状态
+				isCommission: false, // 区别于 form.is_commission，用于控制 prop="is_commission" 的禁用状态
+				
+				shopPic: [], // 店铺图片列表
+				shopPicPreviewSrcList: [] // 店铺图片列表预览
 			}
 		},
 		created() {
@@ -285,6 +303,11 @@
 						self.region(self.form.province_id, 2);
 						self.region(self.form.city_id, 3);
 						self.region(self.form.county_id, 4);
+						
+						self.shopPic = JSON.parse(res.data.data.shop_pic);
+						self.shopPic.forEach((value, index) => {
+							self.shopPicPreviewSrcList.push(value.url)
+						})
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -361,8 +384,9 @@
 								latitude: this.form.latitude,
 								shop_area: this.form.shop_area,
 								status: this.form.status,
+								reject_reason: this.form.reject_reason,
 								is_commission: this.form.is_commission
-							} 
+							}
 						}
 						
 						this.$axios.put(this.$url + 'shop/' + this.form.shop_id, params)
