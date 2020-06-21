@@ -65,6 +65,8 @@ import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
 import Activity from '@/pages/activity/Activity.vue'
 import ActivityCreate from '@/pages/activity/ActivityCreate.vue'
 import ActivityEdit from '@/pages/activity/ActivityEdit.vue'
+// 活动奖品管理
+import Prize from '@/pages/prize/Prize.vue'
 // 新闻管理
 import News from '@/pages/news/News.vue'
 import NewsCreate from '@/pages/news/NewsCreate.vue'
@@ -151,6 +153,8 @@ const routes = [
 			{path: 'activity', name: 'activity', component: Activity}, // 活动列表
 			{path: 'activity_create', name: 'activity_create', component: ActivityCreate}, // 新增活动
 			{path: 'activity_edit', name: 'activity_edit', component: ActivityEdit}, // 编辑活动
+			// 2--活动奖品管理
+			{path: 'prize', name: 'prize', component: Prize}, // 活动奖品列表
 			// 2--新闻管理
 			{path: 'news', name: 'news', component: News}, // 新闻列表
 			{path: 'news_create', name: 'news_create', component: NewsCreate}, // 新增新闻

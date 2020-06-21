@@ -6,14 +6,14 @@ use app\common\lib\exception\ApiException;
 use think\Request;
 
 /**
- * admin模块活动控制器类
- * Class Activity
+ * admin模块活动奖品控制器类
+ * Class ActPrize
  * @package app\admin\controller
  */
-class Activity extends Base
+class ActPrize extends Base
 {
     /**
-     * 显示活动资源列表
+     * 显示活动奖品资源列表
      * @return \think\response\Json
      */
     public function index()
@@ -25,30 +25,24 @@ class Activity extends Base
 
             // 查询条件
             $map = [];
-            if (!empty($param['act_name'])) {
-                $map['act_name'] = ['like', '%' . trim($param['act_name']) . '%'];
-            }
-            if (isset($param['is_delete'])) {
-                $map['is_delete'] = $param['is_delete'];
+            if (!empty($param['prize_name'])) {
+                $map['prize_name'] = ['like', '%' . trim($param['prize_name']) . '%'];
             }
 
             // 获取分页page、size
             $this->getPageAndSize($param);
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
-            $data = model('Activity')->getActivity($map, (int)$this->size);
+            $data = model('ActPrize')->getActPrize($map, (int)$this->size);
             if (!$data) {
                 return show(config('code.error'), 'Not Found', '', 404);
             }
-            $status = config('code.status');
+
             try {
-            foreach ($data as $key => $value) {
-                // 处理数据
-                $data[$key]['start_time'] = date('Y-m-d H:i:s', $value['start_time']); // 活动开始时间
-                $data[$key]['end_time'] = date('Y-m-d H:i:s', $value['end_time']); // 活动结束时间
-                $data[$key]['create_time'] = date('Y-m-d H:i:s', $value['create_time']); // 活动创建时间
-                $data[$key]['status_msg'] = $status[$value['status']]; // 定义status_msg
-            }
+                foreach ($data as $key => $value) {
+                    // 处理数据
+                    $data[$key]['create_time'] = date('Y-m-d H:i:s', $value['create_time']); // 活动奖品创建时间
+                }
             } catch (\Exception $e) {
                 return show(config('code.error'), $e->getMessage(), '');
             }
@@ -59,7 +53,7 @@ class Activity extends Base
     }
 
     /**
-     * 保存新建的活动资源
+     * 保存新建的活动奖品资源
      * @param Request $request
      * @return \think\response\Json
      * @throws ApiException
@@ -77,16 +71,10 @@ class Activity extends Base
                 return show(config('code.error'), $validate->getError(), [], 403);
             }*/
 
-            // 处理数据
-            if (isset($data['act_datetime']) && !empty($data['act_datetime'])) {
-                $data['start_time'] = strtotime($data['act_datetime'][0]); // 活动开始时间
-                $data['end_time'] = strtotime($data['act_datetime'][1]); // 活动结束时间
-            }
-
             // 入库操作
             // 捕获异常
             try {
-                $id = model('Activity')->add($data, 'act_id'); // 新增
+                $id = model('ActPrize')->add($data, 'prize_id'); // 新增
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
@@ -100,7 +88,7 @@ class Activity extends Base
     }
 
     /**
-     * 显示指定的活动资源
+     * 显示指定的活动奖品资源
      * @param int $id
      * @return \think\response\Json
      * @throws ApiException
@@ -110,18 +98,12 @@ class Activity extends Base
         // 判断为GET请求
         if (request()->isGet()) {
             try {
-                $data = model('Activity')->find($id);
+                $data = model('ActPrize')->find($id);
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
 
             if ($data) {
-                // 处理数据
-                // 定义status_msg
-                $status = config('code.status');
-                $data['status_msg'] = $status[$data['status']];
-                $data['act_datetime'] = [date('Y-m-d H:i:s', $data['start_time']), date('Y-m-d H:i:s', $data['end_time'])];
-
                 return show(config('code.success'), 'ok', $data);
             }
         } else {
