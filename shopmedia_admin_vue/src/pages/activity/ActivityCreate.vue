@@ -62,7 +62,7 @@
 				},
 				rules: { // 验证规则
 					act_name: [
-						{ required: true, message: '请输入新闻标题', trigger: 'blur' },
+						{ required: true, message: '请输入活动名称', trigger: 'blur' },
 						{ min: 1, max: 150, message: '长度在 1 到 150 个字符', trigger: 'blur' }
 					],
 					act_datetime: [{ /* type: 'date', */ required: true, message: '请选择活动时间', trigger: 'change'}],
@@ -79,7 +79,7 @@
 		},
 		methods: {
 			/**
-			 * 编辑新闻提交表单
+			 * 新增活动提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {

@@ -1,5 +1,5 @@
 <template>
-	<div class="news_create">
+	<div class="activity_create">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
@@ -12,38 +12,21 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
-					<el-form-item prop="title" label="新闻标题">
-						<el-input v-model="form.title" placeholder="输入新闻标题" clearable style="width:350px;"></el-input>
+					<el-form-item prop="act_name" label="活动名称">
+						<el-input v-model="form.act_name" placeholder="输入活动名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="author" label="新闻作者">
-						<el-input v-model="form.author" placeholder="输入新闻作者" clearable style="width:350px;"></el-input>
+					<el-form-item prop="act_datetime" label="活动时间">
+						<el-date-picker v-model="form.act_datetime" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
 					</el-form-item>
-					<el-form-item prop="cate_id" label="新闻类别">
-						<el-select v-model="form.cate_id" placeholder="请选择…" clearable filterable>
-							<el-option
-								v-for="item in newsCateList"
-								:key="item.cate_id"
-								:label="item.cate_name"
-								:value="item.cate_id">
-							</el-option>
-						</el-select>
+					<el-form-item prop="times" label="每人每天抽奖限制次数">
+						<el-input-number v-model="form.times" :min="0" :step="1" :precision="0" controls-position="right"></el-input-number>
 					</el-form-item>
-					<el-form-item prop="keywords" label="搜索关键字">
-						<el-input v-model="form.keywords" placeholder="输入搜索关键字" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="brief" label="新闻摘要">
-						<el-input type="textarea" :rows="5" v-model="form.brief" placeholder="输入新闻摘要" clearable></el-input>
-					</el-form-item>
-					<el-form-item prop="thumb" label="新闻缩略图">
-						<el-input v-model="form.thumb" placeholder="" clearable style="width:350px;"></el-input>
-					</el-form-item>
-					<el-form-item prop="content" label="正文内容">
-						<!-- <el-input type="textarea" :rows="10" v-model="form.content" placeholder="输入正文内容" clearable style="width: 100%"></el-input> -->
-						<quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption" style="height:600px;margin-bottom: 6.25rem;"></quill-editor>
+					<el-form-item prop="description" label="活动描述">
+						<quill-editor ref="myTextEditor" v-model="form.description" :options="editorOption" style="height:600px;margin-bottom: 6.25rem;"></quill-editor>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">
-							<el-radio v-for="(item, index) in {0: '草稿', 1: '通过', 2: '待审核', 3: '驳回', 4: '发布', 5: '下架'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+							<el-radio v-for="(item, index) in {0: '禁用', 1: '启用'}" :key="index" :label="Number(index)">{{item}}</el-radio>
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item>
@@ -71,77 +54,50 @@
 		data() {
 			return {
 				form: {
-					title: '', // 新闻标题
-					cate_id: '', // 新闻类别ID
-					// …
+					act_id: '', // 活动ID
+					act_name: '', // 活动名称
+					act_datetime: '', // 活动时间
+					times: '', // 每人每天抽奖限制次数
+					description: '', // 活动描述
+					status: '' // 活动状态
 				},
 				rules: { // 验证规则
-					title: [
-						{ required: true, message: '请输入新闻标题', trigger: 'blur' },
+					act_name: [
+						{ required: true, message: '请输入活动名称', trigger: 'blur' },
 						{ min: 1, max: 150, message: '长度在 1 到 150 个字符', trigger: 'blur' }
 					],
-					/* cate_id: [
-						{ required: true, message: '请选择新闻类别', trigger: 'change' }
-					], */
-					content: [
-						{ required: true, message: '请输入新闻正文内容', trigger: 'blur' }
+					act_datetime: [{ /* type: 'date', */ required: true, message: '请选择活动时间', trigger: 'change'}],
+					times: [{required: true, message: '每人每天抽奖限制次数', trigger: 'blur'}],
+					description: [
+						{ required: true, message: '请输入活动描述', trigger: 'blur' }
 					]
 				},
 				
-				newsCateList: [], // 新闻类别列表
-				
 				editorOption: {
-					placeholder: '输入正文内容'
-				}
+					placeholder: '输入活动描述'
+				},
 			}
 		},
 		created() {
 			this.getParams();
-			this.getNewsCateList(); // 获取新闻类别列表
-			this.getNews(); // 获取指定的新闻信息
+			this.getActivity(); // 获取指定的活动信息
 		},
 		methods: {
 			/**
 			 * 获取路由带过来的参数
 			 */
 			getParams() {
-				this.form.news_id = this.$route.query.news_id;
+				this.form.act_id = this.$route.query.act_id;
 			},
 			
 			/**
-			 * 获取新闻类别列表
+			 * 获取指定的活动信息
 			 */
-			getNewsCateList() {
+			getActivity() {
 				let self = this;
-				this.$axios.get(this.$url + 'news_cate_list')
+				this.$axios.get(this.$url + 'activity/' + this.form.act_id)
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 新闻类别列表
-						self.newsCateList = res.data.data;
-					} else {
-						self.$message({
-							message: '网络忙，请重试',
-							type: 'warning'
-						});
-					}
-				})
-				.catch(function (error) {
-					self.$message({
-						message: error.response.data.message,
-						type: 'warning'
-					});
-				});
-			},
-			
-			/**
-			 * 获取指定的新闻信息
-			 */
-			getNews() {
-				let self = this;
-				this.$axios.get(this.$url + 'news/' + this.form.news_id)
-				.then(function(res) {
-					if (res.data.status == 1) {
-						// 新闻信息
 						self.form = res.data.data;
 					} else {
 						self.$message({
@@ -159,22 +115,19 @@
 			},
 			
 			/**
-			 * 编辑新闻提交表单
+			 * 编辑活动提交表单
 			 * @param {Object} formName
 			 */
 			submitForm(formName) {
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'news/' + this.form.news_id, {
+						this.$axios.put(this.$url + 'activity/' + this.form.activity_id, {
 							// 参数
-							title: this.form.title,
-							author: this.form.author,
-							cate_id: this.form.cate_id,
-							keywords: this.form.keywords,
-							brief: this.form.brief,
-							thumb: this.form.thumb,
-							content: this.form.content,
+							act_name: this.form.act_name,
+							act_datetime: this.form.act_datetime,
+							times: this.form.times,
+							description: this.form.description,
 							status: this.form.status
 						})
 						.then(function(res) {
@@ -207,7 +160,7 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
-				this.getNews();
+				this.getActivity()();
 			},
 			
 			/**
