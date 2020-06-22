@@ -68,6 +68,7 @@ import ActivityEdit from '@/pages/activity/ActivityEdit.vue'
 // 活动奖品管理
 import ActPrize from '@/pages/act_prize/ActPrize.vue'
 import ActPrizeCreate from '@/pages/act_prize/ActPrizeCreate.vue'
+import ActPrizeEdit from '@/pages/act_prize/ActPrizeEdit.vue'
 // 新闻管理
 import News from '@/pages/news/News.vue'
 import NewsCreate from '@/pages/news/NewsCreate.vue'
@@ -157,6 +158,7 @@ const routes = [
 			// 2--活动奖品管理
 			{path: 'act_prize', name: 'act_prize', component: ActPrize}, // 活动奖品列表
 			{path: 'act_prize_create', name: 'act_prize_create', component: ActPrizeCreate}, // 新增活动奖品
+			{path: 'act_prize_edit', name: 'act_prize_edit', component: ActPrizeEdit}, // 编辑活动奖品
 			// 2--新闻管理
 			{path: 'news', name: 'news', component: News}, // 新闻列表
 			{path: 'news_create', name: 'news_create', component: NewsCreate}, // 新增新闻

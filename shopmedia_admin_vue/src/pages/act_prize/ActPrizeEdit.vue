@@ -3,7 +3,7 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>新增奖品</span></el-col>
+					<el-col :span="6"><span>编辑奖品</span></el-col>
 					<el-col :span="3">
 						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
@@ -60,6 +60,7 @@
 		data() {
 			return {
 				form: {
+					prize_id: '', // 活动ID
 					act_id: '', // 活动ID
 					prize_name: '', // 奖品名称
 					quantity: '', // 奖品数量
@@ -87,8 +88,41 @@
 		mounted() {
 			this.getActivityList();
 			this.getPrizeLevelList();
+			this.getParams();
+			this.getActPrize();
 		},
 		methods: {
+			/**
+			 * 获取路由带过来的参数
+			 */
+			getParams() {
+				this.form.prize_id = this.$route.query.prize_id;
+			},
+			
+			/**
+			 * 获取指定的活动奖品信息
+			 */
+			getActPrize() {
+				let self = this;
+				this.$axios.get(this.$url + 'act_prize/' + this.form.prize_id)
+				.then(function(res) {
+					if (res.data.status == 1) {
+						self.form = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
 			/**
 			 * 获取活动列表
 			 */
@@ -133,7 +167,7 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.post(this.$url + 'act_prize', {
+						this.$axios.put(this.$url + 'act_prize/' + this.form.prize_id, {
 							// 参数
 							act_id: this.form.act_id,
 							prize_name: this.form.prize_name,

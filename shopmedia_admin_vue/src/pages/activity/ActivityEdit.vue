@@ -98,7 +98,6 @@
 				this.$axios.get(this.$url + 'activity/' + this.form.act_id)
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 新闻信息
 						self.form = res.data.data;
 					} else {
 						self.$message({

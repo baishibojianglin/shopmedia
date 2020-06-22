@@ -30,18 +30,28 @@
 				<!-- 奖品列表 s -->
 				<el-table :data="actPrizeList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="prize_id" label="序号" fixed width="50"></el-table-column>
-					<el-table-column prop="prize_name" label="奖品名称" fixed min-width="180"></el-table-column>
-					<el-table-column prop="quantity" label="奖品数量" width="180"></el-table-column>
-					<el-table-column prop="level" label="奖品等级" width="180"></el-table-column>
-					<el-table-column prop="percentage" label="中奖概率" width="180"></el-table-column>
+					<el-table-column prop="prize_name" label="奖品名称" fixed min-width="120"></el-table-column>
+					<el-table-column prop="act_name" label="所属活动" fixed min-width="120"></el-table-column>
+					<el-table-column prop="quantity" label="奖品数量" width="90"></el-table-column>
+					<el-table-column prop="level_name" label="奖品等级" width="90"></el-table-column>
+					<el-table-column prop="percentage" label="中奖概率" width="90">
+						<template slot-scope="scope">
+							{{scope.row.percentage * 100}}%
+						</template>
+					</el-table-column>
 					<el-table-column prop="sponsor" label="奖品赞助商" width="180"></el-table-column>
 					<el-table-column prop="phone" label="赞助商电话" width="180"></el-table-column>
 					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
+					<el-table-column prop="status" label="状态" fixed="right" width="90" :filters="[{ text: '下架', value: 0 }, { text: '正常', value: 1 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+						<template slot-scope="scope">
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-success'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
+						</template>
+					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="160">
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toActPrizeEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
 							<el-button type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteActPrize(scope)">删除</el-button>
+							<!-- <el-button type="danger" size="mini" plain @click="deleteActPrize(scope)">删除</el-button> -->
 						</template>
 					</el-table-column>
 				</el-table>
@@ -97,7 +107,6 @@
 					}
 				})
 				.then(function(res) {
-					console.log(123, res);
 					if (res.data.status == 1) {
 						// 奖品列表分页参数
 						self.listPagination = res.data.data;
@@ -145,6 +154,15 @@
 			handleCurrentChange(current_page) {
 				this.listPagination.current_page = current_page; // 当前页数
 				this.getActPrizeList();
+			},
+			
+			/**
+			 * 筛选活动状态
+			 * @param {Object} value
+			 * @param {Object} row
+			 */
+			filterStatus(value, row) {
+				return row.status === value;
 			},
 			
 			/**

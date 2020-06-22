@@ -44,7 +44,7 @@
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toActivityEdit(scope.row)" v-if="formInline.is_delete != 1">编辑</el-button>
 							<el-button type="primary" size="mini" plain @click="recover(scope.row)" v-if="formInline.is_delete == 1">还原</el-button>
-							<el-button type="danger" size="mini" plain @click="deleteActivity(scope)">删除</el-button>
+							<!-- <el-button type="danger" size="mini" plain @click="deleteActivity(scope)">删除</el-button> -->
 						</template>
 					</el-table-column>
 				</el-table>

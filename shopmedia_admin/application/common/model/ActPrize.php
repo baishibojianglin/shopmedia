@@ -19,9 +19,11 @@ class ActPrize extends Base
      */
     public function getActPrize($map = [], $size = 5)
     {
-        $order = ['prize_id' => 'desc'];
+        $order = ['ap.prize_id' => 'desc'];
 
-        $result = $this->field(true)
+        $result = $this->alias('ap')
+            ->field('ap.*, a.act_name')
+            ->join('__ACTIVITY__ a', 'ap.act_id = a.act_id', 'LEFT')
             ->where($map)
             ->order($order)
             ->paginate($size);
