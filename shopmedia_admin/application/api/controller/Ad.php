@@ -13,6 +13,33 @@ use think\Db;
  */
 class Ad extends AuthBase
 {
+
+
+    /**
+     * 查询广告
+     *
+     * @param  \think\Request  $request
+     * @return \think\Response
+     */
+    public function getAd()
+    {
+       $list = Db::name('ad')->field('ad_name,ad_cate_id')->select();
+       return json($list);
+    }
+
+    /**
+     * 广告类别
+     *
+     * @param  \think\Request  $request
+     * @return \think\Response
+     */
+    public function getAdCate()
+    {
+        $cate = config('code.ad_cate');
+        return json($cate);
+    }
+
+
     /**
      * 保存新建的广告资源
      *

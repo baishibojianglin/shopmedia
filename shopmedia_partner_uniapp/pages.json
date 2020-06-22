@@ -355,6 +355,19 @@
         { // 覆盖城市
             "path" : "pages/city/city",
             "style" : {
+				"navigationBarTitleText": "服务商家",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 服务商家
+            "path" : "pages/shop/shop-list",
+            "style" : {
 				"navigationBarTitleText": "覆盖城市",
 				"app-plus": {
 					"titleNView": {

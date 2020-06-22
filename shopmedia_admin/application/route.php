@@ -128,6 +128,8 @@ Route::get('api/device_price','api/Device/getPrice');
 
 // 广告
 Route::resource('api/ad', 'api/Ad');
+Route::get('api/get_ad', 'api/Ad/getAd');
+Route::get('api/get_ad_cate', 'api/Ad/getAdCate');
 // 广告类别
 Route::get('api/ad_cate_list', 'api/AdCate/adCateList'); // 广告类别列表（不分页）
 

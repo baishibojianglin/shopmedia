@@ -25,7 +25,7 @@ class Index extends AuthBase
              $match['status']=1;
              $data['device']=Db::name('shop')->where($match)->count()*100;
              $data['city']=Db::name('company')->where($match)->count();
-             $data['shop']=Db::name('ad')->count()*10;
+             $data['shop']=Db::name('ad')->count()*100;
              return json($data);
 
     }

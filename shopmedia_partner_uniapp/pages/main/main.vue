@@ -14,20 +14,24 @@
 		<view>
 			<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
 				<uni-grid class="view-grid-con totalcontentbg" :column="3">
-					<uni-grid-item>
-						<text class="text-grid-title">广告屏</text>
-						<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}+</text>
-					</uni-grid-item>
+					<navigator url="/pages/device/device-all-list">
+						<uni-grid-item>
+							<text class="text-grid-title">广告屏</text>
+							<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}+</text>
+						</uni-grid-item>
+					</navigator>	
 					<navigator url="/pages/city/city">
 						<uni-grid-item>
 							<text class="text-grid-title">覆盖城市</text>
 							<text class="text-grid">{{totaldata.city}}</text>
 						</uni-grid-item>
 					</navigator>
-					<uni-grid-item>
-						<text class="text-grid-title">服务商家</text>
-						<text class="text-grid">{{totaldata.shop}}+</text>
-					</uni-grid-item>
+					<navigator url="/pages/shop/shop-list">
+						<uni-grid-item>
+							<text class="text-grid-title">服务商家</text>
+							<text class="text-grid">{{totaldata.shop}}+</text>
+						</uni-grid-item>
+					</navigator>
 				</uni-grid>
 			</uni-card>
 		</view>

@@ -1,17 +1,22 @@
 <template>
 	<view class="uni-comment-body">
-		<view class="uni-list" style="position: fixed;top:5rpx;z-index: 99;">
+		<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
+		     广告位未满的屏如下，如需更多的广告屏请等待新空出的广告屏
+		</uni-card>	
+		<view class="uni-list" style="position: fixed;top:150rpx;z-index: 99;" v-show="false">
 			<view class="uni-list-cell">
-				<!-- <view class="uni-list-cell-left">
+										
+				<view class="uni-list-cell-left">
 					<text class="uni-text-gray">选择区域</text>
 				</view> -->
 				<!-- 省级 -->
-<!-- 				<view class="uni-list-cell-db uni-ellipsis">
+				<view class="uni-list-cell-db uni-ellipsis">
 					<picker :value="provinceIndex" :range="provinceArray" range-key="region_name" @change="bindRegionPickerChange($event, 1)">
 						<view class="uni-input">{{provinceArray[provinceIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
-				</view> -->
-				<!-- 市级 -->
+				</view>
+				<!-- 市级
+							
 				<view class="uni-list-cell-db uni-ellipsis" v-if="provinceIndex">
 					<picker :value="cityIndex" :range="cityArray" range-key="region_name" @change="bindRegionPickerChange($event, 2)">
 						<view class="uni-input">{{cityArray[cityIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
@@ -43,8 +48,8 @@
 						</view>
 						<view class="uni-media-list-text-bottom">
 							<!-- <text>{{ value.device_id }}</text> -->
-							<text class="uni-ellipsis">地址：{{ value.address }}</text>
-						</view>
+							<text class="uni-ellipsis"><text class="uni-icon uni-icon-location-filled color-blue"></text> <text style="position: relative;top:4px;">{{ value.address }}</text></text>
+						</view> 
 					</view>
 				</view>
 			</view>
