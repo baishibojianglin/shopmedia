@@ -45,14 +45,14 @@
 				</el-form-item>
 
 				<el-form-item label="安装店铺" prop="shop_id">
-					<el-select v-model="ruleForm.shop_id" placeholder="请选择">
+					<el-select v-model="ruleForm.shop_id" placeholder="请选择" @change="shopChange">
 						<el-option v-for="item in shop_options" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</el-form-item>
 
 				<el-form-item label="排除广告类型" prop="remove_ad_cate">
-					<el-select v-model="ruleForm.remove_ad_cate" placeholder="请选择">
+					<el-select v-model="ruleForm.remove_ad_cate" placeholder="请选择" disabled>
 						<el-option v-for="item in remove_options" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -385,9 +385,23 @@
 					response.data.data.forEach((value, index) => {
 						self.$set(self.shop_options, index, {
 							value: value.shop_id,
-							label: value.shop_name
+							label: value.shop_name,
+							cate: value.cate,
+							cate_name: value.cate_name
 						});
 					})
+				})
+			},
+
+			/**
+			 * 改变选择店铺
+			 * @param {Object} e
+			 */
+			shopChange(e) {
+				this.shop_options.forEach((value, index) => {
+					if (value.value == e) {
+						this.ruleForm.remove_ad_cate = value.cate;
+					}
 				})
 			},
 
