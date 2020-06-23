@@ -64,7 +64,7 @@
 						<!-- TODO：封装公共 shop-cate-select 组件 -->
 						<!-- <shop-cate-select :value="form.shop_cate_ids"></shop-cate-select> -->
 						<el-select v-model="form.shop_cate_ids" multiple placeholder="请选择…" clearable filterable @change="selectShopCateChange">
-							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id">
+							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id" :disabled="form.ad_cate_id == item.cate_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -227,7 +227,7 @@
 			 */
 			getShopCateList() {
 				let self = this;
-				this.$axios.get(this.$url + 'shop_cate_list')
+				this.$axios.get(this.$url + 'ad_cate_list')
 				.then(function(res) {
 					if (res.data.status == 1) {
 						// 店铺类别列表

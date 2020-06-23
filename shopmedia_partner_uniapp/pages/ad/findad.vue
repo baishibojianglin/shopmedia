@@ -35,9 +35,9 @@
 		<uni-card :is-shadow="true">
 			<view>
 				<view class="input-line-height">
-					<view class="input-line-height-1">所属行业 <text class="main-color line-blue">|</text></view>
-					<picker @change="bindShopCatePickerChange" class="input-line-height-2" :value="shopCateIndex" :range="shopCateList" range-key="cate_name">
-						<view style="font-size: 15px; padding-left: 15px;">{{shopCateList[shopCateIndex].cate_name}}</view>
+					<view class="input-line-height-1">广告类别 <text class="main-color line-blue">|</text></view>
+					<picker @change="bindAdCatePickerChange" class="input-line-height-2" :value="adCateIndex" :range="adCateList" range-key="cate_name">
+						<view style="font-size: 15px; padding-left: 15px;">{{adCateList[adCateIndex].cate_name}}</view>
 					</picker>
 				</view>
 				<view class="input-line-height">
@@ -105,13 +105,13 @@
 					play_days: 7, // 投放天数
 					startdate: '', // 开始日期
 					region_ids: [], // 区域ID集合（数组）
-					shop_cate_ids: [], // 投放店铺类别ID集合 // cate: '', // 店铺类别id
+					ad_cate_id: [], // 广告所属行业类别ID
 					device_ids: [], // 投放广告设备ID集合
 					ad_price: 0 // 广告价格
 				},
 
-				shopCateList: [{cate_id: '', cate_name: ''}], // 店铺类别列表
-				shopCateIndex: 0,
+				adCateList: [{cate_id: '', cate_name: ''}], // 广告所属行业类别列表
+				adCateIndex: 0,
 
 				// SegmentedControl 分段器
 				segmentedControl: {
@@ -151,7 +151,7 @@
 			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
 		},
 		onLoad() {
-			this.getShopCateList();
+			this.getAdCateList();
 			
 			//初始化日历
 			let mydate=new Date();
@@ -186,12 +186,12 @@
 			},
 
 			/**
-			 * 获取店铺类别列表
+			 * 获取广告所属行业类别列表
 			 */
-			getShopCateList() {
+			getAdCateList() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/shop_cate_list',
+					url: this.$serverUrl + 'api/ad_cate_list',
 					header: {
 						'commonheader': this.commonheader,
 						'access-user-token': this.userInfo.token
@@ -200,7 +200,7 @@
 					success: function(res) {
 						if (res.data.status == 1) {
 							res.data.data.forEach((value, index) => {
-								self.$set(self.shopCateList, index, {
+								self.$set(self.adCateList, index, {
 									cate_id: value.cate_id,
 									cate_name: value.cate_name
 								});
@@ -217,13 +217,13 @@
 			},
 
 			/**
-			 * 改变选择店铺类别
+			 * 改变选择广告所属行业类别
 			 * @param {Object} e
 			 */
-			bindShopCatePickerChange: function(e) {
+			bindAdCatePickerChange: function(e) {
 				// console.log('picker发送选择改变，携带值为', e.target.value)
-				this.shopCateIndex = e.target.value;
-				if (typeof(this.shopCateIndex) != 'undefined') {
+				this.adCateIndex = e.target.value;
+				if (typeof(this.adCateIndex) != 'undefined') {
 					this.getDeviceList();
 				}
 			},
@@ -401,25 +401,25 @@
 				this.checkedDeviceCount = 0;
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
-				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
+				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
 				let _data; // 定义请求接口 data 参数
 				// let showModalContent = '';
 				// 判断是否投放附近区域
 				if (this.segmentedControl.current === 0 && this.longitude && this.latitude && this.distanceList[this.distanceIndex].distance) { // 附近区域
 					_data = {
-						shop_cate_ids: this.form.shop_cate_ids, // 投放店铺类别ID集合（这里只有一个值）
+						ad_cate_id: this.form.ad_cate_id, // 广告所属行业类别
 						longitude: this.longitude,
 						latitude: this.latitude,
 						distance: this.distanceList[this.distanceIndex].distance
 					}
 					
-					// showModalContent = '请重新选择“投放距离”或“所属行业”';
-				} else if (this.segmentedControl.current === 1 && this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids) { // 全区域
+					// showModalContent = '请重新选择“投放距离”或“广告所属行业类别”';
+				} else if (this.segmentedControl.current === 1 && this.$refs.tree.getCheckedKeys().length != 0 && this.form.ad_cate_id) { // 全区域
 					_data = {
 						region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
-						shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合（这里只有一个值）
+						ad_cate_id: this.form.ad_cate_id // 广告所属行业类别
 					}
-					// showModalContent = '请重新选择“投放区域”或“所属行业”';
+					// showModalContent = '请重新选择“投放区域”或“广告所属行业类别”';
 				}
 				if (_data) {
 					uni.request({
@@ -505,11 +505,11 @@
 			 */
 			submitForm() {
 				// 自定义验证表单
-				this.form.shop_cate_ids = this.shopCateList[this.shopCateIndex].cate_id;
-				if (this.form.shop_cate_ids == '') {
+				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
+				if (this.form.ad_cate_id == '') {
 					uni.showToast({
 						icon: 'none',
-						title: '请选择所属行业'
+						title: '请选择广告类别'
 					});
 					return false;
 				}
@@ -542,7 +542,7 @@
 						play_days: this.form.play_days,
 						startdate: this.form.startdate,
 						region_ids: this.form.region_ids,
-						shop_cate_ids: this.form.shop_cate_ids,
+						ad_cate_id: this.form.ad_cate_id,
 						device_ids: this.form.device_ids,
 						ad_price: this.form.ad_price
 					},

@@ -93,8 +93,8 @@ class Device extends AuthBase
         if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
             $map['s.province_id|s.city_id|s.county_id|s.town_id'] = ['in', $param['region_ids']];
         }
-        if (isset($param['shop_cate_ids'])) { // 投放店铺类别ID集合
-            $map['s.cate'] = $param['shop_cate_ids']; // ['in', $param['shop_cate_ids']]
+        if (isset($param['ad_cate_id'])) { // 广告所属行业类别ID
+            $map['s.cate'] = ['NEQ', $param['ad_cate_id']]; // 排除该类别
         }
         // 判断是否投放附近区域
         if (isset($param['longitude']) && isset($param['latitude']) && isset($param['distance'])) {
