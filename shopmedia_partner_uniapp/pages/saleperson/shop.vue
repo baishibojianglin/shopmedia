@@ -145,7 +145,7 @@
 			getShopCateList() {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/shop_cate_list',
+					url: this.$serverUrl + 'api/ad_cate_list',
 					header: {
 						'commonheader': this.commonheader,
 						'access-user-token': this.userInfo.token
