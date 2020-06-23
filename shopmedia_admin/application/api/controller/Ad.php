@@ -35,7 +35,7 @@ class Ad extends AuthBase
      */
     public function getAdCate()
     {
-        $cate = config('code.ad_cate');
+        $cate = config('ad.ad_cate');
         return json($cate);
     }
 

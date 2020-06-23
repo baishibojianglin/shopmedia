@@ -50,7 +50,7 @@ class Ad extends Base
             if ($data) {
                 // 处理数据
                 $auditStatus = config('code.audit_status'); // 审核状态：0待审核，1通过，2驳回
-                $adCate = config('code.ad_cate'); // 广告类别
+                $adCate = config('ad.ad_cate'); // 广告类别
                 $shopCate = config('code.shop_cate'); // 店铺类别
                 foreach ($data as $key => $value) {
                     $data[$key]['audit_status_msg'] = $auditStatus[$value['audit_status']]; // 定义审核状态信息
