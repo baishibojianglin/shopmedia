@@ -45,8 +45,8 @@ class Device extends Base
 			try {
 				$data = model('Device')->getDevice($map, $this->size);
 			} catch (\Exception $e) {
-				throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
-				//return show(config('code.error'), '网络忙，请重试', [], 500); // $e->getMessage()
+				return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), [], 500); // $e->getMessage()
+				//throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
 			}
 
 			if ($data) {
