@@ -55,11 +55,22 @@ class Ad extends AuthBase
             // 处理数据
             if (isset($data['startdate']) && !empty($data['startdate'])) {
                 $data['start_datetime'] = strtotime($data['startdate']); // 投放开始时间
-                //$data['end_datetime'] = strtotime($data['']); // 投放结束时间
+                $data['end_datetime'] = $data['start_datetime'] + $data['play_days'] * 24 * 3600; // 投放结束时间
             }
-            /*if (!empty($data['shop_cate_ids'])) { // 投放店铺类别ID集合
+            if (!empty($data['ad_cate_id'])) {
+                // 广告（所属行业）类别ID
+                $data['ad_cate_id'] = (int)$data['ad_cate_id'];
+
+                // 投放店铺（所属行业）类别ID集合
+                $adCate = config('ad.ad_cate');
+                $data['shop_cate_ids'] = [];
+                foreach ($adCate as $key => $value) {
+                    if ($key != $data['ad_cate_id']) {
+                        array_push($data['shop_cate_ids'], $key);
+                    }
+                }
                 $data['shop_cate_ids'] = implode(',', $data['shop_cate_ids']);
-            }*/
+            }
             if (!empty($data['region_ids'])) { // 投放区域ID集合（含全选与半选）
                 // 通过半选区域ID集合获取上级区域ID集合，重新组装半选区域ID集合
                 $regionIdsHalf = $data['region_ids'][1];

@@ -57,9 +57,9 @@ class Device extends Base
 				$size = config('code.device_size'); // 尺寸
 				foreach ($data as $key => $value) {
 					$data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
-					$data[$key]['brand_msg']=$brand[$value['brand']]; //定义品牌信息
-					$data[$key]['model_msg']=$model[$value['brand']][$value['model']]; //定义型号信息
-					$data[$key]['size_msg']=$size[$value['size']]; //定义尺寸信息
+					$data[$key]['brand_msg'] = isset($brand[$value['brand']]) ? $brand[$value['brand']] : ''; //定义品牌信息
+					$data[$key]['model_msg'] = $model[$value['brand']][$value['model']]; //定义型号信息
+					$data[$key]['size_msg'] = $size[$value['size']]; //定义尺寸信息
 				}
 
 				return show(config('code.success'), 'OK', $data);
@@ -333,10 +333,12 @@ class Device extends Base
 	public function getDeviceShop()
     {
         $map['status'] = 1;
-        $shopList = Db::name('shop')->where($map)->field('shop_id,shop_name,device_quantity,plan_quantity')->select();
+        $shopList = Db::name('shop')->where($map)->field('shop_id,shop_name,cate,device_quantity,plan_quantity')->select();
 
 	    if (!empty($shopList)) {
+			$adCate = config('ad.ad_cate'); // 广告类别
             foreach ($shopList as $key => $value){
+				$shopList[$key]['cate_name'] = $adCate[$value['cate']];
 				if ($value['device_quantity'] >= $value['plan_quantity']) {
 					array_splice($shopList, $key, 1);
 				}
