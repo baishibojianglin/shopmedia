@@ -13,11 +13,13 @@
 			return {
 			}
 		},
-		onLoad(){
-
+		onLoad(option){
+            console.log(option.id)
 		},
 		methods:{
-
+             prize(){
+				 
+			 }
 		}
 	}
 </script>
