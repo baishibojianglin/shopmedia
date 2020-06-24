@@ -100,7 +100,7 @@
 					ad_name: '', // 广告名称
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
-					discount_ratio: '', // 广告折扣率
+					discount_ratio: 1, // 广告折扣率
 					region_ids: [], // 区域ID集合（数组）
 					shop_cate_ids: [], // 投放店铺类别ID集合
 					device_ids: [] // 投放广告设备ID集合
