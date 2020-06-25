@@ -27,12 +27,13 @@ class Prize extends Controller
         //确定该店铺今日能否再中奖
         $shopprize=Db::name('act_raffle')->where($matchshop)->whereTime('raffle_time', 'today')->count();
         if($shopprize>3){  //一个店一天最多抽3个奖品
-            return $data['status']=0;
+            $data['status']=0;
+            return json($data);
         }
         
 
         //设置中奖概率1/5
-        $aim=rand(1,5);
+        $aim=rand(1,2);
 
         //判断是否能中奖
         if( $aim==2){ 
@@ -47,7 +48,8 @@ class Prize extends Controller
             $data['status']=1;
             return json($data);
         }else{
-            return $data['status']=0;
+            $data['status']=0;
+            return json($data);
         }
 
         
