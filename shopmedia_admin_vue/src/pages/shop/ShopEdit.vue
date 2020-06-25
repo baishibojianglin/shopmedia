@@ -191,7 +191,7 @@
 			 */
 			getShopCateList() {
 				let self = this;
-				this.$axios.get(this.$url + 'shop_cate_list')
+				this.$axios.get(this.$url + 'ad_cate_list')
 				.then(function(res) {
 					if (res.data.status == 1) {
 						// 店铺类别列表
