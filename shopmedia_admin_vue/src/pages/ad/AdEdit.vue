@@ -499,7 +499,7 @@
 							self.$router.go(-1); // 返回上一页
 						})
 						.catch(function (error) {
-							console.log(123, error.response.data)
+							console.log(223, error.response.data)
 							self.$message({
 								message: error.response.data.message,
 								type: 'warning'

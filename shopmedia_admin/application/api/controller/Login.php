@@ -191,6 +191,8 @@ class Login extends Common
             if (!$salesman || $salesman['invitation_code'] == $salesman['son_invitation_code']) {
                 return show(config('code.error'), '邀请码错误', '', 401);
             }
+            // 判断该业务员所属用户是否存在广告主业务员角色，存在则默认创建广告主
+            $advertiserSalesman = Db::name('user_salesman')->where(['uid' => $salesman['uid'], 'role_id' => 5])->find();
 
             /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
             $roleId = ''; 
@@ -230,7 +232,13 @@ class Login extends Common
                 $data['token'] = $token; // token
                 $data['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
                 $data['user_name'] = 'sustock-' . trim($param['phone']); // 定义默认用户名
-                $data['role_ids'] = implode(',', array_unique([$roleId, 7])); // 用户角色ID集合，默认创建广告主角色
+
+                if ($advertiserSalesman) {
+                    $data['role_ids'] = implode(',', array_unique([$roleId, 7])); // 用户角色ID集合，默认创建广告主角色
+                } else {
+                    $data['role_ids'] = $roleId; // 用户角色ID集合
+                }
+
                 $data['phone'] = trim($param['phone']);
                 $data['phone_verified'] = 1; // 手机号已验证
                 $data['password'] = IAuth::encrypt($param['password']);
@@ -287,13 +295,15 @@ class Login extends Common
                         $res[1] = Db::name('user_salesman')->insert($data1);
                     }
 
-                    // 默认创建广告主角色
-                    $data2['user_id'] = $userId;
-                    $data2['salesman_id'] = $salesman['id']; // 业务员ID
-                    //$data2['role_id'] = 7; // 用户角色ID
-                    $data2['status'] = config('code.status_enable');
-                    $data2['create_time'] = time(); // 创建时间
-                    $res[2] = Db::name('user_advertiser')->insert($data2);
+                    if ($advertiserSalesman) {
+                        // 默认创建广告主角色
+                        $data2['user_id'] = $userId;
+                        $data2['salesman_id'] = $advertiserSalesman['id']; // 业务员ID
+                        //$data2['role_id'] = 7; // 用户角色ID
+                        $data2['status'] = config('code.status_enable');
+                        $data2['create_time'] = time(); // 创建时间
+                        $res[2] = Db::name('user_advertiser')->insert($data2);
+                    }
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
