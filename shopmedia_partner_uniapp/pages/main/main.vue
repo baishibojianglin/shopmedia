@@ -8,11 +8,10 @@
 					— 店通传媒 —
 				</view>
 			</view>
-
 		</uni-card>
 
 		<view>
-			<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
+			<uni-card style="background-image: url(../../static/img/bgg.png);" :is-shadow='false'>
 				<uni-grid class="view-grid-con totalcontentbg" :column="3">
 					<navigator url="/pages/device/device-all-list">
 						<uni-grid-item>
@@ -67,6 +66,13 @@
 						<text class="iconposition icon color-white iconbg-notice">&#xe652;</text>
 						<br />
 						<text>店通资讯</text>
+					</navigator>
+				</view>
+				<view class="navcon-item">
+					<navigator url="/pages/case/case">
+						<text class="iconposition icon color-white iconbg-case">&#xe648;</text>
+						<br/>
+						<text>广告案列</text>
 					</navigator>
 				</view>
 				<view class="navcon-item">
@@ -327,6 +333,15 @@
 		line-height: 45px;
 		display: inline-block;
 		background-color:#7EECF9;
+	}
+	.iconbg-case{
+		height: 45px;
+		width: 45px;
+		border-radius: 45px;
+		border: 1px solid #F3F3F3;
+		line-height: 45px;
+		display: inline-block;
+		background-color:#FF4403;
 	}
 	.iconbg-shop{
 		height: 45px;
