@@ -301,8 +301,6 @@ class Ad extends Base
                         $adPrice = $ad1['ad_price']; // 广告总价格
                     }
 
-
-
                     /*广告主业务员提成 s*/
                     $adAdvertiserSalesmanIncome = $adPrice * config('commission.ad_advertiser_salesman_commission');
                     // 根据广告主ID获取广告主业务员及广告主业务员所属用户
@@ -325,57 +323,59 @@ class Ad extends Base
                         // 不同等级广告屏投放广告的单价
                         $ad_unit_price = 1 * $deviceLevel[$value['level']];
 
-                        /*广告屏合作商收益记录 s*/
-                        $adPartnerIncome = $ad_unit_price * $playDays * config('commission.ad_partner_commission');
+                        // 判断是否存在广告屏合作商，存在才对合作商及其业务员提成
                         $partnerDevice = Db::name('partner_device')->where(['device_id' => $value['device_id']])->find();
-                        if ($partnerDevice['today_income'] != $adPartnerIncome) {
-                            $res['1' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->update(['today_income' => $adPartnerIncome]); // 今日收益
+                        if ($partnerDevice) {
+                            /*广告屏合作商收益记录 s*/
+                            $adPartnerIncome = $ad_unit_price * $playDays * config('commission.ad_partner_commission');
+                            if ($partnerDevice['today_income'] != $adPartnerIncome) {
+                                $res['1' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->update(['today_income' => $adPartnerIncome]); // 今日收益
+                            }
+                            $res['2' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->setInc('total_income', $adPartnerIncome); // 累计收益
+                            /*广告屏合作商收益记录 e*/
+
+                            /*广告屏合作商收益 s*/
+                            // 根据广告屏ID获取广告屏合作商及其所属用户
+                            $partnerId = $partnerDevice['partner_id'];
+                            $partnerUserId = $partnerDevice['user_id'];
+                            // 更新广告屏合作商余额、收入
+                            $res['3' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('money', $adPartnerIncome);
+                            $res['4' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('income', $adPartnerIncome);
+                            // 更新广告屏合作商所属用户余额、收入
+                            $res['5' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('money', $adPartnerIncome);
+                            $res['6' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('income', $adPartnerIncome);
+                            /*广告屏合作商收益 e*/
+
+                            /*广告屏合作商业务员提成 s*/
+                            $adPartnerSalesmanIncome = $ad_unit_price * $playDays * config('commission.ad_partner_salesman_commission');
+                            // 根据广告屏合作商ID获取广告屏合作商业务员及其所属用户
+                            $userPartner = Db::name('user_partner')->alias('up')->field('up.salesman_id, us.uid')->join('__USER_SALESMAN__ us', 'us.id = up.salesman_id')->where(['up.id' => $partnerId])->find();
+                            $partnerSalesmanId = $userPartner['salesman_id'];
+                            $partnerSalesmanUserId = $userPartner['uid'];
+                            // 更新广告屏合作商业务员余额、收入
+                            $res['7' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('money', $adPartnerSalesmanIncome);
+                            $res['8' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('income', $adPartnerSalesmanIncome);
+                            // 更新广告屏合作商业务员所属用户余额、收入
+                            $res['9' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('money', $adPartnerSalesmanIncome);
+                            $res['10' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('income', $adPartnerSalesmanIncome);
+                            /*广告屏合作商业务员提成 e*/
+
+                            /*广告屏合作商业务员上级提成 s*/
+                            $adPartnerSalesmanParentIncome = $ad_unit_price * $playDays * config('commission.ad_partner_salesman_parent_commission');
+                            // 根据广告屏合作商业务员ID获取其上级业务员及其所属用户
+                            $userPartnerSalesmanParent = Db::name('user_salesman')->alias('us')->field('us.parent_id, p.uid')->join('__USER_SALESMAN__ p', 'p.id = us.parent_id')->where(['us.id' => $partnerSalesmanId])->find();
+                            if ($userPartnerSalesmanParent['parent_id'] && $userPartnerSalesmanParent['uid']) {
+                                $partnerSalesmanParentId = $userPartnerSalesmanParent['parent_id'];
+                                $partnerSalesmanParentUserId = $userPartnerSalesmanParent['uid'];
+                                // 更新广告屏合作商业务员上级余额、收入
+                                $res['11' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('money', $adPartnerSalesmanParentIncome);
+                                $res['12' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('income', $adPartnerSalesmanParentIncome);
+                                // 更新广告屏合作商业务员上级所属用户余额、收入
+                                $res['13' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('money', $adPartnerSalesmanParentIncome);
+                                $res['14' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('income', $adPartnerSalesmanParentIncome);
+                            }
+                            /*广告屏合作商业务员上级提成 e*/
                         }
-                        $res['2' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->setInc('total_income', $adPartnerIncome); // 累计收益
-                        /*广告屏合作商收益记录 e*/
-
-                        /*广告屏合作商收益 s*/
-                        // 根据广告屏ID获取广告屏合作商及其所属用户
-                        $partnerDevice = Db::name('partner_device')->field('partner_id, user_id')->where(['device_id' => $value['device_id']])->find();
-                        $partnerId = $partnerDevice['partner_id'];
-                        $partnerUserId = $partnerDevice['user_id'];
-                        // 更新广告屏合作商余额、收入
-                        $res['3' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('money', $adPartnerIncome);
-                        $res['4' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('income', $adPartnerIncome);
-                        // 更新广告屏合作商所属用户余额、收入
-                        $res['5' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('money', $adPartnerIncome);
-                        $res['6' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('income', $adPartnerIncome);
-                        /*广告屏合作商收益 e*/
-
-                        /*广告屏合作商业务员提成 s*/
-                        $adPartnerSalesmanIncome = $ad_unit_price * $playDays * config('commission.ad_partner_salesman_commission');
-                        // 根据广告屏合作商ID获取广告屏合作商业务员及其所属用户
-                        $userPartner = Db::name('user_partner')->alias('up')->field('up.salesman_id, us.uid')->join('__USER_SALESMAN__ us', 'us.id = up.salesman_id')->where(['up.id' => $partnerId])->find();
-                        $partnerSalesmanId = $userPartner['salesman_id'];
-                        $partnerSalesmanUserId = $userPartner['uid'];
-                        // 更新广告屏合作商业务员余额、收入
-                        $res['7' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('money', $adPartnerSalesmanIncome);
-                        $res['8' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('income', $adPartnerSalesmanIncome);
-                        // 更新广告屏合作商业务员所属用户余额、收入
-                        $res['9' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('money', $adPartnerSalesmanIncome);
-                        $res['10' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('income', $adPartnerSalesmanIncome);
-                        /*广告屏合作商业务员提成 e*/
-
-                        /*广告屏合作商业务员上级收益 s*/
-                        $adPartnerSalesmanParentIncome = $ad_unit_price * $playDays * config('commission.ad_partner_salesman_parent_commission');
-                        // 根据广告屏合作商业务员ID获取其上级业务员及其所属用户
-                        $userPartnerSalesmanParent = Db::name('user_salesman')->alias('us')->field('us.parent_id, p.uid')->join('__USER_SALESMAN__ p', 'p.id = us.parent_id')->where(['us.id' => $partnerSalesmanId])->find();
-                        if ($userPartnerSalesmanParent['parent_id'] && $userPartnerSalesmanParent['uid']) {
-                            $partnerSalesmanParentId = $userPartnerSalesmanParent['parent_id'];
-                            $partnerSalesmanParentUserId = $userPartnerSalesmanParent['uid'];
-                            // 更新广告屏合作商业务员上级余额、收入
-                            $res['11' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('money', $adPartnerSalesmanParentIncome);
-                            $res['12' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('income', $adPartnerSalesmanParentIncome);
-                            // 更新广告屏合作商业务员上级所属用户余额、收入
-                            $res['13' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('money', $adPartnerSalesmanParentIncome);
-                            $res['14' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('income', $adPartnerSalesmanParentIncome);
-                        }
-                        /*广告屏合作商业务员上级收益 e*/
 
                         /*店家收益 s*/
                         $adShopkeeperIncome = $ad_unit_price * $playDays * config('commission.ad_shopkeeper_commission');

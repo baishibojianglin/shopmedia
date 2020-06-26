@@ -182,6 +182,7 @@
 			 * @param {Object} event
 			 */
 			playDaysInputBlur(event) {
+				console.log(23, event)
 				this.form.play_days = event.detail.value;
 			},
 
