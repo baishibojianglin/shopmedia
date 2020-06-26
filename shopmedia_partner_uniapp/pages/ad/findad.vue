@@ -407,6 +407,7 @@
 				// 判断是否投放附近区域
 				if (this.segmentedControl.current === 0 && this.longitude && this.latitude && this.distanceList[this.distanceIndex].distance) { // 附近区域
 					_data = {
+						role_id: 7, // 广告主
 						ad_cate_id: this.form.ad_cate_id, // 广告所属行业类别
 						longitude: this.longitude,
 						latitude: this.latitude,
@@ -416,6 +417,7 @@
 					// showModalContent = '请重新选择“投放距离”或“广告所属行业类别”';
 				} else if (this.segmentedControl.current === 1 && this.$refs.tree.getCheckedKeys().length != 0 && this.form.ad_cate_id) { // 全区域
 					_data = {
+						role_id: 7, // 广告主
 						region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
 						ad_cate_id: this.form.ad_cate_id // 广告所属行业类别
 					}

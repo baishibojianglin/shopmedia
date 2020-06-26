@@ -217,8 +217,8 @@ class Shop extends AuthBase
             if (!empty($param['device_ids'])) {
                 $data['device_ids'] = trim($param['device_ids']);
             }
-            if (!empty($param['device_quantity'])) {
-                $data['device_quantity'] = intval($param['device_quantity']);
+            if (!empty($param['plan_quantity'])) {
+                $data['plan_quantity'] = intval($param['plan_quantity']);
             }
             if (!empty($param['device_price'])) {
                 $data['device_price'] = floatval($param['device_price']);

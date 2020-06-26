@@ -125,16 +125,32 @@ class Device extends Base
 			//$form['data']['create_time'] = time();
 
 			// 入库操作
+			/* 手动控制事务 s */
+			// 启动事务
+			Db::startTrans();
 			try {
+				// 添加广告屏
 				//$id = Db::name('Device')->insert($data['data']);
-				$id = model('Device')->add($data['data'], 'device_id');
-			} catch (\Exception $e) {
-				return show(config('code.error'), '请求异常'.$e->getMessage(), '', 500); // $e->getMessage()
-			}
-			if ($id) {
+				//$res[1] = $id = model('Device')->add($data['data'], 'device_id');
+				$res[0] = $id = Db::name('device')->strict(false)->insertGetId($data['data']);
+				if ($res[0]) {
+					$device = Db::name('device')->field('shop_id')->find($id);
+				}
+				// 更新店铺安装广告屏数量
+				$res[1] = Db::name('shop')->where(['shop_id' => $device['shop_id']])->update(['device_quantity' => 1]);
+
+				// 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+				if (in_array(0, $res)) {
+					return show(config('code.error'), '新建失败', $res, 403);
+				}
+
+				// 提交事务
+				Db::commit();
 				return show(config('code.success'), '新建成功', '', 201);
-			} else {
-				return show(config('code.error'), '新建失败', '', 403);
+			} catch (\Exception $e) {
+				// 回滚事务
+				Db::rollback();
+				return show(config('code.error'), '请求异常'.$e->getMessage(), '', 500); // $e->getMessage()
 			}
 		} else {
 			return show(config('code.error'), '请求不合法', '', 400);
@@ -339,9 +355,10 @@ class Device extends Base
 			$adCate = config('ad.ad_cate'); // 广告类别
             foreach ($shopList as $key => $value){
 				$shopList[$key]['cate_name'] = $adCate[$value['cate']];
+				/*// 当广告屏安装数量大于等于该店铺计划安装数量时，移除该店铺
 				if ($value['device_quantity'] >= $value['plan_quantity']) {
 					array_splice($shopList, $key, 1);
-				}
+				}*/
             }
             return show(config('code.success'), 'OK', $shopList);
 		} else {
