@@ -19,7 +19,7 @@
 			<view class="blod">一、合作内容</view>
 			<view class="content-text">
 				<text class="content-left-text">安装数量：</text>
-				<input class="content-right sign-border" v-model="shop.device_quantity"  placeholder="" :disabled="inputDisabled" />
+				<input class="content-right sign-border" v-model="shop.plan_quantity"  placeholder="" :disabled="inputDisabled" />
 			</view>
 			<view class="content-text">
 				<text class="content-left-text">安装位置：</text>
@@ -113,14 +113,14 @@
 				shop: {
 					shop_id:'',//店铺id
 					shop_name:'',//店铺名字
-					device_quantity: '', // 安装广告屏数量
+					plan_quantity: '', // 安装广告屏数量
 					address:'',//安装位置
 					device_price: ''// 广告屏总价格
 				},
 				party_b_share: 30,
 				
 				// 输入框是否禁用
-				inputDisabled: false,
+				inputDisabled: true,
 
 				/* GoodsNav 商品导航 s */
 				options: [{
@@ -153,7 +153,7 @@
 		onLoad(event) {
 			 this.shop.shop_id=event.shop_id;
 			 this.shop.shop_name=event.shop_name;
-			 this.shop.device_quantity=event.device_count;
+			 this.shop.plan_quantity=event.device_count;
 			 this.shop.address=event.address;
 			 this.shop.device_price=event.total_price;
 			
@@ -283,7 +283,7 @@
 					url: this.$serverUrl + 'api/shop/' + this.shop.shop_id,
 					data: {
 						// device_ids: this.shop.device_ids,
-						device_quantity: this.shop.device_quantity,
+						plan_quantity: this.shop.plan_quantity,
 						device_price: this.shop.device_price,
 						party_b_share: this.party_b_share,
 						party_b_name: this.shop.user_name, // 乙方用户名称

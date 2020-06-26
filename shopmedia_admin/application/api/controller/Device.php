@@ -86,10 +86,18 @@ class Device extends AuthBase
         $map = [];
         $map['d.status'] = config('code.status_enable');
         $map['d.is_delete'] = config('code.not_delete');
-        // 获取未付款和已付款订单ID集合
-        $orderDeviceIds = Db::name('partner_order')->where(['order_status' => ['in', '0,1']])->column('device_id');
-        $orderDeviceIds = array_unique($orderDeviceIds); // 去重
-        $map['d.device_id'] = ['not in', $orderDeviceIds]; // 可合作的广告屏（包含若广告屏已经生成订单，取订单被取消对应的广告屏）
+
+        if (intval($param['role_id']) == 7) { // 广告主
+            // 获取已付款订单ID集合
+            $orderDeviceIds = Db::name('partner_order')->where(['order_status' => 1])->column('device_id');
+            $orderDeviceIds = array_unique($orderDeviceIds); // 去重
+            $map['d.device_id'] = ['in', $orderDeviceIds];
+        } else {
+            // 获取未付款和已付款订单ID集合
+            $orderDeviceIds = Db::name('partner_order')->where(['order_status' => ['in', '0,1']])->column('device_id');
+            $orderDeviceIds = array_unique($orderDeviceIds); // 去重
+            $map['d.device_id'] = ['not in', $orderDeviceIds]; // 可合作的广告屏（包含若广告屏已经生成订单，取订单被取消对应的广告屏）
+        }
         if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
             $map['s.province_id|s.city_id|s.county_id|s.town_id'] = ['in', $param['region_ids']];
         }
@@ -130,7 +138,7 @@ class Device extends AuthBase
         } catch (\Exception $e) {
             return show(config('code.error'), '请求异常', '', 500);
         }
-        
+
         if(!empty($devicelist)){
             // 处理数据
             $deviceLevel = config('code.device_level'); // 广告屏等级（用于计算广告单价）

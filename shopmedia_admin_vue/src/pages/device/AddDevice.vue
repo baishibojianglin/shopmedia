@@ -39,7 +39,7 @@
 
 				<el-form-item label="安装店铺" prop="shop_id">
 					<el-select v-model="ruleForm.shop_id" placeholder="请选择" @change="shopChange">
-						<el-option v-for="item in shop_options" :key="item.value" :label="item.label" :value="item.value">
+						<el-option v-for="item in shop_options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -341,7 +341,10 @@
 							value: value.shop_id,
 							label: value.shop_name,
 							cate: value.cate,
-							cate_name: value.cate_name
+							cate_name: value.cate_name,
+							device_quantity: value.device_quantity,
+							plan_quantity: value.plan_quantity,
+							disabled: value.device_quantity >= value.plan_quantity ? true : false
 						});
 					})
 				})

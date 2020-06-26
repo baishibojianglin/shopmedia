@@ -270,15 +270,16 @@ class PartnerOrder extends Base
                     // 新增该订单对应的合作商广告屏数据
                     $res[1] = Db::name('partner_device')->insert($data1);
 
-                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成￥100） s */
-                    $salesmanCommission = config('commission.partner_salesman_commission');
+                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成5%） s */
+                    $partnerOrder = Db::name('partner_order')->field('device_price')->find($id);
+                    $salesmanCommission = $partnerOrder['device_price'] * config('commission.partner_salesman_commission');
                     // 更新广告屏合作商业务员余额、收入
                     $res[2] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('money', $salesmanCommission);
                     $res[3] = Db::name('user_salesman')->where(['id' => $salesmanID])->setInc('income', $salesmanCommission);
                     // 更新广告屏合作商业务员原始用户余额、收入
                     $res[4] = Db::name('user')->where(['user_id' => $userSalesman['uid']])->setInc('money', $salesmanCommission);
                     $res[5] = Db::name('user')->where(['user_id' => $userSalesman['uid']])->setInc('income', $salesmanCommission);
-                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成￥50） e */
+                    /* 广告屏合作商业务员售卖广告屏提成（规定每台广告屏提成5%） e */
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
