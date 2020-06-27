@@ -34,7 +34,7 @@
 					<el-table-column prop="cate_name" label="新闻类别" width="120"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '草稿', value: 0 }, { text: '通过', value: 1 }, { text: '待审核', value: 2 }, { text: '驳回', value: 3 }, { text: '发布', value: 4 }, { text: '下架', value: 5 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
-							<span v-for="(item, index) in {0: 'text-info', 4: 'text-success', 2: 'text-warning', 3: 'text-danger'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
+							<span v-for="(item, index) in {0: 'text-info', 1: 'text-info', 2: 'text-warning', 3: 'text-danger', 4: 'text-success', 5: 'text-info'}" :key="index" v-if="scope.row.status == index" :class="item">{{scope.row.status_msg}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
