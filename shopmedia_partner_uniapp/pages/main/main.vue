@@ -16,7 +16,7 @@
 					<navigator url="/pages/device/device-all-list">
 						<uni-grid-item>
 							<text class="text-grid-title">广告屏</text>
-							<text class="text-grid" @click="toDeviceList">{{totaldata.addevice}}+</text>
+							<text class="text-grid">{{totaldata.addevice}}+</text>
 						</uni-grid-item>
 					</navigator>	
 					<navigator url="/pages/city/city">
@@ -140,14 +140,6 @@
 			   
 		   },
 			
-			/**
-			 * 跳转广告屏列表页
-			 */
-			toDeviceList() {
-				uni.navigateTo({
-					url: '/pages/device/device-all-list'
-				})
-			},
 			
 			/**
 			 * 投放广告

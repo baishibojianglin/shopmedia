@@ -1,5 +1,11 @@
 {
 	"pages": [ // pages数组中第一项表示应用启动页
+		{  //登录
+			"path": "pages/login/login",
+			"style": {
+				"app-plus": {"titleNView": false}
+			}
+		},
 		{ // 广告案例
 			"path": "pages/case/case",
             "style" : {
@@ -11,12 +17,6 @@
 						}]
 					}
 				}
-			}
-		},
-		{  //登录
-			"path": "pages/login/login",
-			"style": {
-				"app-plus": {"titleNView": false}
 			}
 		},
 		{   //注册
@@ -375,7 +375,7 @@
         { // 覆盖城市
             "path" : "pages/city/city",
             "style" : {
-				"navigationBarTitleText": "服务商家",
+				"navigationBarTitleText": "覆盖城市",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
@@ -388,7 +388,7 @@
         { // 服务商家
             "path" : "pages/shop/shop-list",
             "style" : {
-				"navigationBarTitleText": "覆盖城市",
+				"navigationBarTitleText": "服务商家",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
