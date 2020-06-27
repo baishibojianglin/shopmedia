@@ -187,7 +187,8 @@ Route::get('api/get_region_list', 'api/Region/getRegionList'); // 获取区域�
 // 获取店通已开通的城市
 Route::get('api/get_fix_city', 'api/Index/getCity'); // 懒加载区域树形数据
 
-//获取奖品
-Route::post('api/get_prize', 'api/Prize/getPrize'); // 懒加载区域树形数据
+// 抽奖活动
+Route::get('api/get_prize', 'api/Prize/getPrize'); // 获取中奖奖品信息
+Route::post('api/winner_info', 'api/Prize/winnerInfo'); // 提交领奖信息
 
 /* -------------------- 客户端路由 -------------------- e */
