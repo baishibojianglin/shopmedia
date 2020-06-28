@@ -1,57 +1,57 @@
 <template>
-	<view class="uni-page-body">
+	<view>
 		<view>
 			<!-- <uni-card is-shadow> -->
 				<map class="map" :longitude="longitude" :latitude="latitude" :scale="9" :markers="markers" :enable-satellite="false"></map>
 			<!-- </uni-card> -->
 		</view>
 		
-		<view class="uni-common-mt mb">
-			<uni-card v-if="!shopCount" is-shadow>
-				<view class="uni-center">有店铺，想安装智能广告屏？</view>
-				<view><button  class="main-color ask-mt">有什么好处</button></view>
-			    <uni-list>
-			        <uni-list-item title="获得30%的广告收入" :show-arrow="false"></uni-list-item>
-			        <uni-list-item title="超低优惠打广告" :show-arrow="false"></uni-list-item>
-			        <uni-list-item title="利用店通智能数据分析提升销量" :show-arrow="false"></uni-list-item>
-			        <uni-list-item title="遇到支持你的生意伙伴"  :show-arrow="false"></uni-list-item>
-			    </uni-list>
-				<view><button @click="shopask()" class="main-color ask-mt">联系安装</button></view>
-			</uni-card>
-			<uni-card v-else  v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
-				<uni-list>
-					<uni-list-item :title="item.shop.shop_name" :note="Number(item.device.length) != 0 ? '合计 ' + Number(item.device.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>					
-					<uni-grid v-if="item.device.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
-						<uni-grid-item>
-							<text class="">广告屏编号</text>
-						</uni-grid-item>
-						<uni-grid-item>
-							<text class="">累计收入(￥)</text>
-						</uni-grid-item>
-						<uni-grid-item>
-							<text class="">今日收入(￥)</text>
-						</uni-grid-item>
-					</uni-grid>
-					<uni-grid v-if="item.device.length != 0" v-for="(value, key) in item.device" :key="key" class="uni-center" :column="3" :showBorder="true" :square="false">
-						<uni-grid-item>
-							<text class="">{{value.device_id}}</text>
-						</uni-grid-item>
-						<uni-grid-item>
-							<text class="color-red">{{value.total_income}}</text>
-						</uni-grid-item>
-						<uni-grid-item>
-							<text class="color-red">{{value.today_income}}</text>
-						</uni-grid-item>
-					</uni-grid>
-				</uni-list>
-				<template slot="footer">
-					<view class="footer-box">
- 						<view v-if="!item.shop.party_b_signature" @click.stop="footerClick(item)"> <button class="mini-btn" :type="item.shop.party_b_signature ? 'default' : 'warn'" size="mini" :plain="false">{{item.shop.party_b_signature ? '查看协议' : '签署协议'}}</button></view>
-					</view>
-				</template>
-			</uni-card>
+		<view>
+		<uni-card v-if="!shopCount" is-shadow>
+			<view class="uni-center">有店铺，想安装智能广告屏？</view>
+			<view><button  class="main-color ask-mt">有什么好处</button></view>
+			<uni-list>
+				<uni-list-item title="获得30%的广告收入" :show-arrow="false"></uni-list-item>
+				<uni-list-item title="超低优惠打广告" :show-arrow="false"></uni-list-item>
+				<uni-list-item title="利用店通智能数据分析提升销量" :show-arrow="false"></uni-list-item>
+				<uni-list-item title="遇到支持你的生意伙伴"  :show-arrow="false"></uni-list-item>
+			</uni-list>
+			<view><button @click="shopask()" class="main-color ask-mt">联系安装</button></view>
+		</uni-card>
+		<uni-card v-else  v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
+			<uni-list>
+				<uni-list-item :title="item.shop.shop_name" :note="Number(item.device.length) != 0 ? '合计 ' + Number(item.device.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>	
+			</uni-list>
+			<uni-grid v-if="item.device.length != 0" class="uni-center" :column="3" :showBorder="true" :square="false">
+				<uni-grid-item>
+					<text class="">屏编号</text>
+				</uni-grid-item>
+				<uni-grid-item>
+					<text class="">总收入(￥)</text>
+				</uni-grid-item>
+				<uni-grid-item>
+					<text class="">今日收入(￥)</text>
+				</uni-grid-item>
+			</uni-grid>
+			<uni-grid v-if="item.device.length != 0" v-for="(value, key) in item.device" :key="key" class="uni-center" :column="3" :showBorder="false" :square="false">
+				<uni-grid-item>
+					<text class="">{{value.device_id}}</text>
+				</uni-grid-item>
+				<uni-grid-item>
+					<text class="color-red">{{value.total_income}}</text>
+				</uni-grid-item>
+				<uni-grid-item>
+					<text class="color-red">{{value.today_income}}</text>
+				</uni-grid-item>
+			</uni-grid>
+			<template slot="footer">
+				<view class="footer-box">
+					<view v-if="!item.shop.party_b_signature" @click.stop="footerClick(item)"> <button class="mini-btn" :type="item.shop.party_b_signature ? 'default' : 'warn'" size="mini" :plain="false">{{item.shop.party_b_signature ? '查看协议' : '签署协议'}}</button></view>
+				</view>
+			</template>
+		</uni-card>
 						
-		</view>
+	</view>
 		
 	</view>
 </template>

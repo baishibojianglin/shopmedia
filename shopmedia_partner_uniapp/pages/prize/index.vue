@@ -67,7 +67,7 @@
 			</view>
 		</view>
 
-		<view class="bottom">店通智能屏&nbsp;&nbsp;&nbsp;&nbsp;智通天下市</view>
+		<view v-show="false" class="bottom">店通智能屏&nbsp;&nbsp;&nbsp;&nbsp;智通天下市</view>
 
 	</view>
 </template>
