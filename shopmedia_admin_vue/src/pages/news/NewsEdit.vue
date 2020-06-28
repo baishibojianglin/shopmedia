@@ -18,7 +18,7 @@
 					<el-form-item prop="author" label="新闻作者">
 						<el-input v-model="form.author" placeholder="输入新闻作者" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="cate_id" label="新闻类别">
+					<!-- <el-form-item prop="cate_id" label="新闻类别">
 						<el-select v-model="form.cate_id" placeholder="请选择…" clearable filterable>
 							<el-option
 								v-for="item in newsCateList"
@@ -27,23 +27,23 @@
 								:value="item.cate_id">
 							</el-option>
 						</el-select>
-					</el-form-item>
+					</el-form-item> -->
 					<el-form-item prop="keywords" label="搜索关键字">
 						<el-input v-model="form.keywords" placeholder="输入搜索关键字" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="brief" label="新闻摘要">
 						<el-input type="textarea" :rows="5" v-model="form.brief" placeholder="输入新闻摘要" clearable></el-input>
 					</el-form-item>
-					<el-form-item prop="thumb" label="新闻缩略图">
+					<!-- <el-form-item prop="thumb" label="新闻缩略图">
 						<el-input v-model="form.thumb" placeholder="" clearable style="width:350px;"></el-input>
-					</el-form-item>
+					</el-form-item> -->
 					<el-form-item prop="content" label="正文内容">
 						<!-- <el-input type="textarea" :rows="10" v-model="form.content" placeholder="输入正文内容" clearable style="width: 100%"></el-input> -->
 						<quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption" style="height:600px;margin-bottom: 6.25rem;"></quill-editor>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">
-							<el-radio v-for="(item, index) in {0: '草稿', 1: '通过', 2: '待审核', 3: '驳回', 4: '发布', 5: '下架'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+							<el-radio v-for="(item, index) in {0: '草稿', 3: '驳回', 4: '发布', 5: '下架'}" :key="index" :label="Number(index)">{{item}}</el-radio><!-- , 1: '通过', 2: '待审核' -->
 						</el-radio-group>
 					</el-form-item>
 					<el-form-item>
@@ -97,7 +97,7 @@
 		},
 		created() {
 			this.getParams();
-			this.getNewsCateList(); // 获取新闻类别列表
+			// this.getNewsCateList(); // 获取新闻类别列表
 			this.getNews(); // 获取指定的新闻信息
 		},
 		methods: {
@@ -170,10 +170,10 @@
 							// 参数
 							title: this.form.title,
 							author: this.form.author,
-							cate_id: this.form.cate_id,
+							// cate_id: this.form.cate_id,
 							keywords: this.form.keywords,
 							brief: this.form.brief,
-							thumb: this.form.thumb,
+							// thumb: this.form.thumb,
 							content: this.form.content,
 							status: this.form.status
 						})

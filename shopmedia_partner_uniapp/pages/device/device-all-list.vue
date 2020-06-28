@@ -1,22 +1,20 @@
 <template>
 	<view class="uni-comment-body">
 		<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
-		     广告位未满的屏如下，如需更多的广告屏请等待新空出的广告屏
+			广告位未满的屏如下，如需更多的广告屏请等待新空出的广告屏
 		</uni-card>	
 		<view class="uni-list" style="position: fixed;top:150rpx;z-index: 99;" v-show="false">
 			<view class="uni-list-cell">
-										
 				<view class="uni-list-cell-left">
 					<text class="uni-text-gray">选择区域</text>
-				</view> -->
+				</view>
 				<!-- 省级 -->
 				<view class="uni-list-cell-db uni-ellipsis">
 					<picker :value="provinceIndex" :range="provinceArray" range-key="region_name" @change="bindRegionPickerChange($event, 1)">
 						<view class="uni-input">{{provinceArray[provinceIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
 					</picker>
 				</view>
-				<!-- 市级
-							
+				<!-- 市级 -->
 				<view class="uni-list-cell-db uni-ellipsis" v-if="provinceIndex">
 					<picker :value="cityIndex" :range="cityArray" range-key="region_name" @change="bindRegionPickerChange($event, 2)">
 						<view class="uni-input">{{cityArray[cityIndex].region_name}} <text class="uni-icon uni-icon-arrowdown fon14"></text></view>
