@@ -2,7 +2,7 @@
 	<view>
         <uni-card  :is-shadow='true'>
         	<view class="tvcon">
-        		<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/%E6%B3%89%E5%A1%94%E5%A4%A7%E7%B1%B3.mp4" :autoplay="false"  :loop="false" :controls="true"></video>
+        		<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/%E6%B3%89%E5%A1%94%E5%A4%A7%E7%B1%B3.mp4" :autoplay="false" :initial-time='1'  :loop="false" :controls="true"></video>
         		<view class="vedio-logo text-center">
         			 黑龙江泉塔大米 
         		</view>

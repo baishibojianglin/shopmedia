@@ -350,16 +350,19 @@ class Device extends Base
     {
         $map['status'] = 1;
         $shopList = Db::name('shop')->where($map)->field('shop_id,shop_name,cate,device_quantity,plan_quantity')->select();
-
 	    if (!empty($shopList)) {
 			$adCate = config('ad.ad_cate'); // 广告类别
-            foreach ($shopList as $key => $value){
-				$shopList[$key]['cate_name'] = $adCate[$value['cate']];
-				/*// 当广告屏安装数量大于等于该店铺计划安装数量时，移除该店铺
-				if ($value['device_quantity'] >= $value['plan_quantity']) {
-					array_splice($shopList, $key, 1);
-				}*/
-            }
+			try{
+	            foreach ($shopList as $key => $value){
+					$shopList[$key]['cate_name'] = $adCate[$value['cate']];
+					/*// 当广告屏安装数量大于等于该店铺计划安装数量时，移除该店铺
+					if ($value['device_quantity'] >= $value['plan_quantity']) {
+						array_splice($shopList, $key, 1);
+					}*/
+	            }
+	        }catch(\Exception $e){
+                return json($e->getMessage());
+	        }
             return show(config('code.success'), 'OK', $shopList);
 		} else {
             return show(config('code.error'), '没有店铺有空闲安装', [], 404);
