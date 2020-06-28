@@ -128,7 +128,7 @@
 					method: 'GET',
 					success: (res) => {
 						self.device_price = res.data;
-						console.log(self.device_price)
+						// console.log(self.device_price)
 					}
 				});
 			},
