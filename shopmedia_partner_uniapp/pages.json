@@ -6,19 +6,6 @@
 				"app-plus": {"titleNView": false}
 			}
 		},
-		{ // 广告案例
-			"path": "pages/case/case",
-            "style" : {
-				"navigationBarTitleText": "广告案例",
-				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-							"type": "menu"
-						}]
-					}
-				}
-			}
-		},
 		{   //注册
 			"path": "pages/reg/reg",
 			"style": {
@@ -397,7 +384,20 @@
 					}
 				}
 			}
-        }
+        },
+		{ // 广告案例
+			"path": "pages/case/case",
+		    "style" : {
+				"navigationBarTitleText": "广告案例",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		}
     ],
 	"tabBar": {
 		"color": "#808080",

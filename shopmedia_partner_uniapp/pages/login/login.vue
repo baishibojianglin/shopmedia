@@ -16,7 +16,7 @@
 		</view>
 
 		<view>
-			<button class="login-button bg-main-color" @click="bindLogin">登 录</button>
+			<button class="login-button bg-main-color" @click="bindLogin()">登 录</button>
 		</view>
 
 		<view class="uni-common-mt uni-center">
