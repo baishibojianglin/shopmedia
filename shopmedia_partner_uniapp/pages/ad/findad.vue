@@ -42,7 +42,7 @@
 				</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">投放天数 <text class="main-color line-blue">|</text></view>
-					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" @blur="playDaysInputBlur" />天</view>
+					<input class="input-line-height-2" style="font-size: 15px; padding-left: 15px;" type="number" v-model="form.play_days" @input="playDaysInput" />天</view>
 				<view class="input-line-height">
 					<view class="input-line-height-1">开始日期 <text class="main-color line-blue">|</text></view>
 					<view class="input-line-height-2" style="font-size: 15px; padding-left: 15px;">{{form.startdate}}</view>
@@ -70,7 +70,7 @@
 		
 		<uni-card :is-shadow="true" class="uni-bold">
 			<view class="uni-flex uni-row">
-				<view class="text-left" style="width: 360rpx;">广告屏总计</view>
+				<view class="text-left" style="width: 360rpx;">广告屏总数</view>
 				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}台</view>
 			</view>
 			<view class="uni-flex uni-row">
@@ -107,10 +107,11 @@
 					region_ids: [], // 区域ID集合（数组）
 					ad_cate_id: [], // 广告所属行业类别ID
 					device_ids: [], // 投放广告设备ID集合
-					ad_price: 0 // 广告价格
+					ad_price: 0, // 广告总价格
+					ad_day_price: 0 // 广告每天总价格
 				},
 
-				adCateList: [{cate_id: '', cate_name: ''}], // 广告所属行业类别列表
+				adCateList: [{cate_id: 1, cate_name: '餐饮'}], // 广告所属行业类别列表
 				adCateIndex: 0,
 
 				// SegmentedControl 分段器
@@ -178,12 +179,19 @@
 			},
 			
 			/**
-			 * 投放天数输入框失去焦点时触发
+			 * 投放天数输入框输入时触发
 			 * @param {Object} event
 			 */
-			playDaysInputBlur(event) {
-				console.log(23, event)
+			playDaysInput(event) {
 				this.form.play_days = event.detail.value;
+				/* if (!(/(^[1-9]\d*$)/.test(this.form.play_days))) {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入正整数'
+					});
+					return;
+				} */
+				this.form.ad_price = (this.form.ad_day_price * this.form.play_days).toFixed(2);
 			},
 
 			/**
@@ -258,6 +266,7 @@
 					this.deviceList = [];
 					this.markers = [];
 					this.form.ad_price = 0;
+					this.form.ad_day_price = 0;
 					this.checkedDeviceCount = 0;
 					
 					if (this.segmentedControl.current == 0) {
@@ -399,6 +408,7 @@
 				this.deviceList = [];
 				this.markers = [];
 				this.form.ad_price = 0;
+				this.form.ad_day_price = 0;
 				this.checkedDeviceCount = 0;
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
@@ -459,6 +469,7 @@
 									}
 								})
 								self.form.ad_price = (adPrice * self.form.play_days).toFixed(2);
+								self.form.ad_day_price = adPrice.toFixed(2);
 							}/* else {
 								uni.showModal({
 									title: '获取广告屏失败',
@@ -478,6 +489,7 @@
 					this.deviceList = []; // 初始化设备列表
 					this.markers = [];
 					this.form.ad_price = 0;
+					this.form.ad_day_price = 0;
 					this.checkedDeviceCount = 0;
 				}
 			},
@@ -501,6 +513,7 @@
 					})
 				})
 				this.form.ad_price = (adPrice * this.form.play_days).toFixed(2);
+				this.form.ad_day_price = adPrice.toFixed(2);
 			},
 			
 			/**
