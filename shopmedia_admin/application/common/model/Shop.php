@@ -23,6 +23,8 @@ class Shop extends Base
             $map['s.is_delete'] = ['neq', config('code.is_delete')];
         }
 
+        $order = ['s.shop_id' => 'desc'];
+
         $result = $this->alias('s')
             ->field($this->_getListField())
             ->join('__USER__ u', 's.user_id = u.user_id', 'LEFT') // 用户
@@ -32,7 +34,7 @@ class Shop extends Base
             ->join('__REGION__ rc', 's.city_id = rc.region_id', 'LEFT') // 区域（市级）
             ->join('__REGION__ rco', 's.county_id = rco.region_id', 'LEFT') // 区域（区县）
             ->join('__REGION__ rt', 's.town_id = rt.region_id', 'LEFT') // 区域（乡镇街道）
-            ->where($map)->cache(true, 10)->paginate($size);
+            ->where($map)->order($order)->cache(true, 10)->paginate($size);
         return $result;
     }
 
