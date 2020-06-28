@@ -96,7 +96,7 @@ class User extends Base
             $map['u.is_delete'] = ['neq', config('code.is_delete')];
         }
 
-        $order = ['u.user_id' => 'asc'];
+        $order = ['us.id' => 'desc'];
 
         $result = $this->alias('u')
             ->field(array_merge($this->_getListField(), ['us.id shopkeeper_id', 'us.role_id', 'us.parent_id', 'us.money', 'us.income', 'us.cash', 'us.status us_status', 'pu.user_name parent_name']))

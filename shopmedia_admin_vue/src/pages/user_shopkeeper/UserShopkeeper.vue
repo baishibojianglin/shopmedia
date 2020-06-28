@@ -48,8 +48,7 @@
 							{{scope.row.phone}}{{scope.row.phone_verified == 1 ? '' : '(未验证)'}}
 						</template>
 					</el-table-column>
-					<el-table-column prop="parent_id" label="上级序号" min-width="90"></el-table-column>
-					<el-table-column prop="parent_name" label="上级名称" min-width="180"></el-table-column>
+					<el-table-column prop="shops" label="店铺" min-width="90"></el-table-column>
 					<el-table-column prop="money" label="余额/元" min-width="120"></el-table-column>
 					<el-table-column prop="income" label="收益/元" min-width="120"></el-table-column>
 					<el-table-column prop="cash" label="提现/元" min-width="120"></el-table-column>
