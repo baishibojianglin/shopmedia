@@ -15,7 +15,7 @@
 							</picker>
 						</view>
 						
-						<map :latitude="latitude" :longitude="longitude" :scale="scale" :markers='markers' :circles="circles" style="height: 500rpx;"></map>
+						<map :latitude="latitude" :longitude="longitude" :scale="scale" :markers='markers' :circles="circles" style="height: 500rpx; width: 100%;"></map>
 					</view>
 					<view v-if="segmentedControl.current === 1">
 						<!-- scroll-view 纵向滚动 s -->
@@ -122,10 +122,17 @@
 				
 				distanceList: [{distance_id: 1, distance: 5}, {distance_id: 2, distance: 10}], // 投放距离列表
 				distanceIndex: 0,
-				longitude: '', // 经度
-				latitude: '', // 纬度
+				longitude:104.065922, // 经度
+				latitude:30.659903, // 纬度
 				scale: 11,
-				circles: [],
+				circles: [{
+								latitude:30.659903,
+								longitude: 104.065922,
+								radius: 8000,
+								strokeWidth: 2,
+								color: '#409EFF01',
+								fillColor: '#409EFF33'
+							}],
 
 				/* scroll-view 纵向滚动 s */
 				scrollTop: 0,
@@ -283,8 +290,8 @@
 				uni.getLocation({
 					type: 'wgs84',
 					success: function (res) {
-						// console.log('当前位置的经度：' + res.longitude);
-						// console.log('当前位置的纬度：' + res.latitude);
+						 //console.log('当前位置的经度：' + res.longitude);
+						 //console.log('当前位置的纬度：' + res.latitude);
 						self.longitude = res.longitude;
 						self.latitude = res.latitude;
 						if (self.longitude && self.latitude) {
