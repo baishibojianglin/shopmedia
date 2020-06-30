@@ -23,7 +23,7 @@
 						<text>店名</text>
 					</view>
 					<view class="listcon-item-1">
-						<text>总价</text>
+						<text>合作价</text>
 					</view>
 					<view class="listcon-item-3">
 						<text v-show="false">详情</text>
@@ -37,7 +37,7 @@
 						<text>{{value.shop_name}}</text>
 					</view>
 					<view class="listcon-item-1">
-						<text class="">¥{{value.sale_price}}</text>
+						<text class="">¥{{value.sale_price/2}}</text>
 					</view>
 					<view class="listcon-item-3">
 						<text class="icon icon-size">&#xe6a2;</text>
