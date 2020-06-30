@@ -87,14 +87,19 @@ class Device extends AuthBase
         $map['d.status'] = config('code.status_enable');
         $map['d.is_delete'] = config('code.not_delete');
 
-        if (intval($param['role_id']) == 7) { // 广告主（注释掉下面说明广告主投放广告的广告屏不一定是已经合作签约的）
+        if (isset($param['role_id']) && intval($param['role_id']) == 7) { // 广告主（注释掉下面说明广告主投放广告的广告屏不一定是已经合作签约的）
             // 获取已付款订单ID集合
             /*$orderDeviceIds = Db::name('partner_order')->where(['order_status' => 1])->column('device_id');
             $orderDeviceIds = array_unique($orderDeviceIds); // 去重
             $map['d.device_id'] = ['in', $orderDeviceIds];*/
         } else {
             // 获取未付款和已付款订单ID集合
-            $orderDeviceIds = Db::name('partner_order')->where(['order_status' => ['in', '0,1']])->column('device_id');
+            try {
+                $orderDeviceIds = Db::name('partner_order')->where(['order_status' => ['in', '0,1']])->column('device_id');
+            } catch (\Exception $e) {
+                return show(config('code.error'), '请求异常' . $e->getMessage(), [], 500);
+            }
+
             $orderDeviceIds = array_unique($orderDeviceIds); // 去重
             $map['d.device_id'] = ['not in', $orderDeviceIds]; // 可合作的广告屏（包含若广告屏已经生成订单，取订单被取消对应的广告屏）
         }
