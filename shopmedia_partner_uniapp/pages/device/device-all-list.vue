@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-comment-body">
 		<uni-card style="background-color:#ECECEC;" :is-shadow='true'>
-			广告位未满的屏如下，如需更多的广告屏请等待新空出的广告屏
+			当前在线广告位未满的屏如下，如需更多请等待其他屏广告位空出
 		</uni-card>	
 		<view class="uni-list" style="position: fixed;top:150rpx;z-index: 99;" v-show="false">
 			<view class="uni-list-cell">

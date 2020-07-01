@@ -18,7 +18,7 @@ class shopCate extends Common
      */
     public function shopCateList()
     {
-        $shopCate = config('code.shop_cate'); // 店铺类别
+        $shopCate = config('ad.ad_cate'); // 店铺类别
         $data = []; // 定义二维数组列表
         // 处理数据，将一维数组转成二维数组
         foreach ($shopCate as $key => $value) {
