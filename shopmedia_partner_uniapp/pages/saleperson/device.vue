@@ -16,13 +16,13 @@
 					<text class="datalist-title">屏编号：</text>
 					<text class="datalist-content">{{datalist.device_id}}</text>
 				</view>
-				<view class="datalist">
+				<!-- <view class="datalist">
 					<text class="datalist-title">总价：</text>
-					<text class="datalist-content">{{datalist.sale_price*2}} 元</text>
-				</view>
+					<text class="datalist-content">{{datalist.sale_price}} 元</text>
+				</view> -->
 				<view class="datalist">
 					<text class="datalist-title">合作价：</text>
-					<text class="datalist-content color-red">{{datalist.sale_price}} 元</text>
+					<text class="datalist-content color-red">{{datalist.sale_price/2}} 元</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">占股比例：</text>

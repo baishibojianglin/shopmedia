@@ -92,7 +92,7 @@
 							<text>{{value.shop_name}}</text>
 						</view>
 						<view class="listcon-item-1">
-							<text class="">¥{{value.sale_price}}</text>
+							<text class="">¥{{value.sale_price/2}}</text>
 						</view>
 						<view class="listcon-item-3">
 							<text class="icon icon-size">&#xe6a2;</text>
