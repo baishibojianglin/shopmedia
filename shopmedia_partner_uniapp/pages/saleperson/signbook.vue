@@ -31,23 +31,23 @@
 			
 			<view class="blod">二、出资方式、出资比例</view>
 			
-			<view>
+			<!-- <view>
 				2.1 上述智能广告屏设备总成本为（智能屏生产成本、店通智能数据系统软件研发成本、运至店铺的运输成本、店铺安装的人工成本等）
 				<text class="text-word blod">{{total_out}}</text>
 				元。
-			</view>
+			</view> -->
 			<view>
-				2.2 甲、乙双方各出资<input :disabled="true" class="text-word blod" v-model="share" /> % 合作经营，甲方出资
+				2.1 甲、乙双方各出资<input :disabled="true" class="text-word blod" v-model="share" /> % 合作经营，甲方出资
 				<input :disabled="true" class="text-word blod" v-model="company_out" />
 				元，乙方出资
 				<input :disabled="true" class="text-word blod" v-model="person_out" />
 				元。
 			</view>
-            <view>2.3 甲、乙双方签订协议后3个工作日内，须将款项转入成都商市通电子商务有限公司公户，账户信息如下：</view>
+            <view>2.2 甲、乙双方签订协议后3个工作日内，须将款项转入成都商市通电子商务有限公司公户，账户信息如下：</view>
 			<view><text class="">账户名称：成都商市通电子商务有限公司</text></view>
 			<view><text class="">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：8028 2001 0122 7004 51</text></view>
 			<view><text class="">开 &nbsp;户 &nbsp;行：恒丰银行股份有限公司成都金牛支行</text></view>
-            <view>2.4甲、乙双方按对应出资比例享有该广告屏的广告利润收入。</view>
+            <view>2.3甲、乙双方按对应出资比例享有该广告屏的广告利润收入。</view>
 			<view class="blod">三、双方权利与义务</view>
 			<view>3.1 甲方权利与义务</view>
 			<view>3.1.1 甲方承担设备的运营、管理、维修责任;</view>
