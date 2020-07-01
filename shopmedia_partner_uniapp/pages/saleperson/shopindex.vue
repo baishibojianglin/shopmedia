@@ -195,7 +195,6 @@
 						'access-user-token':this.userInfo.token
 					},
 					success: (res) => {
-						console.log(223, res);
 						if(res.data.status == 1){
 							self.salesmanList = res.data.data;
 							
