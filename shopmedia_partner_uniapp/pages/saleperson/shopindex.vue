@@ -66,6 +66,12 @@
 						<text>我的团队</text>
 					</view>
 				</view>
+				<view class="uni-padding-wrap uni-common-mt">
+					<view class="uni-flex uni-row">
+						<view class="uni-bold" style="-webkit-flex: 1;flex: 1;">开拓店铺总数</view>
+						<view class="uni-bold" style="-webkit-flex: 1;flex: 1;">{{salesmanShopNumberSum}} 家</view>
+					</view>
+				</view>
 				<uni-card :is-shadow="true">
 					<view>
 						<view class="listcon">
@@ -109,7 +115,8 @@
 				devicelist:[],//设备列表
 				sale_info:{} ,//业务员基本信息
 				shop_number: [], //店铺数量
-				salesmanList: [] // 下级业务员列表
+				salesmanList: [], // 下级业务员列表
+				salesmanShopNumberSum: 0 // 下级业务员开拓店铺数量总数
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
@@ -188,8 +195,16 @@
 						'access-user-token':this.userInfo.token
 					},
 					success: (res) => {
+						console.log(223, res);
 						if(res.data.status == 1){
 							self.salesmanList = res.data.data;
+							
+							// 计算下级业务员开拓店铺数量总数
+							let sum = 0;
+							self.salesmanList.forEach((value, index) => {
+								sum += value['total_count'];
+							})
+							self.salesmanShopNumberSum = sum;
 						}
 					}
 				});
