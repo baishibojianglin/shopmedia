@@ -85,6 +85,8 @@
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
 			<button @click="submitForm()" class="bg-main-color color-white">确认投放</button>
+			
+			<button @click="pay()" class="uni-common-mt">支付测试</button>
 		</view>
 	</view>
 </template>
@@ -598,6 +600,35 @@
 					},
 					fail: function(error) {
 						
+					}
+				})
+			},
+			
+			/**
+			 * 支付测试
+			 */
+			pay(){
+				uni.request({
+					url: this.$serverUrl + 'api/test',
+					// url: 'http://demo.tp5.com/index.php/api/test',
+					header:{
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					method: 'GET',
+					success: function(res) {
+						console.log(123, res);
+						uni.showModal({
+						    title: '提示 success',
+						    content: res.data.message,
+						})
+					},
+					fail: function(error) {
+						console.log(220, error);
+						uni.showModal({
+						    title: '提示 fail',
+						    content: error.data.message,
+						})
 					}
 				})
 			},
