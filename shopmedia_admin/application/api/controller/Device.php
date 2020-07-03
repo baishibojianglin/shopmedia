@@ -180,11 +180,11 @@ class Device extends AuthBase
         }
 
         if(!empty($device)){
-            $shopCate = config('code.shop_cate');
+            $adCate = config('ad.ad_cate');
             $shopEnvironment = config('code.shop_environment');
             $deviceSize = config('code.device_size');
-            $device['shop_cate_name'] = $device['shop_cate'] ? $shopCate[$device['shop_cate']] : '';
-            $device['environment'] = $device['environment'] ? $shopEnvironment[$device['environment']] : '';
+            $device['shop_cate_name'] = isset($device['shop_cate']) ? $adCate[$device['shop_cate']] : '';
+            $device['environment'] = isset($device['environment']) ? $shopEnvironment[$device['environment']] : '';
             $device['size'] = isset($device['size']) ? $deviceSize[$device['size']] : '';
             $message['data'] = $device;
             $message['status'] = 1;

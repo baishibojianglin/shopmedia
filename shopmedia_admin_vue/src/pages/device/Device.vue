@@ -9,7 +9,7 @@
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
 								<el-input placeholder="查询广告屏" v-model="formInline.company_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getDeviceList()"></el-button>
+									<el-button slot="append" icon="el-icon-search" @click="getDeviceList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>

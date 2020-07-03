@@ -15,7 +15,10 @@
 								</el-select>
 							</el-form-item>
 							<el-form-item label="">
-								<el-input placeholder="用户名称" v-model="formInline.user_name" clearable>
+								<el-input placeholder="店铺名称" v-model="formInline.shop_name" clearable></el-input>
+							</el-form-item>
+							<el-form-item label="">
+								<el-input placeholder="用户名称或电话" v-model="formInline.user_name" clearable>
 									<el-button slot="append" icon="el-icon-search" @click="getUserList()">查询</el-button>
 								</el-input>
 							</el-form-item>
@@ -87,7 +90,9 @@
 		data() {
 			return {
 				formInline: {
-					user_name: '' // 用户名称
+					user_name: '', // 用户名称
+					status: '', // 状态
+					shop_name: '' // 店铺名称
 				},
 				userList: [], // 用户列表
 				listPagination: {} // 列表分页参数
@@ -106,6 +111,7 @@
 					params: {
 						user_name: this.formInline.user_name,
 						status: this.formInline.status,
+						shop_name: this.formInline.shop_name,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}/* ,

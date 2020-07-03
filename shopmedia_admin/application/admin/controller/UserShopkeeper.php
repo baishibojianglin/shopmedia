@@ -35,10 +35,17 @@ class UserShopkeeper extends Base
                 $map['usm.company_id'] = $this->adminUser['company_id'];
             }
             if (!empty($param['user_name'])) { // 用户名称
-                $map['u.user_name'] = ['like', '%' . $param['user_name'] . '%'];
+                $map['u.user_name|u.phone'] = ['like', '%' . $param['user_name'] . '%'];
             }
             if (isset($param['status']) && $param['status'] != null) { // 状态
                 $map['us.status'] = intval($param['status']);
+            }
+            if (!empty($param['shop_name'])) { // 店铺名称
+                $shopName = ['like', '%' . $param['shop_name'] . '%'];
+                $userIds = model('Shop')->where(['shop_name' => $shopName])->column('user_id');
+                if ($userIds) {
+                    $map['u.user_id'] = ['in', $userIds];
+                }
             }
 
             // 获取分页page、size
