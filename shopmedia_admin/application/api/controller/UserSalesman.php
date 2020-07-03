@@ -441,8 +441,10 @@ class UserSalesman extends AuthBase
         // 查询条件
         $map = [];
         $map['us.role_id'] = 6; // 店铺业务员
-        if (isset($param['parent_id'])) {
-            $map['us.parent_id'] = intval($param['parent_id']);
+        if (isset($param['user_id'])) {
+            $userId = intval($param['user_id']);
+            $userSalesman = Db::name('user_salesman')->field('id')->where(['uid' => $userId, 'role_id' => 6])->find();
+            $map['us.parent_id'] = $userSalesman['id'];
         }
 
         // 广告屏合作商业务员列表
@@ -450,6 +452,7 @@ class UserSalesman extends AuthBase
             ->field('us.*, u.phone')
             ->join('__USER__ u', 'us.uid = u.user_id', 'LEFT') // 所属用户
             ->where($map)->select();
+
         foreach ($data as $key => $value) {
             // 获取店家ID集合
             $shopkeeperIds = Db::name('user_shopkeeper')->where(['salesman_id' => $value['id']])->column('id');

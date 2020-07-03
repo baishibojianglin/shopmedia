@@ -59,6 +59,18 @@
 				<view class="countcon-item">余额：<text class="uni-bold">{{sale_info.money}}</text></view>
 			</view> -->
 			
+			
+			<view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 20px;">
+				<navigator url="./shop" hover-class="none">
+					<button class="bg-main-color color-white">
+						开展业务 >
+					</button>
+				</navigator>
+			</view>
+			
+			
+			
+			
 			<!-- 我的团队 s -->
 			<view class="">
 				<view class="countcon">
@@ -76,7 +88,7 @@
 					<view>
 						<view class="listcon">
 							<view class="countcon-item">
-								<text>电话</text>
+								<text>业务员电话</text>
 							</view>
 							<view class="countcon-item">
 								<text>开拓店铺</text>
@@ -95,13 +107,7 @@
 			</view>
 			<!-- 我的团队 e -->
 			
-			<view class="uni-padding-wrap uni-common-mt">
-				<navigator url="./shop" hover-class="none">
-					<button class="bg-main-color color-white">
-						开展业务
-					</button>
-				</navigator>
-			</view>
+
 	</view>
 </template>
 
@@ -188,7 +194,7 @@
 				uni.request({
 					url: this.$serverUrl + 'api/shopkeeper_salesman_list',
 					data: {
-						parent_id: this.userInfo.user_id
+						user_id: this.userInfo.user_id
 					},
 					header: {
 						'commonheader': this.commonheader,
