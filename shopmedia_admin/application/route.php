@@ -116,6 +116,9 @@ Route::post('api/hasphone', 'api/Login/hasphone'); // 检查电话是否存在
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
 
+// 支付宝支付
+Route::post('api/test', 'api/Test/index');
+
 // 用户个人中心
 Route::resource('api/user', 'api/User');
 Route::post('api/apply_partner', 'api/User/applyPartner'); // 申请成为广告屏合作商
