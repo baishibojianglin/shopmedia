@@ -34,8 +34,16 @@ class Device extends Base
 			if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有数据，分公司只能查看自有数据
 				$map['c.company_id'] = $this->adminUser['company_id'];
 			}
-			if (!empty($param['company_name'])) { // 分公司名称
-				$map['c.company_name'] = ['like', '%' . trim($param['company_name']) . '%'];
+			if (isset($param['status']) && $param['status'] != null) { // 状态
+				$map['d.status'] = intval($param['status']);
+			}
+			if (!empty($param['device_sn'])) { // 设备编号
+				$map['d.device_sn'] = ['like', '%' . trim($param['device_sn']) . '%'];
+			}
+			if (!empty($param['shop_name'])) { // 店铺名称
+				$shopName = ['like', '%' . trim($param['shop_name']) . '%'];
+				$shopIds = model('Shop')->where(['shop_name' => $shopName])->column('shop_id');
+				$map['d.shop_id'] = ['in', $shopIds];
 			}
 
 			// 获取分页page、size

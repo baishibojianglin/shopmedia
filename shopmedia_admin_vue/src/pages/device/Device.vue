@@ -4,18 +4,28 @@
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
 					<el-col :span="6"><span>广告屏列表</span></el-col>
-					<el-col :span="6">
+				</el-row>
+				<el-row :gutter="20" type="flex" justify="space-between" style="margin-top: 1rem;">
+					<el-col :span="18">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-input placeholder="查询广告屏" v-model="formInline.company_name" clearable>
+								<el-select v-model="formInline.status" clearable placeholder="状态">
+									<el-option v-for="(item, index) in {0: '下线', 1: '正常', 2: '故障'}" :label="item" :value="Number(index)"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="">
+								<el-input placeholder="设备编号" v-model="formInline.device_sn" clearable></el-input>
+							</el-form-item>
+							<el-form-item label="">
+								<el-input placeholder="店铺名称" v-model="formInline.shop_name" clearable>
 									<el-button slot="append" icon="el-icon-search" @click="getDeviceList()">查询</el-button>
 								</el-input>
 							</el-form-item>
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="6">
 						<!-- 新增 s -->
 						<router-link to="adddevice"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告屏</el-button></router-link>
 						<!-- 新增 e -->
@@ -26,16 +36,17 @@
 				<!-- 广告屏列表 s -->
 				<el-table :data="deviceList" empty-text="数据加载中…" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="70"></el-table-column>
-					<el-table-column prop="brand_msg" label="品牌" min-width="120"></el-table-column>
-					<el-table-column prop="model_msg" label="型号" width="120"></el-table-column>
+					<el-table-column prop="device_sn" label="设备编号" width="120"></el-table-column>
+					<el-table-column prop="shop_name" label="店铺名称" width="120"></el-table-column>
+					<el-table-column prop="shop_id" label="店铺编号" width="90"></el-table-column>
+					<el-table-column prop="brand_msg" label="品牌" min-width="100"></el-table-column>
+					<el-table-column prop="model_msg" label="型号" width="100"></el-table-column>
 					<el-table-column prop="size_msg" label="尺寸/寸" width="80"></el-table-column>
 					<el-table-column prop="sale_price" label="价格/元" width="100"></el-table-column>
-					<el-table-column prop="saled_part" label="已售份额" width="100"></el-table-column>
+					<el-table-column prop="saled_part" label="已售份额" width="90"></el-table-column>
 					<el-table-column prop="company_name" label="所属分公司" width="120"></el-table-column>
-					<el-table-column prop="shop_id" label="店铺编号" width="120"></el-table-column>
-					<el-table-column prop="shop_name" label="店铺名称" width="150"></el-table-column>
-					<el-table-column prop="level" label="广告位等级" width="150"></el-table-column>
-					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '下线', value: 0 }, { text: '正常', value: 1 },{ text: '故障', value: 2 }]" :filter-method="filterStatus" filter-placement="bottom-end">
+					<el-table-column prop="level" label="广告位等级" width="100"></el-table-column>
+					<el-table-column prop="status" label="状态" width="80" :filters="[{ text: '下线', value: 0 }, { text: '正常', value: 1 },{ text: '故障', value: 2 }]" :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.status === 0 ? 'text-info' : (scope.row.status === 1 ? 'text-success' : 'text-danger')">{{scope.row.status_msg}}</span>
 						</template>
@@ -73,7 +84,9 @@
 		data() {
 			return {
 				formInline: {
-					company_name: '' // 分公司名称
+					status: '', // 状态
+					device_sn: '', // 设备编号
+					shop_name: '', // 店铺名称
 				},
 				deviceList: [], // 广告屏列表
 				listPagination: {}, // 列表分页参数
@@ -90,6 +103,9 @@
 				let self = this;
 				this.$axios.get(this.$url + 'device', {
 					params: {
+						status: this.formInline.status,
+						device_sn: this.formInline.device_sn,
+						shop_name: this.formInline.shop_name,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}

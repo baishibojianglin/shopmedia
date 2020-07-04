@@ -3,6 +3,10 @@
 		<el-card class="box-card">
 			<el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="150px">
 
+				<el-form-item label="设备编号" prop="device_sn">
+					<el-input style="width:217px;" clearable v-model="ruleForm.device_sn"></el-input>
+				</el-form-item>
+				
 				<el-form-item label="设备品牌" prop="brand">
 					<el-select @change="getmodel" v-model="ruleForm.brand" placeholder="请选择">
 						<el-option v-for="item in brand_options" :key="item.value" :label="item.label" :value="item.value">
@@ -136,6 +140,7 @@
 					label: ''
 				}, ],
 				ruleForm: {
+					device_sn: '', //设备编号
 					brand: '', //设备品牌
 					model: '', //设备型号
 					size: '', //设备尺寸
@@ -154,6 +159,10 @@
 					url_image: '', //图片
 				},
 				rules: {
+					device_sn: [{
+						required: true,
+						message: '请输入设备编号'
+					}],
 					url_image: [{
 						required: true,
 						message: '请上传照片'

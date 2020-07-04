@@ -43,9 +43,7 @@ class UserShopkeeper extends Base
             if (!empty($param['shop_name'])) { // 店铺名称
                 $shopName = ['like', '%' . $param['shop_name'] . '%'];
                 $userIds = model('Shop')->where(['shop_name' => $shopName])->column('user_id');
-                if ($userIds) {
-                    $map['u.user_id'] = ['in', $userIds];
-                }
+                $map['u.user_id'] = ['in', $userIds];
             }
 
             // 获取分页page、size
