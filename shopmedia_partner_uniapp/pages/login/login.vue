@@ -126,7 +126,7 @@
 			/**
 			 * 登录成功将用户名密码存储到用户本地
 			 */
-			rememberPassword() {
+			rememberPassword(){
 				if (this.rememberPsw) { // 用户勾选“记住账号密码”
 					uni.setStorageSync('phone', this.phone);
 					uni.setStorageSync('password', this.password);
