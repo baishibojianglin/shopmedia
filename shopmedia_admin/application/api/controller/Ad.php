@@ -23,7 +23,7 @@ class Ad extends AuthBase
      */
     public function getAd()
     {
-       $list = Db::name('ad')->field('ad_name,ad_cate_id')->select();
+       $list = Db::name('ad')->field('ad_name,ad_cate_id')->where(['audit_status' => 1])->select();
        return json($list);
     }
 
