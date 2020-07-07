@@ -398,6 +398,32 @@
 				}
 			}
 		}
+        ,{
+            "path" : "pages/ad-combo/ad-combo",
+            "style" : {
+				"navigationBarTitleText": "广告套餐",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+        ,{
+            "path" : "pages/ad-combo/ad-combo-agreement",
+            "style" : {
+				"navigationBarTitleText": "广告套餐协议",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

@@ -116,9 +116,6 @@ Route::post('api/hasphone', 'api/Login/hasphone'); // 检查电话是否存在
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
 
-// 支付宝支付
-Route::post('api/test', 'api/Test/index');
-
 // 用户个人中心
 Route::resource('api/user', 'api/User');
 Route::post('api/apply_partner', 'api/User/applyPartner'); // 申请成为广告屏合作商
@@ -139,6 +136,12 @@ Route::get('api/get_ad', 'api/Ad/getAd');
 Route::get('api/get_ad_cate', 'api/Ad/getAdCate');
 // 广告类别
 Route::get('api/ad_cate_list', 'api/AdCate/adCateList'); // 广告类别列表（不分页）
+
+// 广告套餐
+Route::get('api/ad_combo_list', 'api/AdCombo/AdComboList'); // 广告套餐列表（不分页）
+
+// 广告套餐订单
+Route::resource('api/ad_combo_order', 'api/AdComboOrder');
 
 // 业务员
 Route::get('api/partner_salesman', 'api/UserSalesman/partnerSalesman'); // 获取指定的广告屏合作商业务员
