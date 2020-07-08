@@ -83,6 +83,7 @@
 								<div v-show="menuvalue[10]">
 									<router-link to="/home/activity"><dd id='menu101' :class="activevalue[101]?activeclass:''"  @click="menuactive(101,10,1)">活动</dd></router-link>
 									<router-link to="/home/act_prize"><dd id='menu102' :class="activevalue[102]?activeclass:''"  @click="menuactive(102,10,2)">奖品</dd></router-link>
+									<router-link to="/home/act_raffle"><dd id='menu103' :class="activevalue[103]?activeclass:''"  @click="menuactive(103,10,3)">中奖纪录</dd></router-link>
 								</div>
 							</el-collapse-transition>
 							

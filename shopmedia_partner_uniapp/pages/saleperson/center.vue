@@ -66,7 +66,7 @@
 						<uni-grid-item>
 							<text class="text-grid-title">推广广告</text>
 							<text class="icon" style="color: #38E084;">&#xe725;</text>
-							<navigator url="./index" v-if="role.ad" hover-class="none">
+							<navigator url="/pages/ad-combo/ad-combo" v-if="role.ad" hover-class="none">
 								<button class="text-grid work-button bg-main-color color-white">	
 									进入 	
 								</button>

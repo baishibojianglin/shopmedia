@@ -214,10 +214,8 @@ class Device extends AuthBase
      */
     public function getPrice()
     {
-        $price = config('code.device_level');
+        $price = [1 => '≥1', 2 => '≥1', 3 => '≥1'];
+        //$price = config('code.device_level');
         return json($price);
     }
-
-
-
 }

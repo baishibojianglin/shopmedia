@@ -84,9 +84,9 @@
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button @click="submitForm()" class="bg-main-color color-white">确认投放</button>
+			<button @click="submitForm()" type="default" class="bg-main-color color-white">确认投放</button>
 			
-			<button @click="pay()" class="uni-common-mt">支付测试</button>
+			<button v-if="false" @click="pay()" class="uni-common-mt">支付测试</button>
 		</view>
 	</view>
 </template>
@@ -529,6 +529,12 @@
 			 * 投放广告提交表单
 			 */
 			submitForm() {
+				uni.showToast({
+					icon: 'none',
+					title: '功能开发中，敬请期待！'
+				});
+				return false;
+				
 				// 自定义验证表单
 				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
 				if (this.form.ad_cate_id == '') {
