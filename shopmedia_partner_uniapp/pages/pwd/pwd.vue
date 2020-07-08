@@ -1,8 +1,11 @@
 <template>
 	<view class="content">
-		<view class="contain-logo">
-			<image class="logo" mode="aspectFit" :src="logourl"></image>
+<!-- 		<view class="contain-logo">
+			<image class="logo" :src="logourl"></image>
 		</view>
+		<view class="uni-center logotext">
+			<text>商市通</text>
+		</view> -->
 
 		<view class="content-view">
 				<view class="input-list">
@@ -246,17 +249,17 @@
 
 <style>
 	.contain-logo {
-		margin-top: 30px;
+		margin-top: 20px;
 		text-align: center;
 	}
-
-	.logo {
-		height: 130px;
+	.logotext{
+		font-size: 30px;
+		margin-bottom: 0px;
 	}
-
-	.logo-text {
-		font-size: 20px;
-		font-weight: bold;
+	.logo {
+		height: 120px;
+		width: 120px;
+		border-radius: 20px;
 	}
 
 	.content-view {

@@ -1,7 +1,10 @@
 <template>
 	<view class="uni-page-body uni-padding-wrap">
 		<view class="contain-logo">
-			<image class="logo" mode="aspectFit" :src="logourl"></image>
+			<image class="logo" :src="logourl"></image>
+		</view>
+		<view class="uni-center logotext">
+			<text>店通传媒</text>
 		</view>
 
 		<view>
@@ -159,11 +162,16 @@
 <style>
 	.contain-logo {
 		margin-top: 50px;
-		margin-bottom: 20px;
 		text-align: center;
 	}
+	.logotext{
+		font-size: 24px;
+		margin-bottom: 20px;
+	}
 	.logo {
-		height: 140px;
+		height: 120px;
+		width: 120px;
+		border-radius: 20px;
 	}
 	.input-line-height{
 		display: flex;
