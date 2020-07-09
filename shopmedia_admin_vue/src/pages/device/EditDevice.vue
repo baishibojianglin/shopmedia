@@ -49,7 +49,7 @@
 				</el-form-item>
 
 				<el-form-item label="安装店铺" prop="shop_id">
-					<el-select v-model="ruleForm.shop_id" placeholder="请选择" @change="shopChange">
+					<el-select v-model="ruleForm.shop_id" placeholder="请选择" clearable filterable @change="shopChange">
 						<el-option v-for="item in shop_options" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>

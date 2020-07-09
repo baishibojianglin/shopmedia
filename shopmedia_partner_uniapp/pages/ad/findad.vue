@@ -84,9 +84,9 @@
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button @click="submitForm()" type="default" class="bg-main-color color-white">确认投放</button>
+			<button @click="submitForm()" type="default" class="bg-main-color color-white">确认支付</button>
 			
-			<button v-if="false" @click="pay()" class="uni-common-mt">支付测试</button>
+			<button v-if="false" @click="pay()" class="uni-common-mt">支付</button>
 		</view>
 	</view>
 </template>
@@ -124,17 +124,17 @@
 				
 				distanceList: [{distance_id: 1, distance: 5}, {distance_id: 2, distance: 10}], // 投放距离列表
 				distanceIndex: 0,
-				longitude:104.065922, // 经度
-				latitude:30.659903, // 纬度
+				longitude: '', // 经度 104.065922
+				latitude: '', // 纬度 30.659903
 				scale: 11,
 				circles: [{
-								latitude:30.659903,
-								longitude: 104.065922,
-								radius: 8000,
-								strokeWidth: 2,
-								color: '#409EFF01',
-								fillColor: '#409EFF33'
-							}],
+					latitude: '', // 30.659903
+					longitude: '', // 104.065922
+					radius: 5000,
+					strokeWidth: 2,
+					color: '#409EFF01',
+					fillColor: '#409EFF33'
+				}],
 
 				/* scroll-view 纵向滚动 s */
 				scrollTop: 0,
@@ -529,11 +529,11 @@
 			 * 投放广告提交表单
 			 */
 			submitForm() {
-				uni.showToast({
+				/* uni.showToast({
 					icon: 'none',
 					title: '功能开发中，敬请期待！'
 				});
-				return false;
+				return false; */
 				
 				// 自定义验证表单
 				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;

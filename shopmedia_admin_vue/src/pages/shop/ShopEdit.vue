@@ -47,7 +47,7 @@
 					
 					<el-form-item prop="region" label="店铺所在区域">
 						<!-- 省级区域 -->
-						<el-select v-model="form.province_id" @change="region($event, 2)">
+						<el-select v-model="form.province_id" filterable @change="region($event, 2)">
 							<el-option
 								v-for="item in provinceList"
 								:key="item.value"
@@ -56,7 +56,7 @@
 							</el-option>
 						</el-select>
 						<!-- 市级区域 -->
-						<el-select v-model="form.city_id" @change="region($event, 3)" style="margin-left: 5px;">
+						<el-select v-model="form.city_id" filterable @change="region($event, 3)" style="margin-left: 5px;">
 							<el-option
 								v-for="item in cityList"
 								:key="item.value"
@@ -65,7 +65,7 @@
 							</el-option>
 						</el-select>
 						<!-- 区县 -->
-						<el-select v-model="form.county_id" @change="region($event, 4)" style="margin-left: 5px;">
+						<el-select v-model="form.county_id" filterable @change="region($event, 4)" style="margin-left: 5px;">
 							<el-option
 								v-for="item in countyList"
 								:key="item.value"
@@ -74,7 +74,7 @@
 							</el-option>
 						</el-select>
 						<!-- 乡镇街道 -->
-						<el-select v-model="form.town_id" style="margin-left: 5px;">
+						<el-select v-model="form.town_id" filterable style="margin-left: 5px;">
 							<el-option
 								v-for="item in townList"
 								:key="item.value"
