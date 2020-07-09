@@ -57,11 +57,13 @@
 			<view class="uni-list">
 				<checkbox-group @change="deviceCheckboxChange">
 					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id">
-						<view>
-							<checkbox :value="item.device_id" :checked="item.checked" />
+						<view class="uni-flex uni-row">
+							<view>
+								<checkbox :value="item.device_id" :checked="item.checked" />
+							</view>
+							<image class="uni-media-list-logo uni-common-pl" :src="item.thumb"></image>
+							<view>【店铺】{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
 						</view>
-						<image class="uni-media-list-logo" :src="item.thumb"></image>
-						<view>【店铺】{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
 						<text class="uni-icon uni-icon-arrowright fon14" @click.stop="toDeviceDetail2(item.device_id)"></text>
 					</label>
 				</checkbox-group>
@@ -84,7 +86,7 @@
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button @click="submitForm()" type="default" class="bg-main-color color-white">确认支付</button>
+			<button @click="submitForm()" type="" class="bg-main-color color-white">确认支付</button>
 			
 			<button v-if="false" @click="pay()" class="uni-common-mt">支付</button>
 		</view>
