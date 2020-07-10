@@ -346,6 +346,19 @@
 				}
 			}
 		},
+        { // 广告主业务员主页面
+            "path" : "pages/saleperson/advertiser-salesman",
+            "style" : {
+				"navigationBarTitleText": "广告业务员",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
         { // 投放广告：选择投放区域、行业、广告屏等
             "path" : "pages/ad/findad",
             "style" : {
@@ -398,7 +411,7 @@
 				}
 			}
 		}
-        ,{
+        ,{ // 广告套餐
             "path" : "pages/ad-combo/ad-combo",
             "style" : {
 				"navigationBarTitleText": "广告套餐",
@@ -411,7 +424,7 @@
 				}
 			}
         }
-        ,{
+        ,{ // 广告套餐协议
             "path" : "pages/ad-combo/ad-combo-agreement",
             "style" : {
 				"navigationBarTitleText": "广告套餐协议",

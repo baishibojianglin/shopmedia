@@ -156,6 +156,11 @@ Route::post('api/sale_info', 'api/UserSalesman/getSaleInfo');
 Route::post('api/sale_count', 'api/UserSalesman/getSaleCount');
 Route::post('api/shop_count', 'api/UserSalesman/getShopCount');
 Route::get('api/salesman_shop_list', 'api/UserSalesman/getSalesmanShopList');
+// 广告主业务员
+Route::get('api/get_advertiser_salesman', 'api/AdvertiserSalesman/read');
+Route::get('api/get_advertiser_salesman_ad_count', 'api/AdvertiserSalesman/getAdvertiserSalesmanAdCount'); // 统计广告主业务员广告数
+Route::get('api/get_advertiser_salesman_list', 'api/AdvertiserSalesman/getAdvertiserSalesmanList'); // 获取（下级）广告主业务员列表
+
 // 用户（广告屏合作商）合作的广告屏
 Route::resource('api/partner_device', 'api/PartnerDevice');
 Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');

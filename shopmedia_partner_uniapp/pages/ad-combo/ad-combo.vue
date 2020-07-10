@@ -1,9 +1,7 @@
 <template>
 	<view>
 		<uni-card>
-			<view class="uni-title uni-bold">
-				填写广告主信息
-			</view>
+			<view class="uni-title uni-bold">填写广告主信息</view>
 			<view class="uni-list">
 				<label class="uni-list-cell uni-list-cell-pd">
 					<input type="text" v-model="form.user_name" placeholder="广告主名称" />
@@ -18,18 +16,14 @@
 		</uni-card>
 		
 		<uni-card>
-			<view class="uni-title uni-bold">
-				广告名称
-			</view>
+			<view class="uni-title uni-bold">广告名称</view>
 			<view class="uni-list uni-common-mb">
 				<label class="uni-list-cell uni-list-cell-pd">
 					<input type="text" v-model="form.ad_name" placeholder="填写广告名称" />
 				</label>
 			</view>
 			
-			<view class="uni-title uni-bold">
-				选择广告套餐
-			</view>
+			<view class="uni-title uni-bold">选择广告套餐</view>
 			<view class="uni-list">
 				<radio-group @change="radioChange">
 					<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in adComboList" :key="item.combo_id">
@@ -41,12 +35,12 @@
 				</radio-group>
 			</view>
 		</uni-card>
+		
 		<uni-card>
-			<view class="uni-title uni-bold">
-				付款码
-			</view>
+			<view class="uni-title uni-bold">付款码</view>
 			<view class="">
-				<image src="/static/img/pay_QRCode.png" :lazy-load="true" style="width: 500rpx;height: 500rpx;"></image>
+				<image src="/static/img/pay_QRCode.png" :lazy-load="true" style="width: 200rpx;height: 200rpx;" @tap="previewPayQRCode('/static/img/pay_QRCode.png')"></image>
+				<text class="uni-text-small">（点击放大）</text>
 			</view>
 		</uni-card>
 		
@@ -62,7 +56,7 @@
 		</view>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button type="default" @click="createOrder()">提交</button>
+			<button type="primary" @click="createOrder()">提交</button>
 		</view>
 	</view>
 </template>
@@ -138,6 +132,20 @@
 					}
 				}
 				this.form.combo_price = this.adComboList[this.current].combo_price;
+			},
+			
+			/**
+			 * 预览付款二维码
+			 * @param {Object} image
+			 */
+			previewPayQRCode(image) {
+				var imgArr = [];
+				imgArr.push(image);
+				// 预览图片
+				uni.previewImage({
+					urls: imgArr,
+					current: imgArr[0]
+				});
 			},
 			
 			/**
