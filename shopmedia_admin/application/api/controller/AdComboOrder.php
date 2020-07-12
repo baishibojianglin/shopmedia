@@ -83,6 +83,7 @@ class AdComboOrder extends AuthBase
                 $orderData['order_time'] = time();
                 $orderData['user_id'] = $userId;
                 $orderData['advertiser_id'] = $advertiserId;
+                $orderData['advertiser_name'] = trim($param['user_name']);
                 $orderData['advertiser_address'] = trim($param['advertiser_address']);
                 $orderData['salesman_id'] = $salesman['id'];
                 $orderData['ad_name'] = trim($param['ad_name']);
@@ -94,7 +95,6 @@ class AdComboOrder extends AuthBase
                 $orderData['pay_status'] = 1;
                 $orderData['pay_time'] = time();
                 $res[3] = $orderID = Db::name('ad_combo_order')->insertGetId($orderData);
-
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                 if (in_array(0, $res)) {
