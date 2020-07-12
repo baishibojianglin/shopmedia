@@ -38,8 +38,9 @@
 		
 		<uni-card>
 			<view class="uni-title uni-bold">付款码</view>
-			<view class="">
-				<image src="/static/img/pay_QRCode.png" :lazy-load="true" style="width: 200rpx;height: 200rpx;" @tap="previewPayQRCode('/static/img/pay_QRCode.png')"></image>
+			<view style="width: 100%; text-align: center;">
+				<image src="/static/img/pay_QRCode.png" :lazy-load="true" style="width: 300rpx;height: 300rpx;" @tap="previewPayQRCode('/static/img/pay_QRCode.png')"></image>
+				<br/>
 				<text class="uni-text-small">（点击放大）</text>
 			</view>
 		</uni-card>
