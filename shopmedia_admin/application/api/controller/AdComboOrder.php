@@ -94,6 +94,7 @@ class AdComboOrder extends AuthBase
                 $orderData['order_time'] = time();
                 $orderData['pay_status'] = 1;
                 $orderData['pay_time'] = time();
+                $orderData['party_b_signature'] = isset($param['party_b_signature']) ? $param['party_b_signature'] : '';
                 $res[3] = $orderID = Db::name('ad_combo_order')->insertGetId($orderData);
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
