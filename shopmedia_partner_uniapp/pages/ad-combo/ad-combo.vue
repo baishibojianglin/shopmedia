@@ -30,7 +30,17 @@
 						<view>
 							<radio :value="item.combo_id" /><!-- :checked="index === current" -->
 						</view>
-						<view class="color-red uni-bold">￥{{item.combo_price}}</view>
+						<uni-grid :column="3" :square="false" :showBorder="false">
+							<uni-grid-item>
+								<view class="uni-common-pl">{{item.ad_days}}天</view>
+							</uni-grid-item>
+							<uni-grid-item>
+								<view>{{item.device_quantity}}台广告机</view>
+							</uni-grid-item>
+							<uni-grid-item>
+								<view class="color-red uni-bold uni-common-pl">￥{{item.combo_price}}</view>
+							</uni-grid-item>
+						</uni-grid>
 					</label>
 				</radio-group>
 			</view>
@@ -56,7 +66,7 @@
 		</view>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button type="primary" @click="createOrder()">提交</button>
+			<button type="primary" @click="createOrderSubmit()">提交</button>
 		</view>
 	</view>
 </template>
@@ -105,6 +115,8 @@
 							res.data.data.forEach((value, index) => {
 								self.$set(self.adComboList, index, {
 									combo_id: String(value.combo_id),
+									ad_days: value.ad_days,
+									device_quantity: value.device_quantity,
 									combo_price: value.combo_price
 								});
 							})
@@ -157,9 +169,9 @@
 			},
 			
 			/**
-			 * 创建广告屏合作商订单
+			 * 创建广告屏合作商订单提交表单
 			 */
-			createOrder() {
+			createOrderSubmit() {
 				let self = this;
 				
 				if (this.form.user_name == '') {
@@ -213,6 +225,24 @@
 					return false;
 				}
 				
+				uni.showModal({
+				    title: '确认收款，创建订单',
+				    content: '确认广告主已经付款成功?',
+					// showCancel: false,
+				    success: function (res) {
+						if (res.confirm == true) {
+							self.createOrder();
+						}
+				    }
+				})
+			},
+			
+			/**
+			 * 创建广告屏合作商订单
+			 */
+			createOrder() {
+				let self = this;
+				
 				uni.request({
 					url: this.$serverUrl + 'api/ad_combo_order',
 					data: {
@@ -231,9 +261,25 @@
 					method: 'POST',
 					success: function(res) {
 						if (res.data.status == 1) {
-							
+							uni.showModal({
+							    // title: '确认收款',
+							    content: res.data.message,
+								showCancel: false,
+							    success: function (res) {
+									if (res.confirm == true) {
+										// 跳转首页
+										uni.switchTab({
+											url: '/pages/main/main'
+										})
+									}
+							    }
+							})
 						} else {
-							
+							uni.showToast({
+								icon: 'none',
+								title: '创建订单失败'
+							});
+							return false;
 						}
 					}
 				})
