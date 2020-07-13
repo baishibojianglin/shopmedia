@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<uni-card>
-			<view class="uni-title uni-bold">填写广告主信息</view>
+			<view class="uni-title uni-bold">广告主信息</view>
 			<view class="uni-list">
 				<label class="uni-list-cell uni-list-cell-pd">
 					<input type="text" v-model="form.user_name" placeholder="广告主名称" />
@@ -23,26 +23,42 @@
 				</label>
 			</view>
 			
-			<view class="uni-title uni-bold">选择广告套餐</view>
-			<view class="uni-list">
-				<radio-group @change="radioChange">
-					<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in adComboList" :key="item.combo_id">
-						<view>
-							<radio :value="item.combo_id" /><!-- :checked="index === current" -->
-						</view>
-						<uni-grid :column="3" :square="false" :showBorder="false">
-							<uni-grid-item>
-								<view class="uni-common-pl">{{item.ad_days}}天</view>
-							</uni-grid-item>
-							<uni-grid-item>
-								<view>{{item.device_quantity}}台广告机</view>
-							</uni-grid-item>
-							<uni-grid-item>
-								<view class="color-red uni-bold uni-common-pl">￥{{item.combo_price}}</view>
-							</uni-grid-item>
-						</uni-grid>
+			<view class="uni-title uni-bold">广告套餐</view>
+			<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="text" active-color="#409EFF"></uni-segmented-control>
+			<view v-if="segmentedControl.current === 0">
+				<view class="uni-list">
+					<radio-group @change="radioChange">
+						<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in adComboList" :key="item.combo_id">
+							<view>
+								<radio :value="item.combo_id" /><!-- :checked="index === current" -->
+							</view>
+							<uni-grid :column="3" :square="false" :showBorder="false">
+								<uni-grid-item>
+									<view class="uni-common-pl">{{item.ad_days}}天</view>
+								</uni-grid-item>
+								<uni-grid-item>
+									<view>{{item.device_quantity}}台广告机</view>
+								</uni-grid-item>
+								<uni-grid-item>
+									<view class="color-red uni-bold uni-common-pl">￥{{item.combo_price}}</view>
+								</uni-grid-item>
+							</uni-grid>
+						</label>
+					</radio-group>
+				</view>
+			</view>
+			<view v-if="segmentedControl.current === 1">
+				<view class="uni-list">
+					<label class="uni-list-cell uni-list-cell-pd">
+						<input type="text" v-model="form.ad_days" placeholder="广告投放天数" />天
 					</label>
-				</radio-group>
+					<label class="uni-list-cell uni-list-cell-pd">
+						<input type="text" v-model="form.device_quantity" placeholder="广告投放设备数量" />台
+					</label>
+					<label class="uni-list-cell uni-list-cell-pd">
+						<input type="text" v-model="form.combo_price" placeholder="广告套餐价格" />元
+					</label>
+				</view>
 			</view>
 		</uni-card>
 		
@@ -55,7 +71,7 @@
 			</view>
 		</uni-card>
 		
-		<view class="uni-padding-wrap uni-center">
+		<view v-if="false" class="uni-padding-wrap uni-center">
 			<checkbox-group @change="isAgreement">
 				<label>
 					<checkbox class="checkbox inline" value="1" color="#409EFF" checked="true" />
@@ -84,8 +100,16 @@
 					advertiser_address: '', // 广告主详细地址
 					ad_name: '', // 广告名称
 					combo_id: '', // 广告套餐ID
+					device_quantity: '', // 设备数量（台）
+					ad_days: '', // 广告天数（天）
 					combo_price: '', // 广告套餐价格
 					is_agreement: 1 // 勾选协议
+				},
+				
+				// SegmentedControl 分段器
+				segmentedControl: {
+					items: ['选择套餐', '协商套餐'],
+					current: 0
 				},
 				
 				adComboList: [], // 广告套餐列表
@@ -133,6 +157,23 @@
 			},
 			
 			/**
+			 * SegmentedControl 分段器组件触发点击事件时触发
+			 * @param {Object} e
+			 */
+			onClickItem(e) {
+				if (this.segmentedControl.current !== e.currentIndex) {
+					this.segmentedControl.current = e.currentIndex;
+					
+					if (this.segmentedControl.current == 1) {
+						// 初始化广告套餐数据
+						this.form.ad_days = '';
+						this.form.device_quantity = '';
+						this.form.combo_price = '';
+					}
+				}
+			},
+			
+			/**
 			 * 改变选择广告套餐
 			 * @param {Object} evt
 			 */
@@ -145,6 +186,8 @@
 					}
 				}
 				this.form.combo_price = this.adComboList[this.current].combo_price;
+				this.form.device_quantity = this.adComboList[this.current].device_quantity;
+				this.form.ad_days = this.adComboList[this.current].ad_days;
 			},
 			
 			/**
@@ -211,12 +254,36 @@
 					});
 					return false;
 				}
-				if (this.form.combo_id == '' || this.form.combo_price == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请选择广告套餐'
-					});
-					return false;
+				if (this.segmentedControl.current == 0) {
+					if (this.form.combo_id == '' || this.form.combo_price == '') {
+						uni.showToast({
+							icon: 'none',
+							title: '请选择广告套餐'
+						});
+						return false;
+					}
+				} else if (this.segmentedControl.current == 1) {
+					if (this.form.ad_days == '') {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入投放广告天数'
+						});
+						return false;
+					}
+					if (this.form.device_quantity == '') {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入投放设备数量'
+						});
+						return false;
+					}
+					if (this.form.combo_price == '') {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入广告套餐价格'
+						});
+						return false;
+					}
 				}
 				if (this.form.is_agreement != 1) {
 					uni.showToast({
@@ -251,8 +318,10 @@
 						user_name: this.form.user_name,
 						phone: this.form.phone,
 						advertiser_address: this.form.advertiser_address,
-						combo_id: this.form.combo_id,
 						ad_name: this.form.ad_name,
+						combo_id: this.form.combo_id,
+						device_quantity: this.form.device_quantity,
+						ad_days: this.form.ad_days,
 						combo_price: this.form.combo_price,
 					},
 					header: {

@@ -14,4 +14,5 @@
 
 <style>
 	/*每个页面公共css */
+	@import './common/uni.css'; /* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
 </style>

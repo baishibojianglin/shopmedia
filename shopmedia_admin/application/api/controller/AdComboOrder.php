@@ -88,6 +88,8 @@ class AdComboOrder extends AuthBase
                 $orderData['salesman_id'] = $salesman['id'];
                 $orderData['ad_name'] = trim($param['ad_name']);
                 $orderData['combo_id'] = intval($param['combo_id']);
+                $orderData['device_quantity'] = intval($param['device_quantity']);
+                $orderData['ad_days'] = intval($param['ad_days']);
                 $orderData['combo_price'] = trim($param['combo_price']);
                 $orderData['order_price'] = trim($param['combo_price']);
                 $orderData['order_status'] = 1;

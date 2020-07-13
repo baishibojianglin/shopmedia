@@ -64,14 +64,14 @@
 						</view>
 						<view class="uni-flex uni-row">
 							<view class="text-left" style="width: 200rpx;">店铺地址</view>
-							<view class="uni-common-pl text-right uni-ellipsis" @click="openLocation()" style="-webkit-flex: 1;flex: 1;"><text class="uni-icon uni-icon-location-filled"></text>{{prize_info.shop.address}}</view>
+							<view class="uni-common-pl text-right" @click="openLocation()" style="-webkit-flex: 1;flex: 1;"><text class="uni-icon uni-icon-location-filled"></text>{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.address : prize_info.shop.address}}</view>
 						</view>
 					</uni-card>
 				</view>
 
-				<view>
+				<!-- <view>
 					<button type="primary" style="width: 95%; margin-top:30px;">领取奖品</button>
-				</view>
+				</view> -->
 			</view>
 		</view>
 
@@ -240,12 +240,24 @@
 			 * 查看位置
 			 */
 			openLocation() {
+				let name = '', address = '', latitude = '', longitude = '';
+				if (this.prize_info.prize.is_sponsor_address == 1) {
+					name = this.prize_info.prize.sponsor;
+					address = this.prize_info.prize.address;
+					latitude = Number(this.prize_info.prize.latitude);
+					longitude = Number(this.prize_info.prize.longitude);
+				} else {
+					name = this.prize_info.shop.shop_name;
+					address = this.prize_info.shop.address;
+					latitude = Number(this.prize_info.shop.latitude);
+					longitude = Number(this.prize_info.shop.longitude);
+				}
 				// 使用应用内置地图查看位置
 				uni.openLocation({
-					latitude: Number(this.prize_info.shop.latitude),
-					longitude: Number(this.prize_info.shop.longitude),
-					name: this.prize_info.shop.shop_name,
-					address: this.prize_info.shop.address
+					latitude: latitude,
+					longitude: longitude,
+					name: name,
+					address: address
 				});
 			}
 		}

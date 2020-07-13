@@ -152,6 +152,15 @@ class ActPrize extends Base
         if (!empty($param['phone'])) {
             $data['phone'] = trim($param['phone']);
         }
+        if (!empty($param['address'])) {
+            $data['address'] = trim($param['address']);
+        }
+        if (!empty($param['longitude'])) {
+            $data['longitude'] = floatval($param['longitude']);
+        }
+        if (!empty($param['latitude'])) {
+            $data['latitude'] = floatval($param['latitude']);
+        }
         if (isset($param['status'])) {
             $data['status'] = (int)trim($param['status']);
         }
