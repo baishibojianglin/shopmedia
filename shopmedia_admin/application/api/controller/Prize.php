@@ -41,7 +41,7 @@ class Prize extends Controller
         }
 
         //设置中奖概率1/5
-        $aim=rand(1,2);
+        $aim=rand(1,5);
 
         //判断是否能中奖
         if( $aim==2){ 
