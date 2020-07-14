@@ -82,7 +82,7 @@
 			</checkbox-group>
 		</view>
 		
-		<view style="position: fixed; top:0; bottom: 0;left: 0;right: 0; z-index: 10; padding:10px; overflow-y: scroll; background-color: #fff;">
+		<view v-if="false" style="position: fixed; top:0; bottom: 0;left: 0;right: 0; z-index: 10; padding:10px; overflow-y: scroll; background-color: #fff;">
             
 			
 			<view class="blod uni-center title" style="font-size: 18px;">
