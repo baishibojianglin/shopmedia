@@ -152,6 +152,9 @@ class ActPrize extends Base
         if (!empty($param['phone'])) {
             $data['phone'] = trim($param['phone']);
         }
+        if (isset($param['is_sponsor_address'])) {
+            $data['is_sponsor_address'] = intval($param['is_sponsor_address']);
+        }
         if (!empty($param['address'])) {
             $data['address'] = trim($param['address']);
         }
@@ -162,7 +165,7 @@ class ActPrize extends Base
             $data['latitude'] = floatval($param['latitude']);
         }
         if (isset($param['status'])) {
-            $data['status'] = (int)trim($param['status']);
+            $data['status'] = (int)$param['status'];
         }
 
         if (empty($data)) {
