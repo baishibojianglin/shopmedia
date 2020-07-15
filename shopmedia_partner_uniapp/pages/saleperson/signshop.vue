@@ -33,7 +33,7 @@
 				<text class="content-left-text">设备总价值：</text>
 				<text class="content-right sign-border-text"></text>
 			</view>
-			<view class="content-text">甲方将店通广告屏安装到乙方店内，并将该广告机 <text class="fix-text">{{party_b_share}}</text> %广告利润收入支付乙方，乙方在店通传媒每年享有一次<text class="fix-text">2</text>折投放广告的优惠权利。</view>
+			<view class="content-text">甲方将店通广告屏安装到乙方店内，并将该广告机 <text class="fix-text">{{party_b_share}}</text> %广告利润收入支付乙方。</view><!-- ，乙方在店通传媒每年享有一次<text class="fix-text">2</text>折投放广告的优惠权利 -->
 
 			<view class="blod">二、权利与义务</view>
 			<view>1、甲方承担设备的运营、管理、维修责任;</view>
