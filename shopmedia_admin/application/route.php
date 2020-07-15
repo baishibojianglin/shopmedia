@@ -68,6 +68,8 @@ Route::get('get_device_shop', 'admin/Device/getDeviceShop');
 Route::resource('ad', 'admin/Ad');
 // 广告类别
 Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（不分页）
+// 广告案例
+Route::resource('ad_case', 'admin/AdCase');
 
 // 店铺
 Route::resource('shop', 'admin/Shop');
