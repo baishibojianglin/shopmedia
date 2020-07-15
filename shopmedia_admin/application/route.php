@@ -83,6 +83,8 @@ Route::get('activity_list', 'admin/Activity/activityList');  // 活动列表（�
 // 活动奖品
 Route::resource('act_prize', 'admin/ActPrize');
 Route::get('act_prize_level', 'admin/ActPrize/actPrizeLevelList'); // 活动奖品等级列表
+// 活动中奖纪录
+Route::resource('act_raffle', 'admin/ActRaffle');
 
 // 新闻
 Route::resource('news', 'admin/News');

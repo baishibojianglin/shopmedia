@@ -39,6 +39,11 @@
 					<el-form-item prop="phone" label="赞助商电话">
 						<el-input v-model="form.phone" placeholder="输入赞助商电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
+					<el-form-item prop="is_sponsor_address" label="是否到赞助商处领奖">
+						<el-radio-group v-model="form.is_sponsor_address">
+							<el-radio v-for="(item, index) in {0: '否', 1: '是'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+						</el-radio-group>
+					</el-form-item>
 					<el-form-item prop="address" label="赞助商领奖地址">
 						<el-input v-model="form.address" placeholder="输入赞助商领奖地址" clearable style="width:350px;"></el-input>
 					</el-form-item>
@@ -77,6 +82,7 @@
 					percentage: '', // 中奖概率
 					sponsor: '', // 奖品赞助商
 					phone: '', // 赞助商电话
+					is_sponsor_address: '', // 是否到赞助商处领奖
 					address: '', // 赞助商领奖地址
 					longitude: '', // 经度
 					latitude: '', // 纬度
@@ -188,6 +194,7 @@
 							percentage: this.form.percentage,
 							sponsor: this.form.sponsor,
 							phone: this.form.phone,
+							is_sponsor_address: this.form.is_sponsor_address,
 							address: this.form.address,
 							longitude: this.form.longitude,
 							latitude: this.form.latitude,

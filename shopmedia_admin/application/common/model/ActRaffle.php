@@ -22,7 +22,7 @@ class ActRaffle extends Base
         $order = ['ar.raffle_id' => 'desc'];
 
         $result = $this->alias('ar')
-            ->field('ar.*, a.act_name, s.shop_name, s.address')
+            ->field('ar.*, a.act_name, ap.sponsor, ap.phone sponsor_phone, ap.address sponsor_address, ap.is_sponsor_address, s.shop_name, s.address shop_address')
             ->join('__ACTIVITY__ a', 'ar.act_id = a.act_id', 'LEFT')
             ->join('__ACT_PRIZE__ ap', 'ar.prize_id = ap.prize_id', 'LEFT')
             ->join('__SHOP__ s', 'ar.shop_id = s.shop_id', 'LEFT')

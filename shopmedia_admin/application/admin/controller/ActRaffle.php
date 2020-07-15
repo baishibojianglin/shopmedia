@@ -25,24 +25,26 @@ class ActRaffle extends Base
 
             // 查询条件
             $map = [];
-            if (!empty($param['prize_name'])) {
-                $map['ar.prize_name'] = ['like', '%' . trim($param['prize_name']) . '%'];
+            if (!empty($param['phone'])) {
+                $map['ar.phone'] = ['like', '%' . trim($param['phone']) . '%'];
             }
 
             // 获取分页page、size
             $this->getPageAndSize($param);
 
             // 获取分页列表数据 模式一：基于paginate()自动化分页
-            $data = model('ActRaffle')->getActRaffle($map, (int)$this->size);
+            try {
+                $data = model('ActRaffle')->getActRaffle($map, (int)$this->size);
+            } catch (\Exception $e) {
+                return show(config('code.error'), '请求异常' . $e->getMessage(), '', 500);
+            }
             if (!$data) {
                 return show(config('code.error'), 'Not Found', '', 404);
             }
 
-            $actPrizeLevel = config('activity.act_prize_level');
             foreach ($data as $key => $value) {
                 // 处理数据
-                $data[$key]['quantity'] = $data[$key]['type'] == 1 ? (int)$data[$key]['quantity'] : $data[$key]['quantity'];
-                $data[$key]['level_name'] = $actPrizeLevel[$value['level']];
+                $data[$key]['raffle_time'] = date('Y-m-d H:i:s', $value['raffle_time']);
             }
 
             return show(config('code.success'), 'OK', $data);

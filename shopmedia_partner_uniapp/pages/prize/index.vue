@@ -56,7 +56,7 @@
 						</view>
 						<view class="uni-flex uni-row">
 							<view class="text-left" style="width: 200rpx;">领奖店铺</view>
-							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{prize_info.shop.shop_name}}{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.sponsor : prize_info.shop.shop_name}}</view>
+							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.sponsor : prize_info.shop.shop_name}}</view>
 						</view>
 						<view class="uni-flex uni-row">
 							<view class="text-left" style="width: 200rpx;">店铺地址</view>
