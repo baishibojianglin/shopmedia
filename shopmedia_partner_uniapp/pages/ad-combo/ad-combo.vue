@@ -95,7 +95,7 @@
 	
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button type="primary" @click="createOrderSubmit()">提交</button>
+			<button type="primary"  style="margin-bottom: 20px;" @click="createOrderSubmit()">提交</button>
 		</view>
 	</view>
 </template>
@@ -121,7 +121,7 @@
 				
 				// SegmentedControl 分段器
 				segmentedControl: {
-					items: ['选择套餐', '协商套餐'],
+					items: ['选择套餐', '定制套餐'],
 					current: 0
 				},
 				
