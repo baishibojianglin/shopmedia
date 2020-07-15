@@ -32,8 +32,10 @@
 					<el-table-column prop="ad_cover" label="广告案例封面图" width="120"></el-table-column>
 					<el-table-column prop="status_msg" label="状态" width="70" show-overflow-tooltip></el-table-column>
 					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="160">
-						
+					<el-table-column label="操作" fixed="right" min-width="90">
+						<template slot-scope="scope">
+							<el-button type="primary" size="mini" plain @click="toAdCaseEdit(scope.row)">编辑</el-button>
+						</template>
 					</el-table-column>
 				</el-table>
 				<!-- 广告案例列表 e -->
@@ -86,7 +88,7 @@
 					}
 				})
 				.then(function(res) {
-					console.log(123, res);
+					// console.log(123, res);
 					if (res.data.status == 1) {
 						// 广告案例列表分页参数
 						self.listPagination = res.data.data;
@@ -134,6 +136,14 @@
 			handleCurrentChange(current_page) {
 				this.listPagination.current_page = current_page; // 当前页数
 				this.getAdCaseList();
+			},
+			
+			/**
+			 * 跳转广告编辑页
+			 * @param {Object} row
+			 */
+			toAdCaseEdit(row) {
+				this.$router.push({path: "ad_case_edit", query: {ad_case_id: row.ad_case_id}});
 			}
 		}
 	}

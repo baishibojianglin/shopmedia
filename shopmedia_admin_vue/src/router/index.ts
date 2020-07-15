@@ -60,6 +60,7 @@ import AdEdit from '@/pages/ad/AdEdit.vue'
 // 广告案例
 import AdCase from '@/pages/ad_case/AdCase.vue'
 import AdCaseCreate from '@/pages/ad_case/AdCaseCreate.vue'
+import AdCaseEdit from '@/pages/ad_case/AdCaseEdit.vue'
 // 订单管理·用户（广告屏合作商）订单
 import PartnerOrder from '@/pages/partner_order/PartnerOrder.vue'
 import PartnerOrderCreate from '@/pages/partner_order/PartnerOrderCreate.vue'
@@ -155,6 +156,7 @@ const routes = [
 			// 2--广告案例
 			{path: 'ad_case', name: 'ad_case', component: AdCase}, // 广告案例列表
 			{path: 'ad_case_create', name: 'ad_case_create', component: AdCaseCreate}, // 新增广告案例
+			{path: 'ad_case_edit', name: 'ad_case_edit', component: AdCaseEdit}, // 编辑广告案例
 			// 2--订单管理·用户（广告屏合作商）订单
 			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告屏合作商订单
 			{path: 'partner_order_create', name: 'partner_order_create', component: PartnerOrderCreate}, // 创建广告屏合作商订单
