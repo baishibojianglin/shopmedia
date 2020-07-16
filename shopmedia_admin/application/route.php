@@ -68,6 +68,10 @@ Route::get('get_device_shop', 'admin/Device/getDeviceShop');
 Route::resource('ad', 'admin/Ad');
 // 广告类别
 Route::get('ad_cate_list', 'admin/AdCate/adCateList'); // 广告类别列表（不分页）
+// 广告套餐
+Route::resource('ad_combo', 'admin/AdCombo');
+// 广告套餐订单
+Route::resource('ad_combo_order', 'admin/AdComboOrder');
 // 广告案例
 Route::resource('ad_case', 'admin/AdCase');
 
@@ -205,5 +209,8 @@ Route::get('api/get_fix_city', 'api/Index/getCity'); // 懒加载区域树形数
 // 抽奖活动
 Route::get('api/get_prize', 'api/Prize/getPrize'); // 获取中奖奖品信息
 Route::post('api/winner_info', 'api/Prize/winnerInfo'); // 提交领奖信息
+
+//获取广告案例
+Route::get('api/get_case', 'api/Adcase/getCase'); // 获取中奖奖品信息
 
 /* -------------------- 客户端路由 -------------------- e */

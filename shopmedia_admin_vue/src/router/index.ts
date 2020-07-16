@@ -57,6 +57,10 @@ import ShopEdit from '@/pages/shop/ShopEdit.vue'
 import Ad from '@/pages/ad/Ad.vue'
 import AdCreate from '@/pages/ad/AdCreate.vue'
 import AdEdit from '@/pages/ad/AdEdit.vue'
+// 广告套餐
+import AdCombo from '@/pages/ad_combo/AdCombo.vue'
+// 广告套餐订单
+import AdComboOrder from '@/pages/ad_combo_order/AdComboOrder.vue'
 // 广告案例
 import AdCase from '@/pages/ad_case/AdCase.vue'
 import AdCaseCreate from '@/pages/ad_case/AdCaseCreate.vue'
@@ -153,6 +157,10 @@ const routes = [
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告
 			{path: 'ad_edit', name: 'ad_edit', component: AdEdit}, // 编辑广告
+			// 2--广告套餐
+			{path: 'ad_combo', name: 'ad_combo', component: AdCombo}, // 广告套餐列表
+			// 2--广告套餐订单
+			{path: 'ad_combo_order', name: 'ad_combo_order', component: AdComboOrder}, // 广告套餐订单列表
 			// 2--广告案例
 			{path: 'ad_case', name: 'ad_case', component: AdCase}, // 广告案例列表
 			{path: 'ad_case_create', name: 'ad_case_create', component: AdCaseCreate}, // 新增广告案例
