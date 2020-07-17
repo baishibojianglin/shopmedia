@@ -12,6 +12,7 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
+					<el-form-item label="序号">{{form.ad_id}}</el-form-item>
 					<el-form-item prop="ad_name" label="广告名称">
 						<el-input v-model="form.ad_name" placeholder="输入广告名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
@@ -55,7 +56,7 @@
 					<el-form-item prop="phone" label="广告主电话">
 						<el-input v-model="form.phone" placeholder="输入广告主联系电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="region_ids" label="投放区域">
+					<el-form-item v-if="!isLocation" prop="region_ids" label="投放区域">
 						<!-- Tree 树形控件（可选择层级） s -->
 						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" :default-expanded-keys="expandedRegionKeys" show-checkbox :default-checked-keys="checkedRegionKeys" lazy @check="handleCheck"></el-tree>
 						<!-- Tree 树形控件 e -->
@@ -165,6 +166,8 @@
 						{required: true, message: '请选择投放广告屏', trigger: 'change'}
 					]
 				},
+				
+				isLocation: false, // 是否通过定位投放
 				
 				adCateList: [], // 广告类别列表
 				shopCateList: [], // 店铺类别列表
@@ -331,49 +334,57 @@
 			 */
 			getDeviceList(condition, regionIds) {
 				let self = this;
+				let params = {};
 				if (condition) {
-					this.$axios.get(this.$url + 'device_list', {
-						params: {
-							region_ids: regionIds, // 投放区域ID集合（只含全选）
-							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
-						}
-					})
-					.then(function(res) {
-						if (res.data.status == 1) {
-							// 设备列表
-							self.deviceList = res.data.data;
-							
-							// 获取当前显示设备中的被勾选的设备（两数组求交集）
-							let deviceIds  = self.form.device_ids;
-							var deviceIdsArr = new Array();
-							self.deviceList.forEach((value, index) => {
-								for(var key in deviceIds){
-									if (value['device_id'] == Number(deviceIds[key])) {
-										deviceIdsArr.push(Number(deviceIds[key])); // 字符串数组转整数数组
-									}
-								}
-							})
-							self.form.device_ids = deviceIdsArr;
-							
-							// 全选效果
-							self.checkAll = self.form.device_ids.length === self.deviceList.length;
-							self.isIndeterminate = self.form.device_ids.length > 0 && self.form.device_ids.length < self.deviceList.length;
-						} else {
-							self.$message({
-								message: '网络忙，请重试',
-								type: 'warning'
-							});
-						}
-					})
-					.catch(function(error) {
-						self.$message({
-							message: error.response.data.message,
-							type: 'warning'
-						});
-					});
+					params = {
+						region_ids: regionIds, // 投放区域ID集合（只含全选）
+						shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
+					};
 				} else {
 					this.deviceList = []; // 初始化设备列表
+					if (this.isLocation == true) {
+						params = {
+							region_ids: '', // 投放区域ID集合（只含全选）
+							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
+						}
+					}
 				}
+				this.$axios.get(this.$url + 'device_list', {
+					params: params
+				})
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 设备列表
+						self.deviceList = res.data.data;
+						
+						// 获取当前显示设备中的被勾选的设备（两数组求交集）
+						let deviceIds  = self.form.device_ids;
+						var deviceIdsArr = new Array();
+						self.deviceList.forEach((value, index) => {
+							for(var key in deviceIds){
+								if (value['device_id'] == Number(deviceIds[key])) {
+									deviceIdsArr.push(Number(deviceIds[key])); // 字符串数组转整数数组
+								}
+							}
+						})
+						self.form.device_ids = deviceIdsArr;
+						
+						// 全选效果
+						self.checkAll = self.form.device_ids.length === self.deviceList.length;
+						self.isIndeterminate = self.form.device_ids.length > 0 && self.form.device_ids.length < self.deviceList.length;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function(error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
 			},
 			
 			/**
@@ -400,17 +411,23 @@
 						}
 						self.form.shop_cate_ids = shopCateIdsArr;
 						
-						// 广告投放区域
-						self.form.region_ids = JSON.parse(res.data.data.region_ids);
-						self.expandedRegionKeys = self.form.region_ids.half; // 半选时，默认展开
-						self.checkedRegionKeys = self.form.region_ids.checked; // 全选时，默认勾选
-						// 处理数据
-						let regionIds  = self.form.region_ids;
-						var regionIdsArr = new Array();
-						for(var key in regionIds){
-							regionIdsArr.push(regionIds[key]); // 关联数组转索引数组
+						// 广告投放区域（非定位投放）
+						if (self.form.region_ids) {
+							self.form.region_ids = JSON.parse(res.data.data.region_ids);
+							self.expandedRegionKeys = self.form.region_ids.half; // 半选时，默认展开
+							self.checkedRegionKeys = self.form.region_ids.checked; // 全选时，默认勾选
+							// 处理数据
+							let regionIds  = self.form.region_ids;
+							var regionIdsArr = new Array();
+							for(var key in regionIds){
+								regionIdsArr.push(regionIds[key]); // 关联数组转索引数组
+							}
+							self.form.region_ids = regionIdsArr;
 						}
-						self.form.region_ids = regionIdsArr;
+						// 通过定位投放广告
+						if (self.form.distance != '0.000' && self.form.longitude != '0.000000' && self.form.latitude != '0.000000') {
+							self.isLocation = true;
+						}
 						
 						// 广告投放设备
 						let deviceIds  = self.form.device_ids;
