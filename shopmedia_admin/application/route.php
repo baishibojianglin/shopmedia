@@ -176,6 +176,7 @@ Route::put('api/partnerRole', 'api/PartnerDevice/partnerRole');
 Route::resource('api/partner_order', 'api/PartnerOrder');
 
 // 用户（店家）
+Route::get('api/get_shopkeeper', 'api/UserShopkeeper/read'); // 店家信息
 Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
 Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
 

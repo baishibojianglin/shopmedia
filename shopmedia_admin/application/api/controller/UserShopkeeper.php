@@ -53,4 +53,28 @@ class UserShopkeeper extends AuthBase
         }    
        return json($data); 
     }
+
+    /**
+     * 显示指定的店家资源
+     * @return \think\response\Json
+     */
+    public function read()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 查询条件
+        $map = [];
+        $map['user_id'] = $param['user_id'];
+        //$map['role_id'] = 3;
+
+        $data = Db::name('user_shopkeeper')->where($map)->find();
+
+        return show(config('code.success'), 'ok', $data);
+    }
 }
