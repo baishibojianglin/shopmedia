@@ -282,6 +282,13 @@
 					
 					if (this.segmentedControl.current == 0) {
 						this.getLocation();
+						
+						// 初始化区域ID集合
+						this.form.region_ids = [];
+					} else if (this.segmentedControl.current == 1) {
+						// 初始化广告投放定位距离、经纬度
+						this.longitude = '';
+						this.latitude = '';
 					}
 				}
 			},
@@ -569,12 +576,19 @@
 				}
 				
 				// 发起网络请求，提交服务端
+				let distance = this.distanceList[this.distanceIndex].distance; // 广告投放定位距离
+				if (this.segmentedControl.current == 1) {
+					distance = '';
+				}
 				uni.request({
 					url: this.$serverUrl + 'api/ad',
 					data: {
 						play_days: this.form.play_days,
 						startdate: this.form.startdate,
 						region_ids: this.form.region_ids,
+						distance: distance, // 广告投放定位距离
+						longitude: this.longitude, // 广告投放定位经度
+						latitude: this.latitude, // 广告投放定位纬度
 						ad_cate_id: this.form.ad_cate_id,
 						device_ids: this.form.device_ids,
 						ad_price: this.form.ad_price

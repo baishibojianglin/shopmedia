@@ -88,6 +88,11 @@ class Ad extends AuthBase
                     'half' => $parentIds // 半选
                 ]);
             }
+            if (!empty($data['distance']) && !empty($data['longitude']) && !empty($data['latitude'])) { // 广告投放定位距离、经纬度
+                $data['distance'] = (float)$data['distance'];
+                $data['longitude'] = (float)$data['longitude'];
+                $data['latitude'] = (float)$data['latitude'];
+            }
             if (!empty($data['device_ids'])) { // 投放广告屏ID集合
                 $data['device_ids'] = implode(',', $data['device_ids']);
             }

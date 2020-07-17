@@ -5,19 +5,19 @@ namespace app\common\model;
 use think\Model;
 
 /**
- * 广告案例模型类
- * Class AdCase
+ * 广告套餐模型类
+ * Class AdCombo
  * @package app\common\model
  */
-class AdCase extends Base
+class AdCombo extends Base
 {
     /**
-     * 获取广告案例列表数据（基于paginate()自动化分页）
+     * 获取广告套餐列表数据（基于paginate()自动化分页）
      * @param array $map
      * @param int $size
      * @return \think\Paginator
      */
-    public function getAdCase($map = [], $size = 5)
+    public function getAdCombo($map = [], $size = 5)
     {
         $result = $this->field(true)->where($map)->cache(true, 10)->paginate($size);
         return $result;

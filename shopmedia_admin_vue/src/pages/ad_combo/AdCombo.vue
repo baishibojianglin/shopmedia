@@ -1,44 +1,33 @@
 <template>
-	<div class="ad_case">
+	<div class="ad_combo">
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>广告案例列表</span></el-col>
-					<el-col :span="6">
-						<!-- 查询 s -->
-						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
-							<el-form-item label="">
-								<el-input placeholder="广告名称" v-model="formInline.ad_name" clearable>
-									<el-button slot="append" icon="el-icon-search" @click="getAdCaseList()">查询</el-button>
-								</el-input>
-							</el-form-item>
-						</el-form>
-						<!-- 查询 e -->
-					</el-col>
-					<el-col :span="12">
+					<el-col :span="6"><span>广告套餐列表</span></el-col>
+					<el-col :span="18">
 						<!-- 新增 s -->
-						<router-link to="ad_case_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告案例</el-button></router-link>
+						<!-- <router-link to="ad_combo_create"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告套餐</el-button></router-link> -->
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
 			</div>
 			<div class="">
-				<!-- 广告案例列表 s -->
-				<el-table :data="adCaseList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
-					<el-table-column prop="ad_case_id" label="序号" fixed width="50"></el-table-column>
-					<el-table-column prop="ad_name" label="广告名称" fixed width="120"></el-table-column>
-					<el-table-column prop="advertiser_name" label="广告主名称" min-width="120"></el-table-column>
-					<el-table-column prop="advertiser_phone" label="广告主电话" min-width="120"></el-table-column>
-					<el-table-column prop="ad_cover" label="广告案例封面图" width="120"></el-table-column>
+				<!-- 广告套餐列表 s -->
+				<el-table :data="adComboList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
+					<el-table-column prop="combo_id" label="序号" fixed width="50"></el-table-column>
+					<el-table-column prop="combo_price" label="套餐价格/元" fixed min-width="120"></el-table-column>
+					<el-table-column prop="device_quantity" label="设备数量/台" min-width="120"></el-table-column>
+					<el-table-column prop="ad_seconds" label="广告时长/秒" min-width="120"></el-table-column>
+					<el-table-column prop="ad_days" label="广告天数" min-width="90"></el-table-column>
+					<el-table-column prop="ad_type_name" label="广告类型" min-width="90"></el-table-column>
 					<el-table-column prop="status_msg" label="状态" width="70" show-overflow-tooltip></el-table-column>
-					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
-					<el-table-column label="操作" fixed="right" min-width="90">
+					<el-table-column v-if="false" label="操作" fixed="right" min-width="90">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toAdCaseEdit(scope.row)">编辑</el-button>
+							<el-button type="primary" size="mini" plain @click="toAdComboEdit(scope.row)">编辑</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
-				<!-- 广告案例列表 e -->
+				<!-- 广告套餐列表 e -->
 				
 				<!-- 分页 s -->
 				<div>
@@ -63,33 +52,28 @@
 	export default {
 		data() {
 			return {
-				formInline: {
-					ad_name: '' // 广告名称
-				},
-				adCaseList: [], // 广告案例列表
+				adComboList: [], // 广告套餐列表
 				listPagination: {}, // 列表分页参数
 			}
 		},
 		mounted() {
-			this.getAdCaseList();
+			this.getAdComboList();
 		},
 		methods: {
 			/**
-			 * 获取广告案例列表
+			 * 获取广告套餐列表
 			 */
-			getAdCaseList() {
+			getAdComboList() {
 				let self = this;
-				this.$axios.get(this.$url + 'ad_case', {
+				this.$axios.get(this.$url + 'ad_combo', {
 					params: {
-						ad_name: this.formInline.ad_name,
 						page: this.listPagination.current_page,
 						size: this.listPagination.per_page
 					}
 				})
 				.then(function(res) {
-					// console.log(123, res);
 					if (res.data.status == 1) {
-						// 广告案例列表分页参数
+						// 广告套餐列表分页参数
 						self.listPagination = res.data.data;
 						
 						// 当数据为空时
@@ -101,8 +85,8 @@
 							return;
 						}
 						
-						// 广告案例列表
-						self.adCaseList = self.listPagination.data;
+						// 广告套餐列表
+						self.adComboList = self.listPagination.data;
 					} else {
 						self.$message({
 							message: '网络忙，请重试',
@@ -124,7 +108,7 @@
 			 */
 			handleSizeChange(page_size) {
 				this.listPagination.per_page = page_size; // 每页条数
-				this.getAdCaseList();
+				this.getAdComboList();
 			},
 			
 			/**
@@ -133,15 +117,15 @@
 			 */
 			handleCurrentChange(current_page) {
 				this.listPagination.current_page = current_page; // 当前页数
-				this.getAdCaseList();
+				this.getAdComboList();
 			},
 			
 			/**
-			 * 跳转广告编辑页
+			 * 跳转广告套餐编辑页
 			 * @param {Object} row
 			 */
-			toAdCaseEdit(row) {
-				this.$router.push({path: "ad_case_edit", query: {ad_case_id: row.ad_case_id}});
+			toAdComboEdit(row) {
+				this.$router.push({path: "ad_combo_edit", query: {combo_id: row.combo_id}});
 			}
 		}
 	}
