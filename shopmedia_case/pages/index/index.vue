@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
-        <view class="vedio-con">
-			<video class="vedio" poster="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/03f78905d88fe2624be60d3c7d2304d9115206942_2_20171103011750470.jpg" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/%E6%B3%89%E5%A1%94%E5%A4%A7%E7%B1%B3.mp4" controls></video>
+        <view class="vedio-con" v-for="value in adcase">
+			<video class="vedio" :poster="value.ad_cover" :src="value.ad_video" controls></video>
 			<view  class="vedio-text">泉塔大米</view>
 		</view>
 	</view>
@@ -12,16 +12,53 @@
 		components: {
 			
 		},
-		data() {
+		data(){
 			return {
-
+               adcase:[] //广告案例列表
 			}
 		},
 		onLoad(){
+			
+		   //获取屏幕高度和宽度
+		   
+		   var winWidth = 0;
+		   var winHeight = 0;
+			//获取窗口宽度
+			if (window.innerWidth)
+		   winWidth = window.innerWidth;
+			else if ((document.body) && (document.body.clientWidth))
+		   winWidth = document.body.clientWidth;
+		   //获取窗口高度
+			if (window.innerHeight)
+			winHeight = window.innerHeight;
+		   else if ((document.body) && (document.body.clientHeight))
+			winHeight = document.body.clientHeight;
+			//通过深入Document内部对body进行检测，获取窗口大小
+		   if (document.documentElement  && document.documentElement.clientHeight && document.documentElement.clientWidth)
+			{
+			winHeight = document.documentElement.clientHeight;
+			winWidth = document.documentElement.clientWidth;
+		    }
+			document.getElementsByClassName("vedio").style.height=9/16*winWidth;
 
+		   
+		   console.log(winWidth)
+           this.get_case();
 		},
 		methods: {
-
+			/**
+			 * 获取广告案例
+			 */
+			get_case(){
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/get_case',
+					method: 'GET',
+					success: function(res) {
+                        self.adcase=res.data;
+					}
+				})
+			}
 			
         }
 	}
@@ -30,7 +67,7 @@
 <style>
 .vedio-con{
 	width: 100%;
-	height: 200px;
+	height:180px;
 }
 .vedio{
 	width: 90%;
