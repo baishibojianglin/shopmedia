@@ -449,4 +449,37 @@ class UserSalesman extends Base
             return show(config('code.error'), '请求不合法', '', 400);
         }
     }
+
+    /**
+     * 获取业务员列表（不分页，用于 Select 选择器等）
+     * @return \think\response\Json
+     */
+    public function getSalesmanList()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的数据
+        $param = input('param.');
+
+        // 查询条件
+        $map = [];
+        $map['us.status'] = config('code.status_enable'); // 启用角色
+        if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有数据，分公司只能查看自有数据
+            $map['us.company_id'] = $this->adminUser['company_id'];
+        }
+        if (!empty($param['role_id'])) { // 业务员角色ID
+            $map['us.role_id'] = (int)$param['role_id'];
+        }
+
+        $data = Db::name('user_salesman')->alias('us')
+            ->field('us.id, us.uid, us.role_id, us.company_id, u.user_name, u.phone')
+            ->join('__USER__ u', 'u.user_id = us.uid', 'LEFT')
+            ->where($map)
+            ->select();
+
+        return show(config('code.success'), 'OK', $data);
+    }
 }

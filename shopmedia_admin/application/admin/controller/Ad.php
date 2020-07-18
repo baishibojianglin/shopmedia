@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\lib\exception\ApiException;
+use app\common\lib\IAuth;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -95,46 +96,109 @@ class Ad extends Base
         // 判断为POST请求
         if(request()->isPost()){
             // 传入的参数
-            $data = input('post.');
-            // 处理数据
-            if (isset($data['ad_datetime']) && !empty($data['ad_datetime'])) {
-                $data['start_datetime'] = strtotime($data['ad_datetime'][0]); // 投放开始时间
-                $data['end_datetime'] = strtotime($data['ad_datetime'][1]); // 投放结束时间
-            }
-            if (isset($data['ad_time']) && !empty($data['ad_time'])) {
-                $data['start_time'] = date('H:i:s', strtotime($data['ad_time'][0])); // 每日播放时间段（开始时间）
-                $data['end_time'] = date('H:i:s', strtotime($data['ad_time'][1])); // 每日播放时间段（结束时间）
-            }
-            if (!empty($data['shop_cate_ids'])) { // 投放店铺类别ID集合
-                $data['shop_cate_ids'] = implode(',', $data['shop_cate_ids']);
-            }
-            if (!empty($data['region_ids'])) { // 投放区域ID集合（含全选与半选）
-                $data['region_ids'] = json_encode([
-                    'checked' => $data['region_ids'][0], // 全选
-                    'half' => $data['region_ids'][1] // 半选
-                ]);
-            }
-            if (!empty($data['device_ids'])) { // 投放广告屏ID集合
-                $data['device_ids'] = implode(',', $data['device_ids']);
-            }
-
-            // validate验证数据合法性
-            /*$validate = validate('');
-            if (!$validate->check($data)) {
-                return show(config('code.error'), $validate->getError(), '', 403);
-            }*/
+            $param = input('post.');
 
             // 入库操作
+            /* 手动控制事务 s */
+            // 启动事务
+            Db::startTrans();
             try {
-                $id = model('Ad')->add($data, 'ad_id');
-            } catch (\Exception $e) {
-                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500); // $e->getMessage()
-            }
-            if ($id) {
+                $res = [];
+
+                // 根据广告主电话号码查询广告主角色及其所属用户是否存在
+                $advertiserUser = Db::name('user')->where(['phone' => trim($param['phone'])])->find();
+                if (empty($advertiserUser)) { // 广告主所属用户不存在时，广告主角色一定不存在，则创建广告主角色及其所属用户
+                    // 创建广告主所属用户
+                    $advertiserUserData = [
+                        'user_name' => trim($param['advertiser']),
+                        'role_ids' => 7, // 广告主角色ID
+                        'phone' => trim($param['phone']),
+                        'phone_verified' => 1,
+                        'password' => IAuth::encrypt(trim($param['phone'])),
+                        'status' => config('code.status_enable'),
+                        'create_time' => time(), // 创建时间
+                        'create_ip' => request()->ip() // 创建IP
+                    ];
+                    $res[0] = $advertiserUserID = Db::name('user')->strict(true)->insertGetId($advertiserUserData);
+
+                    // 创建广告主
+                    $advertiserData = [
+                        'user_id' => $advertiserUserID,
+                        'salesman_id' => (int)$param['salesman_id'],
+                        'status' => config('code.status_enable'),
+                        'create_time' => time()
+                    ];
+                    $res[1] = $advertiserID = Db::name('user_advertiser')->insertGetId($advertiserData);
+                } else { // 广告主所属用户存在时
+                    // 判断广告主角色是否存在
+                    $advertiser = Db::name('user_advertiser')->where(['user_id' => $advertiserUser['user_id']])->find();
+                    if (empty($advertiser)) { // 广告主角色不存在时，创建广告主角色
+                        // 创建广告主
+                        $advertiserData = [
+                            'user_id' => $advertiserUser['user_id'],
+                            'salesman_id' => (int)$param['salesman_id'],
+                            'status' => config('code.status_enable'),
+                            'create_time' => time()
+                        ];
+                        $res[2] = $advertiserID = Db::name('user_advertiser')->insertGetId($advertiserData);
+                    } else {
+                        $advertiserID = $advertiser['id'];
+                    }
+                }
+
+                // 创建广告
+                $adData['ad_name'] = trim($param['ad_name']);
+                $adData['ad_cate_id'] = intval($param['ad_cate_id']);
+                $adData['ad_price'] = floatval($param['ad_price']);
+                $adData['advertiser'] = trim($param['advertiser']);
+                $adData['advertiser_id'] = $advertiserID;
+                $adData['phone'] = trim($param['phone']);
+                $adData['discount_ratio'] = floatval($param['discount_ratio']);
+                if (isset($param['ad_datetime']) && !empty($param['ad_datetime'])) {
+                    $adData['start_datetime'] = strtotime($param['ad_datetime'][0]); // 投放开始时间
+                    $adData['end_datetime'] = strtotime($param['ad_datetime'][1]); // 投放结束时间
+                }
+                if (isset($param['ad_time']) && !empty($param['ad_time'])) {
+                    $adData['start_time'] = date('H:i:s', strtotime($param['ad_time'][0])); // 每日播放时间段（开始时间）
+                    $adData['end_time'] = date('H:i:s', strtotime($param['ad_time'][1])); // 每日播放时间段（结束时间）
+                }
+                if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
+                    $adData['shop_cate_ids'] = implode(',', $param['shop_cate_ids']);
+                }
+                if (!empty($param['region_ids'])) { // 投放区域ID集合（含全选与半选）
+                    $adData['region_ids'] = json_encode([
+                        'checked' => $param['region_ids'][0], // 全选
+                        'half' => $param['region_ids'][1] // 半选
+                    ]);
+                }
+                if (!empty($param['device_ids'])) { // 投放广告屏ID集合
+                    $adData['device_ids'] = implode(',', $param['device_ids']);
+                }
+                // 投放店铺（所属行业）类别ID集合
+                $adCate = config('ad.ad_cate');
+                $adData['shop_cate_ids'] = [];
+                foreach ($adCate as $key => $value) {
+                    if ($key != $adData['ad_cate_id']) {
+                        array_push($adData['shop_cate_ids'], $key);
+                    }
+                }
+                $adData['shop_cate_ids'] = implode(',', $adData['shop_cate_ids']);
+                $res[3] = $adID = Db::name('ad')->insertGetId($adData);
+
+                // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                if (in_array(0, $res)) {
+                    return show(config('code.error'), '新增失败', $res, 403);
+                }
+
+                // 提交事务
+                Db::commit();
                 return show(config('code.success'), '新增成功', '', 201);
-            } else {
-                return show(config('code.error'), '新增失败', '', 403);
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return show(config('code.error'), '请求异常' . $e->getMessage(), '', 500);
             }
+            /* 手动控制事务 e */
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
         }

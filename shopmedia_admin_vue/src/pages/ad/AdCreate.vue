@@ -18,9 +18,8 @@
 					<el-form-item prop="ad_cate_id" label="广告类别">
 						<!-- TODO：封装公共 ad-cate-select 组件 -->
 						<!-- <ad-cate-select :value="form.ad_cate_id"></ad-cate-select> -->
-						<el-select v-model="form.ad_cate_id" placeholder="请选择…" clearable filterable>
-							<el-option v-for="item in adCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id">
-							</el-option>
+						<el-select v-model="form.ad_cate_id" placeholder="请选择…" clearable filterable @change="selectAdCateChange">
+							<el-option v-for="item in adCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="ad_datetime" label="投放时间">
@@ -40,23 +39,29 @@
 					<el-form-item prop="phone" label="广告主电话">
 						<el-input v-model="form.phone" placeholder="输入广告主联系电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
+					<el-form-item prop="phone" label="广告主业务员">
+						<el-select v-model="form.salesman_id" placeholder="请选择…" clearable filterable>
+							<el-option v-for="item in salesmanList" :key="item.id" :label="item.user_name + ' ' +item.phone" :value="item.id"></el-option>
+						</el-select>
+					</el-form-item>
 					<el-form-item prop="region_ids" label="投放区域">
 						<!-- Tree 树形控件（可选择层级） s -->
 						<el-tree ref="tree" empty-text="数据加载中…" node-key="region_id" :props="props" :load="loadNode" lazy show-checkbox @check="handleCheck"></el-tree>
 						<!-- Tree 树形控件 e -->
 					</el-form-item>
-					<el-form-item prop="shop_cate_ids" label="投放店铺类别">
+					
+					<el-form-item v-if="false" prop="shop_cate_ids" label="投放店铺类别">
 						<!-- TODO：封装公共 shop-cate-select 组件 -->
 						<!-- <shop-cate-select :value="form.shop_cate_ids"></shop-cate-select> -->
 						<el-select v-model="form.shop_cate_ids" multiple placeholder="请选择…" clearable filterable @change="selectShopCateChange">
-							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id">
-							</el-option>
+							<el-option v-for="item in shopCateList" :key="item.cate_id" :label="item.cate_name" :value="item.cate_id"></el-option>
 						</el-select>
 					</el-form-item>
+					
 					<el-form-item prop="device_ids" label="投放广告屏">
 						<el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange" v-if="deviceList.length != 0 ? true : false">全选</el-checkbox>
 						<el-checkbox-group v-model="form.device_ids" @change="handleCheckedDeviceChange">
-							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'广告屏：' + item.device_id + '，' + '【' + item.shop_cate_name + '】' + '店铺：' + item.shop_name + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
+							<el-checkbox v-for="item in deviceList" :label="item.device_id" :key="item.device_id" border>{{'广告屏：' + item.device_id + '，' + '【' + item.ad_cate_name + '】' + '店铺：' + item.shop_name + '，' + '地址：' + item.address}}<!-- {{'品牌：' + item.brand + '，型号：' + item.model + '，尺寸：' + item.model}} --></el-checkbox>
 						</el-checkbox-group>
 					</el-form-item>
 					<el-form-item prop="ad_price" label="广告价格/元">
@@ -103,7 +108,10 @@
 					discount_ratio: 1, // 广告折扣率
 					region_ids: [], // 区域ID集合（数组）
 					shop_cate_ids: [], // 投放店铺类别ID集合
-					device_ids: [] // 投放广告设备ID集合
+					device_ids: [], // 投放广告设备ID集合
+					advertiser: '', // 广告主名称
+					phone: '', // 广告主电话
+					salesman_id: '' // 广告主业务员
 					// …
 				},
 				rules: { // 验证规则
@@ -121,10 +129,13 @@
 						{min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur'}
 					],
 					phone: [{required: true, pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码', trigger: 'blur'}],
+					salesman_id: [{required: true, message: '请选择广告主业务员', trigger: 'change'}],
 					region_ids: [{required: true, message: '请选择投放区域', trigger: 'change'}],
-					shop_cate_ids: [{required: true, message: '请选择投放店铺类别', trigger: 'change'}],
+					// shop_cate_ids: [{required: true, message: '请选择投放店铺类别', trigger: 'change'}],
 					device_ids: [{required: true, message: '请选择投放广告屏', trigger: 'change'}]
 				},
+				
+				salesmanList: [], // 广告主业务员列表
 
 				adCateList: [], // 广告类别列表
 				shopCateList: [], // 店铺类别列表
@@ -142,10 +153,40 @@
 			}
 		},
 		created() {
+			this.getSalesmanList();
 			this.getAdCateList(); // 获取广告类别列表
 			this.getShopCateList(); // 获取店铺类别列表
 		},
 		methods: {
+			/**
+			 * 获取广告主业务员列表
+			 */
+			getSalesmanList() {
+				let self = this;
+				this.$axios.get(this.$url + 'get_salesman_list', {
+						params: {
+							role_id: 5 //广告主业务员角色ID
+						}
+					})
+					.then(function(res) {
+						if (res.data.status == 1) {
+							// 广告主业务员列表
+							self.salesmanList = res.data.data;
+						} else {
+							self.$message({
+								message: '网络忙，请重试',
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function(error) {
+						self.$message({
+							message: error.response.data.message,
+							type: 'warning'
+						});
+					});
+			},
+			
 			/**
 			 * 获取广告类别列表
 			 */
@@ -262,6 +303,16 @@
 			},
 			
 			/**
+			 * （广告类别）选中值发生变化时触发
+			 */
+			selectAdCateChange(data) {
+				// console.log('shopCateIds:', data)
+				
+				// 获取设备列表
+				this.getDeviceList();
+			},
+			
+			/**
 			 * （投放店铺类别）选中值发生变化时触发
 			 */
 			selectShopCateChange(data) {
@@ -276,11 +327,13 @@
 			 */
 			getDeviceList() {
 				let self = this;
-				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0) {
+				// if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.shop_cate_ids.length != 0) {
+				if (this.$refs.tree.getCheckedKeys().length != 0 && this.form.ad_cate_id != '') {
 					this.$axios.get(this.$url + 'device_list', {
 						params: {
 							region_ids: this.$refs.tree.getCheckedKeys(), // 投放区域ID集合（只含全选）
-							shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
+							// shop_cate_ids: this.form.shop_cate_ids // 投放店铺类别ID集合
+							ad_cate_id: this.form.ad_cate_id // 广告所属行业类别（作为排除条件）
 						}
 					})
 					.then(function(res) {
@@ -349,6 +402,7 @@
 								play_times: this.form.play_times,
 								advertiser: this.form.advertiser,
 								phone: this.form.phone,
+								salesman_id: this.form.salesman_id,
 								region_ids: this.form.region_ids,
 								shop_cate_ids: this.form.shop_cate_ids,
 								device_ids: this.form.device_ids,

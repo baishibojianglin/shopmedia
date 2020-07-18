@@ -95,8 +95,11 @@ class Device extends Base
 		if (!empty($param['region_ids'])) { // 投放区域ID集合（只含全选）
 			$map['s.province_id|s.city_id|s.county_id|s.town_id'] = ['in', $param['region_ids']];
 		}
-		if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
+		/*if (!empty($param['shop_cate_ids'])) { // 投放店铺类别ID集合
 			$map['s.cate'] = ['in', $param['shop_cate_ids']];
+		}*/
+		if (!empty($param['ad_cate_id'])) { // 广告所属行业类别
+			$map['s.cate'] = ['not in', $param['ad_cate_id']];
 		}
 
 		// 获取广告屏列表数据
