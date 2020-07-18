@@ -47,7 +47,7 @@
 						<el-table-column prop="advertiser" label="广告主名称" width="120"></el-table-column>
 						<el-table-column prop="phone" label="广告主电话" width="120"></el-table-column>
 					</el-table-column>
-					<el-table-column prop="shop_cate_names" label="投放店铺类别" width="120"></el-table-column>
+					<el-table-column prop="ad_cate_names" label="投放行业类别" width="180" show-overflow-tooltip></el-table-column>
 					<el-table-column prop="audit_status" label="审核状态" width="90" :filters="[{ text: '待审核', value: 0 }, { text: '正常', value: 1 }, { text: '驳回', value: 2 }]" :filter-method="filterAuditStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
 							<span :class="scope.row.audit_status === 0 ? 'text-info' : (scope.row.audit_status === 1 ? 'text-success' : 'text-danger')">{{scope.row.audit_status_msg}}</span>

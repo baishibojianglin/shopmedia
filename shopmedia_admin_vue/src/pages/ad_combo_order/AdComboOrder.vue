@@ -10,7 +10,11 @@
 				<!-- 广告套餐订单列表 s -->
 				<el-table :data="adComboOrderList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="order_id" label="序号" fixed width="50"></el-table-column>
-					<el-table-column prop="order_sn" label="订单号" min-width="120"></el-table-column>
+					<el-table-column prop="order_sn" label="订单号" min-width="180"></el-table-column>
+					<el-table-column prop="phone" label="广告主电话" fixed min-width="120"></el-table-column>
+					<el-table-column prop="advertiser_address" label="广告主地址" min-width="120" show-overflow-tooltip></el-table-column>
+					<el-table-column prop="salesman_phone" label="广告主业务员电话" min-width="120"></el-table-column>
+					<el-table-column prop="ad_name" label="广告名称" min-width="120"></el-table-column>
 					<el-table-column prop="combo_id" label="套餐序号" width="90"></el-table-column>
 					<el-table-column prop="combo_price" label="套餐价格/元" min-width="120"></el-table-column>
 					<el-table-column prop="device_quantity" label="设备数量/台" min-width="120"></el-table-column>
@@ -25,7 +29,6 @@
 						<template slot-scope="scope">
 							<span :class="scope.row.pay_status === 0 ? 'text-info' : 'text-success'">{{scope.row.pay_status_msg}}</span>
 						</template>
-					
 					</el-table-column>
 					<el-table-column prop="order_time" label="下单时间" width="180"></el-table-column>
 					<el-table-column prop="pay_time" label="付款时间" width="180"></el-table-column>

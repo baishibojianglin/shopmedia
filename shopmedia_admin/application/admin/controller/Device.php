@@ -107,9 +107,9 @@ class Device extends Base
 		}
 		if ($data) {
 			// 处理数据
-			$shopCate = config('code.shop_cate'); // 店铺类别
+			$adCate = config('ad.ad_cate'); // 广告所属行业类别
 			foreach ($data as $key => $value) {
-				$data[$key]['shop_cate_name'] = $value['shopcate'] ? $shopCate[$value['shopcate']] : '（其他）';
+				$data[$key]['ad_cate_name'] = isset($value['shopcate']) ? $adCate[$value['shopcate']] : '（其他）';
 			}
 		}
 

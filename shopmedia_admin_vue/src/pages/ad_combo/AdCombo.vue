@@ -20,7 +20,7 @@
 					<el-table-column prop="ad_seconds" label="广告时长/秒" min-width="120"></el-table-column>
 					<el-table-column prop="ad_days" label="广告天数" min-width="90"></el-table-column>
 					<el-table-column prop="ad_type_name" label="广告类型" min-width="90"></el-table-column>
-					<el-table-column prop="status_msg" label="状态" width="70" show-overflow-tooltip></el-table-column>
+					<el-table-column prop="status_msg" label="状态" width="70"></el-table-column>
 					<el-table-column v-if="false" label="操作" fixed="right" min-width="90">
 						<template slot-scope="scope">
 							<el-button type="primary" size="mini" plain @click="toAdComboEdit(scope.row)">编辑</el-button>
