@@ -154,6 +154,7 @@ class Ad extends Base
                 }
 
                 // 创建广告
+                $adData['is_ad_combo'] = intval($param['is_ad_combo']);
                 $adData['ad_name'] = trim($param['ad_name']);
                 $adData['ad_cate_id'] = intval($param['ad_cate_id']);
                 $adData['ad_price'] = floatval($param['ad_price']);

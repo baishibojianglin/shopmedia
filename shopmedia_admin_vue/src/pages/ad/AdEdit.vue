@@ -13,6 +13,9 @@
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
 					<el-form-item label="序号">{{form.ad_id}}</el-form-item>
+					<el-form-item label="是否广告套餐">
+						{{form.ad_name.is_ad_combo === 1 ? '广告套餐' : '普通投放'}}
+					</el-form-item>
 					<el-form-item prop="ad_name" label="广告名称">
 						<el-input v-model="form.ad_name" placeholder="输入广告名称" clearable style="width:350px;"></el-input>
 					</el-form-item>

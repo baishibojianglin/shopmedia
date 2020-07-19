@@ -12,6 +12,12 @@
 			<div class="">
 				<!-- Form 表单 s -->
 				<el-form ref="ruleForm" :model="form" :rules="rules" label-width="200px" size="small" class="demo-form-inline">
+					<el-form-item prop="is_ad_combo" label="是否广告套餐">
+						<el-radio-group v-model="form.is_ad_combo">
+							<el-radio :label="1">广告套餐</el-radio>
+							<el-radio :label="0">普通投放</el-radio>
+						</el-radio-group>
+					</el-form-item>
 					<el-form-item prop="ad_name" label="广告名称">
 						<el-input v-model="form.ad_name" placeholder="输入广告名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
@@ -102,6 +108,7 @@
 		data() {
 			return {
 				form: {
+					is_ad_combo: '', // 是否广告套餐
 					ad_name: '', // 广告名称
 					ad_cate_id: '', // 广告类别ID
 					ad_price: '', // 广告价格
@@ -115,6 +122,7 @@
 					// …
 				},
 				rules: { // 验证规则
+					is_ad_combo: [{required: true, message: '请选择是否广告套餐', trigger: 'change'}],
 					ad_name: [
 						{required: true, message: '请输入广告名称', trigger: 'blur'},
 						{min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
@@ -393,6 +401,7 @@
 					if (valid) {
 						this.$axios.post(this.$url + 'ad', {
 								// 参数
+								is_ad_combo: this.form.is_ad_combo,
 								ad_name: this.form.ad_name,
 								ad_cate_id: this.form.ad_cate_id,
 								ad_price: this.form.ad_price,

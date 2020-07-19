@@ -115,7 +115,7 @@
 				let self = this;
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						this.$axios.put(this.$url + 'ad_case/' + this.form.ad_id, {
+						this.$axios.put(this.$url + 'ad_case/' + this.form.ad_case_id, {
 							// 参数
 							ad_name: this.form.ad_name,
 							advertiser_name: this.form.advertiser_name,
