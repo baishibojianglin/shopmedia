@@ -31,7 +31,12 @@
 				<el-table :data="adList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="ad_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="ad_name" label="广告名称" fixed min-width="120"></el-table-column>
-					<el-table-column prop="ad_cate_name" label="广告类别" width="120"></el-table-column>
+					<el-table-column prop="is_ad_combo" label="是否广告套餐" fixed min-width="120">
+						<template slot-scope="scope">
+							{{scope.row.is_ad_combo === 1 ? '广告套餐' : '普通投放'}}
+						</template>
+					</el-table-column>
+					<el-table-column prop="ad_cate_name" label="广告行业类别" width="120"></el-table-column>
 					<el-table-column prop="ad_price" label="广告价格/元" width="120"></el-table-column>
 					<el-table-column label="投放时间" header-align="center">
 						<el-table-column prop="play_days" label="投放天数" width="90"></el-table-column>

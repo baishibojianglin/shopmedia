@@ -216,3 +216,14 @@ Route::post('api/winner_info', 'api/Prize/winnerInfo'); // 提交领奖信息
 Route::get('api/get_case', 'api/Adcase/getCase'); // 获取中奖奖品信息
 
 /* -------------------- 客户端路由 -------------------- e */
+
+
+
+
+
+/* -------------------- 测试路由 -------------------- s */
+
+// 微信公众号测试
+Route::get('api/wechant', 'api/WeChant/checkSignature');
+
+/* -------------------- 测试路由 -------------------- e */
