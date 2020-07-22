@@ -147,14 +147,14 @@
 					level: '', //等级
 					remove_ad_cate: '', //排除广告类型
 					sale_price: '', //价格
-					shop_ad_rate: '', //小店广告收益率
+					shop_ad_rate: 30, //小店广告收益率
 					company_id: '', //分公司id
 					create_user: '', //创建人id
-					saleperson_ad_rate: '', //业务员收益率
-					partner_ad_rate: '', //合作伙伴收益率
-					factory_ad_rate: '', //厂家收益率
+					saleperson_ad_rate: 5, //业务员收益率
+					partner_ad_rate: 50, //合作伙伴收益率
+					factory_ad_rate: 0, //厂家收益率
 					status: '', //状态
-					saled_part: '', //已售份额
+					saled_part: 0, //已售份额
 					shop_id: '', //安装店铺
 					url_image: '', //图片
 				},
