@@ -332,7 +332,7 @@
 					url: this.$serverUrl + 'api/partner_order',
 					data: {
 						user_id: this.userInfo.user_id,
-						role_id: uni.getStorageSync('role_id'),
+						role_id: 2, // uni.getStorageSync('role_id')
 						phone: this.userInfo.phone,
 						device_id: this.device.device_id,
 						device_price: this.device.sale_price,

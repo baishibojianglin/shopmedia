@@ -188,7 +188,7 @@ class PartnerOrder extends AuthBase
                 } catch (\Exception $e) {
                     // 回滚事务
                     Db::rollback();
-                    return show(config('code.error'), '请求异常', '', 500);
+                    return show(config('code.error'), '请求异常', $e->getMessage(), 500);
                 }
                 /* 手动控制事务 e */
             }
