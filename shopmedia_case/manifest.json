@@ -77,6 +77,10 @@
     },
     "h5" : {
         "title" : "广告案例",
-        "domain" : ""
+        "domain" : "",
+        "router" : {
+            "mode" : "history",
+            "base" : "/case/"
+        }
     }
 }

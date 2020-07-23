@@ -1,63 +1,89 @@
 <template>
-	<view>
-        <uni-card  :is-shadow='true'>
-        	<view class="tvcon">
-        		<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/%E6%B3%89%E5%A1%94%E5%A4%A7%E7%B1%B3.mp4" :autoplay="false" :initial-time='2'  :loop="false" :controls="true"></video>
-        		<view class="vedio-logo text-center">
-        			 黑龙江泉塔大米 
-        		</view>
-        	</view>
-        </uni-card>
-		
-        <uni-card  :is-shadow='true'>
-        	<view class="tvcon">
-        		<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/%E9%87%91%E6%B2%99%E6%B1%9F%E6%9C%89%E6%9C%BA%E9%B1%BC.mp4" :autoplay="false"  :loop="false" :controls="true"></video>
-        		<view class="vedio-logo text-center">
-        			 金沙江有机鱼 
-        		</view>
-        	</view>
-        </uni-card>	
-			
-        <uni-card  :is-shadow='true'>
-        	<view class="tvcon">
-        		<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/%E6%83%A0%E6%B3%B0%E7%A7%91%E6%8A%80.mp4" :autoplay="false"  :loop="false" :controls="true"></video>
-        		<view class="vedio-logo text-center">
-        			 惠泰农业科技 
-        		</view>
-        	</view>
-        </uni-card>			
+	<view class="content">
+        <view class="vedio-con"  v-for="value in adcase">
+			<video class="vedio" :style="vedio_css" :poster="value.ad_cover" :src="value.ad_video" controls object-fit="fill"></video>
+			<view  class="vedio-text">{{value.ad_name}}</view>
+		</view>
 	</view>
 </template>
 
+
 <script>
-    import {mapState} from 'vuex';
 	export default {
-		data() {
+		components: {
+			
+		},
+		data(){
 			return {
+               adcase:[] ,//广告案例列表
+			   vedio_css:{
+				   height:''
+			   }
+			}
+		},
+		onLoad(){
+			/**
+			 * 获取窗口宽度和高度
+			 */
+			var winWidth = 0;
+			var winHeight = 0;
+			
+			//获取窗口宽度
+			 if (window.innerWidth)
+			winWidth = window.innerWidth;
+			 else if ((document.body) && (document.body.clientWidth))
+			winWidth = document.body.clientWidth;
+			//获取窗口高度
+			 if (window.innerHeight)
+			 winHeight = window.innerHeight;
+			else if ((document.body) && (document.body.clientHeight))
+			 winHeight = document.body.clientHeight;
+			 //通过深入Document内部对body进行检测，获取窗口大小
+			if (document.documentElement  && document.documentElement.clientHeight && document.documentElement.clientWidth)
+			 {
+			 winHeight = document.documentElement.clientHeight;
+			 winWidth = document.documentElement.clientWidth;
+			}
+            this.vedio_css.height=9/16*winWidth+'px';
 
-			};
-		},
-		computed: {
-			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
-		},
-		onLoad() {
 
-		},
-		onNavigationBarButtonTap(e) {
-			this.$common.actionSheetTap();
+			//调用方法
+            this.get_case();
 		},
 		methods: {
 
-
-		}
-	};
+			/**
+			 * 获取广告案例
+			 */
+			get_case(){
+				let self = this;
+				uni.request({
+					url: this.$serverUrl + 'api/get_case',
+					method: 'GET',
+					success: function(res) {
+                        self.adcase=res.data;
+					}
+				})
+			}
+			
+        }
+	}
 </script>
 
 <style>
-.tvcon{
-	width: 100%;
-}
 .vedio-con{
 	width: 100%;
+	margin-top: 10px;
+}
+.vedio{
+	width: 90%;
+	margin:0 5%;
+	height: 100%;
+	padding: 0;
+}
+.vedio-text{
+	width: 100%;
+	text-align: center;
+	font-size: 18px;
 }
 </style>

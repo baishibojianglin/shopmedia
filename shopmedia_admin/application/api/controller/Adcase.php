@@ -16,7 +16,7 @@ class Adcase extends Controller
     {
        
        $match['status']=1;
-       $adcase= Db::name('ad_case')->where($match)->order('ad_case_id desc')->limit(10)->select();
+       $adcase= Db::name('ad_case')->where($match)->order('ad_case_id desc')->limit(30)->select();
        return json($adcase);
 
 
