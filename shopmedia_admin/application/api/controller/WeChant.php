@@ -27,7 +27,7 @@ class WeChant extends Controller
      *
      * @return bool
      */
-    public function checkSignature()
+    public function checkSignature0()
     {
         // 1）将token、timestamp、nonce三个参数进行字典序排序
         $signature = $_GET["signature"];
@@ -43,12 +43,36 @@ class WeChant extends Controller
         $tmpStr = sha1( $tmpStr );
 
         // 3）开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
-        if( $tmpStr == $signature ){
+        $echostr = $_GET['echostr'];
+        if( $tmpStr == $signature && $echostr ){ // 第一次接入微信API接口时
             //return true;
-            echo $_GET['echostr']; // 这样写才能验证成功
+            echo $echostr; // 这样写才能验证成功
             exit;
         }else {
             //return false;
+            $this->responseMsg();
+        }
+    }
+
+    public function checkSignature()
+    {
+        //获得参数 signature nonce token timestamp echostr
+        $nonce = $_GET['nonce'];
+        $token = '459e201a4cbfe4245b6078e65b51a03f';
+        $timestamp = $_GET['timestamp'];
+        $echostr = $_GET['echostr'];
+        $signature = $_GET['signature'];
+        //形成数组，然后按字典序排序
+        $array = array();
+        $array = array($nonce, $timestamp, $token);
+        sort($array);
+        //拼接成字符串,sha1加密 ，然后与signature进行校验
+        $str = sha1(implode($array));
+        if ($str == $signature && $echostr) {
+            //第一次接入weixin api接口的时候
+            echo $echostr;
+            exit;
+        } else {
             $this->responseMsg();
         }
     }
@@ -59,9 +83,10 @@ class WeChant extends Controller
     public function responseMsg()
     {
         // 1.获取到微信推送过来的post数据（XML格式）
-        $postArr = $GLOBALS['HTTP_RAW_POST_DATA'];
+        //$postArr = $GLOBALS['HTTP_RAW_POST_DATA']; // php7版本以上不支持
+        $postArr = file_get_contents('php://input'); // php7+
 
-        // 2.设置消息类型，并设置回复类型和内容
+        // 2.处理消息类型，并设置回复类型和内容
         /* 推送XML数据包示例：
         <xml>
           <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -81,19 +106,20 @@ class WeChant extends Controller
             // 如果是关注 subscribe 事件
             if (strtolower($postObj->Event) == 'subscribe') {
                 // 回复用户消息
-                $toUser = $postObj->FromUserName;
+                $toUser   = $postObj->FromUserName;
                 $fromUser = $postObj->ToUserName;
-                $time = time();
-                $msgType = 'text';
-                $content = '欢迎关注。。。';
-                $template = '<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Content><![CDATA[%s]]></Content>
-                            </xml>';
-                $info = sprintf($template, $toUser, $fromUser, $time, $msgType, $content);
+                $time     = time();
+                $msgType  =  'text';
+                $content  = '欢迎关注我们的公众号';
+                $template = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							</xml>";
+                $info     = sprintf($template, $toUser, $fromUser, $time, $msgType, $content);
+                echo $info;
             }
         }
     }
