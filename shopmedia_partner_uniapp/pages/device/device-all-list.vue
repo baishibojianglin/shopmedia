@@ -41,8 +41,8 @@
 					<image class="uni-media-list-logo" :src="value.thumb"></image>
 					<view class="uni-media-list-body">
 						<view class="uni-media-list-text-top">
-							<text>屏编号：{{ value.device_id }}</text>
-							<text class="uni-common-pl">【店铺】{{ value.shop_name }}</text>
+							<!-- <text>屏编号：{{ value.device_id }}</text> -->
+							<text class="">【店铺】{{ value.shop_name }}</text>
 						</view>
 						<view class="uni-media-list-text-bottom">
 							<!-- <text>{{ value.device_id }}</text> -->
@@ -266,7 +266,7 @@
 <style>
 	.uni-media-list-logo {
 		width: 180rpx;
-		height: 140rpx;
+		height: 118rpx;
 	}
 
 	.uni-media-list-body {
