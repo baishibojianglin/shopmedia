@@ -381,11 +381,11 @@ class Ad extends Base
                     $advertiserSalesmanUserId = $advertiser['uid'];
 
                     // 更新店铺业务员余额、收入
-                    $res[1] = Db::name('user_salesman')->where(['id' => $advertiserSalesmanId])->setInc('money', $adAdvertiserSalesmanIncome);
-                    $res[2] = Db::name('user_salesman')->where(['id' => $advertiserSalesmanId])->setInc('income', $adAdvertiserSalesmanIncome);
+                    $res[1] = Db::name('user_salesman')->where(['id' => $advertiserSalesmanId])->setInc('money', $adAdvertiserSalesmanIncome) === false ? 0 : true;
+                    $res[2] = Db::name('user_salesman')->where(['id' => $advertiserSalesmanId])->setInc('income', $adAdvertiserSalesmanIncome) === false ? 0 : true;
                     // 更新店铺业务员余额、收入
-                    $res[3] = Db::name('user')->where(['user_id' => $advertiserSalesmanUserId])->setInc('money', $adAdvertiserSalesmanIncome);
-                    $res[4] = Db::name('user')->where(['user_id' => $advertiserSalesmanUserId])->setInc('income', $adAdvertiserSalesmanIncome);
+                    $res[3] = Db::name('user')->where(['user_id' => $advertiserSalesmanUserId])->setInc('money', $adAdvertiserSalesmanIncome) === false ? 0 : true;
+                    $res[4] = Db::name('user')->where(['user_id' => $advertiserSalesmanUserId])->setInc('income', $adAdvertiserSalesmanIncome) === false ? 0 : true;
                     /*广告主业务员提成 e*/
 
                     // 根据广告屏ID获取广告屏等级，并计算该广告屏每日每条广告的价格，根据价格提成
@@ -411,9 +411,9 @@ class Ad extends Base
                             /*广告屏合作商收益记录 s*/
                             $adPartnerIncome = $adPerPrice * config('commission.ad_partner_commission');
                             if ($partnerDevice['today_income'] != $adPartnerIncome) {
-                                $res['1' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->update(['today_income' => $adPartnerIncome]); // 今日收益（严格来说应该是近期收益）
+                                $res['1' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->update(['today_income' => $adPartnerIncome]) === false ? 0 : true; // 今日收益（严格来说应该是近期收益）
                             }
-                            $res['2' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->setInc('total_income', $adPartnerIncome); // 累计收益
+                            $res['2' . $key] = Db::name('partner_device')->where(['device_id' => $value['device_id']])->setInc('total_income', $adPartnerIncome) === false ? 0 : true; // 累计收益
                             /*广告屏合作商收益记录 e*/
 
                             /*广告屏合作商收益 s*/
@@ -421,11 +421,11 @@ class Ad extends Base
                             $partnerId = $partnerDevice['partner_id'];
                             $partnerUserId = $partnerDevice['user_id'];
                             // 更新广告屏合作商余额、收入
-                            $res['3' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('money', $adPartnerIncome);
-                            $res['4' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('income', $adPartnerIncome);
+                            $res['3' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('money', $adPartnerIncome) === false ? 0 : true;
+                            $res['4' . $key] = Db::name('user_partner')->where(['id' => $partnerId])->setInc('income', $adPartnerIncome) === false ? 0 : true;
                             // 更新广告屏合作商所属用户余额、收入
-                            $res['5' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('money', $adPartnerIncome);
-                            $res['6' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('income', $adPartnerIncome);
+                            $res['5' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('money', $adPartnerIncome) === false ? 0 : true;
+                            $res['6' . $key] = Db::name('user')->where(['user_id' => $partnerUserId])->setInc('income', $adPartnerIncome) === false ? 0 : true;
                             /*广告屏合作商收益 e*/
 
                             /*广告屏合作商业务员提成 s*/
@@ -435,11 +435,11 @@ class Ad extends Base
                             $partnerSalesmanId = $userPartner['salesman_id'];
                             $partnerSalesmanUserId = $userPartner['uid'];
                             // 更新广告屏合作商业务员余额、收入
-                            $res['7' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('money', $adPartnerSalesmanIncome);
-                            $res['8' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('income', $adPartnerSalesmanIncome);
+                            $res['7' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('money', $adPartnerSalesmanIncome) === false ? 0 : true;
+                            $res['8' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanId])->setInc('income', $adPartnerSalesmanIncome) === false ? 0 : true;
                             // 更新广告屏合作商业务员所属用户余额、收入
-                            $res['9' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('money', $adPartnerSalesmanIncome);
-                            $res['10' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('income', $adPartnerSalesmanIncome);
+                            $res['9' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('money', $adPartnerSalesmanIncome) === false ? 0 : true;
+                            $res['10' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanUserId])->setInc('income', $adPartnerSalesmanIncome) === false ? 0 : true;
                             /*广告屏合作商业务员提成 e*/
 
                             /*广告屏合作商业务员上级提成 s*/
@@ -450,11 +450,11 @@ class Ad extends Base
                                 $partnerSalesmanParentId = $userPartnerSalesmanParent['parent_id'];
                                 $partnerSalesmanParentUserId = $userPartnerSalesmanParent['uid'];
                                 // 更新广告屏合作商业务员上级余额、收入
-                                $res['11' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('money', $adPartnerSalesmanParentIncome);
-                                $res['12' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('income', $adPartnerSalesmanParentIncome);
+                                $res['11' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('money', $adPartnerSalesmanParentIncome) === false ? 0 : true;
+                                $res['12' . $key] = Db::name('user_salesman')->where(['id' => $partnerSalesmanParentId])->setInc('income', $adPartnerSalesmanParentIncome) === false ? 0 : true;
                                 // 更新广告屏合作商业务员上级所属用户余额、收入
-                                $res['13' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('money', $adPartnerSalesmanParentIncome);
-                                $res['14' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('income', $adPartnerSalesmanParentIncome);
+                                $res['13' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('money', $adPartnerSalesmanParentIncome) === false ? 0 : true;
+                                $res['14' . $key] = Db::name('user')->where(['user_id' => $partnerSalesmanParentUserId])->setInc('income', $adPartnerSalesmanParentIncome) === false ? 0 : true;
                             }
                             /*广告屏合作商业务员上级提成 e*/
                         }
@@ -466,15 +466,15 @@ class Ad extends Base
                         $shopkeeperId = $shop['shopkeeper_id'];
                         $shopkeeperUserId = $shop['user_id'];
                         // 更新店家余额、收入
-                        $res['15' . $key] = Db::name('user_shopkeeper')->where(['id' => $shopkeeperId])->setInc('money', $adShopkeeperIncome);
-                        $res['16' . $key] = Db::name('user_shopkeeper')->where(['id' => $shopkeeperId])->setInc('income', $adShopkeeperIncome);
+                        $res['15' . $key] = Db::name('user_shopkeeper')->where(['id' => $shopkeeperId])->setInc('money', $adShopkeeperIncome) === false ? 0 : true;
+                        $res['16' . $key] = Db::name('user_shopkeeper')->where(['id' => $shopkeeperId])->setInc('income', $adShopkeeperIncome) === false ? 0 : true;
                         // 更新店家所属用户余额、收入
-                        $res['17' . $key] = Db::name('user')->where(['user_id' => $shopkeeperUserId])->setInc('money', $adShopkeeperIncome);
-                        $res['18' . $key] = Db::name('user')->where(['user_id' => $shopkeeperUserId])->setInc('income', $adShopkeeperIncome);
+                        $res['17' . $key] = Db::name('user')->where(['user_id' => $shopkeeperUserId])->setInc('money', $adShopkeeperIncome) === false ? 0 : true;
+                        $res['18' . $key] = Db::name('user')->where(['user_id' => $shopkeeperUserId])->setInc('income', $adShopkeeperIncome) === false ? 0 : true;
                         // 更新店家对应店铺设备的近期收入（此处用今日收入不合理，因为累计收入不是严格每天增加）、累计收入
                         $res['19' . $key] = Db::name('device')->where(['device_id' => $value['device_id']])->update(['today_income' => $adShopkeeperIncome]);
                         $res['19' . $key] = $res['19' . $key] === false ? 0 : true;
-                        $res['20' . $key] = Db::name('device')->where(['device_id' => $value['device_id']])->setInc('total_income', $adShopkeeperIncome);
+                        $res['20' . $key] = Db::name('device')->where(['device_id' => $value['device_id']])->setInc('total_income', $adShopkeeperIncome) === false ? 0 : true;
                         /*店家收益 e*/
 
                         /*店铺业务员提成 s*/
@@ -484,11 +484,11 @@ class Ad extends Base
                         $shopSalesmanId = $userShopkeeper['salesman_id'];
                         $shopSalesmanUserId = $userShopkeeper['uid'];
                         // 更新店铺业务员余额、收入
-                        $res['21' . $key] = Db::name('user_salesman')->where(['id' => $shopSalesmanId])->setInc('money', $adShopSalesmanIncome);
-                        $res['22' . $key] = Db::name('user_salesman')->where(['id' => $shopSalesmanId])->setInc('income', $adShopSalesmanIncome);
+                        $res['21' . $key] = Db::name('user_salesman')->where(['id' => $shopSalesmanId])->setInc('money', $adShopSalesmanIncome) === false ? 0 : true;
+                        $res['22' . $key] = Db::name('user_salesman')->where(['id' => $shopSalesmanId])->setInc('income', $adShopSalesmanIncome) === false ? 0 : true;
                         // 更新店铺业务员余额、收入
-                        $res['23' . $key] = Db::name('user')->where(['user_id' => $shopSalesmanUserId])->setInc('money', $adShopSalesmanIncome);
-                        $res['24' . $key] = Db::name('user')->where(['user_id' => $shopSalesmanUserId])->setInc('income', $adShopSalesmanIncome);
+                        $res['23' . $key] = Db::name('user')->where(['user_id' => $shopSalesmanUserId])->setInc('money', $adShopSalesmanIncome) === false ? 0 : true;
+                        $res['24' . $key] = Db::name('user')->where(['user_id' => $shopSalesmanUserId])->setInc('income', $adShopSalesmanIncome) === false ? 0 : true;
                         /*店铺业务员提成 e*/
                     }
 
