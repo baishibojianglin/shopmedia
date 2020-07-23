@@ -23,7 +23,8 @@ class Index extends AuthBase
     public function getTotalData()
     {
              $match['status']=1;
-             $data['device']=Db::name('shop')->where($match)->count()*100;
+             //$data['device']=Db::name('shop')->where($match)->count()*10;
+             $data['device']=20000;
              $data['city']=Db::name('company')->where($match)->count();
              $data['shop']=Db::name('ad')->count()*100;
              return json($data);
