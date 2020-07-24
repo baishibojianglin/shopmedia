@@ -11,12 +11,27 @@ namespace app\api\controller;
 use think\Controller;
 
 /**
- * 微信公众号
+ * 微信公众号开发
  * Class WeChant
  * @package app\api\controller
  */
 class WeChant extends Controller
 {
+    /**
+     * 入口方法
+     */
+    public function index()
+    {
+        // 获取随机字符串
+        $echostr = input('echostr'); //$_GET['echostr'];
+        if($this->checkSignature() && $echostr){ // 第一次接入微信API接口时
+            echo $echostr; // 这样写才能验证成功
+            exit;
+        }else {
+            $this->responseMsg();
+        }
+    }
+
     /**
      * 检验signature
      *
@@ -27,34 +42,30 @@ class WeChant extends Controller
      *
      * @return bool
      */
-    public function checkSignature0()
+    public function checkSignature()
     {
         // 1）将token、timestamp、nonce三个参数进行字典序排序
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
+        $signature = input('signature'); //$_GET["signature"];
+        $timestamp = input('timestamp'); //$_GET["timestamp"];
+        $nonce = input('nonce'); //$_GET["nonce"];
 
         $token = '459e201a4cbfe4245b6078e65b51a03f';
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
 
         // 2）将三个参数字符串拼接成一个字符串进行sha1加密
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
+        $tmpStr = implode($tmpArr);
+        $tmpStr = sha1($tmpStr);
 
         // 3）开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
-        $echostr = $_GET['echostr'];
-        if( $tmpStr == $signature && $echostr ){ // 第一次接入微信API接口时
-            //return true;
-            echo $echostr; // 这样写才能验证成功
-            exit;
+        if($tmpStr == $signature){ // 第一次接入微信API接口时
+            return true;
         }else {
-            //return false;
-            $this->responseMsg();
+            return false;
         }
     }
 
-    public function checkSignature()
+    public function checkSignature1()
     {
         //获得参数 signature nonce token timestamp echostr
         $nonce = $_GET['nonce'];
