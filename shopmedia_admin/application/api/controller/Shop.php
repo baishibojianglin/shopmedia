@@ -70,7 +70,7 @@ class Shop extends AuthBase
                 $shopkeeperUser = Db::name('user')->where(['phone' => trim($data['phone'])])->find();
                 // 获取店家数据
                 $shopkeeper = Db::name('user_shopkeeper')->where(['user_id' => $shopkeeperUser['user_id']])->find();
-                if ($shopkeeperUser && $shopkeeper) { // 店家及店家所属用户均存在，则只创建店铺
+                if (!empty($shopkeeperUser) && !empty($shopkeeper)) { // 店家及店家所属用户均存在，则只创建店铺
                     // 创建店铺
                     $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
                     $shopData['shopkeeper_id'] = $shopkeeper['id']; // 店铺所属店家ID
@@ -80,7 +80,7 @@ class Shop extends AuthBase
                         return show(config('code.error'), $validate->getError(), '', 403);
                     }
                     $res[0] = Db::name('shop')->insertGetId($shopData);
-                } elseif (!$shopkeeperUser) { // 店家所属用户不存在，店家一定不存在，则创建店家所属用户、店家及店铺
+                } elseif (empty($shopkeeperUser)) { // 店家所属用户不存在，店家一定不存在，则创建店家所属用户、店家及店铺
                     // 创建店家所属用户
                     $shopkeeperUserData = [
                         'user_name' => 'Sustock-' . trim($data['phone']), // 定义默认用户名
@@ -112,7 +112,7 @@ class Shop extends AuthBase
                         return show(config('code.error'), $validate->getError(), '', 403);
                     }
                     $res[3] = Db::name('shop')->insertGetId($shopData);
-                } elseif (!$shopkeeper) { // 店家所属用户存在，但店家不存在时，则创建店家及店铺
+                } elseif (!empty($shopkeeperUser) && empty($shopkeeper)) { // 店家所属用户存在，但店家不存在时，则创建店家及店铺
                     // 创建店家
                     $shopkeeperData = [
                         'user_id' => $shopkeeperUser['user_id'],
@@ -153,7 +153,7 @@ class Shop extends AuthBase
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), '', 500);
+                return show(config('code.error'), '网络忙，请重试' . $e->getMessage(), '', 500);
             }
             /* 手动控制事务 e */
         } else {
