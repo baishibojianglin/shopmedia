@@ -23,11 +23,13 @@ class WeChant extends Controller
     public function index()
     {
         // 获取随机字符串
-        $echostr = input('echostr'); //$_GET['echostr'];
-        if($this->checkSignature() && $echostr){ // 第一次接入微信API接口时
-            echo $echostr; // 这样写才能验证成功
-            exit;
-        }else {
+        if (!empty($_GET['echostr'])) {
+            $echostr = $_GET['echostr'];
+            if($this->checkSignature() && $echostr){ // 第一次接入微信API接口时
+                echo $echostr; // 这样写才能验证成功
+                exit;
+            }
+        } else {
             $this->responseMsg();
         }
     }
@@ -65,6 +67,9 @@ class WeChant extends Controller
         }
     }
 
+    /**
+     * index() 与 checkSignature() 方法拆分前的方法
+     */
     public function checkSignature1()
     {
         //获得参数 signature nonce token timestamp echostr
@@ -94,8 +99,9 @@ class WeChant extends Controller
     public function responseMsg()
     {
         // 1.获取到微信推送过来的post数据（XML格式）
+        $postArr = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : file_get_contents('php://input');
         //$postArr = $GLOBALS['HTTP_RAW_POST_DATA']; // php7版本以上不支持
-        $postArr = file_get_contents('php://input'); // php7+
+        //$postArr = file_get_contents('php://input'); // php7+
 
         // 2.处理消息类型，并设置回复类型和内容
         /* 推送XML数据包示例：
@@ -121,15 +127,16 @@ class WeChant extends Controller
                 $fromUser = $postObj->ToUserName;
                 $time     = time();
                 $msgType  =  'text';
-                $content  = '欢迎关注我们的公众号';
+                $content  = '欢迎关注我们的公众号 ' . $fromUser;
                 $template = "<xml>
-							<ToUserName><![CDATA[%s]]></ToUserName>
-							<FromUserName><![CDATA[%s]]></FromUserName>
-							<CreateTime>%s</CreateTime>
-							<MsgType><![CDATA[%s]]></MsgType>
-							<Content><![CDATA[%s]]></Content>
-							</xml>";
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
                 $info     = sprintf($template, $toUser, $fromUser, $time, $msgType, $content);
+                //$info     = preg_replace('/[ ]/', '', $info); // 去掉空格
                 echo $info;
             }
         }
