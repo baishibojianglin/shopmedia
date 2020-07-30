@@ -9,6 +9,7 @@
 namespace app\api\controller;
 
 use think\Controller;
+use think\Db;
 
 /**
  * 微信公众号开发
@@ -140,6 +141,8 @@ class WeChant extends Controller
                 // 获取用户基本信息
                 $openid = $postObj->FromUserName;
                 $userInfo = $this->getUserInfo($openid);
+                // 创建微信用户
+                $this->createWxUser($userInfo);
 
                 // 回复用户消息
                 $toUser   = $postObj->FromUserName;
@@ -156,6 +159,29 @@ class WeChant extends Controller
                             </xml>";
                 $info     = sprintf($template, $toUser, $fromUser, $time, $msgType, $content);
                 //$info     = preg_replace('/[ ]/', '', $info); // 去掉空格
+                echo $info;
+            }
+            // TODO：扫描带参数二维码事件
+            if (strtolower($postObj->Event) == 'scan') {
+                $toUser   = $postObj->FromUserName;
+                $fromUser = $postObj->ToUserName;
+                $time     = time();
+                $msgType  = 'event';
+                $event    = 'subscribe';
+                $shopId   = 198; // 参数
+                $eventKey = 'qrscene_' . $shopId;
+                $QRCodeTicket = $this->getQRCodeTicket($shopId);
+                $ticket   = urlencode($QRCodeTicket['ticket']);
+                $template = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Event><![CDATA[%s]]></Event>
+                            <EventKey><![CDATA[%s]]></EventKey>
+                            <Ticket><![CDATA[%s]]></Ticket>
+                            </xml>";
+                $info     = sprintf($template, $toUser, $fromUser, $time, $msgType, $event, $eventKey, $ticket);
                 echo $info;
             }
         }
@@ -252,6 +278,9 @@ class WeChant extends Controller
         return $userInfo;
     }
 
+    /**
+     * TODO：创建自定义菜单
+     */
     public function definedItem()
     {
         // 创建微信菜单
@@ -262,5 +291,53 @@ class WeChant extends Controller
         );
         $postJson = json_encode($postArr);
         $this->http_curl($url, 'get', $res = 'json', $arr = '');
+    }
+
+    /**
+     * 生成带参数的二维码：第一步、创建二维码ticket
+     */
+    public function getQRCodeTicket($shopId)
+    {
+        $accessToken = $this->accessToken;
+        $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $accessToken;
+
+        //生成临时二维码
+        $param = '{"expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": {"scene": {"scene_str": ' . $shopId . '}}}';
+        $QRCodeTicket = $this->http_curl($url, 'post', 'json', $param);
+        //var_dump($QRCodeTicket);
+        return $QRCodeTicket;
+    }
+
+    /**
+     * 生成带参数的二维码：第二步、通过ticket到指定URL换取二维码
+     */
+    public function showQRCode($shopId)
+    {
+        $QRCodeTicket = $this->getQRCodeTicket($shopId);
+        $ticket = urlencode($QRCodeTicket['ticket']);
+        $url = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $ticket;
+        //$QRCode = $this->http_curl($url, 'get', 'json');
+        return $url;
+    }
+
+    /**
+     * 创建微信用户
+     * @param $userInfo
+     */
+    public function createWxUser($userInfo)
+    {
+        // 查询用户是否存在
+        $openid = $userInfo['openid'];
+        $userOauth = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $openid])->find();
+        // 用户不存在，则创建用户
+        if (empty($userOauth)) {
+            $data['oauth'] = 'wx';
+            $data['openid'] = $openid;
+            $data['verified'] = 1;
+            $data['create_time'] = time();
+            $data['create_ip'] = request()->ip();
+
+            $res = Db::name('user_oauth')->insertGetId($data);
+        }
     }
 }
