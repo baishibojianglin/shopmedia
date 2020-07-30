@@ -66,7 +66,7 @@ class WeChant extends Controller
         $timestamp = input('timestamp'); //$_GET["timestamp"];
         $nonce = input('nonce'); //$_GET["nonce"];
 
-        $token = '459e201a4cbfe4245b6078e65b51a03f';
+        $token = config('wechant.token');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
 
@@ -89,7 +89,7 @@ class WeChant extends Controller
     {
         //获得参数 signature nonce token timestamp echostr
         $nonce = $_GET['nonce'];
-        $token = '459e201a4cbfe4245b6078e65b51a03f';
+        $token = config('wechant.token');
         $timestamp = $_GET['timestamp'];
         $echostr = $_GET['echostr'];
         $signature = $_GET['signature'];
@@ -137,12 +137,16 @@ class WeChant extends Controller
         if (strtolower($postObj->MsgType) == 'event') {
             // 如果是关注 subscribe 事件
             if (strtolower($postObj->Event) == 'subscribe') {
+                // 获取用户基本信息
+                $openid = $postObj->FromUserName;
+                $userInfo = $this->getUserInfo($openid);
+
                 // 回复用户消息
                 $toUser   = $postObj->FromUserName;
                 $fromUser = $postObj->ToUserName;
                 $time     = time();
-                $msgType  =  'text';
-                $content  = '欢迎关注我们的公众号 ' . $fromUser;
+                $msgType  = 'text';
+                $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser;
                 $template = "<xml>
                             <ToUserName><![CDATA[%s]]></ToUserName>
                             <FromUserName><![CDATA[%s]]></FromUserName>
@@ -164,6 +168,8 @@ class WeChant extends Controller
      * @param string $res 返回数据类型
      * @param string $arr post请求参数
      * @return mixed
+     *
+     * 注意：先判断cURL是否错误，再关闭cURL资源
      */
     public function http_curl($url, $type = 'get', $res = 'json', $arr = '')
     {
@@ -181,51 +187,39 @@ class WeChant extends Controller
         // 3.采集（抓取URL并把它传递给浏览器）
         $output = curl_exec($ch);
 
+        // 先判断cURL是否错误，再关闭cURL资源
+        if (curl_errno($ch)) {
+            return curl_error($ch);
+        }
+
         // 4.关闭cURL资源，并且释放系统资源
         curl_close($ch);
 
         if ($res == 'json') {
             return json_decode($output, true);
         }
-        var_dump($output);
+        //var_dump($output);
+        return $output;
     }
 
     /**
      * 获取微信公众号access_token
      *
-     * 注意：①需要在微信公众号配置IP白名单；②先判断cURL是否错误，再关闭cURL资源
+     * 注意：①需要在微信公众号配置IP白名单；②设置 access_token 缓存的有效期应小于凭证（即access_token）有效时间 expires_in
      */
     public function getWxAccessToken()
     {
         // 判断 access_token 缓存是否存在
         if (empty(cache('access_token'))) {
             // 1.请求url地址
-            $appid = 'wx59483b145b8ede88';
-            $appsecret = '7c078a44dae88f0835cc33414f914200';
+            $appid = config('wechant.app_id');
+            $appsecret = config('wechant.app_secret');
             $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appid . '&secret=' . $appsecret;
 
-            // 2.初始化cURL
-            $ch = curl_init();
-
-            // 3.设置cURL的参数
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-            // 4.调用接口
-            $output = curl_exec($ch);
-
-            // 先判断cURL是否错误，再关闭cURL资源
-            if (curl_errno($ch)) {
-                var_dump(curl_error($ch));
-            }
-
-            // 5.关闭cURL资源
-            curl_close($ch);
-
-            $arr = json_decode($output, true);
-            var_dump($arr);
+            $arr = $this->http_curl($url, 'get', 'json');
+            //var_dump($arr);
             // 设置 access_token 缓存
-            cache('access_token', $arr['access_token'], $arr['expires_in']);
+            cache('access_token', $arr['access_token'], $arr['expires_in'] / 2); // 其中 expires_in 凭证有效时间为7200秒，这里缓存有效期取3600秒
         }
         
         // 获取 access_token 缓存
@@ -240,26 +234,22 @@ class WeChant extends Controller
         $accessToken = $this->accessToken;
         $url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=' . $accessToken;
 
-        // 2.初始化cURL
-        $ch = curl_init();
-
-        // 3.设置cURL的参数
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        // 4.调用接口
-        $output = curl_exec($ch);
-
-        // 先判断cURL是否错误，再关闭cURL资源
-        if (curl_errno($ch)) {
-            var_dump(curl_error($ch));
-        }
-
-        // 5.关闭cURL资源
-        curl_close($ch);
-
-        $arr = json_decode($output, true);
+        $arr = $this->http_curl($url, 'get', 'json');
         var_dump($arr);
+    }
+
+    /**
+     * 获取用户基本信息
+     * @param $openid
+     * @return mixed
+     */
+    public function getUserInfo($openid)
+    {
+        $accessToken = $this->accessToken;
+        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accessToken . '&openid=' . $openid . '&lang=zh_CN';
+
+        $userInfo = $this->http_curl($url, 'get', 'json');
+        return $userInfo;
     }
 
     public function definedItem()

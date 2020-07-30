@@ -223,12 +223,10 @@ Route::get('api/get_case', 'api/Adcase/getCase'); // 获取中奖奖品信息
 
 /* -------------------- 测试路由 -------------------- s */
 
-
 // 微信公众号开发
 Route::any('api/wechant', 'api/WeChant/index'); // 检验signature 与 接收事件推送（关注/取消关注事件）。Route::any() 所有请求都支持的路由规则。此处切勿使用 Route::get()
 Route::any('api/http_curl', 'api/WeChant/http_curl'); // cURL请求
 Route::get('api/get_wx_access_token', 'api/WeChant/getWxAccessToken'); // 获取微信公众号access_token
 Route::get('api/get_wx_server_ip', 'api/WeChant/getWxServerIp'); // 获取微信服务器IP地址
-Route::get('api/wxtest', 'api/Wxtest/index');
 
 /* -------------------- 测试路由 -------------------- e */

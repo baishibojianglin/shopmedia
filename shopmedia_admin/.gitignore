@@ -7,5 +7,6 @@ thinkphp
 /application/extra/app.php
 /application/extra/commission.php
 /application/extra/alipay.php
+/application/extra/wechant.php
 /application/common/lib/Aes.php
 /public/phpMyAdmin4.8.5
