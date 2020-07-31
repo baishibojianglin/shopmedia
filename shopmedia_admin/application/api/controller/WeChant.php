@@ -18,7 +18,17 @@ use think\Db;
  */
 class WeChant extends Controller
 {
-    public $accessToken = ''; // 微信公众号access_token
+    // 微信公众号全局唯一接口调用凭据 access_token
+    public $accessToken = '';
+
+    // 定义 回复文本、图片、视频、音乐、图文等消息相应的回复模板
+    private $_msgTemplate = array(
+        'text' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[%s]]></Content></xml>', // 回复文本消息XML模板
+        'image' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[image]]></MsgType><Image><MediaId><![CDATA[%s]]></MediaId></Image></xml>', // 回复图片消息XML模板
+        'music' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description><MusicUrl><![CDATA[%s]]></MusicUrl><HQMusicUrl><![CDATA[%s]]></HQMusicUrl><ThumbMediaId><![CDATA[%s]]></ThumbMediaId></Music></xml>', // 回复音乐消息XML模板
+        'news' => '<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[news]]></MsgType><ArticleCount>%s</ArticleCount><Articles>%s</Articles></xml>', // （回复图文消息）图文消息主体XML模板
+        'news_item' => '<item><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description><PicUrl><![CDATA[%s]]></PicUrl><Url><![CDATA[%s]]></Url></item>', // （回复图文消息）某个图文消息XML模板
+    );
 
     /**
      * 初始化方法
@@ -115,76 +125,193 @@ class WeChant extends Controller
     public function responseMsg()
     {
         // 1.获取到微信推送过来的post数据（XML格式）
-        $postArr = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : file_get_contents('php://input');
-        //$postArr = $GLOBALS['HTTP_RAW_POST_DATA']; // php7版本以上不支持
+        //$postArr = $GLOBALS['HTTP_RAW_POST_DATA']; // php7版本以上不支持。php7版本以下需要使用需要开启php.ini配置文件里面的：always_populate_raw_post_data = On
         //$postArr = file_get_contents('php://input'); // php7+
+        $postArr = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : file_get_contents('php://input');
 
         // 2.处理消息类型，并设置回复类型和内容
-        /* 推送XML数据包示例：
-        <xml>
-          <ToUserName><![CDATA[toUser]]></ToUserName>
-          <FromUserName><![CDATA[FromUser]]></FromUserName>
-          <CreateTime>123456789</CreateTime>
-          <MsgType><![CDATA[event]]></MsgType>
-          <Event><![CDATA[subscribe]]></Event>
-        </xml>*/
         $postObj = simplexml_load_string($postArr); // XML格式转对象
-        /*$postObj->ToUserName = ''; // 开发者微信号
-        $postObj->FromUserName = ''; // 发送方帐号（一个OpenID）
-        $postObj->CreateTime = ''; // 消息创建时间 （整型）
-        $postObj->MsgType = ''; // 消息类型，event
-        $postObj->Event = ''; // 事件类型，subscribe(订阅)、unsubscribe(取消订阅)*/
-        // 判断该数据包是否是订阅的事件推送
         if (strtolower($postObj->MsgType) == 'event') {
-            // 如果是关注 subscribe 事件
-            if (strtolower($postObj->Event) == 'subscribe') {
-                // 获取用户基本信息
-                $openid = $postObj->FromUserName;
-                $userInfo = $this->getUserInfo($openid);
-                // 创建微信用户
-                $this->createWxUser($userInfo);
-
-                // 回复用户消息
-                $toUser   = $postObj->FromUserName;
-                $fromUser = $postObj->ToUserName;
-                $time     = time();
-                $msgType  = 'text';
-                $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser;
-                $template = "<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Content><![CDATA[%s]]></Content>
-                            </xml>";
-                $info     = sprintf($template, $toUser, $fromUser, $time, $msgType, $content);
-                //$info     = preg_replace('/[ ]/', '', $info); // 去掉空格
-                echo $info;
-            }
-            // TODO：扫描带参数二维码事件
-            if (strtolower($postObj->Event) == 'scan') {
-                $toUser   = $postObj->FromUserName;
-                $fromUser = $postObj->ToUserName;
-                $time     = time();
-                $msgType  = 'event';
-                $event    = 'subscribe';
-                $shopId   = 198; // 参数
-                $eventKey = 'qrscene_' . $shopId;
-                $QRCodeTicket = $this->getQRCodeTicket($shopId);
-                $ticket   = urlencode($QRCodeTicket['ticket']);
-                $template = "<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Event><![CDATA[%s]]></Event>
-                            <EventKey><![CDATA[%s]]></EventKey>
-                            <Ticket><![CDATA[%s]]></Ticket>
-                            </xml>";
-                $info     = sprintf($template, $toUser, $fromUser, $time, $msgType, $event, $eventKey, $ticket);
-                echo $info;
-            }
+            $this->doEvent($postObj);
         }
+    }
+
+    /**
+     * 处理事件消息
+     * @param $postObj
+     */
+    private function doEvent($postObj)
+    {
+        switch (strtolower($postObj->Event)){
+            case 'subscribe':
+                // 关注事件
+                $this->_subscribe($postObj);
+                break;
+            case 'unsubscribe':
+                // 取消关注事件
+                //$this->_unsubscribe($postObj);
+                break;
+            case 'scan':
+                // 扫描带参数二维码事件
+                $this->_scan($postObj);
+                break;
+            case 'click':
+                // 自定义菜单点击事件
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 关注公众号事件
+     * @param $postObj
+     *
+     * 关注/取消关注事件 推送XML数据包示例：
+     * <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[subscribe]]></Event>
+       </xml>
+     *
+     * 参数说明：
+     * $postObj->ToUserName = ''; // 开发者微信号
+     * $postObj->FromUserName = ''; // 发送方帐号（一个OpenID）
+     * $postObj->CreateTime = ''; // 消息创建时间 （整型）
+     * $postObj->MsgType = ''; // 消息类型，event
+     * $postObj->Event = ''; // 事件类型，subscribe(订阅)、unsubscribe(取消订阅)
+     */
+    private function _subscribe($postObj)
+    {
+        // 获取用户基本信息
+        $openid = $postObj->FromUserName;
+        $userInfo = $this->getUserInfo($openid);
+
+        // 创建微信用户
+        $this->createWxUser($userInfo);
+
+        // 回复用户消息
+        //$this->_msgText($postObj, $userInfo); // 回复文本消息
+        $this->_msgNews($postObj, $userInfo); // 回复图文消息
+    }
+
+    /**
+     * 回复文本消息
+     * @param $postObj
+     * @param $userInfo
+     */
+    private function _msgText($postObj, $userInfo)
+    {
+        $toUser   = $postObj->FromUserName;
+        $fromUser = $postObj->ToUserName;
+        $time     = time();
+        //$msgType  = 'text';
+        $eventKey   = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值（扫描带参数二维码事件，并关注）
+        $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser . ', scene_id ' . $eventKey;
+        $template = $this->_msgTemplate['text']; // 回复文本消息XML模板
+        /*$template = "<xml>
+                    <ToUserName><![CDATA[%s]]></ToUserName>
+                    <FromUserName><![CDATA[%s]]></FromUserName>
+                    <CreateTime>%s</CreateTime>
+                    <MsgType><![CDATA[%s]]></MsgType>
+                    <Content><![CDATA[%s]]></Content>
+                    </xml>";*/
+        $info     = sprintf($template, $toUser, $fromUser, $time,/* $msgType,*/ $content); // 从第二个参数开始与 XML 模板（如上注释的$template）参数的顺序一致，其中 MsgType 已在模板中不用传参
+        //$info     = preg_replace('/[ ]/', '', $info); // 去掉空格
+        echo $info;
+    }
+
+    /**
+     * 回复图文消息
+     * @param $postObj
+     * @param $userInfo
+     */
+    private function _msgNews($postObj, $userInfo)
+    {
+        $toUser   = $postObj->FromUserName;
+        $fromUser = $postObj->ToUserName;
+        $time     = time();
+        $eventKey   = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值
+
+        // 定义图文消息信息列表
+        $newsItems = [
+            [
+                'title' => '店通传媒',
+                'description' => '让经营更有价值 店铺' . $eventKey,
+                'picUrl' => 'http://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/a68927afa975b22287476deca36c45dcxd_slyj3.jpeg',
+                'url' => 'https://media.sustock.net/h5?shop_id=' . $eventKey
+            ]
+        ];
+
+        $articleCount = count($newsItems); // 图文消息个数
+
+        $articles = ''; // 图文消息信息
+        foreach ($newsItems as $key => $value) {
+            //（回复图文消息）某个图文消息XML模板，以下两种写法都可行
+            /*$articles .= '<item>
+                            <Title><![CDATA[' . $value['title'] . ']]></Title>
+                            <Description><![CDATA[' . $value['description'] . ']]></Description>
+                            <PicUrl><![CDATA[' . $value['picUrl'] . ']]></PicUrl>
+                            <Url><![CDATA[' . $value['url'] . ']]></Url>
+                          </item>';*/
+
+            $newsItemTemplate = $this->_msgTemplate['news_item'];
+            $articles .= sprintf($newsItemTemplate, $value['title'], $value['description'], $value['picUrl'], $value['url']);
+        }
+
+        $template = $this->_msgTemplate['news']; // （回复图文消息）图文消息主体XML模板
+        $info     = sprintf($template, $toUser, $fromUser, $time, $articleCount, $articles);
+        echo $info;
+    }
+
+    /**
+     * 扫描带参数二维码事件
+     * @param $postObj
+     *
+     * 1. 用户未关注时，进行关注后的事件推送（此时执行关注公众号事件，参考 _subscribe() 方法）
+     * 推送XML数据包示例：
+     * <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[subscribe]]></Event>
+        <EventKey><![CDATA[qrscene_123123]]></EventKey>
+        <Ticket><![CDATA[TICKET]]></Ticket>
+       </xml>
+     *
+     * 2.用户已关注时的事件推送
+     * 推送XML数据包示例：
+     * <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[SCAN]]></Event>
+        <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
+        <Ticket><![CDATA[TICKET]]></Ticket>
+       </xml>
+     */
+    private function _scan($postObj)
+    {
+        /*$toUser   = $postObj->FromUserName;
+        $fromUser = $postObj->ToUserName;
+        $time     = time();
+        $eventKey   = $postObj->EventKey; // 事件KEY值
+        $content  = '欢迎关注我们的公众号 ' . $fromUser . ', scene_id ' . $eventKey;
+        $template = $this->_msgTemplate['text'];
+        $info     = sprintf($template, $toUser, $fromUser, $time, $content);
+        echo $info;*/
+
+        // 获取用户基本信息
+        $openid = $postObj->FromUserName;
+        $userInfo = $this->getUserInfo($openid);
+
+        // 回复用户消息
+        //$this->_msgText($postObj, $userInfo); // 回复文本消息
+        $this->_msgNews($postObj, $userInfo); // 回复图文消息
     }
 
     /**
@@ -295,29 +422,62 @@ class WeChant extends Controller
 
     /**
      * 生成带参数的二维码：第一步、创建二维码ticket
+     * @param int|string $sceneId 场景值ID
+     * @param int $type 二维码类型：0临时，1永久
+     * @return mixed
      */
-    public function getQRCodeTicket($shopId)
+    public function getQRCodeTicket($sceneId, $type = 0)
     {
         $accessToken = $this->accessToken;
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $accessToken;
 
-        //生成临时二维码
-        $param = '{"expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": {"scene": {"scene_str": ' . $shopId . '}}}';
-        $QRCodeTicket = $this->http_curl($url, 'post', 'json', $param);
+        if ($type == 1) {
+            //生成永久二维码
+            //临时二维码POST数据（json格式）例子：{"action_name": "QR_LIMIT_SCENE", "action_info": {"scene": {"scene_id": 123}}}
+            $postArr = [
+                'action_name' => 'QR_LIMIT_SCENE', // 二维码类型，QR_LIMIT_SCENE为永久的整型参数值
+                'action_info' => [ // 二维码详细信息
+                    'scene' => [
+                        'scene_id' => $sceneId // 场景值ID
+                    ]
+                ]
+            ];
+        } else {
+            //生成临时二维码
+            //临时二维码POST数据（json格式）例子：{"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
+            $postArr = [
+                'expire_seconds' => 604800, // 二维码有效时间（秒），24*60*60*7
+                'action_name' => 'QR_SCENE', // 二维码类型，QR_SCENE为临时的整型参数值
+                'action_info' => [ // 二维码详细信息
+                    'scene' => [
+                        'scene_id' => $sceneId // 场景值ID
+                    ]
+                ]
+            ];
+        }
+
+        $postJson = json_encode($postArr);
+        $QRCodeTicket = $this->http_curl($url, 'post', 'json', $postJson);
         //var_dump($QRCodeTicket);
         return $QRCodeTicket;
     }
 
     /**
      * 生成带参数的二维码：第二步、通过ticket到指定URL换取二维码
+     * @param int|string $sceneId 场景值ID
+     * @param int $type 二维码类型：0临时，1永久
+     * @return string
      */
-    public function showQRCode($shopId)
+    public function showQRCode($sceneId, $type)
     {
-        $QRCodeTicket = $this->getQRCodeTicket($shopId);
-        $ticket = urlencode($QRCodeTicket['ticket']);
-        $url = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $ticket;
-        //$QRCode = $this->http_curl($url, 'get', 'json');
-        return $url;
+        $QRCodeTicket = $this->getQRCodeTicket($sceneId, $type);
+        $ticket = urlencode($QRCodeTicket['ticket']); // 提醒：TICKET记得进行UrlEncode
+        $url = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $ticket; // 不需要使用 http_curl() 转换
+
+        $type = $type == 1 ? "永久二维码" : "临时二维码";
+        echo $type . ' <img src="' . $url . '" title="' . $type . '" />';
+
+        //return $url;
     }
 
     /**
