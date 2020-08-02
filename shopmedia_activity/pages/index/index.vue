@@ -1,12 +1,22 @@
 <template>
 	<view class="content">
-
 		<view v-show="showseconds">
 			<view style="width: 100%; margin-top: 30px;">
 				<image style="width:80%;" :mode="mode" :src="src0"></image>
 			</view>
 			<view>
 				<text class="opentime">{{seconds}}</text>
+			</view>
+			
+			<view class="uni-bold">
+				<uni-card>
+					<view class="">店铺ID：{{shop_id}}</view>
+					<view class="">用户openid：{{wxUserInfo.openid}}</view>
+					<view class="">用户昵称：{{wxUserInfo.nickname}}</view>
+					<view class="">
+						<image :src="wxUserInfo.headimgurl" mode="aspectFit" width="100"></image>
+					</view>
+				</uni-card>
 			</view>
 		</view>
 
@@ -101,11 +111,27 @@
 				timesign: '', //定时器标志
 				
 				phone: '', // 领奖电话号码
-				isAward: false // 判断是否领奖成功
+				isAward: false, // 判断是否领奖成功
+				
+				shop_id: '', // 抽奖店铺ID
+				
+				// 扫广告屏上二维码后获取的微信用户信息
+				wxUserInfo: {
+					'openid': '',
+					'nickname': '',
+					'headimgurl': '' 
+				}
 			}
 		},
 		onLoad(option) {
-			//console.log(option.id)
+			// console.log(option);
+			if (option) {
+				this.shop_id = option.shop_id;
+				this.wxUserInfo.openid = option.openid;
+				this.wxUserInfo.nickname = option.nickname;
+				this.wxUserInfo.headimgurl = option.headimgurl;
+			}
+			
 			//倒计时
 			let self = this;
 			this.timesign = setInterval(function() {
@@ -113,7 +139,9 @@
 			}, 1000);
 			
 			//获取奖品
-			this.prize(1);
+			if (this.shop_id && this.wxUserInfo.openid) {
+				this.prize(this.shop_id);
+			}
 		},
 		methods: {
 			/**

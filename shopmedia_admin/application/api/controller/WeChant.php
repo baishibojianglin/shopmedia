@@ -241,7 +241,7 @@ class WeChant extends Controller
                 'title' => '店通传媒',
                 'description' => '让经营更有价值 店铺' . $eventKey,
                 'picUrl' => 'http://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/a68927afa975b22287476deca36c45dcxd_slyj3.jpeg',
-                'url' => 'https://media.sustock.net/h5?shop_id=' . $eventKey
+                'url' => 'http://media.dilinsat.com/activity_h5?shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
             ]
         ];
 
