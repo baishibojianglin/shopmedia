@@ -1,22 +1,20 @@
 <template>
 	<view class="content">
+		<view class="uni-bold" style="margin-top: 50px;height: 20px;">
+			<view class="">店铺ID：{{shop_id}}</view>
+			<view class="">用户openid：{{wxUserInfo.openid}}</view>
+			<view class="">用户昵称：{{wxUserInfo.nickname}}</view>
+			<!-- <view class="">
+				<image :src="wxUserInfo.headimgurl" mode="aspectFit" width="10"></image>
+			</view> -->
+		</view>
+		
 		<view v-show="showseconds">
 			<view style="width: 100%; margin-top: 30px;">
 				<image style="width:80%;" :mode="mode" :src="src0"></image>
 			</view>
 			<view>
 				<text class="opentime">{{seconds}}</text>
-			</view>
-			
-			<view class="uni-bold">
-				<uni-card>
-					<view class="">店铺ID：{{shop_id}}</view>
-					<view class="">用户openid：{{wxUserInfo.openid}}</view>
-					<view class="">用户昵称：{{wxUserInfo.nickname}}</view>
-					<view class="">
-						<image :src="wxUserInfo.headimgurl" mode="aspectFit" width="100"></image>
-					</view>
-				</uni-card>
 			</view>
 		</view>
 
@@ -136,14 +134,63 @@
 			let self = this;
 			this.timesign = setInterval(function() {
 				self.countseconds();
+				// console.log('showseconds' , self.showseconds)
+				if (self.showseconds == false) {
+					if (self.shop_id && self.wxUserInfo.openid) {
+						// 获取奖品
+						self.prize(self.shop_id);
+						// 记录抽奖信息
+						self.recordRaffleLog();
+					}
+				}
 			}, 1000);
-			
-			//获取奖品
-			if (this.shop_id && this.wxUserInfo.openid) {
-				this.prize(this.shop_id);
-			}
 		},
 		methods: {
+			/**
+			 * 记录抽奖信息
+			 */
+			recordRaffleLog() {
+				let self = this;
+				// 发起网络请求，提交服务端
+				uni.request({
+					url: this.$serverUrl + 'api/record_raffle_log',
+					data: {
+						shop_id: this.shop_id,
+						openid: this.wxUserInfo.openid
+						
+					},
+					method: 'POST',
+					success: function(res) {
+						if (0 == res.data.status) { // 提交失败
+							
+							// 判断是否已经抽奖
+							if (typeof(res.data.data.today_raffle) != 'undefined' && res.data.data.today_raffle > 0) {
+								// console.log(414, self.prize_no)
+								self.prize_yes = false;
+								self.prize_no = true;
+							}
+							
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+							return;
+						} else { // 提交成功
+							uni.showToast({
+								icon: 'none',
+								title: res.data.message
+							});
+						}
+					},
+					fail: function(error) {
+						uni.showToast({
+							icon: 'none',
+							title: error.response.message
+						});
+					}
+				})
+			},
+			
 			/**
 			 * 倒计时函数
 			 */
@@ -236,12 +283,14 @@
 						prize_id: this.prize_info.prize.prize_id,
 						prize_name: this.prize_info.prize.prize_name,
 						shop_id: this.prize_info.shop.shop_id,
-						phone: this.phone
+						phone: this.phone,
+						openid: this.wxUserInfo.openid,
+						prizewinner: this.wxUserInfo.nickname
 					},
-					header:{
+					/* header:{
 						'commonheader': this.commonheader,
 						// 'access-user-token': this.userInfo.token
-					},
+					}, */
 					method: 'POST',
 					success: function(res) {
 						if (0 == res.data.status) { // 提交失败
@@ -259,7 +308,11 @@
 						}
 					},
 					fail: function(error) {
-						
+						// console.log('error', error.response);
+						uni.showToast({
+							icon: 'none',
+							title: error.response.message
+						});
 					}
 				})
 			},

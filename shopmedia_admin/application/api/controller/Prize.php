@@ -1,6 +1,7 @@
 <?php
 
 namespace app\api\controller;
+use app\common\lib\IAuth;
 use think\Controller;
 use think\Request;
 use think\Db;
@@ -41,7 +42,7 @@ class Prize extends Controller
         }
 
         //设置中奖概率1/5
-        $aim=rand(1,5);
+        $aim=rand(1,2);
 
         //判断是否能中奖
         if( $aim==2){ 
@@ -62,6 +63,47 @@ class Prize extends Controller
     }
 
     /**
+     * 记录抽奖信息
+     * @return \think\response\Json
+     * @throws \think\Exception
+     */
+    public function recordRaffleLog()
+    {
+        // 判断为POST请求
+        if(!request()->isPost()){
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $data = input('post.');
+
+        // 判断参数是否合法
+        // 店铺是否存在
+        $shop = Db::name('shop')->where(['shop_id' => (int)$data['shop_id'], 'status' => config('code.status_enable')])->find();
+        if (empty($shop)) {
+            return show(config('code.error'), '店铺被禁用或不存在', '', 404);
+        }
+        // 是否获取微信用户信息
+        if (!isset($data['openid']) || empty($data['openid'])) {
+            return show(config('code.error'), '获取微信用户失败', '', 404);
+        }
+        // 该用户在该店铺今日是否已经抽奖（注意：每个微信用户每天只能在一家店铺抽一次奖）
+        $todayRaffleLogCount = Db::name('act_raffle_log')->where(['shop_id' => (int)$data['shop_id'], 'oauth' => 'wx', 'openid' => $data['openid']])->whereTime('raffle_time', 'today')->count();
+        if ($todayRaffleLogCount > 0) {
+            return show(config('code.error'), '你今日已在该店铺抽过奖了，明日再来吧', ['today_raffle' => $todayRaffleLogCount], 403);
+        }
+
+        $data['raffle_time'] = time(); // 抽奖时间
+        $data['oauth'] = 'wx'; // 抽奖者第三方来源
+        $res = Db::name('act_raffle_log')->insertGetId($data);
+        if ($res) {
+            return show(config('code.success'), '已参与抽奖', '', 201);
+        } else {
+            return show(config('code.error'), '提交失败', '', 403);
+        }
+    }
+    
+    /**
      * 提交领奖信息
      * @return \think\response\Json
      */
@@ -73,10 +115,10 @@ class Prize extends Controller
         }
 
         // 传入的参数
-        $data = input('post.');
+        $param = input('post.');
 
         // 判断奖品数量是否为零
-        $actPrize = Db::name('act_prize')->field('quantity, status')->find($data['prize_id']);
+        $actPrize = Db::name('act_prize')->field('quantity, status')->find($param['prize_id']);
         if ($actPrize['quantity'] <= 0 || $actPrize['status'] != 1) {
             return show(config('code.error'), '很遗憾，奖品已领完！', '', 400);
         }
@@ -86,19 +128,64 @@ class Prize extends Controller
         // 启动事务
         Db::startTrans();
         try {
+            $time = time(); // 抽奖时间
+
+            // 获取抽奖记录，如果不存在则添加记录
+            $todayRaffleLog = Db::name('act_raffle_log')->where(['shop_id' => (int)$param['shop_id'], 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
+            if (empty($todayRaffleLog)) {
+                $raffleLogData['shop_id'] = (int)$param['shop_id'];
+                $raffleLogData['raffle_time'] = $time; // 抽奖时间
+                $raffleLogData['oauth'] = 'wx'; // 抽奖者第三方来源
+                $raffleLogData['openid'] = $param['openid']; // 抽奖者第三方唯一标识
+                $res[0] = Db::name('act_raffle_log')->strict(true)->insertGetId($raffleLogData);
+            }
+
             // 新增中奖者信息
-            $data['raffle_time'] = time();
-            $data['prizewinner'] = $data['phone'];
-            $res[0] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($data);
+            $raffleData['act_id'] = (int)$param['act_id'];
+            $raffleData['prize_id'] = (int)$param['prize_id'];
+            $raffleData['prize_name'] = $param['prize_name'];
+            $raffleData['shop_id'] = (int)$param['shop_id'];
+            $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
+            $raffleData['prizewinner'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
+            $raffleData['phone'] = trim($param['phone']);
+            $raffleData['oauth'] = 'wx';
+            $raffleData['openid'] = $param['openid'];
+            $res[1] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($raffleData);
 
             // 减少活动奖品数量
-            $res[1] = Db::name('act_prize')->where(['prize_id' => $data['prize_id']])->setDec('quantity', 1);
+            $res[2] = Db::name('act_prize')->where(['prize_id' => $param['prize_id']])->setDec('quantity', 1);
 
             // 获取减少后的奖品信息
-            $actPrize1 = Db::name('act_prize')->field('quantity, status')->find($data['prize_id']);
+            $actPrize1 = Db::name('act_prize')->field('quantity, status')->find($param['prize_id']);
             // 当奖品数量为零时，下架该奖品
             if ($actPrize1['quantity'] <= 0) {
-                $res[2] = Db::name('act_prize')->where(['prize_id' => $data['prize_id']])->update(['status' => 0]);
+                $res[3] = Db::name('act_prize')->where(['prize_id' => $param['prize_id']])->update(['status' => 0]);
+            }
+
+
+            // 判断 用户表表user 是否存在该用户，如果不存在则创建用户，并将 user_id 绑定到 第三方授权登录表user_oauth
+            // 创建用户
+            $user = Db::name('user')->where(['phone' => trim($param['phone'])])->find();
+            if (empty($user)) {
+                $userData['user_name'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
+                $userData['phone'] = trim($param['phone']);
+                $userData['phone_verified'] = 1; // 手机号已验证
+                $userData['password'] = IAuth::encrypt(trim($param['phone']));
+                $userData['status'] = config('code.status_enable');
+                $userData['create_time'] = time(); // 创建时间
+                $userData['create_ip'] = request()->ip(); // 创建IP
+                $res[4] = $userId = Db::name('user')->strict(false)->insertGetId($userData); // 新增数据并返回主键值
+            } else {
+                $userId = $user['user_id'];
+            }
+            // 将 user_id 绑定到 第三方授权登录表user_oauth
+            $userOauth = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $param['openid']])->find();
+            if (!$userOauth['user_id'] || $userOauth['user_id'] != $userId) {
+                $raffle = Db::name('act_raffle')->where(['oauth' => 'wx', 'openid' => $param['openid']])->find();
+                if ($raffle['phone'] == trim($param['phone'])) { // TODO：可以不做该判断，因为入参 phone 是一致的
+                    $userOauthData['user_id'] = $userId;
+                    $res[5] = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $param['openid']])->update($userOauthData);
+                }
             }
 
             // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
@@ -112,7 +199,7 @@ class Prize extends Controller
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
-            return show(config('code.error'), '请求异常', '', 500);
+            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
         }
     }
 }

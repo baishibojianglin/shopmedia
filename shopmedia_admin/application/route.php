@@ -211,6 +211,7 @@ Route::get('api/get_fix_city', 'api/Index/getCity'); // 懒加载区域树形数
 // 抽奖活动
 Route::get('api/get_prize', 'api/Prize/getPrize'); // 获取中奖奖品信息
 Route::post('api/winner_info', 'api/Prize/winnerInfo'); // 提交领奖信息
+Route::post('api/record_raffle_log', 'api/Prize/recordRaffleLog'); // 记录抽奖信息
 
 //获取广告案例
 Route::get('api/get_case', 'api/Adcase/getCase'); // 获取中奖奖品信息
