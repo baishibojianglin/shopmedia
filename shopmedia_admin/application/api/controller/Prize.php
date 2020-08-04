@@ -155,10 +155,10 @@ class Prize extends Controller
             $raffleData['openid'] = $param['openid'];
             $res[1] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($raffleData);
 
-            // 更新抽奖记录表的中奖状态
+            /*// 更新抽奖记录表的中奖状态
             if ($raffleID) {
                 $res[3] = Db::name('act_raffle_log')->where(['prize_id' => $param['prize_id']])->update(['status' => 0]);
-            }
+            }*/
 
             // 减少活动奖品数量
             $res[2] = Db::name('act_prize')->where(['prize_id' => $param['prize_id']])->setDec('quantity', 1);

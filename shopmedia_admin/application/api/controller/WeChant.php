@@ -33,13 +33,13 @@ class WeChant extends Controller
     /**
      * 初始化方法
      */
-    public function _initialize()
+    /*public function _initialize()
     {
         parent::_initialize();
 
         // 获取微信公众号access_token
         $this->getWxAccessToken();
-    }
+    }*/
 
     /**
      * 检验signature 与 接收事件推送（关注/取消关注事件）
@@ -357,6 +357,7 @@ class WeChant extends Controller
 
     /**
      * 获取微信公众号access_token
+     * @return mixed
      *
      * 注意：①需要在微信公众号配置IP白名单；②设置 access_token 缓存的有效期应小于凭证（即access_token）有效时间 expires_in
      */
@@ -376,7 +377,9 @@ class WeChant extends Controller
         }
         
         // 获取 access_token 缓存
-        $this->accessToken = cache('access_token');
+        //$this->accessToken = cache('access_token');
+        $accessToken = cache('access_token');
+        return $accessToken;
     }
 
     /**
@@ -384,7 +387,8 @@ class WeChant extends Controller
      */
     public function getWxServerIp()
     {
-        $accessToken = $this->accessToken;
+        //$accessToken = $this->accessToken;
+        $accessToken = $this->getWxAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=' . $accessToken;
 
         $arr = $this->http_curl($url, 'get', 'json');
@@ -398,7 +402,8 @@ class WeChant extends Controller
      */
     public function getUserInfo($openid)
     {
-        $accessToken = $this->accessToken;
+        //$accessToken = $this->accessToken;
+        $accessToken = $this->getWxAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accessToken . '&openid=' . $openid . '&lang=zh_CN';
 
         $userInfo = $this->http_curl($url, 'get', 'json');
@@ -428,7 +433,8 @@ class WeChant extends Controller
      */
     public function getQRCodeTicket($sceneId, $type = 0)
     {
-        $accessToken = $this->accessToken;
+        //$accessToken = $this->accessToken;
+        $accessToken = $this->getWxAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $accessToken;
 
         if ($type == 1) {
