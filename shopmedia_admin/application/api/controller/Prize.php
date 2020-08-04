@@ -34,14 +34,14 @@ class Prize extends Controller
         $data['shop'] = $shop;
 
         //确定该店铺今日能否再中奖
-        $actRaffleMap['shop_id'] = $form['shop_id'];
-        $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
-        if($shopprize > 3){  //一个店一天最多抽3个奖品
-            $data['status'] = 0;
-            return json($data);
-        }
+        // $actRaffleMap['shop_id'] = $form['shop_id'];
+        // $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
+        // if($shopprize > 3){  //一个店一天最多抽3个奖品
+        //     $data['status'] = 0;
+        //     return json($data);
+        // }
 
-        //设置中奖概率1/5
+        //设置中奖概率1/2
         $aim=rand(1,2);
 
         //判断是否能中奖
@@ -79,7 +79,7 @@ class Prize extends Controller
 
         // 判断参数是否合法
         if (!isset($data['shop_id']) || empty(trim($data['shop_id'])) || trim($data['shop_id']) == 'null' || trim($data['shop_id']) == '') {
-            return show(config('code.error'), '请到店铺扫描广告屏上二维码参与抽奖', '', 403);
+            return show(config('code.error'), '扫描店铺广告屏上二维码参与抽奖', '', 403);
         }
         // 店铺是否存在
         $shop = Db::name('shop')->where(['shop_id' => (int)$data['shop_id'], 'status' => config('code.status_enable')])->find();

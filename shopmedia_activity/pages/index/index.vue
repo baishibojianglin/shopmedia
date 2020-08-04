@@ -1,13 +1,13 @@
 <template>
 	<view class="content">
-		<view class="uni-bold" style="margin-top: 50px;height: 20px;">
+<!-- 		<view class="uni-bold" style="margin-top: 50px;height: 20px;">
 			<view class="">店铺ID：{{shop_id}}</view>
 			<view class="">用户openid：{{wxUserInfo.openid}}</view>
 			<view class="">用户昵称：{{wxUserInfo.nickname}}</view>
-			<!-- <view class="">
+			<view class="">
 				<image :src="wxUserInfo.headimgurl" mode="aspectFit" width="10"></image>
-			</view> -->
-		</view>
+			</view>
+		</view> -->
 		
 		<view v-show="showseconds">
 			<view style="width: 100%; margin-top: 30px;">
@@ -33,7 +33,7 @@
 			</view>
 			<!--未中奖 e-->
 
-			<view v-if="prize_yes">
+			<view v-if="prize_yes" style="position: fixed; z-index: 100;top:20%;">
 				<view style="width: 100%; margin-top:20px;">
 					<image style="width:90%;" :mode="mode" :src="src2"></image>
 				</view>
@@ -187,14 +187,17 @@
 							})
 							return;
 						} else { // 提交成功
-							uni.showModal({
-								title: '提示',
-								content: res.data.message,
-								showCancel: false
-							})
+
+							// uni.showModal({
+							// 	title: '提示',
+							// 	content: res.data.message,
+							// 	showCancel: false
+							// })
+
 							
 							// 获取奖品
 							self.prize(self.shop_id);
+
 						}
 					},
 					fail: function(error) {
