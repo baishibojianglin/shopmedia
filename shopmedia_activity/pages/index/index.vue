@@ -145,8 +145,6 @@
 				// console.log('showseconds' , self.showseconds)
 				if (self.showseconds == false) {
 					if (self.shop_id && self.wxUserInfo.openid) {
-						// 获取奖品
-						self.prize(self.shop_id);
 						// 记录抽奖信息
 						self.recordRaffleLog();
 					}
@@ -189,11 +187,17 @@
 							})
 							return;
 						} else { // 提交成功
+
 							// uni.showModal({
 							// 	title: '提示',
 							// 	content: res.data.message,
 							// 	showCancel: false
 							// })
+
+							
+							// 获取奖品
+							self.prize(self.shop_id);
+
 						}
 					},
 					fail: function(error) {
