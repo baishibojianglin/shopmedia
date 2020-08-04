@@ -294,8 +294,8 @@ class WeChant extends Controller
         // 定义图文消息信息列表
         $newsItems = [
             [
-                'title' => '店通传媒',
-                'description' => '让经营更有价值 店铺' . $eventKey,
+                'title' => '欢迎关注店通传媒',
+                'description' => '奖品不断，快来发现惊喜吧！',
                 'picUrl' => 'http://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/a68927afa975b22287476deca36c45dcxd_slyj3.jpeg',
                 'url' => 'http://media.dilinsat.com/activity_h5?shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
             ]
