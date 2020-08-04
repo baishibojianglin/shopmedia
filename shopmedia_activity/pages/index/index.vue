@@ -24,16 +24,16 @@
 				<view style="width: 100%; margin-top: 30px;">
 					<image style="width:100%;" :mode="mode" :src="src1"></image>
 				</view>
-				<view style="margin-top:0px;">
+<!-- 				<view style="margin-top:0px;">
 					<text class="color-shop" style="color:#007AFF; background-color: #fff; padding: 10px 40px; border-radius: 10px;">{{prize_info.shop.shop_name}}</text>
-				</view>
-				<view style="margin-top:60px;">
-					<text>很遗憾未中奖，期待下次为您服务！</text>
+				</view> -->
+				<view style="margin-top:60px; font-size: 16px;">
+					<text>很遗憾未中奖，期待您的下次光临！</text>
 				</view>
 			</view>
 			<!--未中奖 e-->
 
-			<view v-if="prize_yes" style="position: fixed; z-index: 100;top:20%;">
+			<view v-if="prize_yes">
 				<view style="width: 100%; margin-top:20px;">
 					<image style="width:90%;" :mode="mode" :src="src2"></image>
 				</view>
@@ -47,21 +47,18 @@
 					对该奖品的独家赞助
 				</view>
 
-				<!-- <view style="margin-top: 30px; font-size: 16px;">
-				感谢<text style="font-weight: bold;">{{prize_info.shop_name}}</text>大力支持
-				</view> -->
 				
 				<view v-if="!isAward">
 					<button type="primary" @click="confirmDialog" style="width: 95%; margin-top:30px;">领取奖品</button>
 					
 					<!-- 提交信息 -->
 					<uni-popup ref="dialogInput" type="dialog" @change="change">
-						<uni-popup-dialog mode="input" title="奖品需到店领取!!!" value="" placeholder="请输入领奖电话" @confirm="dialogInputConfirm"></uni-popup-dialog>
+						<uni-popup-dialog mode="input" title="请到店领取奖品" value="" placeholder="请输入领奖电话" @confirm="dialogInputConfirm"></uni-popup-dialog>
 					</uni-popup>
 				</view>
 				
-				<view v-if="isAward" class="uni-common-mt">
-					<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：请到店提供电话号码领取你的奖品!!!">
+				<view v-if="isAward">
+					<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：请到店提供电话号码领取你的奖品">
 						<view class="uni-flex uni-row">
 							<view class="text-left" style="width: 200rpx;">领奖电话</view>
 							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{phone}}</view>
@@ -77,9 +74,6 @@
 					</uni-card>
 				</view>
 
-				<!-- <view>
-					<button type="primary" style="width: 95%; margin-top:30px;">领取奖品</button>
-				</view> -->
 			</view>
 		</view>
 
@@ -102,7 +96,11 @@
 				src2: '/static/gxzj.png',
 				prize_no: false,
 				prize_yes: false,
-				prize_info: {},
+				prize_info: {
+					shop:{
+						shop_name:''
+					}
+				},
 
 				seconds: 5, //倒计时秒数
 				showseconds: true, //显示倒计时
@@ -122,7 +120,7 @@
 			}
 		},
 		onLoad(option) {
-			// console.log(option);
+
 			if (option) {
 				if (typeof(option.shop_id) == 'undefined' || option.shop_id == 'null') {
 					uni.showModal({
@@ -130,7 +128,9 @@
 						content: '请到店铺扫描广告屏上二维码参与抽奖',
 						showCancel: false
 					})
+					return false;
 				}
+
 				
 				this.shop_id = option.shop_id;
 				this.wxUserInfo.openid = option.openid;
@@ -142,7 +142,6 @@
 			let self = this;
 			this.timesign = setInterval(function() {
 				self.countseconds();
-				// console.log('showseconds' , self.showseconds)
 				if (self.showseconds == false) {
 					if (self.shop_id && self.wxUserInfo.openid) {
 						// 记录抽奖信息
@@ -150,6 +149,7 @@
 					}
 				}
 			}, 1000);
+			
 		},
 		methods: {
 			/**
@@ -171,37 +171,25 @@
 							
 							// 判断是否已经抽奖
 							if (typeof(res.data.data.today_raffle) != 'undefined' && res.data.data.today_raffle > 0) {
-								// console.log(414, self.prize_no)
 								self.prize_yes = false;
 								self.prize_no = true;
 							}
 							
-							/* uni.showToast({
-								icon: 'none',
-								title: res.data.message
-							}); */
 							uni.showModal({
 								title: '提示',
 								content: res.data.message,
 								showCancel: false
 							})
+
 							return;
 						} else { // 提交成功
-
-							// uni.showModal({
-							// 	title: '提示',
-							// 	content: res.data.message,
-							// 	showCancel: false
-							// })
-
-							
+						
 							// 获取奖品
 							self.prize(self.shop_id);
 
 						}
 					},
 					fail: function(error) {
-						// console.log(221, error.response);
 						uni.showModal({
 							title: '提示',
 							content: error.response.message,
@@ -240,9 +228,11 @@
 						if (res.data.status == 0) { //未中奖
 							self.prize_no = true;
 							self.prize_info = res.data;
+							console.log(self.prize_info)
 						} else { //中奖
 							self.prize_yes = true;
 							self.prize_info = res.data;
+							console.log(self.prize_info)
 						}
 					}
 				})
