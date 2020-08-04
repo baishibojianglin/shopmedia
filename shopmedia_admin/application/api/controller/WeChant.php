@@ -464,6 +464,7 @@ class WeChant extends Controller
 
     /**
      * 生成带参数的二维码：第二步、通过ticket到指定URL换取二维码
+     * 浏览器访问如 http://media.dilinsat.com/index.php/api/show_wx_qrcode?sceneId=2&type=0
      * @param int|string $sceneId 场景值ID
      * @param int $type 二维码类型：0临时，1永久
      * @return string

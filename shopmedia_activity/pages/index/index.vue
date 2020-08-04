@@ -124,6 +124,14 @@
 		onLoad(option) {
 			// console.log(option);
 			if (option) {
+				if (typeof(option.shop_id) == 'undefined' || option.shop_id == 'null') {
+					uni.showModal({
+						title: '提示',
+						content: '请到店铺扫描广告屏上二维码参与抽奖',
+						showCancel: false
+					})
+				}
+				
 				this.shop_id = option.shop_id;
 				this.wxUserInfo.openid = option.openid;
 				this.wxUserInfo.nickname = option.nickname;
@@ -170,23 +178,31 @@
 								self.prize_no = true;
 							}
 							
-							uni.showToast({
+							/* uni.showToast({
 								icon: 'none',
 								title: res.data.message
-							});
+							}); */
+							uni.showModal({
+								title: '提示',
+								content: res.data.message,
+								showCancel: false
+							})
 							return;
 						} else { // 提交成功
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message
-							});
+							uni.showModal({
+								title: '提示',
+								content: res.data.message,
+								showCancel: false
+							})
 						}
 					},
 					fail: function(error) {
-						uni.showToast({
-							icon: 'none',
-							title: error.response.message
-						});
+						// console.log(221, error.response);
+						uni.showModal({
+							title: '提示',
+							content: error.response.message,
+							showCancel: false
+						})
 					}
 				})
 			},
@@ -294,25 +310,28 @@
 					method: 'POST',
 					success: function(res) {
 						if (0 == res.data.status) { // 提交失败
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message
-							});
+							uni.showModal({
+								title: '提示',
+								content: res.data.message,
+								showCancel: false
+							})
 							return;
 						} else { // 提交成功
-							uni.showToast({
-								icon: 'none',
-								title: res.data.message
-							});
+							uni.showModal({
+								title: '提示',
+								content: res.data.message,
+								showCancel: false
+							})
 							self.isAward = true;
 						}
 					},
 					fail: function(error) {
 						// console.log('error', error.response);
-						uni.showToast({
-							icon: 'none',
-							title: error.response.message
-						});
+						uni.showModal({
+							title: '提示',
+							content: error.response.message,
+							showCancel: false
+						})
 					}
 				})
 			},

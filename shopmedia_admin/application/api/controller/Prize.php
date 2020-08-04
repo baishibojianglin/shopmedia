@@ -78,6 +78,9 @@ class Prize extends Controller
         $data = input('post.');
 
         // 判断参数是否合法
+        if (!isset($data['shop_id']) || empty(trim($data['shop_id'])) || trim($data['shop_id']) == 'null' || trim($data['shop_id']) == '') {
+            return show(config('code.error'), '请到店铺扫描广告屏上二维码参与抽奖', '', 403);
+        }
         // 店铺是否存在
         $shop = Db::name('shop')->where(['shop_id' => (int)$data['shop_id'], 'status' => config('code.status_enable')])->find();
         if (empty($shop)) {
@@ -90,7 +93,7 @@ class Prize extends Controller
         // 该用户在该店铺今日是否已经抽奖（注意：每个微信用户每天只能在一家店铺抽一次奖）
         $todayRaffleLogCount = Db::name('act_raffle_log')->where(['shop_id' => (int)$data['shop_id'], 'oauth' => 'wx', 'openid' => $data['openid']])->whereTime('raffle_time', 'today')->count();
         if ($todayRaffleLogCount > 0) {
-            return show(config('code.error'), '你今日已在该店铺抽过奖了，明日再来吧', ['today_raffle' => $todayRaffleLogCount], 403);
+            return show(config('code.error'), '你今日在该店铺已经抽过奖了，明日再来吧', ['today_raffle' => $todayRaffleLogCount], 403);
         }
 
         $data['raffle_time'] = time(); // 抽奖时间
