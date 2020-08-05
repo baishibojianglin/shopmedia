@@ -157,6 +157,7 @@ class WeChant extends Controller
                 break;
             case 'click':
                 // 自定义菜单点击事件
+                $this->_click($postObj);
                 break;
             default:
                 break;
@@ -194,7 +195,32 @@ class WeChant extends Controller
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
-        $this->_msgNews($postObj, $userInfo); // 回复图文消息
+        $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息
+    }
+
+    /**
+     * TODO：自定义菜单点击事件
+     * @param $postObj
+     */
+    private function _click($postObj)
+    {
+        $newsItems = []; // 定义图文消息信息列表
+        switch (strtolower($postObj->EventKey)){
+            case 'ad_price':
+                // 广告价格 菜单
+                $newsItems = [
+                    [
+                        'title' => '店通传媒价格详情',
+                        'description' => '',
+                        'picUrl' => 'http://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/a68927afa975b22287476deca36c45dcxd_slyj3.jpeg',
+                        'url' => 'https://mp.weixin.qq.com/s?__biz=MzIwNjYzNjMwOA==&tempkey=MTA3Ml9VbGtqY0pPNnl0SHVFb0JGaHdyMVJ0TURSNV8wdXZDUzctd0pSZmdqdFVJNGRueXlFeTJKX0k2T2wtU1hoMDhwSWQ1c0FoVnh2YXpKU203T0hSTGlpZ1VnaEJSMHhhWUVTUlZtWkZndHRwNEQ2TFBjbk8zR0V2OHI3Nk9rSHhYM3F4TW94ZU9hUlEyU0VmbkVFMmVHeXNUM2pXb242MWJUSVVjZVlRfn4%3D&chksm=171fd56320685c752c1faa71f3ca18275ea8d1d0a86e9c8659752ddd8968c9c96e608516d88d#rd'
+                    ]
+                ];
+                break;
+            default:
+                break;
+        }
+        $this->_msgNews($postObj, $newsItems);
     }
 
     /**
@@ -209,7 +235,7 @@ class WeChant extends Controller
         $time     = time();
         //$msgType  = 'text';
         $eventKey   = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值（扫描带参数二维码事件，并关注）
-        $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser . ', scene_id ' . $eventKey;
+        $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser . '，scene_id ' . $eventKey;
         $template = $this->_msgTemplate['text']; // 回复文本消息XML模板
         /*$template = "<xml>
                     <ToUserName><![CDATA[%s]]></ToUserName>
@@ -226,24 +252,14 @@ class WeChant extends Controller
     /**
      * 回复图文消息
      * @param $postObj
-     * @param $userInfo
+     * @param $newsItems
      */
-    private function _msgNews($postObj, $userInfo)
+    private function _msgNews($postObj, $newsItems)
     {
         $toUser   = $postObj->FromUserName;
         $fromUser = $postObj->ToUserName;
         $time     = time();
-        $eventKey   = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值
-
-        // 定义图文消息信息列表
-        $newsItems = [
-            [
-                'title' => '店通传媒',
-                'description' => '让经营更有价值 店铺' . $eventKey,
-                'picUrl' => 'http://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/a68927afa975b22287476deca36c45dcxd_slyj3.jpeg',
-                'url' => 'http://media.dilinsat.com/activity_h5?shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
-            ]
-        ];
+        //$eventKey = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值
 
         $articleCount = count($newsItems); // 图文消息个数
 
@@ -264,6 +280,28 @@ class WeChant extends Controller
         $template = $this->_msgTemplate['news']; // （回复图文消息）图文消息主体XML模板
         $info     = sprintf($template, $toUser, $fromUser, $time, $articleCount, $articles);
         echo $info;
+    }
+
+    /**
+     * 回复图文消息（用于扫码或关注）
+     * @param $postObj
+     * @param $userInfo
+     */
+    private function _scanMsgNews($postObj, $userInfo)
+    {
+        $eventKey = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值
+
+        // 定义图文消息信息列表
+        $newsItems = [
+            [
+                'title' => '店通传媒',
+                'description' => '让经营更有价值 店铺' . $eventKey,
+                'picUrl' => 'http://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/a68927afa975b22287476deca36c45dcxd_slyj3.jpeg',
+                'url' => 'http://media.dilinsat.com/activity_h5?shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
+            ]
+        ];
+
+        $this->_msgNews($postObj, $newsItems);
     }
 
     /**
@@ -311,7 +349,7 @@ class WeChant extends Controller
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
-        $this->_msgNews($postObj, $userInfo); // 回复图文消息
+        $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息
     }
 
     /**
@@ -417,12 +455,46 @@ class WeChant extends Controller
     {
         // 创建微信菜单
         // 目前微信接口的调用方式都是通过curl post/get
-        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . $access_token;
+        $accessToken = $this->getWxAccessToken();
+        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . $accessToken;
         $postArr = array(
-
+            'button' => array(
+                /*array(
+                    'name' => urlencode('店通传媒'),
+                    'sub_button' => array(
+                        array(
+                            'type' => 'view',
+                            'name' => urlencode('广告投放'),
+                            'url' => 'https://media.sustock.net/h5/'
+                        ),
+                        array(
+                            'type' => 'click',
+                            'name' => urlencode('广告价格'),
+                            'key' => 'ad_price'
+                        ),
+                        array(
+                            'type' => 'view',
+                            'name' => urlencode('广告案例'),
+                            'url' => 'https://media.sustock.net/case/'
+                        )
+                    )
+                ),*/
+                array(
+                    'type' => 'view',
+                    'name' => urlencode('广告投放'),
+                    'url' => 'https://media.sustock.net/h5/'
+                ),
+                array(
+                    'type' => 'view',
+                    'name' => urlencode('广告案例'),
+                    'url' => 'https://media.sustock.net/case/'
+                )
+            )
         );
-        $postJson = json_encode($postArr);
-        $this->http_curl($url, 'get', $res = 'json', $arr = '');
+        $postJson = urldecode(json_encode($postArr));
+        //echo $postJson;
+        $res = $this->http_curl($url, 'post', 'json', $postJson);
+        //var_dump($res);
     }
 
     /**

@@ -222,14 +222,14 @@ Route::get('api/get_case', 'api/Adcase/getCase'); // 获取中奖奖品信息
 
 
 
-/* -------------------- 测试路由 -------------------- s */
+/* -------------------- 微信公众号开发路由 -------------------- s */
 
-// 微信公众号开发
 Route::any('api/wechant', 'api/WeChant/index'); // 检验signature 与 接收事件推送（关注/取消关注事件）。Route::any() 所有请求都支持的路由规则。此处切勿使用 Route::get()
 Route::any('api/http_curl', 'api/WeChant/http_curl'); // cURL请求
 Route::get('api/get_wx_access_token', 'api/WeChant/getWxAccessToken'); // 获取微信公众号access_token
 Route::get('api/get_wx_server_ip', 'api/WeChant/getWxServerIp'); // 获取微信服务器IP地址
 Route::get('api/get_wx_qrcode_ticket', 'api/WeChant/getQRCodeTicket'); // 生成带参数的二维码：第一步、创建二维码ticket
 Route::get('api/show_wx_qrcode', 'api/WeChant/showQRCode'); // 生成带参数的二维码：第二步、通过ticket到指定URL换取二维码
+Route::get('api/create_wx_menu', 'api/WeChant/definedItem'); // 创建自定义菜单
 
-/* -------------------- 测试路由 -------------------- e */
+/* -------------------- 微信公众号开发路由 -------------------- e */
