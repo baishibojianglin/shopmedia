@@ -213,6 +213,11 @@ Route::get('api/get_prize', 'api/Prize/getPrize'); // 获取中奖奖品信息
 Route::post('api/winner_info', 'api/Prize/winnerInfo'); // 提交领奖信息
 Route::post('api/record_raffle_log', 'api/Prize/recordRaffleLog'); // 记录抽奖信息
 
+// 活动中奖记录
+Route::get('api/raffle_prize_count', 'api/ActRaffle/rafflePrizeCount'); // 统计奖品领取状态数量
+Route::get('api/raffle_prize_list', 'api/ActRaffle/rafflePrizeList'); // 获取奖品领取状态列表
+Route::put('api/update_prize_status', 'api/ActRaffle/updatePrizeStatus'); // 更新领奖状态
+
 //获取广告案例
 Route::get('api/get_case', 'api/Adcase/getCase'); // 获取中奖奖品信息
 

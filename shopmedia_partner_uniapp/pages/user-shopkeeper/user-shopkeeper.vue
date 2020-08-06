@@ -36,6 +36,23 @@
 				</uni-grid>
 			</uni-card>
 			
+			<uni-card title="奖品发放" :isShadow="true">
+				<uni-grid class="uni-center" :column="2" :showBorder="false" :square="false">
+					<uni-grid-item>
+						<navigator url="/pages/act-raffle/raffle-prize?prize_status=0">
+							<view class="uni-text-small">待发放</view>
+							<view class="uni-bold color-red">{{rafflePrizeCount.rafflePrizeCount0}}</view>
+						</navigator>
+					</uni-grid-item>
+					<uni-grid-item>
+						<navigator url="/pages/act-raffle/raffle-prize?prize_status=1">
+							<view class="uni-text-small">已发放</view>
+							<view class="uni-bold">{{rafflePrizeCount.rafflePrizeCount1}}</view>
+						</navigator>
+					</uni-grid-item>
+				</uni-grid>
+			</uni-card>
+			
 			<uni-card v-if="shopCount" v-for="(item, index) in shopList" :key="index" note="Tips" is-shadow>
 				<uni-list>
 					<uni-list-item :title="item.shop.shop_name" :note="Number(item.device.length) != 0 ? '合计 ' + Number(item.device.length) + ' 台' : ''" rightText="导航" @click="openLocation(item)"></uni-list-item>	
@@ -85,7 +102,9 @@
 				longitude: 104.065840, //经度
 				markers: [], //地图图标
 				shopCount: 0, // 店家店铺数量
-				shopList: [] // 店家店铺列表
+				shopList: [], // 店家店铺列表
+				
+				rafflePrizeCount: [] // 统计奖品领取状态数量
 			}
 		},
 		computed: {
@@ -102,6 +121,7 @@
 		},
 		onShow(){
 			this.getShopList();
+			this.getRafflePrizeCount();
 		},
 		methods: {
 			/**
@@ -191,6 +211,29 @@
 				uni.navigateTo({
 					url: '/pages/shop/shop-agreement?shop_name='+item.shop.shop_name+'&device_count='+device_count+'&address='+item.shop.address+'&total_price='+total_price+'&shop_id='+item.shop.shop_id
 				})
+			},
+			
+			/**
+			 * 统计奖品领取状态数量
+			 */
+			getRafflePrizeCount() {
+				let self=this;
+				uni.request({
+					url: this.$serverUrl + 'api/raffle_prize_count',
+					data: {
+						user_id: this.userInfo.user_id
+					},
+					method: 'GET',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					success: (res) => {
+						if (res.data.status == 1) {
+							self.rafflePrizeCount = res.data.data;
+						}
+					}
+				});	
 			}
 		}
 	}
