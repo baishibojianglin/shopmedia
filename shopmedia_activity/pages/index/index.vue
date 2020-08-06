@@ -1,38 +1,24 @@
 <template>
 	<view class="content">
-<!-- 		<view class="uni-bold" style="margin-top: 50px;height: 20px;">
-			<view class="">店铺ID：{{shop_id}}</view>
-			<view class="">用户openid：{{wxUserInfo.openid}}</view>
-			<view class="">用户昵称：{{wxUserInfo.nickname}}</view>
-			<view class="">
-				<image :src="wxUserInfo.headimgurl" mode="aspectFit" width="10"></image>
-			</view>
-		</view> -->
-		
-		<view v-show="showseconds">
-			<view style="width: 100%; margin-top: 30px;">
-				<image style="width:80%;" :mode="mode" :src="src0"></image>
-			</view>
-			<view>
-				<text class="opentime">{{seconds}}</text>
-			</view>
+				
+		<view v-if="showbut">
+			<view class="content-cj">			
+                 <LotteryDraw @get_winingIndex='get_winingIndex' @luck_draw_finish='luck_draw_finish'></LotteryDraw>
+            </view>	
+			<view class="wb100">
+				<image class="src3css" :mode="mode" :src="src3"></image>
+				<view class="guize">
+					<view>1、扫描屏幕上的二维码关注公众号即可抽奖</view>
+					<view>2、奖品在扫码店面领取，部分奖品需到指定店领取</view>
+					<view>3、领取奖品时向店家提供中奖后所填电话号码</view>
+					<view>4、本活动最终解释权归狄霖店通传媒所有</view>
+				</view>
+			</view>		
 		</view>
 
-		<view v-show="!showseconds">
-			<view v-if="prize_no">
-				<!--未中奖 s-->
-				<view style="width: 100%; margin-top: 30px;">
-					<image style="width:100%;" :mode="mode" :src="src1"></image>
-				</view>
-<!-- 				<view style="margin-top:0px;">
-					<text class="color-shop" style="color:#007AFF; background-color: #fff; padding: 10px 40px; border-radius: 10px;">{{prize_info.shop.shop_name}}</text>
-				</view> -->
-				<view style="margin-top:60px; font-size: 16px;">
-					<text>很遗憾未中奖，期待您的下次光临！</text>
-				</view>
-			</view>
-			<!--未中奖 e-->
-
+		<view v-show="!showbut">
+			
+			<!--中奖 s-->
 			<view v-if="prize_yes">
 				<view style="width: 100%; margin-top:20px;">
 					<image style="width:90%;" :mode="mode" :src="src2"></image>
@@ -73,20 +59,22 @@
 						</view>
 					</uni-card>
 				</view>
-
 			</view>
+			<!--中奖 e-->
+			
 		</view>
 
-		<view v-show="false" class="bottom" style="width: 100%;">店通智能屏&nbsp;&nbsp;&nbsp;&nbsp;智通天下市</view>
 	</view>
 </template>
 
 <script>
 	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue';
+    import LotteryDraw from '../../components/SJ-LotteryDraw/SJ-LotteryDraw.vue';
 
 	export default {
 		components: {
-			uniPopupDialog
+			uniPopupDialog,
+			LotteryDraw
 		},
 		data() {
 			return {
@@ -94,123 +82,125 @@
 				src0: '/static/openprize.png',
 				src1: '/static/xxhg.png',
 				src2: '/static/gxzj.png',
+				src3: '/static/cjgz.png',
+				prize_id:0,
+				showbut:true,
 				prize_no: false,
 				prize_yes: false,
+				is_look:false,
+				num_id:0,
 				prize_info: {
 					shop:{
 						shop_name:''
 					}
-				},
-
-				seconds: 5, //倒计时秒数
-				showseconds: true, //显示倒计时
-				timesign: '', //定时器标志
-				
+				},	
 				phone: '', // 领奖电话号码
-				isAward: false, // 判断是否领奖成功
-				
-				shop_id: '', // 抽奖店铺ID
-				
+				isAward: false, // 判断是否领奖成功	
+				shop_id: 0, // 抽奖店铺ID	
 				// 扫广告屏上二维码后获取的微信用户信息
 				wxUserInfo: {
 					'openid': '',
 					'nickname': '',
 					'headimgurl': '' 
+				},	
+				//抽奖插件
+				lottery_draw_param:{
+					startIndex: 0, //开始抽奖位置，从0开始
+					totalCount: 4, //一共要转的圈数
+					winingIndex: 4, //中奖的位置，从0开始
+					speed: 50 //抽奖动画的速度 [数字越大越慢,默认100]
 				}
 			}
 		},
 		onLoad(option) {
-
+			//判断传入的参数
 			if (option) {
-				if (typeof(option.shop_id) == 'undefined' || option.shop_id == 'null') {
+				if (option.shop_id) {
+					this.shop_id = option.shop_id;
+					this.wxUserInfo.openid = option.openid;
+					this.wxUserInfo.nickname = option.nickname;
+					this.wxUserInfo.headimgurl = option.headimgurl;
+			    }	
+			}
+			
+			//是否当日在某店是否已经扫描
+		    this.recordRaffleLog();
+			
+			//抽奖
+			this.prize(this.shop_id);
+		},
+		methods: {
+					
+			/**
+			 * @param {Object} callback
+			 */
+			get_winingIndex(callback){
+				let self=this;
+				//判断是否是扫描屏幕上方的二维码进入
+				if(this.shop_id==0){
 					uni.showModal({
 						title: '提示',
-						content: '请到店铺扫描广告屏上二维码参与抽奖',
+						content: '扫描店铺广告屏上的二维码才能抽奖，快去发现惊喜吧！',
 						showCancel: false
 					})
 					return false;
 				}
-
 				
-				this.shop_id = option.shop_id;
-				this.wxUserInfo.openid = option.openid;
-				this.wxUserInfo.nickname = option.nickname;
-				this.wxUserInfo.headimgurl = option.headimgurl;
-			}
+				if(this.is_look==false){
+					uni.showModal({
+						title: '提示',
+						content: '您今日在该店已经抽过奖了，请客官明日再来发现惊喜！',
+						showCancel: false
+					})
+					return false;
+				}				
+							
+				this.lottery_draw_param.winingIndex=this.num_id;
+                //props修改在小程序和APP端不成功，所以在这里使用回调函数传参，
+                callback(this.lottery_draw_param);
+				
+			},
 			
-			//倒计时
-			let self = this;
-			this.timesign = setInterval(function() {
-				self.countseconds();
-				if (self.showseconds == false) {
-					if (self.shop_id && self.wxUserInfo.openid) {
-						// 记录抽奖信息
-						self.recordRaffleLog();
-					}
-				}
-			}, 1000);
-			
-		},
-		methods: {
+			/**
+			 * @param {Object} param
+			 */
+			luck_draw_finish(param){
+				this.is_look=false;
+				this.showbut=false;
+				// console.log(`抽到第${param+1}个方格的奖品`)
+				console.log(param)
+			},
+		
 			/**
 			 * 记录抽奖信息
 			 */
 			recordRaffleLog() {
-				let self = this;
-				// 发起网络请求，提交服务端
-				uni.request({
-					url: this.$serverUrl + 'api/record_raffle_log',
-					data: {
-						shop_id: this.shop_id,
-						openid: this.wxUserInfo.openid
-						
-					},
-					method: 'POST',
-					success: function(res) {
-						if (0 == res.data.status) { // 提交失败
-							
-							// 判断是否已经抽奖
-							if (typeof(res.data.data.today_raffle) != 'undefined' && res.data.data.today_raffle > 0) {
-								self.prize_yes = false;
-								self.prize_no = true;
+						let self = this;
+						// 发起网络请求，提交服务端
+						uni.request({
+							url: this.$serverUrl + 'api/record_raffle_log',
+							data: {
+								shop_id: this.shop_id,
+								openid: this.wxUserInfo.openid
+								
+							},
+							method: 'POST',
+							success: function(res) {
+								if (res.data.status==1) { //提交成功												
+                                   self.is_look=true;
+								} 
+							},
+							fail: function(error) {
+								uni.showModal({
+									title: '提示',
+									content: error.response.message,
+									showCancel: false
+								})
 							}
-							
-							uni.showModal({
-								title: '提示',
-								content: res.data.message,
-								showCancel: false
-							})
-
-							return;
-						} else { // 提交成功
-						
-							// 获取奖品
-							self.prize(self.shop_id);
-
-						}
-					},
-					fail: function(error) {
-						uni.showModal({
-							title: '提示',
-							content: error.response.message,
-							showCancel: false
 						})
-					}
-				})
 			},
 			
-			/**
-			 * 倒计时函数
-			 */
-			countseconds() {
-				if (this.seconds > 0) {
-					this.seconds--;
-				} else {
-					this.showseconds = false;
-					clearInterval(this.timesign);
-					this.seconds = 5;
-				}
-			},
+
 			
 			/**
 			 * 获取奖品
@@ -227,11 +217,10 @@
 					success: function(res) {
 						if (res.data.status == 0) { //未中奖
 							self.prize_no = true;
-							self.prize_info = res.data;
-							console.log(self.prize_info)
 						} else { //中奖
 							self.prize_yes = true;
 							self.prize_info = res.data;
+							self.num_id=res.data.num_id;
 							console.log(self.prize_info)
 						}
 					}
@@ -359,13 +348,20 @@
 </script>
 
 <style>
+	.content-cj{
+		margin-top:80px;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	}
 	.content {
 		position: fixed;
 		top: 0;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background-image: url(../../static/bgg.png);
+		background:#A7A4F9;
 		text-align: center;
 	}
 
@@ -390,5 +386,22 @@
 		color: #fff;
 		font-weight: bold;
 		font-size: 50px;
+	}
+	.wb100{
+		width: 100%;
+	}
+	.src3css{
+		width: 50%;
+		height: 120px;
+	}
+	.guize{
+		width:90%;
+		margin-left:5%; 
+		background:#918EED;
+		border-radius: 10px;
+		padding: 10px 0px;
+		text-align: left;
+		text-indent: 10px;
+		color:#464646;
 	}
 </style>
