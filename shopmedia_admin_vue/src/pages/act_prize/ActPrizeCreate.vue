@@ -21,6 +21,20 @@
 					<el-form-item prop="prize_name" label="奖品名称">
 						<el-input v-model="form.prize_name" placeholder="输入奖品名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
+					
+					<el-form-item label="奖品图片" prop="prize_pic" class="idcard">
+						<el-input v-show='false' style="width:350px;" v-model="form.prize_pic"></el-input>
+						<el-upload :class="{hide:hideUpload[0]}" list-type="picture-card" :action="this.$url+'upload?name=image'" :limit="1"
+						 :on-success="function (res,file,fileList) { return returnUrl(res,file,fileList,'prize_pic',0)}" :on-change="function (file,fileList) { return delePlusButton(file,fileList,1,0)}"
+						 :on-remove="function (file,fileList) { return handleRemove(file,fileList,0,1,'prize_pic')}" :on-preview="handlePictureCardPreview"
+						 name='image'>
+							<i class="el-icon-circle-plus-outline" style="font-size: 14px;"> 上传图片</i>
+						</el-upload>
+						<el-dialog :visible.sync="dialogVisible">
+							<img width="100%" :src="dialogImageUrl" alt="">
+						</el-dialog>
+					</el-form-item>
+					
 					<el-form-item prop="quantity" label="奖品数量">
 						<el-input-number v-model="form.quantity" :min="0" :step="1" :precision="0" controls-position="right"></el-input-number>
 					</el-form-item>
@@ -76,6 +90,7 @@
 				form: {
 					act_id: '', // 活动ID
 					prize_name: '', // 奖品名称
+					prize_pic: '', // 奖品图片
 					quantity: '', // 奖品数量
 					level: '', // 奖品等级
 					percentage: '', // 中奖概率
@@ -93,13 +108,21 @@
 						{ required: true, message: '请输入奖品名称', trigger: 'blur' },
 						{ min: 1, max: 150, message: '长度在 1 到 20 个字符', trigger: 'blur' }
 					],
+					prize_pic: [
+						{required: true, message: '请上传照片'},
+					],
 					quantity: [{required: true, message: '奖品数量', trigger: 'blur'}],
 					percentage: [{required: true, message: '中奖概率', trigger: 'blur'}],
 					level: [{required: true, message: '请选择奖品等级', trigger: 'change'}],
 				},
 				
 				actList: [], // 活动列表
-				prizeLevelList: [{'level_id': '', 'level_name': ''}] // 活动奖品等级列表
+				prizeLevelList: [{'level_id': '', 'level_name': ''}], // 活动奖品等级列表
+				
+				dialogImageUrl: '',
+				dialogVisible: false, //放大预览图片
+				url_image_list: [], //图片地址列表
+				hideUpload: [false, false] //隐藏图片添加按钮
 			}
 		},
 		mounted() {
@@ -107,6 +130,65 @@
 			this.getPrizeLevelList();
 		},
 		methods: {
+			/**
+			 * 上传图片
+			 * @param {string} response  返回图片地址
+			 * @param {Object} file
+			 * @param {Object} fileList
+			 * @param {string} url_name 图片地址变量名
+			 * @param {string} index 上传组件索引
+			 */
+			returnUrl(response, file, fileList, url_name, index) {
+				this.url_image_list.push({
+					name: response['name'],
+					url: response['url']
+				});
+			},
+			
+			/**
+			 * 删除图片上传完后的添加按钮
+			 * @param {Object} file
+			 * @param {Object} fileList
+			 * @param {Object} num 允许上传的图片张数
+			 * @param {string} index 上传组件索引
+			 */
+			delePlusButton(file, fileList, num, index) {
+				this.$set(this.hideUpload, index, fileList.length >= num);
+			},
+			
+			/**
+			 * 删除图片
+			 * @param {Object} file
+			 * @param {Object} fileList
+			 * @param {string} index 上传组件索引
+			 * @param {Object} num 允许上传的图片张数
+			 * @param {string} url_name 图片地址变量名
+			 */
+			handleRemove(file, fileList, index, num, url_name) {
+				this.url_image_list.forEach((value, index) => {
+					if (value.name == file.response.name) {
+						this.url_image_list.splice(index, 1);
+					}
+				})
+				let self = this;
+				//删除oss上的图片
+				this.$axios.post(this.$url + 'deleteimages', {
+					name: file.response.name
+				}).then(function(res) {
+					self.$set(self.hideUpload, index, fileList.length >= num);
+				})
+			},
+			
+			/**
+			 * 放大图片
+			 * @param {Object} file
+			 */
+			handlePictureCardPreview(file) {
+				this.dialogImageUrl = file.url;
+				this.dialogVisible = true;
+			},
+			
+			
 			/**
 			 * 获取活动列表
 			 */
@@ -149,12 +231,14 @@
 			 */
 			submitForm(formName) {
 				let self = this;
+				this.form.prize_pic = JSON.stringify(this.url_image_list); //将图片地址处理成json字符串
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
 						this.$axios.post(this.$url + 'act_prize', {
 							// 参数
 							act_id: this.form.act_id,
 							prize_name: this.form.prize_name,
+							prize_pic: this.form.prize_pic,
 							quantity: this.form.quantity,
 							level: this.form.level,
 							percentage: this.form.percentage,
@@ -209,4 +293,15 @@
 </script>
 
 <style>
+	.idcard .el-upload-list--picture-card .el-upload-list__item {
+		width: 170px;
+		height: 120px;
+		line-height: 120px;
+	}
+	
+	.idcard .el-upload--picture-card {
+		width: 170px;
+		height: 120px;
+		line-height: 120px;
+	}
 </style>
