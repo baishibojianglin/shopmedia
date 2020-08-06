@@ -1,0 +1,114 @@
+<template>
+	<view>
+		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in rafflePrizeList" :key="key">
+				<view class="uni-media-list">
+					<!-- <image class="uni-media-list-logo" :src="value.thumb"></image> -->
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">{{ value.prizewinner }} {{ value.phone }}</view>
+						<view class="uni-media-list-text-bottom">
+							<text>奖品 {{ value.prize_name }}</text>
+							<text>，店铺 {{ value.shop_name }}</text>
+						</view>
+					</view>
+					<view class="">
+						<button v-if="!value.prize_status && !isSendPrize" type="default" size="mini" @click="sendPrize(value.raffle_id)">发放</button>
+						<text v-if="isSendPrize">已发放</text>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import {mapState} from 'vuex';
+	
+	export default {
+		data() {
+			return {
+				prize_status: '', // 奖品领取状态
+				rafflePrizeList: [] ,// 统计奖品领取状态列表
+				isSendPrize: false // 是否发放奖品
+			}
+		},
+		computed: {
+			...mapState(['hasLogin', 'forcedLogin', 'userInfo', 'commonheader'])
+		},
+		onLoad(event) {
+			this.prize_status = event.prize_status;
+			this.getRafflePrizeList();
+		},
+		methods: {
+			/**
+			 * 统计奖品领取状态列表
+			 */
+			getRafflePrizeList() {
+				let self=this;
+				uni.request({
+					url: this.$serverUrl + 'api/raffle_prize_list',
+					data: {
+						user_id: this.userInfo.user_id,
+						prize_status: this.prize_status
+					},
+					method: 'GET',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					success: (res) => {
+						if (res.data.status == 1) {
+							self.rafflePrizeList = res.data.data;
+						}
+					}
+				});
+			},
+			
+			/**
+			 * 发放奖品
+			 * @param {Object} raffle_id
+			 */
+			sendPrize(raffle_id) {
+				let self = this;
+				
+				uni.showModal({
+					title: '提示',
+					content: '确认用户已经领取奖品?',
+					success: function (res) {
+						if (res.confirm) {
+							uni.request({
+								url: self.$serverUrl + 'api/update_prize_status',
+								data: {
+									raffle_id: raffle_id,
+									prize_status: self.prize_status
+								},
+								method: 'PUT',
+								header: {
+									'commonheader': self.commonheader,
+									'access-user-token': self.userInfo.token
+								},
+								success: (res) => {
+									if (res.data.status == 1) {
+										self.isSendPrize = true;
+										uni.showModal({
+											title: '提示',
+											content: '奖品发放成功',
+											showCancel: false
+										})
+										return false;
+									}
+								}
+							});
+						} else if (res.cancel) {
+							// console.log('用户点击取消');
+						}
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>

@@ -437,6 +437,19 @@
 				}
 			}
         }
+        ,{
+            "path" : "pages/act-raffle/raffle-prize",
+            "style" : {
+				"navigationBarTitleText": "奖品发放",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
     ],
 	"tabBar": {
 		"color": "#808080",

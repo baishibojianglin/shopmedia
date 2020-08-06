@@ -134,6 +134,9 @@ class ActPrize extends Base
         if (!empty($param['prize_name'])) {
             $data['prize_name'] = trim($param['prize_name']);
         }
+        if (!empty($param['prize_pic'])) {
+            $data['prize_pic'] = trim($param['prize_pic']);
+        }
         if (isset($param['act_id'])) {
             $data['act_id'] = (int)$param['act_id'];
         }
