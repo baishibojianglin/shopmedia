@@ -45,15 +45,17 @@ class Prize extends Controller
         $aim=rand(1,2);
 
         //判断是否能中奖
-        if( $aim==2){ 
+        if( $aim==2 || $aim==1){ 
             //查询奖品中可用的列表
             $matchprize['status']=1;
-            $prizelist=Db::name('act_prize')->field('prize_id')->where($matchprize)->select();
+            $prizelist=Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();
             //随机选择一个奖品
-            $prize=$prizelist[array_rand($prizelist,1)];
+            $num_id=array_rand($prizelist,1);
+            $prize=$prizelist[$num_id];
             $matchprizeaim['prize_id']=$prize['prize_id'];
             $prizeaim=Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, address, is_sponsor_address')->where($matchprizeaim)->find();
             $data['prize']=$prizeaim;
+            $data['num_id']=$num_id;
             $data['status']=1;
             return json($data);
         }else{
