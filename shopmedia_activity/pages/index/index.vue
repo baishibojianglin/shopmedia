@@ -284,7 +284,8 @@
 						shop_id: this.prize_info.shop.shop_id,
 						phone: this.phone,
 						openid: this.wxUserInfo.openid,
-						prizewinner: this.wxUserInfo.nickname
+						prizewinner: this.wxUserInfo.nickname,
+						headimgurl: this.wxUserInfo.headimgurl
 					},
 					/* header:{
 						'commonheader': this.commonheader,

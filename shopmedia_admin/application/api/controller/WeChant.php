@@ -295,8 +295,8 @@ class WeChant extends Controller
         $newsItems = [
             [
                 'title' => '欢迎关注店通传媒',
-                'description' => '奖品不断，快来发现惊喜吧！',
-                'picUrl' => 'https://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/wechant/prize_cover_for_gh_925caa1fb92e_20200806165808_360%C3%97200.jpg',
+                'description' => '惊喜不断，立即点击开始抽奖吧！',
+                'picUrl' => 'https://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/wechant/prize_cover_for_gh_925caa1fb92e_20200807161612_200%C3%97200.png',
                 'url' => 'http://media.dilinsat.com/activity_h5?shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
             ]
         ];
