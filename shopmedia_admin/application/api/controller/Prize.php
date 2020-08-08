@@ -121,11 +121,23 @@ class Prize extends Controller
 
         // 传入的参数
         $param = input('post.');
+        $shopId = (int)$param['shop_id'];
 
         // 判断奖品数量是否为零
         $actPrize = Db::name('act_prize')->field('quantity, status')->find($param['prize_id']);
         if ($actPrize['quantity'] <= 0 || $actPrize['status'] != 1) {
             return show(config('code.error'), '很遗憾，奖品已领完！', '', 400);
+        }
+
+        // 获取广告主业务员
+        $shop = Db::name('shop')->alias('s')
+            ->field('s.shopkeeper_id, us.salesman_id, usm.company_id')
+            ->join('__USER_SHOPKEEPER__ us', 'us.id = s.shopkeeper_id')
+            ->join('__USER_SALESMAN__ usm', 'usm.id = us.salesman_id')
+            ->where(['s.shop_id' => $shopId])
+            ->find();
+        if ($shop) {
+            $salesman = Db::name('user_salesman')->field('id')->where(['company_id' => $shop['company_id'], 'parent_id' => 0, 'role_id' => 5])->find();
         }
 
         // 入库操作
@@ -136,9 +148,9 @@ class Prize extends Controller
             $time = time(); // 抽奖时间
 
             // 获取抽奖记录，如果不存在则添加记录
-            $todayRaffleLog = Db::name('act_raffle_log')->where(['shop_id' => (int)$param['shop_id'], 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
+            $todayRaffleLog = Db::name('act_raffle_log')->where(['shop_id' => $shopId, 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
             if (empty($todayRaffleLog)) {
-                $raffleLogData['shop_id'] = (int)$param['shop_id'];
+                $raffleLogData['shop_id'] = $shopId;
                 $raffleLogData['raffle_time'] = $time; // 抽奖时间
                 $raffleLogData['oauth'] = 'wx'; // 抽奖者第三方来源
                 $raffleLogData['openid'] = $param['openid']; // 抽奖者第三方唯一标识
@@ -149,7 +161,7 @@ class Prize extends Controller
             $raffleData['act_id'] = (int)$param['act_id'];
             $raffleData['prize_id'] = (int)$param['prize_id'];
             $raffleData['prize_name'] = $param['prize_name'];
-            $raffleData['shop_id'] = (int)$param['shop_id'];
+            $raffleData['shop_id'] = $shopId;
             $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
             $raffleData['prizewinner'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
             $raffleData['phone'] = trim($param['phone']);
@@ -178,6 +190,8 @@ class Prize extends Controller
             $user = Db::name('user')->where(['phone' => trim($param['phone'])])->find();
             if (empty($user)) {
                 $userData['user_name'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
+                $userData['role_ids'] = 7; // 用户角色ID
+                $userData['avatar'] = isset($param['headimgurl']) ? $param['headimgurl'] : '';
                 $userData['phone'] = trim($param['phone']);
                 $userData['phone_verified'] = 1; // 手机号已验证
                 $userData['password'] = IAuth::encrypt(trim($param['phone']));
@@ -185,8 +199,27 @@ class Prize extends Controller
                 $userData['create_time'] = time(); // 创建时间
                 $userData['create_ip'] = request()->ip(); // 创建IP
                 $res[4] = $userId = Db::name('user')->strict(false)->insertGetId($userData); // 新增数据并返回主键值
+
+                // 默认创建广告主角色
+                $advertiserData['user_id'] = $userId;
+                $advertiserData['salesman_id'] = isset($salesman['id']) ? $salesman['id'] : 0; // TODO：业务员ID
+                $advertiserData['status'] = config('code.status_enable');
+                $advertiserData['create_time'] = time(); // 创建时间
+                $res[5] = Db::name('user_advertiser')->insert($advertiserData);
             } else {
                 $userId = $user['user_id'];
+                $updateUserData['avatar'] = isset($param['headimgurl']) ? $param['headimgurl'] : '';
+                $res[6] = Db::name('user')->where(['user_id' => $userId])->update($updateUserData);
+
+                // 如果广告主不存在则创建
+                $advertiser = Db::name('user_advertiser')->where(['user_id' => $userId])->find();
+                if (empty($advertiser)) {
+                    $advertiserData['user_id'] = $userId;
+                    $advertiserData['salesman_id'] = isset($salesman['id']) ? $salesman['id'] : 0; // TODO：业务员ID
+                    $advertiserData['status'] = config('code.status_enable');
+                    $advertiserData['create_time'] = time(); // 创建时间
+                    $res[7] = Db::name('user_advertiser')->insert($advertiserData);
+                }
             }
             // 将 user_id 绑定到 第三方授权登录表user_oauth
             $userOauth = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $param['openid']])->find();
@@ -194,13 +227,13 @@ class Prize extends Controller
                 $raffle = Db::name('act_raffle')->where(['oauth' => 'wx', 'openid' => $param['openid']])->find();
                 if ($raffle['phone'] == trim($param['phone'])) { // TODO：可以不做该判断，因为入参 phone 是一致的
                     $userOauthData['user_id'] = $userId;
-                    $res[5] = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $param['openid']])->update($userOauthData);
+                    $res[8] = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $param['openid']])->update($userOauthData);
                 }
             }
 
             // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
             if (in_array(0, $res)) {
-                return show(config('code.error'), '提交失败', '', 403);
+                return show(config('code.error'), '提交失败', $res, 403);
             }
 
             // 提交事务
