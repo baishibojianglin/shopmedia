@@ -45,7 +45,7 @@ class Prize extends Controller
         $aim=rand(1,2);
 
         //判断是否能中奖
-        if( $aim==2 || $aim==1){ 
+        if( $aim==1){ 
             //查询奖品中可用的列表
             $matchprize['status']=1;
             $prizelist=Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();

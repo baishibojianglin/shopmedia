@@ -130,8 +130,8 @@ li {
         text-overflow: ellipsis;
         font-size: 20upx; }
         .grid_wrap .lottery_wrap .lottery_grid li .grid_img {
-          width: 70upx;
-          height: 70upx; }
+          width: 100upx;
+          height: 100upx; }
       .grid_wrap .lottery_wrap .lottery_grid .active {
         background: #ff3a59;
         box-shadow: 0upx 8upx 0upx 0upx #ea0125;

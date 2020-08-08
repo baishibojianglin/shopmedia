@@ -11,58 +11,70 @@
 					<view>1、扫描屏幕上的二维码关注公众号即可抽奖</view>
 					<view>2、奖品在扫码店面领取，部分奖品需到指定店领取</view>
 					<view>3、领取奖品时向店家提供中奖后所填电话号码</view>
-					<view>4、本活动最终解释权归狄霖店通传媒所有</view>
+					<view>4、积累积分100以上可以兑换奖品</view>
+					<view>5、本活动最终解释权归狄霖店通传媒所有</view>
 				</view>
 			</view>		
 		</view>
 
-		<view v-show="!showbut">
-			
-			<!--中奖 s-->
-			<view v-if="prize_yes">
-				<view style="width: 100%; margin-top:20px;">
-					<image style="width:90%;" :mode="mode" :src="src2"></image>
-				</view>
-				<view style="color:#f00;font-size: 35px; font-weight: bold; position: relative; top:-15px;">{{prize_info.prize.prize_name}}</view>
 
-				<view style="margin-top: 20px;">
-					特别鸣谢
-					<br />
-					<text style="font-weight: bold;color:#007AFF; font-size: 22px; line-height: 50px;">{{prize_info.prize.sponsor}}</text>
-					<br />
-					对该奖品的独家赞助
-				</view>
+		<view v-if="show_result" class="covercss"></view><!--遮罩层 -->
+		
+		<view v-if="show_result">
+				<!--中奖 s-->
+				<view class="aimprize" v-if="prize_yes">
+					<view class="wb100">
+						<image style="width:90%;height: 100px;" :src="src2"></image>
+					</view>
+					<view class="wpbj" v-if="!isAward">{{prize_info.prize.prize_name}}</view>
 
-				
-				<view v-if="!isAward">
-					<button type="primary" @click="confirmDialog" style="width: 95%; margin-top:30px;">领取奖品</button>
+					<view style="margin-top: 0px;">
+						特别鸣谢
+						<br />
+						<text style="font-weight: bold;color:#007AFF; font-size: 18px; line-height: 50px;">{{prize_info.prize.sponsor}}</text>
+						<br />
+						对该奖品的独家赞助
+					</view>
+
 					
-					<!-- 提交信息 -->
-					<uni-popup ref="dialogInput" type="dialog" @change="change">
-						<uni-popup-dialog mode="input" title="请到店领取奖品" value="" placeholder="请输入领奖电话" @confirm="dialogInputConfirm"></uni-popup-dialog>
-					</uni-popup>
+					<view v-if="!isAward">
+						<button type="primary" @click="confirmDialog" style="width: 95%; margin-top:10px; margin-bottom: 20px;">领取奖品</button>
+						
+						<!-- 提交信息 -->
+						<uni-popup ref="dialogInput" type="dialog" @change="change">
+							<uni-popup-dialog mode="input" title="" value="" placeholder="请输入领奖手机号" @confirm="dialogInputConfirm"></uni-popup-dialog>
+						</uni-popup>
+					</view>
+					
+					<view v-if="isAward">
+						<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：到店提供电话号码即可领取">
+							<view class="uni-flex uni-row">
+								<view class="text-left" style="width: 200rpx;">领奖电话</view>
+								<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{phone}}</view>
+							</view>
+							<view class="uni-flex uni-row">
+								<view class="text-left" style="width: 200rpx;">领奖店铺</view>
+								<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.sponsor : prize_info.shop.shop_name}}</view>
+							</view>
+							<view class="uni-flex uni-row">
+								<view class="text-left" style="width: 200rpx;">店铺地址</view>
+								<view class="uni-common-pl text-right" @click="openLocation()" style="-webkit-flex: 1;flex: 1;"><text class="uni-icon uni-icon-location-filled"></text>{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.address : prize_info.shop.address}}</view>
+							</view>
+						</uni-card>
+					</view>
 				</view>
+				<!--中奖 e-->
 				
-				<view v-if="isAward">
-					<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：请到店提供电话号码领取你的奖品">
-						<view class="uni-flex uni-row">
-							<view class="text-left" style="width: 200rpx;">领奖电话</view>
-							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{phone}}</view>
-						</view>
-						<view class="uni-flex uni-row">
-							<view class="text-left" style="width: 200rpx;">领奖店铺</view>
-							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.sponsor : prize_info.shop.shop_name}}</view>
-						</view>
-						<view class="uni-flex uni-row">
-							<view class="text-left" style="width: 200rpx;">店铺地址</view>
-							<view class="uni-common-pl text-right" @click="openLocation()" style="-webkit-flex: 1;flex: 1;"><text class="uni-icon uni-icon-location-filled"></text>{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.address : prize_info.shop.address}}</view>
-						</view>
-					</uni-card>
+				<!--未中奖 s-->
+				<view class="aimprize1" v-if="prize_no">
+					<view class="wb100">
+						<image style="width:100%;height: 400px;" :src="src1"></image>
+					</view>
 				</view>
-			</view>
-			<!--中奖 e-->
-			
-		</view>
+				<!--未中奖 e-->
+		
+		</view>	
+
 
 	</view>
 </template>
@@ -89,6 +101,7 @@
 				prize_yes: false,
 				is_look:false,
 				num_id:0,
+				show_result:false,
 				prize_info: {
 					shop:{
 						shop_name:''
@@ -166,7 +179,7 @@
 			 */
 			luck_draw_finish(param){
 				this.is_look=false;
-				this.showbut=false;
+				this.show_result=true;
 				// console.log(`抽到第${param+1}个方格的奖品`)
 				console.log(param)
 			},
@@ -238,10 +251,6 @@
 			 * 输入对话框的确定事件
 			 */
 			dialogInputConfirm(done, val) {
-				uni.showLoading({
-					title: '3秒后会关闭'
-				})
-				// console.log(val);
 				this.phone = val;
 				if (!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.phone))) {
 					uni.showToast({
@@ -250,12 +259,6 @@
 					});
 					return false;
 				}
-				
-				setTimeout(() => {
-					uni.hideLoading()
-					// 关闭窗口后，恢复默认内容
-					done()
-				}, 3000)
 				
 				this.submitForm();
 			},
@@ -300,11 +303,6 @@
 							})
 							return;
 						} else { // 提交成功
-							uni.showModal({
-								title: '提示',
-								content: res.data.message,
-								showCancel: false
-							})
 							self.isAward = true;
 						}
 					},
@@ -404,4 +402,46 @@
 		text-indent: 10px;
 		color:#464646;
 	}
+	.covercss{
+		position: fixed;
+		z-index: 199;
+		left: 0;
+		right: 0;
+		top:0;
+		bottom:0;
+		background-color: #000;
+		opacity: 0.4;
+	}
+	.aimprize{
+		position: fixed;
+		z-index: 200;
+		width: 85%;
+		top:10%;
+		left:6%;
+		background-color: #FEFEFE;
+		border:8px solid #3C38B3;
+		border-radius: 15px;
+	}
+    .wpbj{
+		width: 100%;
+		height: 230px;
+		background-image: url(../../static/wpbj.png);
+		background-size: 100% 100%;
+		line-height: 240px;
+		color:#BA0000;
+		font-weight: bold;
+		font-size: 18px;
+	}
+	
+	.aimprize1{
+		position: fixed;
+		z-index: 200;
+		width: 85%;
+		top:20%;
+		left:7.5%;
+		background-color:none;
+		border:0px solid #3C38B3;
+		border-radius:0px;
+	}
+	
 </style>

@@ -6,7 +6,7 @@
 					<li v-for="(item, index) in grid_info_arr" :class="{ active: current_index == index && index != 8 }" :key="index"
 					 @click="luck_draw" :data-index="index">
 						<image v-if="index != 8" class="grid_img" mode='aspectFit' :src="item.logo" alt="">
-							{{ index == 8 ? '抽奖' : index+1 }}
+							{{ index == 8 ? '抽奖' : '' }}
 					</li>
 				</ul>
 			</view>
@@ -27,36 +27,36 @@
 <script>
 	import LotteryDraw from './SJ-LotteryDraw.js';
 	let grid_info = [{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "手机"
+			logo: "../../static/SJ-LotteryDraw/1.png",
+			text: "大米两斤"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "零食包"
+			logo: "../../static/SJ-LotteryDraw/2.png",
+			text: "运动鞋"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "口红"
+			logo: "../../static/SJ-LotteryDraw/3.jpg",
+			text: "抽纸一提"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "谢谢参与"
+			logo: "../../static/SJ-LotteryDraw/4.png",
+			text: "20积分"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "压缩饼干"
+			logo: "../../static/SJ-LotteryDraw/5.png",
+			text: "30积分"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "水杯"
+			logo: "../../static/SJ-LotteryDraw/6.png",
+			text: "免费广告"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "QQ糖"
+			logo: "../../static/SJ-LotteryDraw/7.png",
+			text: "10积分"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
-			text: "耳机"
+			logo: "../../static/SJ-LotteryDraw/8.png",
+			text: "40积分"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",
