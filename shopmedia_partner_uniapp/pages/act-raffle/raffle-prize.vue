@@ -88,6 +88,7 @@
 									'access-user-token': self.userInfo.token
 								},
 								success: (res) => {
+									console.log(123, res);
 									if (res.data.status == 1) {
 										self.isSendPrize = true;
 										uni.showModal({

@@ -45,7 +45,7 @@ class Prize extends Controller
         $aim=rand(1,2);
 
         //判断是否能中奖
-        if( $aim==1){ 
+        if( $aim==2 || $aim==1){ 
             //查询奖品中可用的列表
             $matchprize['status']=1;
             $prizelist=Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();
@@ -122,9 +122,11 @@ class Prize extends Controller
         // 传入的参数
         $param = input('post.');
         $shopId = (int)$param['shop_id'];
+        $prizeId = (int)$param['prize_id'];
 
+        // 获取奖品信息
+        $actPrize = Db::name('act_prize')->field('prize_type, quantity, status')->find($prizeId);
         // 判断奖品数量是否为零
-        $actPrize = Db::name('act_prize')->field('quantity, status')->find($param['prize_id']);
         if ($actPrize['quantity'] <= 0 || $actPrize['status'] != 1) {
             return show(config('code.error'), '很遗憾，奖品已领完！', '', 400);
         }
@@ -159,7 +161,7 @@ class Prize extends Controller
 
             // 新增中奖者信息
             $raffleData['act_id'] = (int)$param['act_id'];
-            $raffleData['prize_id'] = (int)$param['prize_id'];
+            $raffleData['prize_id'] = $prizeId;
             $raffleData['prize_name'] = $param['prize_name'];
             $raffleData['shop_id'] = $shopId;
             $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
@@ -171,23 +173,27 @@ class Prize extends Controller
 
             /*// 更新抽奖记录表的中奖状态
             if ($raffleID) {
-                $res[3] = Db::name('act_raffle_log')->where(['prize_id' => $param['prize_id']])->update(['status' => 0]);
+                $res[3] = Db::name('act_raffle_log')->where(['prize_id' => $prizeId])->update(['status' => 0]);
             }*/
 
-            // 减少活动奖品数量
-            $res[2] = Db::name('act_prize')->where(['prize_id' => $param['prize_id']])->setDec('quantity', 1);
+            // 根据奖品类型，做相应操作：①当奖品为实物时，减少活动奖品（实物）数量；②当奖品为积分时（$actPrize['prize_type'] == 3），不减少活动奖品（积分）数量，TODO：在店家发放积分奖品时（api/ActRaffle/updatePrizeStatus方法），调整用户表 user 积分信息，记录用户积分变动日志 user_integrals_log
+            // ①当奖品为实物时，减少活动奖品（实物）数量
+            if ($actPrize['prize_type'] == 1) {
+                $res[2] = Db::name('act_prize')->where(['prize_id' => $prizeId])->setDec('quantity', 1);
 
-            // 获取减少后的奖品信息
-            $actPrize1 = Db::name('act_prize')->field('quantity, status')->find($param['prize_id']);
-            // 当奖品数量为零时，下架该奖品
-            if ($actPrize1['quantity'] <= 0) {
-                $res[3] = Db::name('act_prize')->where(['prize_id' => $param['prize_id']])->update(['status' => 0]);
+                // 获取减少后的奖品信息
+                $actPrize1 = Db::name('act_prize')->field('quantity, status')->find($prizeId);
+                // 当奖品数量为零时，下架该奖品
+                if ($actPrize1['quantity'] <= 0) {
+                    $res[3] = Db::name('act_prize')->where(['prize_id' => $prizeId])->update(['status' => 0]);
+                }
             }
 
 
+            // 根据传入的中奖电话号码获取用户信息
+            $user = Db::name('user')->where(['phone' => trim($param['phone'])])->find();
             // 判断 用户表表user 是否存在该用户，如果不存在则创建用户，并将 user_id 绑定到 第三方授权登录表user_oauth
             // 创建用户
-            $user = Db::name('user')->where(['phone' => trim($param['phone'])])->find();
             if (empty($user)) {
                 $userData['user_name'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
                 $userData['role_ids'] = 7; // 用户角色ID
@@ -209,7 +215,7 @@ class Prize extends Controller
             } else {
                 $userId = $user['user_id'];
                 $updateUserData['avatar'] = isset($param['headimgurl']) ? $param['headimgurl'] : '';
-                $res[6] = Db::name('user')->where(['user_id' => $userId])->update($updateUserData);
+                $res[6] = Db::name('user')->where(['user_id' => $userId])->update($updateUserData) === false ? 0 : true;
 
                 // 如果广告主不存在则创建
                 $advertiser = Db::name('user_advertiser')->where(['user_id' => $userId])->find();
@@ -230,6 +236,7 @@ class Prize extends Controller
                     $res[8] = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $param['openid']])->update($userOauthData);
                 }
             }
+
 
             // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
             if (in_array(0, $res)) {

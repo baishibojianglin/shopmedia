@@ -31,7 +31,12 @@
 				<el-table :data="actPrizeList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="prize_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="prize_name" label="奖品名称" fixed min-width="120"></el-table-column>
-					<el-table-column prop="act_name" label="所属活动" fixed min-width="120"></el-table-column>
+					<el-table-column prop="act_name" label="所属活动" min-width="120"></el-table-column>
+					<el-table-column prop="prize_type" label="奖品类型" width="90">
+						<template slot-scope="scope">
+							<span v-for="(item, index) in prizeTypeList" :key="index" v-if="scope.row.prize_type == item.prize_type">{{item.prize_type_name}}</span>
+						</template>
+					</el-table-column>
 					<el-table-column prop="quantity" label="奖品数量" width="90"></el-table-column>
 					<el-table-column prop="level_name" label="奖品等级" width="90"></el-table-column>
 					<el-table-column prop="percentage" label="中奖概率" width="90">
@@ -86,6 +91,8 @@
 				},
 				actPrizeList: [], // 奖品列表
 				listPagination: {}, // 列表分页参数
+				
+				prizeTypeList: [{'prize_type': 1, 'prize_type_name': '实物'}, {'prize_type': 3, 'prize_type_name': '积分'}] // 奖品类型
 			}
 		},
 		mounted() {

@@ -42,7 +42,7 @@ class ActPrize extends Base
             $status = [0 => '下架', 1 => '正常'];
             foreach ($data as $key => $value) {
                 // 处理数据
-                $data[$key]['quantity'] = $data[$key]['type'] == 1 ? (int)$data[$key]['quantity'] : $data[$key]['quantity'];
+                $data[$key]['quantity'] = $data[$key]['prize_type'] == 1 || 3 ? (int)$data[$key]['quantity'] : $data[$key]['quantity'];
                 $data[$key]['level_name'] = $actPrizeLevel[$value['level']];
                 $data[$key]['status_msg'] = $status[$value['status']];
             }
@@ -139,6 +139,9 @@ class ActPrize extends Base
         }
         if (isset($param['act_id'])) {
             $data['act_id'] = (int)$param['act_id'];
+        }
+        if (isset($param['prize_type'])) {
+            $data['prize_type'] = (int)$param['prize_type'];
         }
         if (!empty($param['quantity'])) {
             $data['quantity'] = trim($param['quantity']);
