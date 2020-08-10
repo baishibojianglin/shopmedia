@@ -18,6 +18,11 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
+					<el-form-item prop="prize_type" label="奖品类型">
+						<el-select v-model="form.prize_type" clearable filterable>
+							<el-option v-for="item in prizeTypeList" :key="item.prize_type" :label="item.prize_type_name" :value="item.prize_type"></el-option>
+						</el-select>
+					</el-form-item>
 					<el-form-item prop="prize_name" label="奖品名称">
 						<el-input v-model="form.prize_name" placeholder="输入奖品名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
@@ -89,6 +94,7 @@
 			return {
 				form: {
 					act_id: '', // 活动ID
+					prize_type: '', // 奖品类型
 					prize_name: '', // 奖品名称
 					prize_pic: '', // 奖品图片
 					quantity: '', // 奖品数量
@@ -104,6 +110,7 @@
 				},
 				rules: { // 验证规则
 					act_id: [{required: true, message: '请选择所属活动', trigger: 'change'}],
+					prize_type: [{required: true, message: '请选择奖品类型', trigger: 'change'}],
 					prize_name: [
 						{ required: true, message: '请输入奖品名称', trigger: 'blur' },
 						{ min: 1, max: 150, message: '长度在 1 到 20 个字符', trigger: 'blur' }
@@ -113,10 +120,11 @@
 					],
 					quantity: [{required: true, message: '奖品数量', trigger: 'blur'}],
 					percentage: [{required: true, message: '中奖概率', trigger: 'blur'}],
-					level: [{required: true, message: '请选择奖品等级', trigger: 'change'}],
+					level: [{required: true, message: '请选择奖品等级', trigger: 'change'}]
 				},
 				
 				actList: [], // 活动列表
+				prizeTypeList: [{'prize_type': 1, 'prize_type_name': '实物'}, {'prize_type': 3, 'prize_type_name': '积分'}], // 奖品类型
 				prizeLevelList: [{'level_id': '', 'level_name': ''}], // 活动奖品等级列表
 				
 				dialogImageUrl: '',
@@ -237,6 +245,7 @@
 						this.$axios.post(this.$url + 'act_prize', {
 							// 参数
 							act_id: this.form.act_id,
+							prize_type: this.form.prize_type,
 							prize_name: this.form.prize_name,
 							prize_pic: this.form.prize_pic,
 							quantity: this.form.quantity,

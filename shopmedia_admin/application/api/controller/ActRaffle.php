@@ -113,23 +113,72 @@ class ActRaffle extends AuthBase
         if (request()->isPut()) {
             // 传入的参数
             $param = input('param.');
+            $raffleId = (int)$param['raffle_id']; // 中奖纪录ID
 
-            // 判断数据是否存在
-            $data = [];
-            if (isset($param['prize_status'])) {
-                $data['prize_status'] = (int)$param['prize_status'];
-                if ($data['prize_status'] != 1) {
-                    $data['prize_status'] = 1;
+            // 获取活动中奖纪录
+            $actRaffle = Db::name('act_raffle')->alias('ar')
+                ->field('ar.raffle_id, ar.prize_id, ar.phone, ap.prize_type, ap.prize_name, ap.quantity, s.user_id shop_user_id')
+                ->join('__ACT_PRIZE__ ap', 'ap.prize_id = ar.prize_id')
+                ->join('__SHOP__ s', 's.shop_id = ar.shop_id')
+                ->find($raffleId);
+
+            // 获取用户信息
+            $user = Db::name('user')->field('user_id')->where(['phone' => $actRaffle['phone']])->find();
+            $userId = $user['user_id'];
+
+            // 入库操作
+            /* 手动控制事务 s */
+            // 启动事务
+            Db::startTrans();
+            try {
+                $res = [];
+
+                // 当奖品为积分时（prize_type == 3），不减少活动奖品（积分）数量，在店家发放积分奖品时，调整用户表 user 积分信息，记录用户积分变动日志 user_integrals_log
+                if ($actRaffle['prize_type'] == 3) {
+                    // 调整用户表 user 积分信息
+                    $integrals = $actRaffle['quantity'];
+                    $res[0] = Db::name('user')->where(['user_id' => $userId])->setInc('get_integrals', $integrals); // 用户累计获得积分
+                    $res[1] = Db::name('user')->where(['user_id' => $userId])->setInc('rest_integrals', $integrals); // 剩余积分
+
+                    // 记录用户积分变动日志 user_integrals_log
+                    // 获取变动前最新用户积分变动日志
+                    $userIntegralsLog = Db::name('user_integrals_log')->where(['user_id' => $userId])->limit(1)->order('log_time desc')->select();
+                    $userIntegralsLogData['user_id'] = $userId;
+                    $userIntegralsLogData['change_integrals'] = $integrals; // 变动积分
+                    $userIntegralsLogData['before_integrals'] = $userIntegralsLog[0]['after_integrals']; // 变动前积分
+                    $userIntegralsLogData['after_integrals'] = $userIntegralsLog[0]['after_integrals'] + $integrals; // 变动后积分
+                    $userIntegralsLogData['log_content'] = '微信扫码中奖，店家发放积分'; // 日志内容
+                    $userIntegralsLogData['log_time'] = time(); // 积分变动时间
+                    $userIntegralsLogData['operator_type'] = 2; // 操作人类型：0用户，1平台管理员，2店家
+                    $userIntegralsLogData['operator_id'] = $actRaffle['shop_user_id']; // 操作人对应用户ID
+                    $res[2] = Db::name('user_integrals_log')->insert($userIntegralsLogData);
                 }
-            }
 
-            if (empty($data)) {
-                return show(config('code.error'), '数据不合法', '', 404);
-            }
+                // 更新领奖状态
+                $raffleData = [];
+                if (isset($param['prize_status'])) {
+                    $raffleData['prize_status'] = (int)$param['prize_status'];
+                    if ($raffleData['prize_status'] != 1) {
+                        $raffleData['prize_status'] = 1;
+                    }
+                }
+                if (empty($raffleData)) {
+                    return show(config('code.error'), '数据不合法', '', 404);
+                }
+                $res[3] = Db::name('act_raffle')->where(['raffle_id' => (int)$param['raffle_id']])->update($raffleData);
 
-            $res = Db::name('act_raffle')->where(['raffle_id' => (int)$param['raffle_id']])->update($data);
-            if ($res) {
+                // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                if (in_array(0, $res)) {
+                    return show(config('code.error'), '提交失败', $res, 403);
+                }
+
+                // 提交事务
+                Db::commit();
                 return show(config('code.success'), '奖品发放成功', '', 201);
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return show(config('code.error'), '请求异常', $e->getMessage(), 500);
             }
         } else {
             return show(config('code.error'), '请求不合法', '', 400);
