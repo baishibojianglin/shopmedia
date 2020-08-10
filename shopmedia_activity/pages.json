@@ -3,7 +3,10 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "店通传媒"
+				"navigationBarTitleText": "",
+				    "app-plus": {  
+				        "titleNView": false //禁用原生导航栏  
+				    }  
 			}
 		}
 	],

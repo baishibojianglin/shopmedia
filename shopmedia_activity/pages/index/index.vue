@@ -362,6 +362,7 @@
 		right: 0;
 		background:#A7A4F9;
 		text-align: center;
+		overflow-y: scroll;
 	}
 
 	.bottom {
@@ -390,8 +391,8 @@
 		width: 100%;
 	}
 	.src3css{
-		width: 50%;
-		height: 120px;
+		width: 45%;
+		height: 100px;
 	}
 	.guize{
 		width:90%;
@@ -402,6 +403,7 @@
 		text-align: left;
 		text-indent: 10px;
 		color:#464646;
+		margin-bottom: 30px;
 	}
 	.covercss{
 		position: fixed;
