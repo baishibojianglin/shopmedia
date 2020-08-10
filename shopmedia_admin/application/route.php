@@ -130,6 +130,9 @@ Route::resource('api/user', 'api/User');
 Route::post('api/apply_partner', 'api/User/applyPartner'); // 申请成为广告屏合作商
 Route::post('api/apply_shopkeeper', 'api/User/applyShopkeeper'); // 申请成为店家
 Route::post('api/get_user_role', 'api/User/getUserRole');
+// 用户获得的奖品
+Route::get('api/user_prize_count', 'api/User/userPrizeCount'); // 统计用户获得的奖品数量
+Route::get('api/user_prize_list', 'api/User/userPrizeList'); // 获取用户获得的奖品列表
 
 // 广告屏
 Route::get('api/device_all_list','api/Device/index');

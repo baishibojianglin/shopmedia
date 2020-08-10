@@ -80,6 +80,9 @@ class Prize extends Controller
         $data = input('post.');
 
         // 判断参数是否合法
+        if (!isset($data['create_time']) || date('Y-m-d') != date('Y-m-d', $data['create_time'])) {
+            return show(config('code.error'), '链接已过期，请重新扫描店铺广告屏上二维码参与抽奖', '', 403);
+        }
         if (!isset($data['shop_id']) || empty(trim($data['shop_id'])) || trim($data['shop_id']) == 'null' || trim($data['shop_id']) == '') {
             return show(config('code.error'), '扫描店铺广告屏上二维码参与抽奖', '', 403);
         }

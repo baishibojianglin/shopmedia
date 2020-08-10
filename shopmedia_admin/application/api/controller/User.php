@@ -313,4 +313,66 @@ class User extends AuthBase
         }
         /* 手动控制事务 e */
     }
+
+    /**
+     * 统计用户获得的奖品数量
+     * @return \think\response\Json
+     * @throws \think\Exception
+     */
+    public function userPrizeCount()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 统计奖品领取状态数量
+        // 未领取
+        $map0 = [];
+        $map0['prize_status'] = 0;
+        $map0['phone'] = $param['phone'];
+        $userPrizeCount0 = Db::name('act_raffle')->where($map0)->count('prize_status');
+
+        // 已领取
+        $map1 = [];
+        $map1['prize_status'] = 1;
+        $map1['phone'] = $param['phone'];
+        $userPrizeCount1 = Db::name('act_raffle')->where($map1)->count('prize_status');
+
+        $userPrizeCount = ['userPrizeCount0' => $userPrizeCount0, 'userPrizeCount1' => $userPrizeCount1];
+
+        return show(config('code.success'), 'OK', $userPrizeCount);
+    }
+
+    /**
+     * 获取用户获得的奖品列表
+     * @return \think\response\Json
+     */
+    public function userPrizeList()
+    {
+        // 判断为GET请求
+        if (!request()->isGet()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+
+        // 查询条件
+        $map = [];
+        $map['r.prize_status'] = (int)$param['prize_status'];
+        $map['r.phone'] = trim($param['phone']);
+
+        // 获取用户获得的奖品列表
+        $userPrizeList = Db::name('act_raffle')->alias('r')
+            ->field('r.*, s.shop_name, s.address')
+            ->join('__SHOP__ s', 's.shop_id = r.shop_id', 'LEFT')
+            ->where($map)
+            ->select();
+
+        return show(config('code.success'), 'OK', $userPrizeList);
+    }
 }

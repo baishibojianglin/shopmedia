@@ -289,6 +289,7 @@ class WeChant extends Controller
      */
     private function _scanMsgNews($postObj, $userInfo)
     {
+        $createTime = $postObj->CreateTime; // 消息创建时间 （整型）
         $eventKey = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值
 
         // 定义图文消息信息列表
@@ -297,7 +298,7 @@ class WeChant extends Controller
                 'title' => '欢迎关注店通传媒',
                 'description' => '惊喜不断，立即点击开始抽奖吧！',
                 'picUrl' => 'https://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/wechant/prize_cover_for_gh_925caa1fb92e_20200807161612_200%C3%97200.png',
-                'url' => 'http://media.dilinsat.com/activity_h5?shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
+                'url' => 'http://media.dilinsat.com/activity_h5?create_time=' . $createTime . '&shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
             ]
         ];
 

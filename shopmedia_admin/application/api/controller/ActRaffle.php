@@ -136,17 +136,18 @@ class ActRaffle extends AuthBase
                 // 当奖品为积分时（prize_type == 3），不减少活动奖品（积分）数量，在店家发放积分奖品时，调整用户表 user 积分信息，记录用户积分变动日志 user_integrals_log
                 if ($actRaffle['prize_type'] == 3) {
                     // 调整用户表 user 积分信息
-                    $integrals = $actRaffle['quantity'];
-                    $res[0] = Db::name('user')->where(['user_id' => $userId])->setInc('get_integrals', $integrals); // 用户累计获得积分
-                    $res[1] = Db::name('user')->where(['user_id' => $userId])->setInc('rest_integrals', $integrals); // 剩余积分
+                    $changeIntegrals = $actRaffle['quantity'];
+                    $res[0] = Db::name('user')->where(['user_id' => $userId])->setInc('get_integrals', $changeIntegrals); // 用户累计获得积分
+                    $res[1] = Db::name('user')->where(['user_id' => $userId])->setInc('rest_integrals', $changeIntegrals); // 剩余积分
 
                     // 记录用户积分变动日志 user_integrals_log
                     // 获取变动前最新用户积分变动日志
                     $userIntegralsLog = Db::name('user_integrals_log')->where(['user_id' => $userId])->limit(1)->order('log_time desc')->select();
+                    $beforeIntegrals = isset($userIntegralsLog[0]['after_integrals']) ? $userIntegralsLog[0]['after_integrals'] : 0; // 变动前积分
                     $userIntegralsLogData['user_id'] = $userId;
-                    $userIntegralsLogData['change_integrals'] = $integrals; // 变动积分
-                    $userIntegralsLogData['before_integrals'] = $userIntegralsLog[0]['after_integrals']; // 变动前积分
-                    $userIntegralsLogData['after_integrals'] = $userIntegralsLog[0]['after_integrals'] + $integrals; // 变动后积分
+                    $userIntegralsLogData['change_integrals'] = $changeIntegrals; // 变动积分
+                    $userIntegralsLogData['before_integrals'] = $beforeIntegrals; // 变动前积分
+                    $userIntegralsLogData['after_integrals'] = $beforeIntegrals + $changeIntegrals; // 变动后积分
                     $userIntegralsLogData['log_content'] = '微信扫码中奖，店家发放积分'; // 日志内容
                     $userIntegralsLogData['log_time'] = time(); // 积分变动时间
                     $userIntegralsLogData['operator_type'] = 2; // 操作人类型：0用户，1平台管理员，2店家

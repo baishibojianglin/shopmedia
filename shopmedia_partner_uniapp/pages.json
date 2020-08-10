@@ -437,10 +437,23 @@
 				}
 			}
         }
-        ,{
+        ,{ // 店家发放的奖品列表
             "path" : "pages/act-raffle/raffle-prize",
             "style" : {
 				"navigationBarTitleText": "奖品发放",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+        ,{ // 获取用户获得的奖品列表
+            "path" : "pages/user/user-prize-list",
+            "style" : {
+				"navigationBarTitleText": "我的奖品",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{

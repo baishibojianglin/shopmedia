@@ -5,7 +5,7 @@
 				<view class="uni-flex uni-row userData">
 					<view class="text uni-flex" style="width: 200rpx;height: 220rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
 						<!-- <image :src="userData.avatar" style="width: 150rpx;height: 150rpx;"></image> -->
-					         <image class="headimg"  mode="aspectFit" :src="logourl"></image>
+						<image class="headimg"  mode="aspectFit" :src="userData.avatar != '' ? userData.avatar : logourl"></image>
 					</view>
 					<view class="uni-flex uni-column">
 						<view class="uni-flex uni-row">
@@ -29,6 +29,44 @@
 			</uni-card>
 		</view>
 		
+		<view class="uni-common-mt" v-if="hasLogin">
+			<uni-card title="我的奖品" is-full :isShadow="true">
+				<uni-grid class="uni-center" :column="2" :showBorder="false" :square="false">
+					<uni-grid-item>
+						<navigator url="/pages/user/user-prize-list?prize_status=0">
+							<view class="uni-text-small">未领取</view>
+							<view class="uni-bold color-red">{{userPrizeCount.userPrizeCount0}}</view>
+						</navigator>
+					</uni-grid-item>
+					<uni-grid-item>
+						<navigator url="/pages/user/user-prize-list?prize_status=1">
+							<view class="uni-text-small">已领取</view>
+							<view class="uni-bold">{{userPrizeCount.userPrizeCount1}}</view>
+						</navigator>
+					</uni-grid-item>
+				</uni-grid>
+			</uni-card>
+		</view>
+		
+		<view class="uni-common-mt" v-if="hasLogin">
+			<uni-card title="我的积分" is-full :isShadow="true">
+				<uni-grid class="uni-center" :column="3" :showBorder="false" :square="false">
+					<uni-grid-item>
+						<text class="uni-text-small">获得</text>
+						<text class="uni-bold">{{userData.get_integrals}}</text>
+					</uni-grid-item>
+					<uni-grid-item>
+						<text class="uni-text-small">已兑换</text>
+						<text class="uni-bold">{{userData.used_integrals}}</text>
+					</uni-grid-item>
+					<uni-grid-item>
+						<text class="uni-text-small">剩余</text>
+						<text class="uni-bold color-red">{{userData.rest_integrals}}</text>
+					</uni-grid-item>
+				</uni-grid>
+			</uni-card>
+		</view>
+		
 		<view class="uni-btn-v uni-common-mt">
 			<button v-if="!hasLogin" type="primary" class="primary" @tap="bindLogin">登 录</button><!-- hasLogin -->
 			<button v-if="hasLogin" type="default" @tap="bindLogout">退出登录</button><!-- hasLogin -->
@@ -43,7 +81,8 @@
 		data() {
 			return {
 				userData: {},
-				logourl:'/static/img/logoheadimg.png'
+				logourl: '/static/img/logoheadimg.png',
+				userPrizeCount: [] // 统计用户获得的奖品数量
 			}
 		},
 		computed: {
@@ -51,6 +90,7 @@
 		},
 		onShow() {
 			this.getUserInfo(); // 获取用户信息
+			this.getUserPrizeCount();
 		},
 		methods: {
 			...mapMutations(['logout']),
@@ -178,6 +218,30 @@
 						url: url
 					})
 				}
+			},
+			
+			/**
+			 * 统计用户获得的奖品数量
+			 */
+			getUserPrizeCount() {
+				let self=this;
+				uni.request({
+					url: this.$serverUrl + 'api/user_prize_count',
+					data: {
+						user_id: this.userInfo.user_id,
+						phone: this.userInfo.phone
+					},
+					method: 'GET',
+					header: {
+						'commonheader': this.commonheader,
+						'access-user-token': this.userInfo.token
+					},
+					success: (res) => {
+						if (res.data.status == 1) {
+							self.userPrizeCount = res.data.data;
+						}
+					}
+				});	
 			}
 		}
 	}

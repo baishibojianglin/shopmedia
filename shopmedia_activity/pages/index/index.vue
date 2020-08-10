@@ -95,21 +95,23 @@
 				src1: '/static/xxhg.png',
 				src2: '/static/gxzj.png',
 				src3: '/static/cjgz.png',
-				prize_id:0,
-				showbut:true,
+				prize_id: 0,
+				showbut: true,
 				prize_no: false,
 				prize_yes: false,
-				is_look:false,
-				num_id:0,
-				show_result:false,
+				is_look: false,
+				error_message: '',
+				num_id: 0,
+				show_result: false,
 				prize_info: {
-					shop:{
+					shop: {
 						shop_name:''
 					}
 				},	
 				phone: '', // 领奖电话号码
 				isAward: false, // 判断是否领奖成功	
-				shop_id: 0, // 抽奖店铺ID	
+				create_time: 0, // （扫码/关注微信公众号）消息创建时间 （整型）
+				shop_id: 0, // 抽奖店铺ID
 				// 扫广告屏上二维码后获取的微信用户信息
 				wxUserInfo: {
 					'openid': '',
@@ -129,6 +131,7 @@
 			//判断传入的参数
 			if (option) {
 				if (option.shop_id) {
+					this.create_time = option.create_time;
 					this.shop_id = option.shop_id;
 					this.wxUserInfo.openid = option.openid;
 					this.wxUserInfo.nickname = option.nickname;
@@ -143,7 +146,6 @@
 			this.prize(this.shop_id);
 		},
 		methods: {
-					
 			/**
 			 * @param {Object} callback
 			 */
@@ -162,16 +164,15 @@
 				if(this.is_look==false){
 					uni.showModal({
 						title: '提示',
-						content: '您今日在该店已经抽过奖了，请客官明日再来发现惊喜！',
+						content: self.error_message, // '您今日在该店已经抽过奖了，请客官明日再来发现惊喜！'
 						showCancel: false
 					})
 					return false;
-				}				
-							
-				this.lottery_draw_param.winingIndex=this.num_id;
-                //props修改在小程序和APP端不成功，所以在这里使用回调函数传参，
-                callback(this.lottery_draw_param);
+				}
 				
+				this.lottery_draw_param.winingIndex=this.num_id;
+				//props修改在小程序和APP端不成功，所以在这里使用回调函数传参，
+				callback(this.lottery_draw_param);
 			},
 			
 			/**
@@ -181,36 +182,38 @@
 				this.is_look=false;
 				this.show_result=true;
 				// console.log(`抽到第${param+1}个方格的奖品`)
-				console.log(param)
+				// console.log(param)
 			},
 		
 			/**
 			 * 记录抽奖信息
 			 */
 			recordRaffleLog() {
-						let self = this;
-						// 发起网络请求，提交服务端
-						uni.request({
-							url: this.$serverUrl + 'api/record_raffle_log',
-							data: {
-								shop_id: this.shop_id,
-								openid: this.wxUserInfo.openid
-								
-							},
-							method: 'POST',
-							success: function(res) {
-								if (res.data.status==1) { //提交成功												
-                                   self.is_look=true;
-								} 
-							},
-							fail: function(error) {
-								uni.showModal({
-									title: '提示',
-									content: error.response.message,
-									showCancel: false
-								})
-							}
+				let self = this;
+				// 发起网络请求，提交服务端
+				uni.request({
+					url: this.$serverUrl + 'api/record_raffle_log',
+					data: {
+						create_time: this.create_time,
+						shop_id: this.shop_id,
+						openid: this.wxUserInfo.openid
+					},
+					method: 'POST',
+					success: function(res) {
+						if (res.data.status==1) { //提交成功												
+							self.is_look=true;
+						} else {
+							self.error_message = res.data.message;
+						}
+					},
+					fail: function(error) {
+						uni.showModal({
+							title: '提示',
+							content: error.response.message,
+							showCancel: false
 						})
+					}
+				})
 			},
 			
 
@@ -234,7 +237,7 @@
 							self.prize_yes = true;
 							self.prize_info = res.data;
 							self.num_id=res.data.num_id;
-							console.log(self.prize_info)
+							// console.log(self.prize_info)
 						}
 					}
 				})

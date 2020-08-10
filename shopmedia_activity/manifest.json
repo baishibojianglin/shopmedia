@@ -87,6 +87,7 @@
         },
         "devServer" : {
             "https" : false
-        }
+        },
+        "title" : "店通传媒 - 抽奖"
     }
 }
