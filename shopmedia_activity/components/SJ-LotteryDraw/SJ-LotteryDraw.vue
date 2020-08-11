@@ -26,37 +26,37 @@
 
 <script>
 	import LotteryDraw from './SJ-LotteryDraw.js';
-	let grid_info = [{
-			logo: "../../static/SJ-LotteryDraw/1.png",
-			text: "大米两斤"
-		},
+	let grid_info = [
 		{
-			logo: "../../static/SJ-LotteryDraw/2.png",
-			text: "运动鞋"
-		},
-		{
-			logo: "../../static/SJ-LotteryDraw/3.jpg",
-			text: "抽纸一提"
-		},
-		{
-			logo: "../../static/SJ-LotteryDraw/4.png",
-			text: "20积分"
-		},
-		{
-			logo: "../../static/SJ-LotteryDraw/5.png",
-			text: "30积分"
+			logo: "../../static/SJ-LotteryDraw/8.png",
+			text: "40积分"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/6.png",
 			text: "免费广告"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/7.png",
-			text: "10积分"
+			logo: "../../static/SJ-LotteryDraw/4.png",
+			text: "20积分"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/8.png",
-			text: "40积分"
+			logo: "../../static/SJ-LotteryDraw/3.jpg",
+			text: "抽纸一提"
+		},
+		{
+			logo: "../../static/SJ-LotteryDraw/5.png",
+			text: "30积分"
+		},
+		{
+			logo: "../../static/SJ-LotteryDraw/2.png",
+			text: "运动鞋"
+		},
+		{
+			logo: "../../static/SJ-LotteryDraw/7.png",
+			text: "10积分"
+		},{
+			logo: "../../static/SJ-LotteryDraw/1.png",
+			text: "大米两斤"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",

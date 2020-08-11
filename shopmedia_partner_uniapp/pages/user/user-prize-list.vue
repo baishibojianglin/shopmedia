@@ -1,19 +1,22 @@
 <template>
 	<view>
-		<view class="uni-list">
+		<view v-if="userPrizeList.length > 0" class="uni-list">
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in userPrizeList" :key="key">
 				<view class="uni-media-list">
-					<!-- <image class="uni-media-list-logo" :src="value.thumb"></image> -->
+					<image class="uni-media-list-logo" :src="value.prize_pic"></image>
 					<view class="uni-media-list-body">
 						<view class="uni-media-list-text-top">【奖品】{{ value.prize_name }}</view>
 						<view class="uni-media-list-text-bottom">
-							<text>店铺 {{ value.shop_name }}</text>
-							<text>，地址 {{ value.address }}</text>
+							<view class="uni-ellipsis" @click="openLocation(value.latitude, value.longitude, value.shop_name, value.address)">
+								<text>[领奖店铺]{{ value.shop_name }}</text>
+								<text>，{{ value.address }}</text>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
+		<view v-else class="uni-center">什么也没有</view>
 	</view>
 </template>
 
@@ -55,9 +58,30 @@
 					},
 					success: (res) => {
 						if (res.data.status == 1) {
-							self.userPrizeList = res.data.data;
+							let userPrizeList = res.data.data;
+							userPrizeList.forEach((item, index) => {
+								item.prize_pic = item.prize_pic != '' ? JSON.parse(item.prize_pic)[0].url : '/static/img/cj.png';
+							})
+							self.userPrizeList = userPrizeList;
 						}
 					}
+				});
+			},
+			
+			/**
+			 * 查看位置
+			 * @param {Object} latitude
+			 * @param {Object} longitude
+			 * @param {Object} name
+			 * @param {Object} address
+			 */
+			openLocation(latitude, longitude, name, address) {
+				// 使用应用内置地图查看位置
+				uni.openLocation({
+					latitude: Number(latitude),
+					longitude: Number(longitude),
+					name: name,
+					address: address
 				});
 			}
 		}

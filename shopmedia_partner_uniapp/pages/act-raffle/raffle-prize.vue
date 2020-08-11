@@ -1,14 +1,16 @@
 <template>
 	<view>
-		<view class="uni-list">
+		<view v-if="rafflePrizeList.length > 0" class="uni-list">
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in rafflePrizeList" :key="key">
 				<view class="uni-media-list">
-					<!-- <image class="uni-media-list-logo" :src="value.thumb"></image> -->
+					<image class="uni-media-list-logo" :src="value.prize_pic"></image>
 					<view class="uni-media-list-body">
-						<view class="uni-media-list-text-top">{{ value.prizewinner }} {{ value.phone }}</view>
+						<view class="uni-media-list-text-top">【中奖用户】{{ value.prizewinner }} {{ value.phone }}</view>
 						<view class="uni-media-list-text-bottom">
-							<text>奖品 {{ value.prize_name }}</text>
-							<text>，店铺 {{ value.shop_name }}</text>
+							<view class="uni-ellipsis">
+								<text>[奖品]{{ value.prize_name }}</text>
+								<text>，[店铺]{{ value.shop_name }}</text>
+							</view>
 						</view>
 					</view>
 					<view class="">
@@ -18,6 +20,7 @@
 				</view>
 			</view>
 		</view>
+		<view v-else class="uni-center">什么也没有</view>
 	</view>
 </template>
 
@@ -58,7 +61,11 @@
 					},
 					success: (res) => {
 						if (res.data.status == 1) {
-							self.rafflePrizeList = res.data.data;
+							let rafflePrizeList = res.data.data;
+							rafflePrizeList.forEach((item, index) => {
+								item.prize_pic = item.prize_pic != '' ? JSON.parse(item.prize_pic)[0].url : '/static/img/cj.png';
+							})
+							self.rafflePrizeList = rafflePrizeList;
 						}
 					}
 				});

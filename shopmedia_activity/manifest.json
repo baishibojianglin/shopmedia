@@ -88,6 +88,6 @@
         "devServer" : {
             "https" : false
         },
-        "title" : "店通传媒 - 抽奖"
+        "title" : "店通传媒"
     }
 }

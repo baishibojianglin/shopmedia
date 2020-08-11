@@ -103,7 +103,7 @@ class Prize extends Controller
 
         $data['raffle_time'] = time(); // 抽奖时间
         $data['oauth'] = 'wx'; // 抽奖者第三方来源
-        $res = Db::name('act_raffle_log')->insertGetId($data);
+        $res = Db::name('act_raffle_log')->strict(false)->insertGetId($data);
         if ($res) {
             return show(config('code.success'), '已参与抽奖', '', 201);
         } else {

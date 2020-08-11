@@ -94,8 +94,9 @@ class ActRaffle extends AuthBase
 
         // 获取奖品领取状态列表
         $rafflePrizeList = Db::name('act_raffle')->alias('r')
-            ->field('r.*, s.shop_name')
+            ->field('r.*, s.shop_name, p.prize_type, p.prize_pic, p.quantity, p.is_sponsor_address')
             ->join('__SHOP__ s', 's.shop_id = r.shop_id', 'LEFT')
+            ->join('__ACT_PRIZE__ p', 'p.prize_id = r.prize_id', 'LEFT')
             ->where($map)
             ->select();
 
