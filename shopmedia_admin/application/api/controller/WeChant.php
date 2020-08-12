@@ -348,6 +348,9 @@ class WeChant extends Controller
         $openid = $postObj->FromUserName;
         $userInfo = $this->getUserInfo($openid);
 
+        // 创建微信用户
+        $this->createWxUser($userInfo);
+
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
         $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息

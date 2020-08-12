@@ -1,10 +1,10 @@
 <template>
 	<view class="content">
-				
+
 		<view v-if="showbut">
-			<view class="content-cj">			
-                 <LotteryDraw @get_winingIndex='get_winingIndex' @luck_draw_finish='luck_draw_finish'></LotteryDraw>
-            </view>	
+			<view class="content-cj">
+				<LotteryDraw @get_winingIndex='recordRaffleLog' @luck_draw_finish='luck_draw_finish'></LotteryDraw>
+			</view>
 			<view class="wb100">
 				<image class="src3css" :mode="mode" :src="src3"></image>
 				<view class="guize">
@@ -14,74 +14,72 @@
 					<view>4、积累积分100以上可以兑换奖品</view>
 					<view>5、本活动最终解释权归狄霖店通传媒所有</view>
 				</view>
-			</view>		
+			</view>
 		</view>
 
+		<view v-if="show_result" class="covercss"></view>
+		<!--遮罩层 -->
 
-		<view v-if="show_result" class="covercss"></view><!--遮罩层 -->
-		
 		<view v-if="show_result">
-				<!--中奖 s-->
-				<view class="aimprize" v-if="prize_yes">
-					<view class="wb100">
-						<image style="width:90%;height: 100px;" :src="src2"></image>
-					</view>
-					<view class="wpbj" v-if="!isAward">{{prize_info.prize.prize_name}}</view>
-
-					<view style="margin-top: 0px;">
-						特别鸣谢
-						<br />
-						<text style="font-weight: bold;color:#007AFF; font-size: 18px; line-height: 50px;">{{prize_info.prize.sponsor}}</text>
-						<br />
-						对该奖品的独家赞助
-					</view>
-
-					
-					<view v-if="!isAward">
-						<button type="primary" @click="confirmDialog" style="width: 95%; margin-top:10px; margin-bottom: 20px;">领取奖品</button>
-						
-						<!-- 提交信息 -->
-						<uni-popup ref="dialogInput" type="dialog" @change="change">
-							<uni-popup-dialog mode="input" title="" value="" placeholder="请输入领奖手机号" @confirm="dialogInputConfirm"></uni-popup-dialog>
-						</uni-popup>
-					</view>
-					
-					<view v-if="isAward">
-						<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：到店提供电话号码即可领取">
-							<view class="uni-flex uni-row">
-								<view class="text-left" style="width: 200rpx;">领奖电话</view>
-								<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{phone}}</view>
-							</view>
-							<view class="uni-flex uni-row">
-								<view class="text-left" style="width: 200rpx;">领奖店铺</view>
-								<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.sponsor : prize_info.shop.shop_name}}</view>
-							</view>
-							<view class="uni-flex uni-row">
-								<view class="text-left" style="width: 200rpx;">店铺地址</view>
-								<view class="uni-common-pl text-right" @click="openLocation()" style="-webkit-flex: 1;flex: 1;"><text class="uni-icon uni-icon-location-filled"></text>{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.address : prize_info.shop.address}}</view>
-							</view>
-						</uni-card>
-					</view>
+			<!--中奖 s-->
+			<view class="aimprize" v-if="prize_yes">
+				<view class="wb100">
+					<image style="width:90%;height: 100px;" :src="src2"></image>
 				</view>
-				<!--中奖 e-->
-				
-				<!--未中奖 s-->
-				<view class="aimprize1" v-if="prize_no">
-					<view class="wb100">
-						<image style="width:100%;height: 400px;" :src="src1"></image>
-					</view>
-				</view>
-				<!--未中奖 e-->
-		
-		</view>	
+				<view class="wpbj" v-if="!isAward">{{prize_info.prize.prize_name}}</view>
 
+				<view style="margin-top: 0px;">
+					特别鸣谢
+					<br />
+					<text style="font-weight: bold;color:#007AFF; font-size: 18px; line-height: 50px;">{{prize_info.prize.sponsor}}</text>
+					<br />
+					对该奖品的独家赞助
+				</view>
+
+				<view v-if="!isAward">
+					<button type="primary" @click="confirmDialog" style="width: 95%; margin-top:10px; margin-bottom: 20px;">领取奖品</button>
+
+					<!-- 提交信息 -->
+					<uni-popup ref="dialogInput" type="dialog" @change="change">
+						<uni-popup-dialog mode="input" title="" value="" placeholder="请输入领奖手机号" @confirm="dialogInputConfirm"></uni-popup-dialog>
+					</uni-popup>
+				</view>
+
+				<view v-if="isAward">
+					<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：到店提供电话号码即可领取">
+						<view class="uni-flex uni-row">
+							<view class="text-left" style="width: 200rpx;">领奖电话</view>
+							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{phone}}</view>
+						</view>
+						<view class="uni-flex uni-row">
+							<view class="text-left" style="width: 200rpx;">领奖店铺</view>
+							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.sponsor : prize_info.shop.shop_name}}</view>
+						</view>
+						<view class="uni-flex uni-row">
+							<view class="text-left" style="width: 200rpx;">店铺地址</view>
+							<view class="uni-common-pl text-right" @click="openLocation()" style="-webkit-flex: 1;flex: 1;"><text class="uni-icon uni-icon-location-filled"></text>{{prize_info.prize.is_sponsor_address == 1 ? prize_info.prize.address : prize_info.shop.address}}</view>
+						</view>
+					</uni-card>
+				</view>
+			</view>
+			<!--中奖 e-->
+
+			<!--未中奖 s-->
+			<view class="aimprize1" v-if="prize_no">
+				<view class="wb100">
+					<image style="width:100%;height: 400px;" :src="src1"></image>
+				</view>
+			</view>
+			<!--未中奖 e-->
+
+		</view>
 
 	</view>
 </template>
 
 <script>
 	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue';
-    import LotteryDraw from '../../components/SJ-LotteryDraw/SJ-LotteryDraw.vue';
+	import LotteryDraw from '../../components/SJ-LotteryDraw/SJ-LotteryDraw.vue';
 
 	export default {
 		components: {
@@ -99,15 +97,13 @@
 				showbut: true,
 				prize_no: false,
 				prize_yes: false,
-				is_look: false,
-				error_message: '',
 				num_id: 0,
 				show_result: false,
 				prize_info: {
 					shop: {
-						shop_name:''
+						shop_name: ''
 					}
-				},	
+				},
 				phone: '', // 领奖电话号码
 				isAward: false, // 判断是否领奖成功	
 				create_time: 0, // （扫码/关注微信公众号）消息创建时间 （整型）
@@ -116,10 +112,10 @@
 				wxUserInfo: {
 					'openid': '',
 					'nickname': '',
-					'headimgurl': '' 
-				},	
+					'headimgurl': ''
+				},
 				//抽奖插件
-				lottery_draw_param:{
+				lottery_draw_param: {
 					startIndex: 0, //开始抽奖位置，从0开始
 					totalCount: 4, //一共要转的圈数
 					winingIndex: 4, //中奖的位置，从0开始
@@ -136,59 +132,28 @@
 					this.wxUserInfo.openid = option.openid;
 					this.wxUserInfo.nickname = option.nickname;
 					this.wxUserInfo.headimgurl = option.headimgurl;
-			    }	
+				}
 			}
-			
-			//是否当日在某店是否已经扫描
-		    this.recordRaffleLog();
-			
+
 			//抽奖
 			this.prize(this.shop_id);
 		},
 		methods: {
 			/**
-			 * @param {Object} callback
-			 */
-			get_winingIndex(callback){
-				let self=this;
-				//判断是否是扫描屏幕上方的二维码进入
-				if(this.shop_id==0){
-					uni.showModal({
-						title: '提示',
-						content: '扫描店铺广告屏上的二维码才能抽奖，快去发现惊喜吧！',
-						showCancel: false
-					})
-					return false;
-				}
-				
-				if(this.is_look==false){
-					uni.showModal({
-						title: '提示',
-						content: self.error_message, // '您今日在该店已经抽过奖了，请客官明日再来发现惊喜！'
-						showCancel: false
-					})
-					return false;
-				}
-				
-				this.lottery_draw_param.winingIndex=this.num_id;
-				//props修改在小程序和APP端不成功，所以在这里使用回调函数传参，
-				callback(this.lottery_draw_param);
-			},
-			
-			/**
 			 * @param {Object} param
 			 */
-			luck_draw_finish(param){
-				this.is_look=false;
-				this.show_result=true;
+			luck_draw_finish(param) {
+				// this.is_look = false;
+				this.show_result = true;
 				// console.log(`抽到第${param+1}个方格的奖品`)
 				// console.log(param)
 			},
-		
+
 			/**
 			 * 记录抽奖信息
+			 * @param {Object} callback LotteryDraw组件get_winingIndex方法回调
 			 */
-			recordRaffleLog() {
+			recordRaffleLog(callback) {
 				let self = this;
 				// 发起网络请求，提交服务端
 				uni.request({
@@ -200,10 +165,17 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						if (res.data.status==1) { //提交成功												
-							self.is_look=true;
+						if (res.data.status == 1) { //提交成功												
+							self.lottery_draw_param.winingIndex = self.num_id;
+							//props修改在小程序和APP端不成功，所以在这里使用回调函数传参，
+							callback(self.lottery_draw_param);
 						} else {
-							self.error_message = res.data.message;
+							uni.showModal({
+								title: '提示',
+								content: res.data.message, // '您今日在该店已经抽过奖了，请客官明日再来发现惊喜！'
+								showCancel: false
+							})
+							return false;
 						}
 					},
 					fail: function(error) {
@@ -215,9 +187,7 @@
 					}
 				})
 			},
-			
 
-			
 			/**
 			 * 获取奖品
 			 * @param {Object} shop_id
@@ -236,20 +206,20 @@
 						} else { //中奖
 							self.prize_yes = true;
 							self.prize_info = res.data;
-							self.num_id=res.data.num_id;
+							self.num_id = res.data.num_id;
 							// console.log(self.prize_info)
 						}
 					}
 				})
 			},
-			
+
 			/**
 			 * 打开提交信息
 			 */
 			confirmDialog() {
 				this.$refs.dialogInput.open()
 			},
-			
+
 			/**
 			 * 输入对话框的确定事件
 			 */
@@ -262,10 +232,10 @@
 					});
 					return false;
 				}
-				
+
 				this.submitForm();
 			},
-			
+
 			/**
 			 * popup 状态发生变化触发
 			 * @param {Object} e
@@ -273,13 +243,13 @@
 			change(e) {
 				// console.log('popup ' + e.type + ' 状态', e.show)
 			},
-			
+
 			/**
 			 * 提交领奖信息
 			 */
 			submitForm() {
 				let self = this;
-				
+
 				// 发起网络请求，提交服务端
 				uni.request({
 					url: this.$serverUrl + 'api/winner_info',
@@ -320,12 +290,15 @@
 					}
 				})
 			},
-			
+
 			/**
 			 * 查看位置
 			 */
 			openLocation() {
-				let name = '', address = '', latitude = '', longitude = '';
+				let name = '',
+					address = '',
+					latitude = '',
+					longitude = '';
 				if (this.prize_info.prize.is_sponsor_address == 1) {
 					name = this.prize_info.prize.sponsor;
 					address = this.prize_info.prize.address;
@@ -350,20 +323,21 @@
 </script>
 
 <style>
-	.content-cj{
-		margin-top:80px;
-	    display: flex;
-	    flex-direction: column;
-	    align-items: center;
-	    justify-content: center;
+	.content-cj {
+		margin-top: 80px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
+
 	.content {
 		position: fixed;
 		top: 0;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background:#A7A4F9;
+		background: #A7A4F9;
 		text-align: center;
 		overflow-y: scroll;
 	}
@@ -390,64 +364,69 @@
 		font-weight: bold;
 		font-size: 50px;
 	}
-	.wb100{
+
+	.wb100 {
 		width: 100%;
 	}
-	.src3css{
+
+	.src3css {
 		width: 45%;
 		height: 100px;
 	}
-	.guize{
-		width:90%;
-		margin-left:5%; 
-		background:#918EED;
+
+	.guize {
+		width: 90%;
+		margin-left: 5%;
+		background: #918EED;
 		border-radius: 10px;
 		padding: 10px 0px;
 		text-align: left;
 		text-indent: 10px;
-		color:#464646;
+		color: #464646;
 		margin-bottom: 30px;
 	}
-	.covercss{
+
+	.covercss {
 		position: fixed;
 		z-index: 199;
 		left: 0;
 		right: 0;
-		top:0;
-		bottom:0;
+		top: 0;
+		bottom: 0;
 		background-color: #000;
 		opacity: 0.4;
 	}
-	.aimprize{
+
+	.aimprize {
 		position: fixed;
 		z-index: 200;
 		width: 85%;
-		top:10%;
-		left:6%;
+		top: 10%;
+		left: 6%;
 		background-color: #FEFEFE;
-		border:8px solid #3C38B3;
+		border: 8px solid #3C38B3;
 		border-radius: 15px;
 	}
-    .wpbj{
+
+	.wpbj {
 		width: 100%;
 		height: 230px;
 		background-image: url(../../static/wpbj.png);
 		background-size: 100% 100%;
 		line-height: 240px;
-		color:#BA0000;
+		color: #BA0000;
 		font-weight: bold;
 		font-size: 18px;
 	}
-	
-	.aimprize1{
+
+	.aimprize1 {
 		position: fixed;
 		z-index: 200;
 		width: 85%;
-		top:20%;
-		left:7.5%;
-		background-color:none;
-		border:0px solid #3C38B3;
-		border-radius:0px;
+		top: 20%;
+		left: 7.5%;
+		background-color: none;
+		border: 0px solid #3C38B3;
+		border-radius: 0px;
 	}
-	
 </style>

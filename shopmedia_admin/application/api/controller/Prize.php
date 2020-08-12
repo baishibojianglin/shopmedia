@@ -98,7 +98,7 @@ class Prize extends Controller
         // 该用户在该店铺今日是否已经抽奖（注意：每个微信用户每天只能在一家店铺抽一次奖）
         $todayRaffleLogCount = Db::name('act_raffle_log')->where(['shop_id' => (int)$data['shop_id'], 'oauth' => 'wx', 'openid' => $data['openid']])->whereTime('raffle_time', 'today')->count();
         if ($todayRaffleLogCount > 0) {
-            return show(config('code.error'), '你今日在该店铺已经抽过奖了，明日再来吧', ['today_raffle' => $todayRaffleLogCount], 403);
+            return show(config('code.error'), '你今日在该店铺广告屏已经抽过奖了，请扫描其他店铺广告屏。每天都可以参与哦', ['today_raffle' => $todayRaffleLogCount], 403);
         }
 
         $data['raffle_time'] = time(); // 抽奖时间
