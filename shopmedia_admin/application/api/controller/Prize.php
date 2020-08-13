@@ -22,9 +22,10 @@ class Prize extends Controller
         $form = input();
 
         //获取店铺信息
-        $shopMap['s.shop_id'] = $form['shop_id'];
+        $shopMap['d.device_id'] = $form['device_id'];
         $shop = Db::name('shop')->alias('s')
             ->field('s.shop_id, s.shop_name, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name town')
+            ->join('__DEVICE__ d', 'd.shop_id = s.shop_id', 'LEFT') // 广告屏设备
             ->join('__REGION__ rp', 's.province_id = rp.region_id', 'LEFT') // 区域（省份）
             ->join('__REGION__ rc', 's.city_id = rc.region_id', 'LEFT') // 区域（城市）
             ->join('__REGION__ rco', 's.county_id = rco.region_id', 'LEFT') // 区域（区县）
@@ -83,20 +84,20 @@ class Prize extends Controller
         if (!isset($data['create_time']) || date('Y-m-d') != date('Y-m-d', $data['create_time'])) {
             return show(config('code.error'), '链接已过期，请重新扫描店铺广告屏上二维码参与抽奖', '', 403);
         }
-        if (!isset($data['shop_id']) || empty(trim($data['shop_id'])) || trim($data['shop_id']) == 'null' || trim($data['shop_id']) == '') {
+        if (!isset($data['device_id']) || empty(trim($data['device_id'])) || trim($data['device_id']) == 'null' || trim($data['device_id']) == '') {
             return show(config('code.error'), '扫描店铺广告屏上二维码参与抽奖', '', 403);
         }
-        // 店铺是否存在
-        $shop = Db::name('shop')->where(['shop_id' => (int)$data['shop_id'], 'status' => config('code.status_enable')])->find();
-        if (empty($shop)) {
-            return show(config('code.error'), '店铺被禁用或不存在', '', 404);
+        // 设备是否存在
+        $device = Db::name('device')->where(['device_id' => (int)$data['device_id'], 'status' => config('code.status_enable')])->find();
+        if (empty($device)) {
+            return show(config('code.error'), '设备故障、下线或不存在', '', 404);
         }
         // 是否获取微信用户信息
         if (!isset($data['openid']) || empty($data['openid'])) {
             return show(config('code.error'), '获取微信用户失败', '', 404);
         }
         // 该用户在该店铺今日是否已经抽奖（注意：每个微信用户每天只能在一家店铺抽一次奖）
-        $todayRaffleLogCount = Db::name('act_raffle_log')->where(['shop_id' => (int)$data['shop_id'], 'oauth' => 'wx', 'openid' => $data['openid']])->whereTime('raffle_time', 'today')->count();
+        $todayRaffleLogCount = Db::name('act_raffle_log')->where(['device_id' => (int)$data['device_id'], 'oauth' => 'wx', 'openid' => $data['openid']])->whereTime('raffle_time', 'today')->count();
         if ($todayRaffleLogCount > 0) {
             return show(config('code.error'), '你今日在该店铺广告屏已经抽过奖了，请扫描其他店铺广告屏。每天都可以参与哦', ['today_raffle' => $todayRaffleLogCount], 403);
         }
@@ -125,6 +126,7 @@ class Prize extends Controller
         // 传入的参数
         $param = input('post.');
         $shopId = (int)$param['shop_id'];
+        $deviceId = (int)$param['device_id'];
         $prizeId = (int)$param['prize_id'];
 
         // 获取奖品信息
@@ -153,9 +155,9 @@ class Prize extends Controller
             $time = time(); // 抽奖时间
 
             // 获取抽奖记录，如果不存在则添加记录
-            $todayRaffleLog = Db::name('act_raffle_log')->where(['shop_id' => $shopId, 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
+            $todayRaffleLog = Db::name('act_raffle_log')->where(['device_id' => $deviceId, 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
             if (empty($todayRaffleLog)) {
-                $raffleLogData['shop_id'] = $shopId;
+                $raffleLogData['device_id'] = $deviceId;
                 $raffleLogData['raffle_time'] = $time; // 抽奖时间
                 $raffleLogData['oauth'] = 'wx'; // 抽奖者第三方来源
                 $raffleLogData['openid'] = $param['openid']; // 抽奖者第三方唯一标识
@@ -166,7 +168,7 @@ class Prize extends Controller
             $raffleData['act_id'] = (int)$param['act_id'];
             $raffleData['prize_id'] = $prizeId;
             $raffleData['prize_name'] = $param['prize_name'];
-            $raffleData['shop_id'] = $shopId;
+            $raffleData['device_id'] = $deviceId;
             $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
             $raffleData['prizewinner'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
             $raffleData['phone'] = trim($param['phone']);

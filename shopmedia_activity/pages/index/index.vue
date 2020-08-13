@@ -107,7 +107,7 @@
 				phone: '', // 领奖电话号码
 				isAward: false, // 判断是否领奖成功	
 				create_time: 0, // （扫码/关注微信公众号）消息创建时间 （整型）
-				shop_id: 0, // 抽奖店铺ID
+				device_id: 0, // 抽奖广告屏设备ID
 				// 扫广告屏上二维码后获取的微信用户信息
 				wxUserInfo: {
 					'openid': '',
@@ -126,9 +126,9 @@
 		onLoad(option) {
 			//判断传入的参数
 			if (option) {
-				if (option.shop_id) {
+				if (option.scene_id) {
 					this.create_time = option.create_time;
-					this.shop_id = option.shop_id;
+					this.device_id = option.scene_id;
 					this.wxUserInfo.openid = option.openid;
 					this.wxUserInfo.nickname = option.nickname;
 					this.wxUserInfo.headimgurl = option.headimgurl;
@@ -136,7 +136,7 @@
 			}
 
 			//抽奖
-			this.prize(this.shop_id);
+			this.prize(this.device_id);
 		},
 		methods: {
 			/**
@@ -160,7 +160,7 @@
 					url: this.$serverUrl + 'api/record_raffle_log',
 					data: {
 						create_time: this.create_time,
-						shop_id: this.shop_id,
+						device_id: this.device_id,
 						openid: this.wxUserInfo.openid
 					},
 					method: 'POST',
@@ -190,14 +190,14 @@
 
 			/**
 			 * 获取奖品
-			 * @param {Object} shop_id
+			 * @param {Object} device_id
 			 */
-			prize(shop_id) {
+			prize(device_id) {
 				let self = this;
 				uni.request({
 					url: this.$serverUrl + 'api/get_prize',
 					data: {
-						shop_id: shop_id,
+						device_id: device_id,
 					},
 					method: 'GET',
 					success: function(res) {
@@ -258,6 +258,7 @@
 						prize_id: this.prize_info.prize.prize_id,
 						prize_name: this.prize_info.prize.prize_name,
 						shop_id: this.prize_info.shop.shop_id,
+						device_id: this.device_id,
 						phone: this.phone,
 						openid: this.wxUserInfo.openid,
 						prizewinner: this.wxUserInfo.nickname,
@@ -269,6 +270,7 @@
 					}, */
 					method: 'POST',
 					success: function(res) {
+						// console.log('success', res);
 						if (0 == res.data.status) { // 提交失败
 							uni.showModal({
 								title: '提示',

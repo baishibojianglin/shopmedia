@@ -298,7 +298,7 @@ class WeChant extends Controller
                 'title' => '欢迎关注店通传媒',
                 'description' => '惊喜不断，立即点击开始抽奖吧！',
                 'picUrl' => 'https://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/wechant/prize_cover_for_gh_925caa1fb92e_20200807161612_200%C3%97200.png',
-                'url' => config('app.http_type') . config('app.I_SERVER_NAME') . '/activity_h5?create_time=' . $createTime . '&shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
+                'url' => config('app.http_type') . config('app.I_SERVER_NAME') . '/activity_h5?create_time=' . $createTime . '&scene_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
             ]
         ];
 
@@ -561,7 +561,7 @@ class WeChant extends Controller
         echo $type . ' <img src="' . $url . '" title="' . $type . '" />';
 
         //return $url;
-        //return $this->downloadQRCode($url, 'qrcode_for_gh_925caa1fb92e_shop_' . $sceneId);
+        //return $this->downloadQRCode($url, 'qrcode_for_gh_925caa1fb92e_scene_id_' . $sceneId);
         return $this->getLogoQRCode($url, $sceneId);
     }
 
@@ -590,7 +590,7 @@ class WeChant extends Controller
             //重新组合图片并调整大小
             $a = imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
             $dir = "static/qrcode/";
-            $filename = 'qrcode_for_gh_925caa1fb92e_shop_' . $sceneId . '.png';
+            $filename = 'qrcode_for_gh_925caa1fb92e_scene_id_' . $sceneId . '.png';
             imagepng($QR, $dir.$filename);
             /*if(file_exists($dir.$filename)){
                 //上传图片到oss
@@ -611,7 +611,7 @@ class WeChant extends Controller
                 curl_close($ch);
                 dump($res);
             }*/
-            echo '<img src="' . $dir.$filename . '" title="' . $filename . '" />';
+            echo '<img src="' . config('app.http_type') . config('app.I_SERVER_NAME') . '/' . $dir . $filename . '" title="' . $filename . '" />';
             return $dir.$filename;
         }catch(\Exception $e){
             echo $e->getMessage();
