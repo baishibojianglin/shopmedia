@@ -298,7 +298,7 @@ class WeChant extends Controller
                 'title' => '欢迎关注店通传媒',
                 'description' => '惊喜不断，立即点击开始抽奖吧！',
                 'picUrl' => 'https://sustock-shopmedia.oss-cn-chengdu.aliyuncs.com/wechant/prize_cover_for_gh_925caa1fb92e_20200807161612_200%C3%97200.png',
-                'url' => 'http://media.dilinsat.com/activity_h5?create_time=' . $createTime . '&shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
+                'url' => config('app.http_type') . config('app.I_SERVER_NAME') . '/activity_h5?create_time=' . $createTime . '&shop_id=' . $eventKey . '&openid=' . $userInfo['openid'] . '&nickname=' . $userInfo['nickname'] . '&headimgurl=' . $userInfo['headimgurl']
             ]
         ];
 
@@ -561,6 +561,86 @@ class WeChant extends Controller
         echo $type . ' <img src="' . $url . '" title="' . $type . '" />';
 
         //return $url;
+        //return $this->downloadQRCode($url, 'qrcode_for_gh_925caa1fb92e_shop_' . $sceneId);
+        return $this->getLogoQRCode($url, $sceneId);
+    }
+
+    /**
+     * 生成带logo的二维码并下载到服务器
+     * @param $QR
+     * @param $sceneId
+     * @return resource|string
+     */
+    protected function getLogoQRCode($QR, $sceneId)
+    {
+        try{
+            $logo = 'static/qrcode/logo_for_gh_925caa1fb92e_20200813120734_210.png';
+            $im = @imagecreatetruecolor(430, 430);
+
+            $QR = imagecreatefromstring(file_get_contents($QR));
+            $logo = imagecreatefromstring(file_get_contents($logo));
+            $QR_width = imagesx($QR);//二维码图片宽度 
+            $QR_height = imagesy($QR);//二维码图片高度 
+            $logo_width = imagesx($logo);//logo图片宽度 
+            $logo_height = imagesy($logo);//logo图片高度 
+            $logo_qr_width = $QR_width / 5;
+            $scale = $logo_width/$logo_qr_width;
+            $logo_qr_height = $logo_height/$scale;
+            $from_width = ($QR_width - $logo_qr_width) / 2;
+            //重新组合图片并调整大小
+            $a = imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+            $dir = "static/qrcode/";
+            $filename = 'qrcode_for_gh_925caa1fb92e_shop_' . $sceneId . '.png';
+            imagepng($QR, $dir.$filename);
+            /*if(file_exists($dir.$filename)){
+                //上传图片到oss
+                $k1 = time();
+                $ch = curl_init(API_DOMAIN.'/oss/upload');
+                $cfile = curl_file_create(realpath($dir.$filename),"image/png",realpath($dir.$filename));
+                $data = [
+                    'source'=>1,
+                    'upload'=> $cfile,
+                    'is_rename'=>0,
+                    'set_dir'=>"wechat/",
+                    'k1'=>$k1,
+                    "k2"=>md5(md5($k1).C('SUPER_AUTH_KEY'))
+                ];
+                curl_setopt($ch, CURLOPT_POST,1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+                $res = curl_exec($ch);
+                curl_close($ch);
+                dump($res);
+            }*/
+            echo '<img src="' . $dir.$filename . '" title="' . $filename . '" />';
+            return $dir.$filename;
+        }catch(\Exception $e){
+            echo $e->getMessage();
+            return $QR;
+        }
+    }
+
+    /**
+     * 下载二维码到服务器
+     * @param $url
+     * @param $fileString
+     * @return bool|string
+     */
+    protected function downloadQRCode($url, $fileString){
+        if ($url == '') {
+            return false;
+        }
+        $filename = $fileString . '.png';
+        ob_start();
+        readfile($url);
+        $img = ob_get_contents();
+        ob_end_clean();
+        $size = strlen($img);
+        $fp2 = fopen('static/qrcode/' . $filename, 'a');
+        if (fwrite($fp2, $img) === false){
+            exit();
+        }
+        fclose($fp2);
+        return 'static/qrcode/' . $filename;
     }
 
     /**
