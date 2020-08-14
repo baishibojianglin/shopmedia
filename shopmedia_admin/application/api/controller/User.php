@@ -369,7 +369,8 @@ class User extends AuthBase
         // 获取用户获得的奖品列表
         $userPrizeList = Db::name('act_raffle')->alias('r')
             ->field('r.*, s.shop_name, s.address, s.longitude, s.latitude, p.prize_type, p.prize_pic, p.quantity, p.is_sponsor_address, p.sponsor, p.address sponsor_address, p.longitude sponsor_longitude, p.latitude sponsor_latitude')
-            ->join('__SHOP__ s', 's.shop_id = r.shop_id', 'LEFT')
+            ->join('__DEVICE__ d', 'd.device_id = r.device_id', 'LEFT')
+            ->join('__SHOP__ s', 's.shop_id = d.shop_id', 'LEFT')
             ->join('__ACT_PRIZE__ p', 'p.prize_id = r.prize_id', 'LEFT')
             ->where($map)
             ->select();

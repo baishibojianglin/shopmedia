@@ -63,7 +63,7 @@
 						if (res.data.status == 1) {
 							let rafflePrizeList = res.data.data;
 							rafflePrizeList.forEach((item, index) => {
-								item.prize_pic = item.prize_pic != '' ? JSON.parse(item.prize_pic)[0].url : '/static/img/cj.png';
+								item.prize_pic = (item.prize_pic != '' && JSON.parse(item.prize_pic).length != 0) ? JSON.parse(item.prize_pic)[0].url : '/static/img/cj.png';
 							})
 							self.rafflePrizeList = rafflePrizeList;
 						}

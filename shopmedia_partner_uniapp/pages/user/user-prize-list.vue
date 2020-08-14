@@ -60,7 +60,7 @@
 						if (res.data.status == 1) {
 							let userPrizeList = res.data.data;
 							userPrizeList.forEach((item, index) => {
-								item.prize_pic = item.prize_pic != '' ? JSON.parse(item.prize_pic)[0].url : '/static/img/cj.png';
+								item.prize_pic = (item.prize_pic != '' && JSON.parse(item.prize_pic).length != 0) ? JSON.parse(item.prize_pic)[0].url : '/static/img/cj.png';
 							})
 							self.userPrizeList = userPrizeList;
 						}
