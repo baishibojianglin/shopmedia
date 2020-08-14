@@ -590,7 +590,7 @@ class WeChant extends Controller
             //重新组合图片并调整大小
             $a = imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
             $dir = "static/qrcode/";
-            $filename = 'qrcode_for_gh_925caa1fb92e_scene_id_' . $sceneId . '.png';
+            $filename = 'sceneid_' . $sceneId . '_qrcode_for_gh_925caa1fb92e' . '.png';
             imagepng($QR, $dir.$filename);
             /*if(file_exists($dir.$filename)){
                 //上传图片到oss
