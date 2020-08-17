@@ -28,34 +28,34 @@
 	import LotteryDraw from './SJ-LotteryDraw.js';
 	let grid_info = [
 		{
-			logo: "../../static/SJ-LotteryDraw/8.png",
-			text: "40积分"
+			logo: "../../static/SJ-LotteryDraw/prize_1.jpg",
+			text: "洗衣液一袋"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/6.png",
-			text: "免费广告"
+			logo: "../../static/SJ-LotteryDraw/prize_2.png",
+			text: "棉柔巾一卷"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/4.png",
-			text: "20积分"
+			logo: "../../static/SJ-LotteryDraw/prize_3.jpg",
+			text: "洗手液一瓶"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/3.jpg",
+			logo: "../../static/SJ-LotteryDraw/prize_4.jpg",
 			text: "抽纸一提"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/5.png",
-			text: "30积分"
+			logo: "../../static/SJ-LotteryDraw/prize_5.png",
+			text: "透明皂两块"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/2.png",
-			text: "运动鞋"
+			logo: "../../static/SJ-LotteryDraw/prize_6.jpg",
+			text: "运动鞋一双"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/7.png",
+			logo: "../../static/SJ-LotteryDraw/prize_7.png",
 			text: "10积分"
 		},{
-			logo: "../../static/SJ-LotteryDraw/1.png",
+			logo: "../../static/SJ-LotteryDraw/prize_8.jpg",
 			text: "大米两斤"
 		},
 		{

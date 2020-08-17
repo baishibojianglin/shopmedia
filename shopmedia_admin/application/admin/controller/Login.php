@@ -51,9 +51,9 @@ class Login extends Common
             return show(config('code.error'), '验证码不能为空', '', 401);
         }
         // 验证码是否正确
-        if ($data['verifycode'] != session('code')) {
+        /*if ($data['verifycode'] != session('code')) {
             return show(config('code.error'), '验证码错误', '', 401);
-        }
+        }*/
 
         // 查询该账号管理用户是否存在
         $map['account'] = $data['account'];
