@@ -19,7 +19,7 @@
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">屏尺寸：</text>
-					<text class="datalist-content">{{device_size[datalist.size]}} 寸</text>
+					<text class="datalist-content">{{datalist.size}}<!-- {{device_size[datalist.size]}} --> 寸</text>
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">安装店铺：</text>
@@ -43,7 +43,7 @@
 				</view>
 				<view class="datalist">
 					<text class="datalist-title">投放价格：</text>
-					<text class="datalist-content color-red">{{device_price[datalist.level]}} 元/天</text>
+					<text class="datalist-content color-red"><!-- {{device_price[datalist.level]}} -->1 元/天起</text>
 				</view>
 			</view>
 		</uni-card>
