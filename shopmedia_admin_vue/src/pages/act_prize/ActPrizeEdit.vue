@@ -53,7 +53,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item prop="sponsor" label="奖品赞助商">
-						<el-input v-model="form.sponsor" placeholder="输入奖品赞助商" clearable style="width:350px;"></el-input>
+						<el-input v-model="form.sponsor" placeholder="输入奖品赞助商名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="phone" label="赞助商电话">
 						<el-input v-model="form.phone" placeholder="输入赞助商电话" clearable style="width:350px;"></el-input>
@@ -101,7 +101,7 @@
 					quantity: '', // 奖品数量
 					level: '', // 奖品等级
 					percentage: '', // 中奖概率
-					sponsor: '', // 奖品赞助商
+					sponsor: '', // 奖品赞助商名称
 					phone: '', // 赞助商电话
 					is_sponsor_address: '', // 是否到赞助商处领奖
 					address: '', // 赞助商领奖地址

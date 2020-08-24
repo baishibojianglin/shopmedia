@@ -28,13 +28,13 @@
 				</view>
 				<view class="wpbj" v-if="!isAward">{{prize_info.prize.prize_name}}</view>
 
-				<view style="margin-top: 0px;">
+				<!-- <view style="margin-top: 0px;">
 					特别鸣谢
 					<br />
 					<text style="font-weight: bold;color:#007AFF; font-size: 18px; line-height: 50px;">{{prize_info.prize.sponsor}}</text>
 					<br />
 					对该奖品的独家赞助
-				</view>
+				</view> -->
 
 				<view v-if="!isAward">
 					<button type="primary" @click="confirmDialog" style="width: 95%; margin-top:10px; margin-bottom: 20px;">领取奖品</button>

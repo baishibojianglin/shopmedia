@@ -50,8 +50,8 @@ class Prize extends Controller
             return json($data);
         }
 
-        //设置中奖概率1/5
-        $aim = rand(1,5);
+        //设置中奖概率1/3
+        $aim = rand(1,3);
 
         //判断是否能中奖
         if( $aim == 2 ){
@@ -94,11 +94,11 @@ class Prize extends Controller
         $data = input('post.');
 
         // 判断参数是否合法
+        if (!isset($data['device_id']) || empty(trim($data['device_id'])) || trim($data['device_id']) == 'null' || trim($data['device_id']) == '') {
+            return show(config('code.error'), '打开微信扫一扫店铺广告屏上二维码参与抽奖', '', 403);
+        }
         if (!isset($data['create_time']) || date('Y-m-d') != date('Y-m-d', $data['create_time'])) {
             return show(config('code.error'), '链接已过期，请重新扫描店铺广告屏上二维码参与抽奖', '', 403);
-        }
-        if (!isset($data['device_id']) || empty(trim($data['device_id'])) || trim($data['device_id']) == 'null' || trim($data['device_id']) == '') {
-            return show(config('code.error'), '扫描店铺广告屏上二维码参与抽奖', '', 403);
         }
         // 设备是否存在
         $device = Db::name('device')->where(['device_id' => (int)$data['device_id'], 'status' => config('code.status_enable')])->find();
@@ -185,7 +185,7 @@ class Prize extends Controller
             $raffleData['prize_name'] = $param['prize_name'];
             $raffleData['device_id'] = $deviceId;
             $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
-            $raffleData['prizewinner'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
+            $raffleData['prizewinner'] = trim($param['phone']); // isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
             $raffleData['phone'] = trim($param['phone']);
             $raffleData['oauth'] = 'wx';
             $raffleData['openid'] = $param['openid'];
@@ -215,7 +215,7 @@ class Prize extends Controller
             // 判断 用户表表user 是否存在该用户，如果不存在则创建用户，并将 user_id 绑定到 第三方授权登录表user_oauth
             // 创建用户
             if (empty($user)) {
-                $userData['user_name'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
+                $userData['user_name'] = trim($param['phone']); // isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
                 $userData['role_ids'] = 7; // 用户角色ID
                 $userData['avatar'] = isset($param['headimgurl']) ? $param['headimgurl'] : '';
                 $userData['phone'] = trim($param['phone']);
@@ -269,7 +269,7 @@ class Prize extends Controller
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
-            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
+            return show(config('code.error'), '请求异常' . $e->getMessage(), $e->getMessage(), 500);
         }
     }
 }
