@@ -19,10 +19,10 @@ class Prize extends Controller
      */
     public function getPrize()
     {
-        $form = input();
+        $param = input();
 
         // 获取店铺信息
-        $shopMap['d.device_id'] = $form['device_id'];
+        $shopMap['d.device_id'] = $param['device_id'];
         $shop = Db::name('shop')->alias('s')
             ->field('s.shop_id, s.shop_name, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name town')
             ->join('__DEVICE__ d', 'd.shop_id = s.shop_id', 'LEFT') // 广告屏设备
@@ -35,7 +35,7 @@ class Prize extends Controller
         $data['shop'] = $shop;
 
         // 确定该店铺今日能否再中奖
-        // $actRaffleMap['shop_id'] = $form['shop_id'];
+        // $actRaffleMap['shop_id'] = $param['shop_id'];
         // $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
         // if($shopprize > 3){  //一个店一天最多抽3个奖品
         //     $data['status'] = 0;
@@ -43,18 +43,25 @@ class Prize extends Controller
         // }
 
         // 一台广告屏最多抽中6个奖品（不限制奖品种类和抽奖时间）
-        $actRaffleMap['device_id'] = $form['device_id'];
+        $actRaffleMap['device_id'] = $param['device_id'];
         $actRaffleCount = Db::name('act_raffle')->where($actRaffleMap)->count();
         if($actRaffleCount > 6){
             $data['status'] = 0;
             return json($data);
         }
 
-        //设置中奖概率1/3
-        $aim = rand(1,3);
+        // 首次关注微信公众号参与抽奖时必中奖：通过判断openid是否已经存在中奖记录表里，不存在则让该用户一定中奖（20200825）
+        $actPrizeCount = 1;
+        if (isset($param['openid']) && !empty($param['openid'])) {
+            // 判断该微信用户曾经是否中奖
+            $actPrizeCount = Db::name('act_raffle')->where(['openid' => $param['openid']])->count('openid');
+        }
+
+        //设置中奖概率1/4
+        $aim = rand(1,4);
 
         //判断是否能中奖
-        if( $aim == 2 ){
+        if($aim == 2 || $actPrizeCount == 0){
             //查询奖品中可用的列表
             $matchprize['status'] = 1;
             $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();

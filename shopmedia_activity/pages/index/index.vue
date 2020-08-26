@@ -136,7 +136,7 @@
 			}
 
 			//抽奖
-			this.prize(this.device_id);
+			this.getPrize(this.device_id);
 		},
 		methods: {
 			/**
@@ -192,12 +192,13 @@
 			 * 获取奖品
 			 * @param {Object} device_id
 			 */
-			prize(device_id) {
+			getPrize(device_id) {
 				let self = this;
 				uni.request({
 					url: this.$serverUrl + 'api/get_prize',
 					data: {
 						device_id: device_id,
+						openid: this.wxUserInfo.openid
 					},
 					method: 'GET',
 					success: function(res) {
