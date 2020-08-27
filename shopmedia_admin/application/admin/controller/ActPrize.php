@@ -66,27 +66,173 @@ class ActPrize extends Base
         // 判断为POST请求
         if (request()->isPost()) {
             // 传入的参数
-            $data = input('post.');
+            $param = input('post.');
 
-            // TODO：validate验证
-            /*$validate = validate('');
-            if (!$validate->check($data)) {
-                return show(config('code.error'), $validate->getError(), [], 403);
-            }*/
+            // 判断参数是否存在
+            if (empty($param['phone'])) {
+                return show(config('code.error'), '请输入电话号码', [], 401);
+            }
 
-            // 入库操作
-            // 捕获异常
+            /* 手动控制事务 s */
+            // 启动事务
+            Db::startTrans();
             try {
-                $id = model('ActPrize')->add($data, 'prize_id'); // 新增
-            } catch (\Exception $e) {
-                throw new ApiException($e->getMessage(), 500, config('code.error'));
-            }
-            // 判断是否新增成功：获取id
-            if ($id) {
+                $res = [];
+
+                // 新增奖品信息
+                $actPrizeData = [
+                    'act_id' => (int)$param['act_id'],
+                    'prize_type' => (int)$param['prize_type'],
+                    'prize_name' => trim($param['prize_name']),
+                    'prize_pic' => $param['prize_pic'],
+                    'quantity' => (int)$param['quantity'],
+                    'percentage' => (float)$param['percentage'],
+                    'level' => (int)$param['level'],
+                    'sponsor' => trim($param['sponsor']),
+                    'phone' => trim($param['phone']),
+                    'address' => trim($param['address']),
+                    'longitude' => (float)$param['longitude'],
+                    'latitude' => (float)$param['latitude'],
+                    'is_sponsor_address' => (int)$param['is_sponsor_address'],
+                    'create_time' => time(),
+                    'status' => (int)$param['status']
+                ];
+                // TODO：validate验证
+                /*$validate = validate('');
+                if (!$validate->check($actPrizeData)) {
+                    return show(config('code.error'), $validate->getError(), [], 403);
+                }*/
+                try {
+                    $res[0] = $prizeId = Db::name('act_prize')->insertGetId($actPrizeData);
+                } catch (\Exception $e) {
+                    throw new ApiException($e->getMessage(), 500, config('code.error'));
+                }
+
+                // 创建店铺数据（公共部分）
+                $shopData = [
+                    'shop_name' => trim($param['shop_name']),
+                    'cate' => intval($param['ad_cate_id']),
+                    //'shop_area' => '',
+                    'address' => trim($param['address']),
+                    'longitude' => floatval($param['longitude']),
+                    'latitude' => floatval($param['latitude']),
+                    //'shop_pic' => '',
+                    //'environment' => '',
+                    //'shop_describe' => '',
+                    'status' => config('code.status_enable'),
+                    'create_time' => time()
+                ];
+
+                // 店铺业务员
+                $salesman = Db::name('user_salesman')->field('id')->where(['company_id' => $this->adminUser['company_id'], 'parent_id' => 0, 'role_id' => 6])->find();
+
+                // 以赞助商电话号码作为店家所属用户电话号码
+                $phone = trim($param['phone']);
+                $shopkeeperUser = model('User')->where(['phone' => $phone])->find();
+                if (!empty($shopkeeperUser)) { // 用户存在，店家角色不存在时创建店家角色、店铺
+                    $shopkeeper = Db::name('user_shopkeeper')->where(['user_id' => $shopkeeperUser['user_id']])->find();
+                    if (empty($shopkeeper)) {
+                        // 创建店家角色
+                        $shopkeeperData = [
+                            'user_id' => $shopkeeperUser['user_id'],
+                            'salesman_id' => isset($salesman['id']) ? $salesman['id'] : 0, // TODO：店铺业务员ID
+                            'status' => config('code.status_enable'),
+                            'create_time' => time()
+                        ];
+                        $res[1] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
+
+                        // 更新用户角色集合role_ids（新增店家角色）
+                        //$user = model('User')->field('role_ids')->find($shopkeeperUser['user_id']);
+                        $roleIds = explode(',', $shopkeeperUser['role_ids']);
+                        if (!in_array(3, $roleIds)) {
+                            array_push($roleIds, 3); // 新增店家角色
+                            $userData['role_ids'] = implode(',', $roleIds);
+                            $res[2] = Db::name('user')->where(['user_id' => $shopkeeperUser['user_id']])->update($userData);
+                        }
+
+                        // 创建店铺
+                        $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
+                        $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
+                        // validate验证数据合法性
+                        $validate = validate('Shop');
+                        if (!$validate->check($shopData)) {
+                            return show(config('code.error'), $validate->getError(), '', 403);
+                        }
+                        $res[3] = $shopId = Db::name('shop')->insertGetId($shopData);
+                    } else { // 店家存在时，若店铺不存在则创建店铺
+                        $shopMap = [
+                            'shop_name' => trim($param['shop_name']),
+                            'user_id' => $shopkeeperUser['user_id'],
+                            'shopkeeper_id' => $shopkeeper['id'],
+                            //'longitude' => floatval($param['longitude']),
+                            //'latitude' => floatval($param['latitude'])
+                        ];
+                        $shop = Db::name('shop')->where($shopMap)->find();
+                        if (empty($shop)) {
+                            // 创建店铺
+                            $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
+                            $shopData['shopkeeper_id'] = $shopkeeper['id']; // 店铺所属店家ID
+                            // validate验证数据合法性
+                            $validate = validate('Shop');
+                            if (!$validate->check($shopData)) {
+                                return show(config('code.error'), $validate->getError(), '', 403);
+                            }
+                            $res[4] = $shopId = Db::name('shop')->insertGetId($shopData);
+                        } else {
+                            $shopId = $shop['shop_id'];
+                        }
+                    }
+                } else { // 店家所属用户不存在，店家一定不存在，则创建店家所属用户、店家及店铺
+                    // 创建店家所属用户
+                    $shopkeeperUserData = [
+                        'user_name' => !empty($param['sponsor']) ? trim($param['sponsor']) : 'Sustock-' . $phone, // 定义默认用户名
+                        'role_ids' => 3, // 用户角色ID
+                        'phone' => $phone,
+                        'phone_verified' => 1,
+                        'password' => IAuth::encrypt($phone),
+                        'status' => config('code.status_enable'),
+                        'create_time' => time(), // 创建时间
+                        'create_ip' => request()->ip() // 创建IP
+                    ];
+                    $res[5] = $shopkeeperUserID = Db::name('user')->strict(true)->insertGetId($shopkeeperUserData);
+
+                    // 创建店家
+                    $shopkeeperData = [
+                        'user_id' => $shopkeeperUserID,
+                        'salesman_id' => isset($salesman['id']) ? $salesman['id'] : 0, // TODO：店铺业务员ID
+                        'status' => config('code.status_enable'),
+                        'create_time' => time()
+                    ];
+                    $res[6] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
+
+                    // 创建店铺
+                    $shopData['user_id'] = $shopkeeperUserID; // 店家所属用户ID
+                    $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
+                    // validate验证数据合法性
+                    $validate = validate('Shop');
+                    if (!$validate->check($shopData)) {
+                        return show(config('code.error'), $validate->getError(), '', 403);
+                    }
+                    $res[7] = $shopId = Db::name('shop')->insertGetId($shopData);
+                }
+                
+                // 将奖品绑定赞助商店铺ID
+                $res[8] = Db::name('act_prize')->where(['prize_id' => $prizeId])->update(['shop_id' => $shopId]);
+
+                // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                if (in_array(0, $res)) {
+                    return show(config('code.error'), '新增失败', $res, 403);
+                }
+
+                // 提交事务
+                Db::commit();
                 return show(config('code.success'), '新增成功', '', 201);
-            } else {
-                return show(config('code.error'), '新增失败', '', 403);
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return show(config('code.error'), '请求异常' . $e->getMessage(), $e->getMessage(), 500);
             }
+            /* 手动控制事务 e */
         }
     }
 
@@ -191,114 +337,6 @@ class ActPrize extends Base
                 $res[0] = Db::name('act_prize')->where(['prize_id' => $id])->update($actPrizeData); // 更新
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
-            }
-
-            // 判断赞助商电话号码所属用户及店家角色是否存在，不存在则创建用户、店家角色及店铺
-            if (!empty($param['phone']) && isset($param['is_sponsor_address']) == 1) {
-                $phone = trim($param['phone']);
-
-                // 创建店铺数据（公共部分）
-                $shopData = [
-                    'shop_name' => trim($param['sponsor']),
-                    'cate' => intval($param['ad_cate_id']),
-                    //'shop_area' => '',
-                    'address' => trim($param['address']),
-                    'longitude' => floatval($param['longitude']),
-                    'latitude' => floatval($param['latitude']),
-                    //'shop_pic' => '',
-                    //'environment' => '',
-                    //'shop_describe' => '',
-                    'status' => config('code.status_enable'),
-                    'create_time' => time()
-                ];
-
-                $salesman = Db::name('user_salesman')->field('id')->where(['company_id' => $this->adminUser['company_id'], 'parent_id' => 0, 'role_id' => 6])->find();
-
-                $shopkeeperUser = model('User')->where(['phone' => $phone])->find();
-                if (!empty($shopkeeperUser)) { // 用户存在，店家角色不存在时创建店家角色、店铺
-                    $shopkeeper = Db::name('user_shopkeeper')->where(['user_id' => $shopkeeperUser['user_id']])->find();
-                    if (empty($shopkeeper)) {
-                        // 创建店家角色
-                        $shopkeeperData = [
-                            'user_id' => $shopkeeperUser['user_id'],
-                            'salesman_id' => isset($salesman['id']) ? $salesman['id'] : 0, // TODO：店铺业务员ID
-                            'status' => config('code.status_enable'),
-                            'create_time' => time()
-                        ];
-                        $res[1] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
-
-                        // 更新用户角色集合role_ids（新增店家角色）
-                        //$user = model('User')->field('role_ids')->find($shopkeeperUser['user_id']);
-                        $roleIds = explode(',', $shopkeeperUser['role_ids']);
-                        if (!in_array(3, $roleIds)) {
-                            array_push($roleIds, 3); // 新增店家角色
-                            $userData['role_ids'] = implode(',', $roleIds);
-                            $res[2] = Db::name('user')->where(['user_id' => $shopkeeperUser['user_id']])->update($userData);
-                        }
-
-                        // 创建店铺
-                        $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
-                        $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
-                        // validate验证数据合法性
-                        $validate = validate('Shop');
-                        if (!$validate->check($shopData)) {
-                            return show(config('code.error'), $validate->getError(), '', 403);
-                        }
-                        $res[3] = Db::name('shop')->insertGetId($shopData);
-                    } else { // 店家存在时，若店铺不存在则创建店铺
-                        $shopMap = [
-                            'shop_name' => trim($param['sponsor']),
-                            'user_id' => $shopkeeperUser['user_id'],
-                            'shopkeeper_id' => $shopkeeper['shopkeeper_id'],
-                            'longitude' => floatval($param['longitude']),
-                            'latitude' => floatval($param['latitude'])
-                        ];
-                        $shop = Db::name('shop')->where($shopMap)->find();
-                        if (empty($shop)) {
-                            // 创建店铺
-                            $shopData['user_id'] = $shopkeeperUser['user_id']; // 店家所属用户ID
-                            $shopData['shopkeeper_id'] = $shopkeeper['id']; // 店铺所属店家ID
-                            // validate验证数据合法性
-                            $validate = validate('Shop');
-                            if (!$validate->check($shopData)) {
-                                return show(config('code.error'), $validate->getError(), '', 403);
-                            }
-                            $res[4] = Db::name('shop')->insertGetId($shopData);
-                        }
-                    }
-                } else { // 店家所属用户不存在，店家一定不存在，则创建店家所属用户、店家及店铺
-                    // 创建店家所属用户
-                    $shopkeeperUserData = [
-                        'user_name' => 'Sustock-' . $phone, // 定义默认用户名
-                        'role_ids' => 3, // 用户角色ID
-                        'phone' => $phone,
-                        'phone_verified' => 1,
-                        'password' => IAuth::encrypt($phone),
-                        'status' => config('code.status_enable'),
-                        'create_time' => time(), // 创建时间
-                        'create_ip' => request()->ip() // 创建IP
-                    ];
-                    $res[5] = $shopkeeperUserID = Db::name('user')->strict(true)->insertGetId($shopkeeperUserData);
-
-                    // 创建店家
-                    $shopkeeperData = [
-                        'user_id' => $shopkeeperUserID,
-                        'salesman_id' => isset($salesman['id']) ? $salesman['id'] : 0, // TODO：店铺业务员ID
-                        'status' => config('code.status_enable'),
-                        'create_time' => time()
-                    ];
-                    $res[6] = $shopkeeperID = Db::name('user_shopkeeper')->insertGetId($shopkeeperData);
-
-                    // 创建店铺
-                    $shopData['user_id'] = $shopkeeperUserID; // 店家所属用户ID
-                    $shopData['shopkeeper_id'] = $shopkeeperID; // 店铺所属店家ID
-                    // validate验证数据合法性
-                    $validate = validate('Shop');
-                    if (!$validate->check($shopData)) {
-                        return show(config('code.error'), $validate->getError(), '', 403);
-                    }
-                    $res[7] = Db::name('shop')->insertGetId($shopData);
-                }
             }
 
             // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断

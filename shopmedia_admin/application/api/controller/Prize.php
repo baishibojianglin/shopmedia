@@ -21,19 +21,6 @@ class Prize extends Controller
     {
         $param = input();
 
-        // 获取店铺信息
-        $shopMap['d.device_id'] = $param['device_id'];
-        $shop = Db::name('shop')->alias('s')
-            ->field('s.shop_id, s.shop_name, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name town')
-            ->join('__DEVICE__ d', 'd.shop_id = s.shop_id', 'LEFT') // 广告屏设备
-            ->join('__REGION__ rp', 's.province_id = rp.region_id', 'LEFT') // 区域（省份）
-            ->join('__REGION__ rc', 's.city_id = rc.region_id', 'LEFT') // 区域（城市）
-            ->join('__REGION__ rco', 's.county_id = rco.region_id', 'LEFT') // 区域（区县）
-            ->join('__REGION__ rt', 's.town_id = rt.region_id', 'LEFT') // 区域（乡镇街道）
-            ->where($shopMap)
-            ->find();
-        $data['shop'] = $shop;
-
         // 确定该店铺今日能否再中奖
         // $actRaffleMap['shop_id'] = $param['shop_id'];
         // $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
@@ -43,9 +30,17 @@ class Prize extends Controller
         // }
 
         // 一台广告屏最多抽中6个奖品（不限制奖品种类和抽奖时间）
-        $actRaffleMap['device_id'] = $param['device_id'];
+        /*$actRaffleMap['device_id'] = $param['device_id'];
         $actRaffleCount = Db::name('act_raffle')->where($actRaffleMap)->count();
         if($actRaffleCount > 6){
+            $data['status'] = 0;
+            return json($data);
+        }*/
+
+        // 当奖品数量为零时，不再抽中奖品
+        $actPrizeMap['prize_type'] = 1;
+        $prizeSum = Db::name('act_prize')->where($actPrizeMap)->sum('quantity');
+        if($prizeSum <= 0){
             $data['status'] = 0;
             return json($data);
         }
@@ -69,20 +64,39 @@ class Prize extends Controller
             $num_id = array_rand($prizelist, 1);
             $prize = $prizelist[$num_id];
             $matchprizeaim['prize_id'] = $prize['prize_id'];
-            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
             $data['prize'] = $prizeaim;
             $data['num_id'] = $num_id;
             $data['status'] = 1;
-            return json($data);
         }else{ // 只抽中积分
             $matchprizeaim['prize_id'] = 7; // TODO：必须为积分类型奖品的ID或ID集合
             $matchprizeaim['prize_type'] = 3; // 奖品类型：3积分
-            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
             $data['prize'] = $prizeaim;
             $data['num_id'] = 6; // TODO：必须与客户端积分位置一致，从0开始计数
             $data['status'] = 1;
-            return json($data);
         }
+
+        // 获取店铺信息
+        // 判断是否到赞助商处领奖
+        if (!empty($data['prize']) && $data['prize']['is_sponsor_address'] == 1 && $data['prize']['shop_id']) {
+            $shopMap['s.shop_id'] = $data['prize']['shop_id'];
+        } else {
+            $shopMap['d.device_id'] = $param['device_id'];
+        }
+
+        $shop = Db::name('shop')->alias('s')
+            ->field('s.shop_id, s.shop_name, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name town')
+            ->join('__DEVICE__ d', 'd.shop_id = s.shop_id', 'LEFT') // 广告屏设备
+            ->join('__REGION__ rp', 's.province_id = rp.region_id', 'LEFT') // 区域（省份）
+            ->join('__REGION__ rc', 's.city_id = rc.region_id', 'LEFT') // 区域（城市）
+            ->join('__REGION__ rco', 's.county_id = rco.region_id', 'LEFT') // 区域（区县）
+            ->join('__REGION__ rt', 's.town_id = rt.region_id', 'LEFT') // 区域（乡镇街道）
+            ->where($shopMap)
+            ->find();
+        $data['shop'] = $shop;
+
+        return json($data);
     }
 
     /**
