@@ -4,12 +4,14 @@
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in rafflePrizeList" :key="key">
 				<view class="uni-media-list">
 					<image class="uni-media-list-logo" :src="value.prize_pic"></image>
-					<view class="uni-media-list-body">
-						<view class="uni-media-list-text-top">【中奖用户】{{ value.prizewinner }} {{ value.phone }}</view>
+					<view class="uni-media-list-body" style="height: 150upx;">
+						<view class="uni-media-list-text-top">【中奖电话】<!-- {{ value.prizewinner }} --> {{ value.phone }}</view>
 						<view class="uni-media-list-text-bottom">
 							<view class="uni-ellipsis">
-								<text>[奖品]{{ value.prize_name }}</text>
-								<text>，[店铺]{{ value.shop_name }}</text>
+								<text>【奖品】{{ value.prize_name }}</text>
+							</view>
+							<view class="uni-ellipsis">
+								<text>【店铺】{{ value.shop_name }}</text>
 							</view>
 						</view>
 					</view>
