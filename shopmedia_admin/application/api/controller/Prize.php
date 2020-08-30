@@ -52,15 +52,36 @@ class Prize extends Controller
             $actPrizeCount = Db::name('act_raffle')->where(['openid' => $param['openid']])->count('openid');
         }
 
-        //设置中奖概率1/5
+        // 设置中奖概率1/5
         $aim = rand(1,5);
 
-        //判断是否能中奖
+        // 判断是否能中奖
         if($aim == 2 || $actPrizeCount == 0){
-            //查询奖品中可用的列表
-            $matchprize['status'] = 1;
-            $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();
-            //随机选择一个奖品
+            // 根据传入的设备 device_id 获取店铺 shop_id，然后判断该店铺是否提供只能在本店铺抽奖、领奖的奖品
+            $device = Db::name('device')->field('device_id, shop_id')->find($param['device_id']);
+            if (!empty($device) && $device['shop_id']) {
+                $prizeMap0 = [
+                    'shop_id' => $device['shop_id'],
+                    'is_sponsor_address' => 1,
+                    'is_sponsor_raffle' => 1,
+                    'status' => 1
+                ];
+                $prize0 = Db::name('act_prize')->where($prizeMap0)->find();
+            }
+
+            // 查询奖品中可用的列表
+            if (isset($prize0) && !empty($prize0)) { // 含只能在本店铺抽奖的奖品
+                $matchprize['status'] = 1;
+                $matchprize['is_sponsor_raffle'] = 0;
+                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(7)->select();
+                array_push($prizelist, $prize0);
+            } else { // 不含只能在本店铺抽奖的奖品
+                $matchprize['status'] = 1;
+                $matchprize['is_sponsor_raffle'] = 0;
+                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();
+            }
+
+            // 随机选择一个奖品
             $num_id = array_rand($prizelist, 1);
             $prize = $prizelist[$num_id];
             $matchprizeaim['prize_id'] = $prize['prize_id'];
@@ -200,17 +221,23 @@ class Prize extends Controller
                 $raffleLogId = $todayRaffleLog['raffle_log_id'];
             }
 
-            // 新增中奖者信息
-            $raffleData['act_id'] = (int)$param['act_id'];
-            $raffleData['prize_id'] = $prizeId;
-            $raffleData['prize_name'] = $param['prize_name'];
-            $raffleData['device_id'] = $deviceId;
-            $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
-            $raffleData['prizewinner'] = trim($param['phone']); // isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
-            $raffleData['phone'] = trim($param['phone']);
-            $raffleData['oauth'] = 'wx';
-            $raffleData['openid'] = $param['openid'];
-            $res[1] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($raffleData);
+            // 一个用户一天只能在一台广告机设备抽一次奖，当然最多抽中一次奖
+            $todayRaffle = Db::name('act_raffle')->where(['device_id' => $deviceId, 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
+            if (empty($todayRaffle)) {
+                // 新增中奖者信息
+                $raffleData['act_id'] = (int)$param['act_id'];
+                $raffleData['prize_id'] = $prizeId;
+                $raffleData['prize_name'] = $param['prize_name'];
+                $raffleData['device_id'] = $deviceId;
+                $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
+                $raffleData['prizewinner'] = trim($param['phone']); // isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
+                $raffleData['phone'] = trim($param['phone']);
+                $raffleData['oauth'] = 'wx';
+                $raffleData['openid'] = $param['openid'];
+                $res[1] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($raffleData);
+            } else {
+                return show(config('code.error'), '你今日在该店铺广告屏已经抽过奖了，请扫描其他店铺广告屏。每天都可以参与哦', ['today_raffle' => $todayRaffle], 403);
+            }
 
             // 更新抽奖记录表的中奖状态
             if ($raffleID) {
