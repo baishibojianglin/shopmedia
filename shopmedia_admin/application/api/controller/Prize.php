@@ -73,12 +73,12 @@ class Prize extends Controller
             if (isset($prize0) && !empty($prize0)) { // 含只能在本店铺抽奖的奖品
                 $matchprize['status'] = 1;
                 $matchprize['is_sponsor_raffle'] = 0;
-                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(7)->select();
+                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(7)->select();
                 array_push($prizelist, $prize0);
             } else { // 不含只能在本店铺抽奖的奖品
                 $matchprize['status'] = 1;
                 $matchprize['is_sponsor_raffle'] = 0;
-                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();
+                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
             }
 
             // 随机选择一个奖品
