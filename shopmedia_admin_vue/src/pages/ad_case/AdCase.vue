@@ -29,7 +29,12 @@
 					<el-table-column prop="ad_name" label="广告名称" fixed width="120"></el-table-column>
 					<el-table-column prop="advertiser_name" label="广告主名称" min-width="120"></el-table-column>
 					<el-table-column prop="advertiser_phone" label="广告主电话" min-width="120"></el-table-column>
-					<el-table-column prop="ad_cover" label="广告案例封面图" width="120"></el-table-column>
+					<el-table-column prop="ad_cover" label="广告案例封面图" width="130">
+						<template slot-scope="scope">
+							<el-image style="width: 100px; height: 100px" :src="scope.row.ad_cover" fit="cover
+"></el-image>
+						</template>
+					</el-table-column>
 					<el-table-column prop="status_msg" label="状态" width="70"></el-table-column>
 					<el-table-column prop="create_time" label="创建时间" width="180"></el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="90">
