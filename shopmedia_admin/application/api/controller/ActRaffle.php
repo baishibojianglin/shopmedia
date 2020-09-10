@@ -27,9 +27,9 @@ class ActRaffle extends AuthBase
 
         // 传入的参数
         $param = input('param.');
-        $deviceIds = [];
+        $actRaffleIds = [];
         if(isset($param['user_id']) && !empty($param['user_id'])) {
-            // 获取店铺ID集合
+            // 获取设备ID集合
             try {
                 $deviceIds = Db::name('device')->alias('d')
                     ->join('__SHOP__ s', 's.shop_id = d.shop_id')
@@ -38,26 +38,47 @@ class ActRaffle extends AuthBase
             } catch (\Exception $e) {
                 return show(config('code.error'), '请求异常', $e->getMessage(), 500);
             }
+
+            $actRaffleIds0 = [];
+            if ($deviceIds) {
+                $actRaffleMap0 = ['device_id' => ['in', $deviceIds]];
+                $actRaffleIds0 = Db::name('act_raffle')
+                    ->where($actRaffleMap0)
+                    ->column('raffle_id');
+            }
+
+            // 获取到赞助商店铺领取奖品的中奖纪录
+            $actRaffleMap1 = [
+                'ap.is_sponsor_address' => 1,
+                's.user_id' => (int)$param['user_id']
+            ];
+            $actRaffleIds1 = Db::name('act_raffle')->alias('ar')
+                //->field('ar.raffle_id, ap.shop_id, ap.is_sponsor_address')
+                ->join('__ACT_PRIZE__ ap', 'ap.prize_id = ar.prize_id')
+                ->join('__SHOP__ s', 's.shop_id = ap.shop_id')
+                ->where($actRaffleMap1)
+                ->column('ar.raffle_id');
+
+            $actRaffleIds = array_reduce([$actRaffleIds0, $actRaffleIds1], 'array_merge', array());
         }
 
         // 统计奖品领取状态数量
         // 未领取
         $map0 = [];
         $map0['prize_status'] = 0;
-        if($deviceIds) {
-            $map0['device_id'] = ['in', $deviceIds];
-        }
+        $map0['raffle_id'] = ['in', $actRaffleIds];
         $rafflePrizeCount0 = Db::name('act_raffle')->where($map0)->count('prize_status');
 
         // 已领取
         $map1 = [];
         $map1['prize_status'] = 1;
-        if($deviceIds) {
-            $map1['device_id'] = ['in', $deviceIds];
-        }
+        $map1['raffle_id'] = ['in', $actRaffleIds];
         $rafflePrizeCount1 = Db::name('act_raffle')->where($map1)->count('prize_status');
 
-        $rafflePrizeCount = ['rafflePrizeCount0' => $rafflePrizeCount0, 'rafflePrizeCount1' => $rafflePrizeCount1];
+        $rafflePrizeCount = [
+            'rafflePrizeCount0' => isset($rafflePrizeCount0) ? $rafflePrizeCount0 : 0,
+            'rafflePrizeCount1' => isset($rafflePrizeCount1) ? $rafflePrizeCount1 : 0
+        ];
 
         return show(config('code.success'), 'OK', $rafflePrizeCount);
     }
@@ -83,8 +104,9 @@ class ActRaffle extends AuthBase
         }
 
         $deviceIds = [];
+        $actRaffleIds = [];
         if(isset($param['user_id']) && !empty($param['user_id'])) {
-            // 获取店铺ID集合
+            // 获取设备ID集合
             try {
                 $deviceIds = Db::name('device')->alias('d')
                     ->join('__SHOP__ s', 's.shop_id = d.shop_id')
@@ -93,9 +115,32 @@ class ActRaffle extends AuthBase
             } catch (\Exception $e) {
                 return show(config('code.error'), '请求异常', $e->getMessage(), 500);
             }
+
+            $actRaffleIds0 = [];
+            if ($deviceIds) {
+                $actRaffleMap0 = ['device_id' => ['in', $deviceIds]];
+                $actRaffleIds0 = Db::name('act_raffle')
+                    ->where($actRaffleMap0)
+                    ->column('raffle_id');
+            }
+
+            // 获取到赞助商店铺领取奖品的中奖纪录
+            $actRaffleMap1 = [
+                'ap.is_sponsor_address' => 1,
+                's.user_id' => (int)$param['user_id']
+            ];
+            $actRaffleIds1 = Db::name('act_raffle')->alias('ar')
+                //->field('ar.raffle_id, ap.shop_id, ap.is_sponsor_address')
+                ->join('__ACT_PRIZE__ ap', 'ap.prize_id = ar.prize_id')
+                ->join('__SHOP__ s', 's.shop_id = ap.shop_id')
+                ->where($actRaffleMap1)
+                ->column('ar.raffle_id');
+
+            $actRaffleIds = array_reduce([$actRaffleIds0, $actRaffleIds1], 'array_merge', array());
         }
-        if($deviceIds) {
-            $map['r.device_id'] = ['in', $deviceIds];
+
+        if ($actRaffleIds) {
+            $map['r.raffle_id'] = ['in', $actRaffleIds];
         }
 
         // 获取奖品领取状态列表
@@ -106,6 +151,11 @@ class ActRaffle extends AuthBase
             ->join('__ACT_PRIZE__ p', 'p.prize_id = r.prize_id', 'LEFT')
             ->where($map)
             ->select();
+
+        // 处理数据
+        foreach($rafflePrizeList as $key => $value) {
+            $rafflePrizeList[$key]['raffle_time'] = isset($value['raffle_time']) ? date('Y-m-d H:i:s', $value['raffle_time']) : '';
+        }
 
         return show(config('code.success'), 'OK', $rafflePrizeList);
     }

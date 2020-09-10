@@ -25,7 +25,8 @@ class ActRaffle extends Base
             ->field('ar.*, a.act_name, ap.sponsor, ap.phone sponsor_phone, ap.address sponsor_address, ap.is_sponsor_address, s.shop_name, s.address shop_address')
             ->join('__ACTIVITY__ a', 'ar.act_id = a.act_id', 'LEFT')
             ->join('__ACT_PRIZE__ ap', 'ar.prize_id = ap.prize_id', 'LEFT')
-            ->join('__SHOP__ s', 'ar.shop_id = s.shop_id', 'LEFT')
+            ->join('__DEVICE__ d', 'ar.device_id = d.device_id', 'LEFT')
+            ->join('__SHOP__ s', 'd.shop_id = s.shop_id', 'LEFT')
             ->where($map)
             ->order($order)
             ->paginate($size);

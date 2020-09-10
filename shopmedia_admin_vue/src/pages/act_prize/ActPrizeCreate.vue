@@ -52,25 +52,38 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item prop="sponsor" label="奖品赞助商">
-						<el-input v-model="form.sponsor" placeholder="输入奖品赞助商" clearable style="width:350px;"></el-input>
+					<el-form-item prop="sponsor" label="赞助商名称">
+						<el-input v-model="form.sponsor" placeholder="输入奖品赞助商名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="phone" label="赞助商电话">
 						<el-input v-model="form.phone" placeholder="输入赞助商电话" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="is_sponsor_address" label="是否到赞助商处领奖">
-						<el-radio-group v-model="form.is_sponsor_address">
-							<el-radio v-for="(item, index) in {0: '否', 1: '是'}" :key="index" :label="Number(index)">{{item}}</el-radio>
-						</el-radio-group>
+					<el-form-item prop="shop_name" label="赞助商店铺名称">
+						<el-input v-model="form.shop_name" placeholder="输入赞助商店铺名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="address" label="赞助商领奖地址">
-						<el-input v-model="form.address" placeholder="输入赞助商领奖地址" clearable style="width:350px;"></el-input>
+					<el-form-item prop="ad_cate_id" label="赞助商店铺行业">
+						<el-select v-model="form.ad_cate_id" clearable filterable>
+							<el-option
+								v-for="item in adCateList"
+								:key="item.cate_id"
+								:label="item.cate_name"
+								:value="item.cate_id">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item prop="address" label="赞助商店铺地址">
+						<el-input v-model="form.address" placeholder="输入赞助商店铺地址" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="longitude" label="经度">
 						<el-input-number v-model="form.longitude" :step="1" :precision="6" controls-position="right" style="width: 200px;"></el-input-number> <span class="text-info">{{form.longitude > 0 ? form.longitude + '°E' : -form.longitude + '°W'}}</span>
 					</el-form-item>
 					<el-form-item prop="latitude" label="纬度">
 						<el-input-number v-model="form.latitude" :step="1" :precision="6" controls-position="right" style="width: 200px;"></el-input-number> <span class="text-info">{{form.latitude > 0 ? form.latitude + '°N' : -form.latitude + '°S'}}</span>
+					</el-form-item>
+					<el-form-item prop="is_sponsor_address" label="是否到赞助商店铺领奖">
+						<el-radio-group v-model="form.is_sponsor_address">
+							<el-radio v-for="(item, index) in {0: '否', 1: '是'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+						</el-radio-group>
 					</el-form-item>
 					<el-form-item prop="status" label="奖品状态">
 						<el-radio-group v-model="form.status">
@@ -100,12 +113,14 @@
 					quantity: '', // 奖品数量
 					level: '', // 奖品等级
 					percentage: '', // 中奖概率
-					sponsor: '', // 奖品赞助商
+					sponsor: '', // 奖品赞助商名称
 					phone: '', // 赞助商电话
-					is_sponsor_address: '', // 是否到赞助商处领奖
-					address: '', // 赞助商领奖地址
+					ad_cate_id: '', // 赞助商店铺行业
+					shop_name: '', // 赞助商店铺名称
+					address: '', // 赞助商店铺地址
 					longitude: '', // 经度
 					latitude: '', // 纬度
+					is_sponsor_address: '', // 是否到赞助商店铺领奖
 					status: '' // 奖品状态
 				},
 				rules: { // 验证规则
@@ -126,6 +141,7 @@
 				actList: [], // 活动列表
 				prizeTypeList: [{'prize_type': 1, 'prize_type_name': '实物'}, {'prize_type': 3, 'prize_type_name': '积分'}], // 奖品类型
 				prizeLevelList: [{'level_id': '', 'level_name': ''}], // 活动奖品等级列表
+				adCateList: [], // 赞助商店铺行业列表
 				
 				dialogImageUrl: '',
 				dialogVisible: false, //放大预览图片
@@ -136,8 +152,34 @@
 		mounted() {
 			this.getActivityList();
 			this.getPrizeLevelList();
+			this.getAdCateList();
 		},
 		methods: {
+			/**
+			 * 获取赞助商店铺行业列表
+			 */
+			getAdCateList() {
+				let self = this;
+				this.$axios.get(this.$url + 'ad_cate_list')
+				.then(function(res) {
+					if (res.data.status == 1) {
+						// 赞助商店铺行业列表
+						self.adCateList = res.data.data;
+					} else {
+						self.$message({
+							message: '网络忙，请重试',
+							type: 'warning'
+						});
+					}
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
 			/**
 			 * 上传图片
 			 * @param {string} response  返回图片地址
@@ -253,10 +295,12 @@
 							percentage: this.form.percentage,
 							sponsor: this.form.sponsor,
 							phone: this.form.phone,
-							is_sponsor_address: this.form.is_sponsor_address,
+							shop_name: this.form.shop_name,
+							ad_cate_id: this.form.ad_cate_id,
 							address: this.form.address,
 							longitude: this.form.longitude,
 							latitude: this.form.latitude,
+							is_sponsor_address: this.form.is_sponsor_address,
 							status: this.form.status
 						})
 						.then(function(res) {

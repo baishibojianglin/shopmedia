@@ -4,12 +4,17 @@
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in userPrizeList" :key="key">
 				<view class="uni-media-list">
 					<image class="uni-media-list-logo" :src="value.prize_pic"></image>
-					<view class="uni-media-list-body">
+					<view class="uni-media-list-body" style="height: 200upx;">
 						<view class="uni-media-list-text-top">【奖品】{{ value.prize_name }}</view>
 						<view class="uni-media-list-text-bottom">
-							<view class="uni-ellipsis" @click="openLocation(value.latitude, value.longitude, value.shop_name, value.address)">
-								<text>[领奖店铺]{{ value.shop_name }}</text>
-								<text>，{{ value.address }}</text>
+							<view class="uni-ellipsis">
+								<text>【中奖时间】{{ value.raffle_time }}</text>
+							</view>
+							<view class="uni-ellipsis">
+								<text>【领奖店铺】{{ value.shop_name }}</text>
+							</view>
+							<view @click="openLocation(value.latitude, value.longitude, value.shop_name, value.address)">
+								<view class="uni-ellipsis">【地址】<text class="m-icon m-icon-location-filled uni-text-small"></text>{{ value.address }}</view>
 							</view>
 						</view>
 					</view>

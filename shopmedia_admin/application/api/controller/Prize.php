@@ -19,10 +19,93 @@ class Prize extends Controller
      */
     public function getPrize()
     {
-        $form = input();
+        $param = input();
+
+        // 确定该店铺今日能否再中奖
+        // $actRaffleMap['shop_id'] = $param['shop_id'];
+        // $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
+        // if($shopprize > 3){  //一个店一天最多抽3个奖品
+        //     $data['status'] = 0;
+        //     return json($data);
+        // }
+
+        // 一台广告屏最多抽中6个奖品（不限制奖品种类和抽奖时间）
+        /*$actRaffleMap['device_id'] = $param['device_id'];
+        $actRaffleCount = Db::name('act_raffle')->where($actRaffleMap)->count();
+        if($actRaffleCount > 6){
+            $data['status'] = 0;
+            return json($data);
+        }*/
+
+        // 当奖品数量为零时，不再抽中奖品
+        $actPrizeMap['prize_type'] = 1;
+        $prizeSum = Db::name('act_prize')->where($actPrizeMap)->sum('quantity');
+        if($prizeSum <= 0){
+            $data['status'] = 0;
+            return json($data);
+        }
+
+        // 首次关注微信公众号参与抽奖时必中奖：通过判断openid是否已经存在中奖记录表里，不存在则让该用户一定中奖（20200825）
+        $actPrizeCount = 1;
+        if (isset($param['openid']) && !empty($param['openid'])) {
+            // 判断该微信用户曾经是否中奖
+            $actPrizeCount = Db::name('act_raffle')->where(['openid' => $param['openid']])->count('openid');
+        }
+
+        // 设置中奖概率1/5
+        $aim = rand(1,5);
+
+        // 判断是否能中奖
+        if($aim == 2 || $actPrizeCount == 0){
+            // 根据传入的设备 device_id 获取店铺 shop_id，然后判断该店铺是否提供只能在本店铺抽奖、领奖的奖品
+            $device = Db::name('device')->field('device_id, shop_id')->find($param['device_id']);
+            if (!empty($device) && $device['shop_id']) {
+                $prizeMap0 = [
+                    'shop_id' => $device['shop_id'],
+                    'is_sponsor_address' => 1,
+                    'is_sponsor_raffle' => 1,
+                    'status' => 1
+                ];
+                $prize0 = Db::name('act_prize')->where($prizeMap0)->find();
+            }
+
+            // 查询奖品中可用的列表
+            if (isset($prize0) && !empty($prize0)) { // 包括但不限于只能在本店铺抽奖的奖品
+                $matchprize['status'] = 1;
+                $matchprize['is_sponsor_raffle'] = 0;
+                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(7)->select();
+                array_push($prizelist, $prize0);
+            } else { // 不含只能在本店铺抽奖的奖品
+                $matchprize['status'] = 1;
+                $matchprize['is_sponsor_raffle'] = 0;
+                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
+            }
+
+            // 随机选择一个奖品
+            $num_id = array_rand($prizelist, 1);
+            $prize = $prizelist[$num_id];
+            $matchprizeaim['prize_id'] = $prize['prize_id'];
+            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $data['prize'] = $prizeaim;
+            $data['num_id'] = $num_id;
+            $data['status'] = 1;
+        }else{ // 只抽中积分
+            $matchprizeaim['prize_id'] = 7; // TODO：必须为积分类型奖品的ID或ID集合
+            $matchprizeaim['prize_type'] = 3; // 奖品类型：3积分
+            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $data['prize'] = $prizeaim;
+            $data['num_id'] = 6; // TODO：必须与客户端积分位置一致，从0开始计数
+            $data['status'] = 1;
+        }
 
         // 获取店铺信息
-        $shopMap['d.device_id'] = $form['device_id'];
+        // 判断是否到赞助商处领奖
+        if (!empty($data['prize']) && $data['prize']['is_sponsor_address'] == 1 && $data['prize']['shop_id']) {
+            $shopMap['s.shop_id'] = $data['prize']['shop_id'];
+        } else {
+            $shopMap['d.device_id'] = $param['device_id'];
+        }
+
         $shop = Db::name('shop')->alias('s')
             ->field('s.shop_id, s.shop_name, s.address, s.longitude, s.latitude, rp.region_name province, rc.region_name city, rco.region_name county, rt.region_name town')
             ->join('__DEVICE__ d', 'd.shop_id = s.shop_id', 'LEFT') // 广告屏设备
@@ -34,48 +117,7 @@ class Prize extends Controller
             ->find();
         $data['shop'] = $shop;
 
-        // 确定该店铺今日能否再中奖
-        // $actRaffleMap['shop_id'] = $form['shop_id'];
-        // $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
-        // if($shopprize > 3){  //一个店一天最多抽3个奖品
-        //     $data['status'] = 0;
-        //     return json($data);
-        // }
-
-        // 一台广告屏最多抽中6个奖品（不限制奖品种类和抽奖时间）
-        $actRaffleMap['device_id'] = $form['device_id'];
-        $actRaffleCount = Db::name('act_raffle')->where($actRaffleMap)->count();
-        if($actRaffleCount > 6){
-            $data['status'] = 0;
-            return json($data);
-        }
-
-        //设置中奖概率1/5
-        $aim = rand(1,5);
-
-        //判断是否能中奖
-        if( $aim == 2 ){
-            //查询奖品中可用的列表
-            $matchprize['status'] = 1;
-            $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->limit(8)->select();
-            //随机选择一个奖品
-            $num_id = array_rand($prizelist, 1);
-            $prize = $prizelist[$num_id];
-            $matchprizeaim['prize_id'] = $prize['prize_id'];
-            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, address, is_sponsor_address')->where($matchprizeaim)->find();
-            $data['prize'] = $prizeaim;
-            $data['num_id'] = $num_id;
-            $data['status'] = 1;
-            return json($data);
-        }else{ // 只抽中积分
-            $matchprizeaim['prize_id'] = 7; // TODO：必须为积分类型奖品的ID或ID集合
-            $matchprizeaim['prize_type'] = 3; // 奖品类型：3积分
-            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, address, is_sponsor_address')->where($matchprizeaim)->find();
-            $data['prize'] = $prizeaim;
-            $data['num_id'] = 6; // TODO：必须与客户端积分位置一致，从0开始计数
-            $data['status'] = 1;
-            return json($data);
-        }
+        return json($data);
     }
 
     /**
@@ -94,11 +136,11 @@ class Prize extends Controller
         $data = input('post.');
 
         // 判断参数是否合法
+        if (!isset($data['device_id']) || empty(trim($data['device_id'])) || trim($data['device_id']) == 'null' || trim($data['device_id']) == '') {
+            return show(config('code.error'), '打开微信扫一扫店铺广告屏上二维码参与抽奖', '', 403);
+        }
         if (!isset($data['create_time']) || date('Y-m-d') != date('Y-m-d', $data['create_time'])) {
             return show(config('code.error'), '链接已过期，请重新扫描店铺广告屏上二维码参与抽奖', '', 403);
-        }
-        if (!isset($data['device_id']) || empty(trim($data['device_id'])) || trim($data['device_id']) == 'null' || trim($data['device_id']) == '') {
-            return show(config('code.error'), '扫描店铺广告屏上二维码参与抽奖', '', 403);
         }
         // 设备是否存在
         $device = Db::name('device')->where(['device_id' => (int)$data['device_id'], 'status' => config('code.status_enable')])->find();
@@ -179,17 +221,23 @@ class Prize extends Controller
                 $raffleLogId = $todayRaffleLog['raffle_log_id'];
             }
 
-            // 新增中奖者信息
-            $raffleData['act_id'] = (int)$param['act_id'];
-            $raffleData['prize_id'] = $prizeId;
-            $raffleData['prize_name'] = $param['prize_name'];
-            $raffleData['device_id'] = $deviceId;
-            $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
-            $raffleData['prizewinner'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
-            $raffleData['phone'] = trim($param['phone']);
-            $raffleData['oauth'] = 'wx';
-            $raffleData['openid'] = $param['openid'];
-            $res[1] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($raffleData);
+            // 一个用户一天只能在一台广告机设备抽一次奖，当然最多抽中一次奖
+            $todayRaffle = Db::name('act_raffle')->where(['device_id' => $deviceId, 'oauth' => 'wx', 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->find();
+            if (empty($todayRaffle)) {
+                // 新增中奖者信息
+                $raffleData['act_id'] = (int)$param['act_id'];
+                $raffleData['prize_id'] = $prizeId;
+                $raffleData['prize_name'] = $param['prize_name'];
+                $raffleData['device_id'] = $deviceId;
+                $raffleData['raffle_time'] = isset($todayRaffleLog['raffle_time']) ? $todayRaffleLog['raffle_time'] : $time;
+                $raffleData['prizewinner'] = trim($param['phone']); // isset($param['prizewinner']) ? trim($param['prizewinner']) : trim($param['phone']);
+                $raffleData['phone'] = trim($param['phone']);
+                $raffleData['oauth'] = 'wx';
+                $raffleData['openid'] = $param['openid'];
+                $res[1] = $raffleID = Db::name('act_raffle')->strict(true)->insertGetId($raffleData);
+            } else {
+                return show(config('code.error'), '你今日在该店铺广告屏已经抽过奖了，请扫描其他店铺广告屏。每天都可以参与哦', ['today_raffle' => $todayRaffle], 403);
+            }
 
             // 更新抽奖记录表的中奖状态
             if ($raffleID) {
@@ -215,7 +263,7 @@ class Prize extends Controller
             // 判断 用户表表user 是否存在该用户，如果不存在则创建用户，并将 user_id 绑定到 第三方授权登录表user_oauth
             // 创建用户
             if (empty($user)) {
-                $userData['user_name'] = isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
+                $userData['user_name'] = trim($param['phone']); // isset($param['prizewinner']) ? trim($param['prizewinner']) : 'sustock-' . trim($param['phone']); // 定义默认用户名
                 $userData['role_ids'] = 7; // 用户角色ID
                 $userData['avatar'] = isset($param['headimgurl']) ? $param['headimgurl'] : '';
                 $userData['phone'] = trim($param['phone']);
@@ -269,7 +317,7 @@ class Prize extends Controller
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
-            return show(config('code.error'), '请求异常', $e->getMessage(), 500);
+            return show(config('code.error'), '请求异常' . $e->getMessage(), $e->getMessage(), 500);
         }
     }
 }

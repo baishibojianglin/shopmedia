@@ -216,26 +216,32 @@ class WeChant extends Controller
                         'url' => 'https://mp.weixin.qq.com/s?__biz=MzIwNjYzNjMwOA==&tempkey=MTA3Ml9VbGtqY0pPNnl0SHVFb0JGaHdyMVJ0TURSNV8wdXZDUzctd0pSZmdqdFVJNGRueXlFeTJKX0k2T2wtU1hoMDhwSWQ1c0FoVnh2YXpKU203T0hSTGlpZ1VnaEJSMHhhWUVTUlZtWkZndHRwNEQ2TFBjbk8zR0V2OHI3Nk9rSHhYM3F4TW94ZU9hUlEyU0VmbkVFMmVHeXNUM2pXb242MWJUSVVjZVlRfn4%3D&chksm=171fd56320685c752c1faa71f3ca18275ea8d1d0a86e9c8659752ddd8968c9c96e608516d88d#rd'
                     ]
                 ];
+                $this->_msgNews($postObj, $newsItems);
+                break;
+            case 'contact_us':
+                // 联系我们 菜单
+                $content = "☆ 座机：028-8473 4560\n☆ 专属顾问\n顾问一：180 1150 4575\n顾问二：136 9344 4308\n☆ 公司地址：成都市武侯区武科东四路慧谷office 1幢";
+                $this->_msgText($postObj, [], $content);
                 break;
             default:
                 break;
         }
-        $this->_msgNews($postObj, $newsItems);
     }
 
     /**
      * 回复文本消息
      * @param $postObj
-     * @param $userInfo
+     * @param array $userInfo
+     * @param $content
      */
-    private function _msgText($postObj, $userInfo)
+    private function _msgText($postObj, $userInfo = [], $content)
     {
         $toUser   = $postObj->FromUserName;
         $fromUser = $postObj->ToUserName;
         $time     = time();
         //$msgType  = 'text';
-        $eventKey   = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值（扫描带参数二维码事件，并关注）
-        $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser . '，scene_id ' . $eventKey;
+        /*$eventKey   = str_replace('qrscene_', '', $postObj->EventKey); // 事件KEY值（扫描带参数二维码事件，并关注）
+        $content  = $userInfo['nickname'] . '，欢迎关注我们的公众号 ' . $fromUser . '，scene_id ' . $eventKey;*/
         $template = $this->_msgTemplate['text']; // 回复文本消息XML模板
         /*$template = "<xml>
                     <ToUserName><![CDATA[%s]]></ToUserName>
@@ -492,6 +498,11 @@ class WeChant extends Controller
                     'type' => 'view',
                     'name' => urlencode('广告案例'),
                     'url' => 'https://media.sustock.net/case/'
+                ),
+                array(
+                    'type' => 'click',
+                    'name' => urlencode('联系我们'),
+                    'key' => 'contact_us'
                 )
             )
         );

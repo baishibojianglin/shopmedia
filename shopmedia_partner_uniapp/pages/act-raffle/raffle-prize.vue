@@ -4,18 +4,23 @@
 			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in rafflePrizeList" :key="key">
 				<view class="uni-media-list">
 					<image class="uni-media-list-logo" :src="value.prize_pic"></image>
-					<view class="uni-media-list-body">
-						<view class="uni-media-list-text-top">【中奖用户】{{ value.prizewinner }} {{ value.phone }}</view>
+					<view class="uni-media-list-body" style="height: 200upx;">
+						<view class="uni-media-list-text-top">【中奖电话】<!-- {{ value.prizewinner }} --> {{ value.phone }}</view>
 						<view class="uni-media-list-text-bottom">
 							<view class="uni-ellipsis">
-								<text>[奖品]{{ value.prize_name }}</text>
-								<text>，[店铺]{{ value.shop_name }}</text>
+								<text>【中奖时间】{{ value.raffle_time }}</text>
+							</view>
+							<view class="uni-ellipsis">
+								<text>【奖品】{{ value.prize_name }}</text>
+							</view>
+							<view class="uni-ellipsis">
+								<text>【店铺】{{ value.shop_name }}</text>
 							</view>
 						</view>
 					</view>
 					<view class="">
-						<button v-if="!value.prize_status && !isSendPrize" type="default" size="mini" @click="sendPrize(value.raffle_id)">发放</button>
-						<text v-if="isSendPrize">已发放</text>
+						<button v-if="!value.prize_status" type="default" size="mini" @click="sendPrize(value.raffle_id, value)">发放</button>
+						<text v-if="value.prize_status">已发放</text>
 					</view>
 				</view>
 			</view>
@@ -31,8 +36,7 @@
 		data() {
 			return {
 				prize_status: '', // 奖品领取状态
-				rafflePrizeList: [] ,// 统计奖品领取状态列表
-				isSendPrize: false // 是否发放奖品
+				rafflePrizeList: [], // 统计奖品领取状态列表
 			}
 		},
 		computed: {
@@ -75,7 +79,7 @@
 			 * 发放奖品
 			 * @param {Object} raffle_id
 			 */
-			sendPrize(raffle_id) {
+			sendPrize(raffle_id, item) {
 				let self = this;
 				
 				uni.showModal({
@@ -96,7 +100,8 @@
 								},
 								success: (res) => {
 									if (res.data.status == 1) {
-										self.isSendPrize = true;
+										item.prize_status = !item.prize_status;
+										//self.$forceUpdate(); // 强制重新渲染vue实例
 										uni.showModal({
 											title: '提示',
 											content: '奖品发放成功',

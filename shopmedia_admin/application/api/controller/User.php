@@ -368,18 +368,21 @@ class User extends AuthBase
 
         // 获取用户获得的奖品列表
         $userPrizeList = Db::name('act_raffle')->alias('r')
-            ->field('r.*, s.shop_name, s.address, s.longitude, s.latitude, p.prize_type, p.prize_pic, p.quantity, p.is_sponsor_address, p.sponsor, p.address sponsor_address, p.longitude sponsor_longitude, p.latitude sponsor_latitude')
+            ->field('r.*, s.shop_name, s.address, s.longitude, s.latitude, p.prize_type, p.prize_pic, p.quantity, p.is_sponsor_address, p.sponsor, ss.shop_name sponsor_shop_name, ss.address sponsor_address, ss.longitude sponsor_longitude, ss.latitude sponsor_latitude')
             ->join('__DEVICE__ d', 'd.device_id = r.device_id', 'LEFT')
-            ->join('__SHOP__ s', 's.shop_id = d.shop_id', 'LEFT')
+            ->join('__SHOP__ s', 's.shop_id = d.shop_id', 'LEFT') // 设备所在店铺
             ->join('__ACT_PRIZE__ p', 'p.prize_id = r.prize_id', 'LEFT')
+            ->join('__SHOP__ ss', 'ss.shop_id = p.shop_id', 'LEFT') // 赞助商店铺
             ->where($map)
             ->select();
 
         // 处理数据
         foreach($userPrizeList as $key => $value) {
+            $userPrizeList[$key]['raffle_time'] = isset($value['raffle_time']) ? date('Y-m-d H:i:s', $value['raffle_time']) : '';
+            
             // 当到赞助商处领奖时
             if ($value['is_sponsor_address'] == 1) {
-                $userPrizeList[$key]['shop_name'] = $value['sponsor'];
+                $userPrizeList[$key]['shop_name'] = $value['sponsor_shop_name'];
                 $userPrizeList[$key]['address'] = $value['sponsor_address'];
                 $userPrizeList[$key]['longitude'] = $value['sponsor_longitude'];
                 $userPrizeList[$key]['latitude'] = $value['sponsor_latitude'];
