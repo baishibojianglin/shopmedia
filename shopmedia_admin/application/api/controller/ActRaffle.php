@@ -152,6 +152,11 @@ class ActRaffle extends AuthBase
             ->where($map)
             ->select();
 
+        // 处理数据
+        foreach($rafflePrizeList as $key => $value) {
+            $rafflePrizeList[$key]['raffle_time'] = isset($value['raffle_time']) ? date('Y-m-d H:i:s', $value['raffle_time']) : '';
+        }
+
         return show(config('code.success'), 'OK', $rafflePrizeList);
     }
 

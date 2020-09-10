@@ -378,6 +378,8 @@ class User extends AuthBase
 
         // 处理数据
         foreach($userPrizeList as $key => $value) {
+            $userPrizeList[$key]['raffle_time'] = isset($value['raffle_time']) ? date('Y-m-d H:i:s', $value['raffle_time']) : '';
+            
             // 当到赞助商处领奖时
             if ($value['is_sponsor_address'] == 1) {
                 $userPrizeList[$key]['shop_name'] = $value['sponsor_shop_name'];
