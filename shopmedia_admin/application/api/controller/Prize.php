@@ -70,7 +70,7 @@ class Prize extends Controller
             }
 
             // 查询奖品中可用的列表
-            if (isset($prize0) && !empty($prize0)) { // 含只能在本店铺抽奖的奖品
+            if (isset($prize0) && !empty($prize0)) { // 包括但不限于只能在本店铺抽奖的奖品
                 $matchprize['status'] = 1;
                 $matchprize['is_sponsor_raffle'] = 0;
                 $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(7)->select();
