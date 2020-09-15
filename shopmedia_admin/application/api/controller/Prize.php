@@ -90,6 +90,30 @@ class Prize extends Controller
             $num_id = array_rand($prizelist, 1);
             $prize = $prizelist[$num_id];
 
+
+
+            /*七星椒火锅冒菜 s*/
+            $prize10Count = Db::name('act_raffle')->where(['prize_id' => 10])->whereTime('raffle_time', 'today')->count();
+            if($prize10Count > 5 && $prize['prize_id'] == 10){  // 一天最多抽中5份七星椒火锅冒菜
+                unset($prizelist[$num_id]);
+                // 重新获取排除该奖品后的其他奖品
+                $num_id = array_rand($prizelist, 1);
+                $prize = $prizelist[$num_id];
+            }
+            /*七星椒火锅冒菜 e*/
+
+            /*奢悦：无限名额，但一人只能免费用一次套餐 s*/
+            $prize11Count = Db::name('act_raffle')->where(['prize_id' => 11, 'openid' => $param['openid']])->count();
+            if($prize11Count > 1 && $prize['prize_id'] == 11){  // 无限名额，但一人只能免费用一次套餐
+                unset($prizelist[$num_id]);
+                // 重新获取排除该奖品后的其他奖品
+                $num_id = array_rand($prizelist, 1);
+                $prize = $prizelist[$num_id];
+            }
+            /*奢悦 e*/
+
+
+
             /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 s */
             if (isset($shopCate) && $shopCate) {
                 // 获取该店铺所属行业全部店铺 shop_id 集合
@@ -112,15 +136,18 @@ class Prize extends Controller
             /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 e */
 
             $matchprizeaim['prize_id'] = $prize['prize_id'];
-            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
-
+            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sort, prize_pic, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $prizeaim['prize_pic'] = !empty($prizeaim['prize_pic']) ? json_decode($prizeaim['prize_pic'], true)[0]['url'] : '';
+            
             $data['prize'] = $prizeaim;
             $data['num_id'] = $num_id;
             $data['status'] = 1;
         }else{ // 只抽中积分
             $matchprizeaim['prize_id'] = 7; // TODO：必须为积分类型奖品的ID或ID集合
             $matchprizeaim['prize_type'] = 3; // 奖品类型：3积分
-            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sort, prize_pic, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
+            $prizeaim['prize_pic'] = !empty($prizeaim['prize_pic']) ? json_decode($prizeaim['prize_pic'], true)[0]['url'] : '';
+
             $data['prize'] = $prizeaim;
             $data['num_id'] = 6; // TODO：必须与客户端积分位置一致，从0开始计数
             $data['status'] = 1;

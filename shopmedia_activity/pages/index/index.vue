@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 
-		<view v-if="showbut">
+		<view v-if="showbut && !show_result">
 			<view class="content-cj">
 				<LotteryDraw @get_winingIndex='recordRaffleLog' @luck_draw_finish='luck_draw_finish'></LotteryDraw>
 			</view>
@@ -17,12 +17,12 @@
 			</view>
 		</view>
 
-		<view v-if="show_result" class="covercss"></view>
+		<view v-if="show_result" class=""></view><!-- class="covercss" -->
 		<!--遮罩层 -->
 
 		<view v-if="show_result">
 			<!--中奖 s-->
-			<view class="aimprize" v-if="prize_yes">
+			<view class="" v-if="prize_yes"><!-- class="aimprize" -->
 				<view class="wb100">
 					<image style="width:90%;height: 100px;" :src="src2"></image>
 				</view>
@@ -47,6 +47,29 @@
 
 				<view v-if="isAward">
 					<uni-card :is-shadow="true" class="uni-bold" note="温馨提示：到店提供电话号码即可领取">
+						<image style="width: 100px;height: 100px;" :src="prize_info.prize.prize_pic"></image>
+						<view class="uni-flex uni-row">
+							<view class="text-left" style="width: 200rpx;">奖品</view>
+							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">
+								<text>{{prize_info.prize.prize_name}}</text>
+							</view>
+						</view>
+						<view class="uni-flex uni-row">
+							<view class="text-left" style="width: 200rpx;">奖品说明</view>
+							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;text-align: left; font-weight: 500;">
+								<view v-if="prize_info.prize.prize_id == 10" class="uni-text-small">
+									每日限定5名当日消费，12元单人套餐
+								</view>
+								<view v-if="prize_info.prize.prize_id == 11" class="uni-text-small">
+									<view>价值1734元逆龄豪华套餐</view>
+									<view>1.价值118元皮肤CT检测+专业分析1次</view>
+									<view>2.价值138元皮肤深层清洁1次</view>
+									<view>3.价值198元专业皮肤分区调理1次</view>
+									<view>4.价值1280元逆龄光面部细胞调理1次</view>
+									<view>2020年12月30日前有效，请提前1天预约。</view>
+								</view>
+							</view>
+						</view>
 						<view class="uni-flex uni-row">
 							<view class="text-left" style="width: 200rpx;">领奖电话</view>
 							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{phone}}</view>
