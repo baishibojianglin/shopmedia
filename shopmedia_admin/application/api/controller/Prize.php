@@ -57,9 +57,14 @@ class Prize extends Controller
 
         // 判断是否能中奖
         if($aim == 2 || $actPrizeCount == 0){
-            // 根据传入的设备 device_id 获取店铺 shop_id，然后判断该店铺是否提供只能在本店铺抽奖、领奖的奖品
+            // 根据传入的设备 device_id 获取店铺 shop_id 等设备信息，然后判断该店铺是否提供只能在本店铺抽奖、领奖的奖品
             $device = Db::name('device')->field('device_id, shop_id')->find($param['device_id']);
             if (!empty($device) && $device['shop_id']) {
+                // 获取该设备所属店铺信息
+                $shop0 = Db::name('shop')->find($device['shop_id']);
+                $shopCate = $shop0['cate'];
+
+                // 获取只能在本店铺抽奖、领奖的奖品
                 $prizeMap0 = [
                     'shop_id' => $device['shop_id'],
                     'is_sponsor_address' => 1,
@@ -73,19 +78,42 @@ class Prize extends Controller
             if (isset($prize0) && !empty($prize0)) { // 包括但不限于只能在本店铺抽奖的奖品
                 $matchprize['status'] = 1;
                 $matchprize['is_sponsor_raffle'] = 0;
-                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(7)->select();
+                $prizelist = Db::name('act_prize')->field('prize_id, shop_id')->where($matchprize)->order('sort', 'asc')->limit(7)->select();
                 array_push($prizelist, $prize0);
-            } else { // 不含只能在本店铺抽奖的奖品
+            } else { // 不含只能在本店铺抽奖的奖品（含本店铺但排除本行业其他店铺）
                 $matchprize['status'] = 1;
                 $matchprize['is_sponsor_raffle'] = 0;
-                $prizelist = Db::name('act_prize')->field('prize_id')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
+                $prizelist = Db::name('act_prize')->field('prize_id, shop_id')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
             }
 
             // 随机选择一个奖品
             $num_id = array_rand($prizelist, 1);
             $prize = $prizelist[$num_id];
+
+            /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 s */
+            if (isset($shopCate) && $shopCate) {
+                // 获取该店铺所属行业全部店铺 shop_id 集合
+                $shopIds = Db::name('shop')->where(['cate' => $shopCate])->column('shop_id');
+                // 排除当前店铺 shop_id
+                if (in_array($device['shop_id'], $shopIds)) {
+                    // 获取 $device['shop_id'] 的键
+                    $shopIdKey = array_search($device['shop_id'], $shopIds, true);
+                    unset($shopIds[$shopIdKey]);
+                }
+
+                // 排除同行业店铺
+                if (in_array($prize['shop_id'], $shopIds)) {
+                    unset($prizelist[$num_id]);
+                    // 重新获取排除同行业后的奖品
+                    $num_id = array_rand($prizelist, 1);
+                    $prize = $prizelist[$num_id];
+                }
+            }
+            /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 e */
+
             $matchprizeaim['prize_id'] = $prize['prize_id'];
             $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
+
             $data['prize'] = $prizeaim;
             $data['num_id'] = $num_id;
             $data['status'] = 1;
