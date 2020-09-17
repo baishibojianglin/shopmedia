@@ -58,7 +58,7 @@
 							<view class="text-left" style="width: 200rpx;">奖品说明</view>
 							<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;text-align: left; font-weight: 500;">
 								<view v-if="prize_info.prize.prize_id == 10" class="uni-text-small">
-									每日限定5名当日消费，12元单人套餐
+									限两天到店免费消费
 								</view>
 								<view v-if="prize_info.prize.prize_id == 11" class="uni-text-small">
 									<view>价值1734元逆龄豪华套餐</view>

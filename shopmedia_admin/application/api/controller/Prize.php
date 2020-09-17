@@ -52,11 +52,11 @@ class Prize extends Controller
             $actPrizeCount = Db::name('act_raffle')->where(['openid' => $param['openid']])->count('openid');
         }
 
-        // 设置中奖概率1/5
-        $aim = rand(1,5);
+        // 设置中奖概率1/3
+        $aim = rand(1,3);
 
         // 判断是否能中奖
-        if($aim == 2 || $actPrizeCount == 0){
+        if($aim == 2 || $actPrizeCount == 0 || true){
             // 根据传入的设备 device_id 获取店铺 shop_id 等设备信息，然后判断该店铺是否提供只能在本店铺抽奖、领奖的奖品
             $device = Db::name('device')->field('device_id, shop_id')->find($param['device_id']);
             if (!empty($device) && $device['shop_id']) {
@@ -97,8 +97,12 @@ class Prize extends Controller
             if($prize10Count > 5 && $prize['prize_id'] == 10){  // 一天最多抽中5份七星椒火锅冒菜
                 unset($prizelist[$num_id]);
                 // 重新获取排除该奖品后的其他奖品
-                $num_id = array_rand($prizelist, 1);
-                $prize = $prizelist[$num_id];
+                if (!empty($prizelist)) {
+                    $num_id = array_rand($prizelist, 1);
+                    $prize = $prizelist[$num_id];
+                } else {
+                    $prize = [];
+                }
             }
             /*七星椒火锅冒菜 e*/
 
@@ -107,8 +111,12 @@ class Prize extends Controller
             if($prize11Count > 1 && $prize['prize_id'] == 11){  // 无限名额，但一人只能免费用一次套餐
                 unset($prizelist[$num_id]);
                 // 重新获取排除该奖品后的其他奖品
-                $num_id = array_rand($prizelist, 1);
-                $prize = $prizelist[$num_id];
+                if (!empty($prizelist)) {
+                    $num_id = array_rand($prizelist, 1);
+                    $prize = $prizelist[$num_id];
+                } else {
+                    $prize = [];
+                }
             }
             /*奢悦 e*/
 
@@ -129,18 +137,22 @@ class Prize extends Controller
                 if (in_array($prize['shop_id'], $shopIds)) {
                     unset($prizelist[$num_id]);
                     // 重新获取排除同行业后的奖品
-                    $num_id = array_rand($prizelist, 1);
-                    $prize = $prizelist[$num_id];
+                    if (!empty($prizelist)) {
+                        $num_id = array_rand($prizelist, 1);
+                        $prize = $prizelist[$num_id];
+                    } else {
+                        $prize = [];
+                    }
                 }
             }
             /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 e */
 
-            $matchprizeaim['prize_id'] = $prize['prize_id'];
+            $matchprizeaim['prize_id'] = isset($prize['prize_id']) ? $prize['prize_id'] : 7; // prize_id = 7 为积分
             $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sort, prize_pic, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();
             $prizeaim['prize_pic'] = !empty($prizeaim['prize_pic']) ? json_decode($prizeaim['prize_pic'], true)[0]['url'] : '';
             
             $data['prize'] = $prizeaim;
-            $data['num_id'] = $num_id;
+            $data['num_id'] = $prizeaim['sort'];
             $data['status'] = 1;
         }else{ // 只抽中积分
             $matchprizeaim['prize_id'] = 7; // TODO：必须为积分类型奖品的ID或ID集合
@@ -149,7 +161,7 @@ class Prize extends Controller
             $prizeaim['prize_pic'] = !empty($prizeaim['prize_pic']) ? json_decode($prizeaim['prize_pic'], true)[0]['url'] : '';
 
             $data['prize'] = $prizeaim;
-            $data['num_id'] = 6; // TODO：必须与客户端积分位置一致，从0开始计数
+            $data['num_id'] = $prizeaim['sort']; // TODO：必须与客户端积分位置一致，从1开始计数
             $data['status'] = 1;
         }
 
