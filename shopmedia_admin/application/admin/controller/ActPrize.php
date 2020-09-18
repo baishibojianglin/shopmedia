@@ -288,6 +288,9 @@ class ActPrize extends Base
             if (!empty($param['prize_name'])) {
                 $actPrizeData['prize_name'] = trim($param['prize_name']);
             }
+            if (isset($param['sort'])) { // 排序
+                $actPrizeData['sort'] = input('param.sort', null, 'intval');
+            }
             if (!empty($param['prize_pic'])) {
                 $actPrizeData['prize_pic'] = trim($param['prize_pic']);
             }
@@ -312,9 +315,6 @@ class ActPrize extends Base
             if (!empty($param['phone'])) {
                 $actPrizeData['phone'] = trim($param['phone']);
             }
-            if (isset($param['is_sponsor_address'])) {
-                $actPrizeData['is_sponsor_address'] = intval($param['is_sponsor_address']);
-            }
             if (!empty($param['address'])) {
                 $actPrizeData['address'] = trim($param['address']);
             }
@@ -323,6 +323,18 @@ class ActPrize extends Base
             }
             if (!empty($param['latitude'])) {
                 $actPrizeData['latitude'] = floatval($param['latitude']);
+            }
+            if (isset($param['is_sponsor_address'])) {
+                $actPrizeData['is_sponsor_address'] = intval($param['is_sponsor_address']);
+            }
+            if (isset($param['is_sponsor_raffle'])) {
+                $actPrizeData['is_sponsor_raffle'] = intval($param['is_sponsor_raffle']);
+            }
+            if (isset($param['is_distance'])) {
+                $actPrizeData['is_distance'] = intval($param['is_distance']);
+            }
+            if (!empty($param['distance'])) {
+                $actPrizeData['distance'] = floatval($param['distance']);
             }
             if (isset($param['status'])) {
                 $actPrizeData['status'] = (int)$param['status'];
@@ -334,7 +346,7 @@ class ActPrize extends Base
 
             // 更新
             try {
-                $res[0] = Db::name('act_prize')->where(['prize_id' => $id])->update($actPrizeData); // 更新
+                $res[0] = Db::name('act_prize')->where(['prize_id' => $id])->update($actPrizeData) === false ? 0 : true; // 更新
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }

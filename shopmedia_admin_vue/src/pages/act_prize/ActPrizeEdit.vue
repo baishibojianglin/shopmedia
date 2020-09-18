@@ -26,6 +26,9 @@
 					<el-form-item prop="prize_name" label="奖品名称">
 						<el-input v-model="form.prize_name" placeholder="输入奖品名称" clearable style="width:350px;"></el-input>
 					</el-form-item>
+					<el-form-item prop="sort" label="排序">
+						<el-input-number v-model="form.sort" :min="0" :step="1" :precision="0" controls-position="right"></el-input-number>
+					</el-form-item>
 					
 					<el-form-item label="奖品图片" prop="prize_pic" class="idcard">
 						<el-input v-show='false' style="width:350px;" v-model="form.prize_pic"></el-input>
@@ -85,6 +88,21 @@
 						</el-radio-group>
 					</el-form-item>
 					
+					<el-form-item prop="is_sponsor_raffle" label="是否只能在赞助商店铺抽奖">
+						<el-radio-group v-model="form.is_sponsor_raffle">
+							<el-radio v-for="(item, index) in {0: '本店铺与排除本行业的其他店铺', 1: '只在本店铺'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+						</el-radio-group>
+					</el-form-item>
+					
+					<el-form-item prop="is_distance" label="是否限制抽奖店铺的距离">
+						<el-radio-group v-model="form.is_distance">
+							<el-radio v-for="(item, index) in {0: '否', 1: '是'}" :key="index" :label="Number(index)">{{item}}</el-radio>
+						</el-radio-group>
+					</el-form-item>
+					<el-form-item prop="distance" label="抽奖店铺与赞助商的距离/㎞">
+						<el-input-number v-model="form.distance" :step="1" :precision="3" controls-position="right" style="width: 200px;"></el-input-number> <span class="text-info"></span>
+					</el-form-item>
+					
 					<el-form-item prop="status" label="奖品状态">
 						<el-radio-group v-model="form.status">
 							<el-radio v-for="(item, index) in {0: '下架', 1: '正常'}" :key="index" :label="Number(index)">{{item}}</el-radio>
@@ -110,6 +128,7 @@
 					act_id: '', // 活动ID
 					prize_type: '', // 奖品类型
 					prize_name: '', // 奖品名称
+					sort: '', // 排序
 					prize_pic: '', // 奖品图片
 					quantity: '', // 奖品数量
 					level: '', // 奖品等级
@@ -118,6 +137,9 @@
 					phone: '', // 赞助商电话
 					ad_cate_id: '', // 赞助商所属行业 
 					is_sponsor_address: '', // 是否到赞助商处领奖
+					is_sponsor_raffle: '', // 是否只能在赞助商店铺抽奖
+					is_distance: '', // 是否限制抽奖店铺的距离
+					distance: '', // 是否限制抽奖店铺的距离
 					address: '', // 赞助商领奖地址
 					longitude: '', // 经度
 					latitude: '', // 纬度
@@ -343,6 +365,7 @@
 							act_id: this.form.act_id,
 							prize_type: this.form.prize_type,
 							prize_name: this.form.prize_name,
+							sort: this.form.sort,
 							prize_pic: this.form.prize_pic,
 							quantity: this.form.quantity,
 							level: this.form.level,
@@ -351,6 +374,9 @@
 							phone: this.form.phone,
 							ad_cate_id: this.form.ad_cate_id,
 							is_sponsor_address: this.form.is_sponsor_address,
+							is_sponsor_raffle: this.form.is_sponsor_raffle,
+							is_distance: this.form.is_distance,
+							distance: this.form.distance,
 							address: this.form.address,
 							longitude: this.form.longitude,
 							latitude: this.form.latitude,
