@@ -21,22 +21,6 @@ class Prize extends Controller
     {
         $param = input();
 
-        // 确定该店铺今日能否再中奖
-        // $actRaffleMap['shop_id'] = $param['shop_id'];
-        // $shopprize = Db::name('act_raffle')->where($actRaffleMap)->whereTime('raffle_time', 'today')->count();
-        // if($shopprize > 3){  //一个店一天最多抽3个奖品
-        //     $data['status'] = 0;
-        //     return json($data);
-        // }
-
-        // 一台广告屏最多抽中6个奖品（不限制奖品种类和抽奖时间）
-        /*$actRaffleMap['device_id'] = $param['device_id'];
-        $actRaffleCount = Db::name('act_raffle')->where($actRaffleMap)->count();
-        if($actRaffleCount > 6){
-            $data['status'] = 0;
-            return json($data);
-        }*/
-
         // 当奖品数量为零时，不再抽中奖品
         $actPrizeMap['prize_type'] = 1;
         $prizeSum = Db::name('act_prize')->where($actPrizeMap)->sum('quantity');
@@ -56,67 +40,33 @@ class Prize extends Controller
         $aim = rand(1,3);
 
         // 判断是否能中奖
-        if($aim == 2 || $actPrizeCount == 0 || true){
+        if($aim == 2 || $actPrizeCount == 0){
             // 根据传入的设备 device_id 获取店铺 shop_id 等设备信息，然后判断该店铺是否提供只能在本店铺抽奖、领奖的奖品
             $device = Db::name('device')->field('device_id, shop_id')->find($param['device_id']);
             if (!empty($device) && $device['shop_id']) {
                 // 获取该设备所属店铺信息
                 $shop0 = Db::name('shop')->find($device['shop_id']);
-                $shopCate = $shop0['cate'];
-
-                // 获取只能在本店铺抽奖、领奖的奖品
-                $prizeMap0 = [
-                    'shop_id' => $device['shop_id'],
-                    'is_sponsor_address' => 1,
-                    'is_sponsor_raffle' => 1,
-                    'status' => 1
-                ];
-                $prize0 = Db::name('act_prize')->where($prizeMap0)->find();
+                $shopCate = $shop0['cate']; // 店铺所属行业
             }
 
             // 查询奖品中可用的列表
-            if (isset($prize0) && !empty($prize0)) { // 包括但不限于只能在本店铺抽奖的奖品
-                $matchprize['status'] = 1;
-                $matchprize['is_sponsor_raffle'] = 0;
-                $prizelist = Db::name('act_prize')->field('prize_id, shop_id')->where($matchprize)->order('sort', 'asc')->limit(7)->select();
-                array_push($prizelist, $prize0);
-            } else { // 不含只能在本店铺抽奖的奖品（含本店铺但排除本行业其他店铺）
-                $matchprize['status'] = 1;
-                $matchprize['is_sponsor_raffle'] = 0;
-                $prizelist = Db::name('act_prize')->field('prize_id, shop_id')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
-            }
-
-            // 随机选择一个奖品
-            $num_id = array_rand($prizelist, 1);
-            $prize = $prizelist[$num_id];
+            $matchprize['status'] = 1;
+            $matchprize['is_sponsor_raffle'] = 0; // 含本店铺但排除本行业其他店铺
+            $prizeIds = []; // 定义需要排除的奖品ID集合
 
 
 
             /*七星椒火锅冒菜 s*/
             $prize10Count = Db::name('act_raffle')->where(['prize_id' => 10])->whereTime('raffle_time', 'today')->count();
-            if($prize10Count > 5 && $prize['prize_id'] == 10){  // 一天最多抽中5份七星椒火锅冒菜
-                unset($prizelist[$num_id]);
-                // 重新获取排除该奖品后的其他奖品
-                if (!empty($prizelist)) {
-                    $num_id = array_rand($prizelist, 1);
-                    $prize = $prizelist[$num_id];
-                } else {
-                    $prize = [];
-                }
+            if($prize10Count >= 5){  // 一天最多抽中5份七星椒火锅冒菜
+                $prizeIds[] = 10;
             }
             /*七星椒火锅冒菜 e*/
 
             /*奢悦：无限名额，但一人只能免费用一次套餐 s*/
             $prize11Count = Db::name('act_raffle')->where(['prize_id' => 11, 'openid' => $param['openid']])->count();
-            if($prize11Count > 1 && $prize['prize_id'] == 11){  // 无限名额，但一人只能免费用一次套餐
-                unset($prizelist[$num_id]);
-                // 重新获取排除该奖品后的其他奖品
-                if (!empty($prizelist)) {
-                    $num_id = array_rand($prizelist, 1);
-                    $prize = $prizelist[$num_id];
-                } else {
-                    $prize = [];
-                }
+            if($prize11Count >= 1){  // 无限名额，但一人只能免费用一次套餐
+                $prizeIds[] = 11;
             }
             /*奢悦 e*/
 
@@ -125,7 +75,7 @@ class Prize extends Controller
             /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 s */
             if (isset($shopCate) && $shopCate) {
                 // 获取该店铺所属行业全部店铺 shop_id 集合
-                $shopIds = Db::name('shop')->where(['cate' => $shopCate])->column('shop_id');
+                $shopIds = Db::name('shop')->where(['cate' => $shopCate, 'status' => 1])->column('shop_id');
                 // 排除当前店铺 shop_id
                 if (in_array($device['shop_id'], $shopIds)) {
                     // 获取 $device['shop_id'] 的键
@@ -134,18 +84,38 @@ class Prize extends Controller
                 }
 
                 // 排除同行业店铺
-                if (in_array($prize['shop_id'], $shopIds)) {
-                    unset($prizelist[$num_id]);
-                    // 重新获取排除同行业后的奖品
-                    if (!empty($prizelist)) {
-                        $num_id = array_rand($prizelist, 1);
-                        $prize = $prizelist[$num_id];
-                    } else {
-                        $prize = [];
-                    }
-                }
+                //return json(['asd' => $shopIds, $prize['shop_id'], in_array($prize['shop_id'], $shopIds)]);
+                $matchprize['shop_id'] = ['not in', $shopIds];
             }
             /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 e */
+
+
+            // 获取可用于抽奖的奖品列表
+            $matchprize['prize_id'] = ['not in', $prizeIds]; // 需要排除的奖品ID集合
+            $prizelist = Db::name('act_prize')->field('prize_id, shop_id, longitude, latitude, is_distance, distance')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
+
+            /* 限制抽奖店铺与赞助商店铺的距离（㎞，如5㎞） s */
+            if (isset($shop0) && !empty($shop0) && $shop0['longitude'] && $shop0['latitude']) {
+                foreach ($prizelist as $key => $value) {
+                    // 根据两点的经纬度计算距离，此处用于获取指定距离的经纬度集合
+                    $prizelist[$key]['distance'] = round(distance($shop0['latitude'], $shop0['longitude'], $value['latitude'], $value['longitude']), 3);
+
+                    // 获取指定距离 $value['distance'] 的奖品集合
+                    if ($prizelist[$key]['distance'] > $value['distance']) {
+                        $prizeIds[] = $value['prize_id'];
+                    }
+                }
+                $matchprize['prize_id'] = ['not in', $prizeIds];
+
+                $prizelist = Db::name('act_prize')->field('prize_id, shop_id, longitude, latitude, is_distance, distance')->where($matchprize)->order('sort', 'asc')->limit(8)->select();
+            }
+            /* 限制抽奖店铺与赞助商店铺的距离（㎞，如5㎞） e */
+
+            // 随机选择一个奖品
+            if (!empty($prizelist)) {
+                $num_id = array_rand($prizelist, 1);
+                $prize = $prizelist[$num_id];
+            }
 
             $matchprizeaim['prize_id'] = isset($prize['prize_id']) ? $prize['prize_id'] : 7; // prize_id = 7 为积分
             $prizeaim = Db::name('act_prize')->field('prize_id, act_id, prize_name, sort, prize_pic, sponsor, phone, shop_id, address, is_sponsor_address')->where($matchprizeaim)->find();

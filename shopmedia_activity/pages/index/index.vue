@@ -225,6 +225,7 @@
 					},
 					method: 'GET',
 					success: function(res) {
+						// console.log(123, res);
 						if (res.data.status == 0) { //未中奖
 							self.prize_no = true;
 						} else { //中奖
