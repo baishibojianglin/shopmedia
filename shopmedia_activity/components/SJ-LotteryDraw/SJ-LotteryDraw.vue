@@ -29,34 +29,34 @@
 	let grid_info = [
 		{
 			logo: "../../static/SJ-LotteryDraw/prize_1.jpg",
-			text: "洗衣液一袋"
+			text: "奖品1"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/prize_2.png",
-			text: "棉柔巾一卷"
+			logo: "../../static/SJ-LotteryDraw/prize_2.jpg",
+			text: "奖品2"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/prize_3.jpg",
-			text: "洗手液一瓶"
+			text: "奖品3"
 		},
 		{
-			logo: "../../static/SJ-LotteryDraw/prize_4.jpg",
-			text: "抽纸一提"
+			logo: "../../static/SJ-LotteryDraw/prize_4.png",
+			text: "奖品4"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/prize_5.png",
-			text: "透明皂两块"
+			text: "奖品5"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/prize_6.jpg",
-			text: "运动鞋一双"
+			text: "奖品6"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/prize_7.png",
-			text: "10积分"
+			text: "奖品7（积分）"
 		},{
 			logo: "../../static/SJ-LotteryDraw/prize_8.jpg",
-			text: "大米两斤"
+			text: "奖品8"
 		},
 		{
 			logo: "../../static/SJ-LotteryDraw/SJ-LotteryDraw.png",

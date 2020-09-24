@@ -61,12 +61,20 @@
 									限两天到店免费消费
 								</view>
 								<view v-if="prize_info.prize.prize_id == 11" class="uni-text-small">
-									<view>价值1734元逆龄豪华套餐</view>
-									<view>1.价值118元皮肤CT检测+专业分析1次</view>
-									<view>2.价值138元皮肤深层清洁1次</view>
-									<view>3.价值198元专业皮肤分区调理1次</view>
-									<view>4.价值1280元逆龄光面部细胞调理1次</view>
-									<view>2020年12月30日前有效，请提前1天预约。</view>
+									<view>价值866元福利大礼包明细如下:</view>
+									<view>1.专业皮肤CT检测1次</view>
+									<view>2.皮肤深层清洁1次</view>
+									<view>3.皮肤水润分区护理1次(含RF导入)</view>
+									<view>4.眼部温热祛黑眼圈1次</view>
+									<view>5.BIO面部提升1次(含欧式面部提升)</view>
+									<view class="uni-bold" style="color: red;">所有护理项目不含任何隐形消费</view>
+									<view>每人限使用一次</view>
+									<view>有效期截止2020年12月30日</view>
+									<view>为节省您的时间请提前2天预约！</view>
+									<view>详情咨询:15108261963</view>
+								</view>
+								<view v-if="prize_info.prize.prize_id == 12" class="uni-text-small">
+									<view>请提前一天预约</view>
 								</view>
 							</view>
 						</view>

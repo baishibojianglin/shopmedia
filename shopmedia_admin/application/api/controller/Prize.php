@@ -70,6 +70,14 @@ class Prize extends Controller
             }
             /*奢悦 e*/
 
+            /*简际：每天限6名 s*/
+            $prize12Count0 = Db::name('act_raffle')->where(['prize_id' => 12, 'openid' => $param['openid']])->whereTime('raffle_time', 'today')->count();
+            $prize12Count1 = Db::name('act_raffle')->where(['prize_id' => 12])->whereTime('raffle_time', 'today')->count();
+            if($prize12Count0 >= 1 || $prize12Count1 >= 6){
+                $prizeIds[] = 12;
+            }
+            /*简际 e*/
+
 
 
             /* 用户在该店铺和非本行业店铺可参与抽取该奖品，在其他本行业店铺不能抽中该奖品 s */
