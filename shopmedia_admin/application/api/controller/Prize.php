@@ -106,11 +106,13 @@ class Prize extends Controller
             if (isset($shop0) && !empty($shop0) && $shop0['longitude'] && $shop0['latitude']) {
                 foreach ($prizelist as $key => $value) {
                     // 根据两点的经纬度计算距离，此处用于获取指定距离的经纬度集合
-                    $prizelist[$key]['distance'] = round(distance($shop0['latitude'], $shop0['longitude'], $value['latitude'], $value['longitude']), 3);
+                    if ($value['is_distance'] == 1) {
+                        $prizelist[$key]['distance'] = round(distance($shop0['latitude'], $shop0['longitude'], $value['latitude'], $value['longitude']), 3);
 
-                    // 获取指定距离 $value['distance'] 的奖品集合
-                    if ($prizelist[$key]['distance'] > $value['distance']) {
-                        $prizeIds[] = $value['prize_id'];
+                        // 获取指定距离 $value['distance'] 的奖品集合
+                        if ($prizelist[$key]['distance'] > $value['distance']) {
+                            $prizeIds[] = $value['prize_id'];
+                        }
                     }
                 }
                 $matchprize['prize_id'] = ['not in', $prizeIds];
