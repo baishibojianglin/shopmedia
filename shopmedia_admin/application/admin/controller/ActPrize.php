@@ -217,7 +217,7 @@ class ActPrize extends Base
                 }
                 
                 // 将奖品绑定赞助商店铺ID
-                $res[8] = Db::name('act_prize')->where(['prize_id' => $prizeId])->update(['shop_id' => $shopId]);
+                $res[8] = Db::name('act_prize')->where(['prize_id' => $prizeId])->update(['shop_id' => $shopId]) === false ? 0 : true ;
 
                 // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                 if (in_array(0, $res)) {

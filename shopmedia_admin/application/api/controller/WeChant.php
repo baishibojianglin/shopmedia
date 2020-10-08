@@ -469,7 +469,7 @@ class WeChant extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . $accessToken;
         $postArr = array(
             'button' => array(
-                /*array(
+                array(
                     'name' => urlencode('店通传媒'),
                     'sub_button' => array(
                         array(
@@ -477,19 +477,24 @@ class WeChant extends Controller
                             'name' => urlencode('广告投放'),
                             'url' => 'https://media.sustock.net/h5/'
                         ),
-                        array(
+                        /* array(
                             'type' => 'click',
                             'name' => urlencode('广告价格'),
                             'key' => 'ad_price'
-                        ),
+                        ), */
                         array(
                             'type' => 'view',
                             'name' => urlencode('广告案例'),
                             'url' => 'https://media.sustock.net/case/'
                         )
                     )
-                ),*/
-                array(
+                ),
+				array(
+					'type' => 'view',
+					'name' => urlencode('店通商城'),
+					'url' =>'http://shoptest.sustock.net/'
+				),
+                /* array(
                     'type' => 'view',
                     'name' => urlencode('广告投放'),
                     'url' => 'https://media.sustock.net/h5/'
@@ -498,7 +503,7 @@ class WeChant extends Controller
                     'type' => 'view',
                     'name' => urlencode('广告案例'),
                     'url' => 'https://media.sustock.net/case/'
-                ),
+                ), */
                 array(
                     'type' => 'click',
                     'name' => urlencode('联系我们'),
