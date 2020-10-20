@@ -355,7 +355,7 @@ class WeChant extends Controller
         $userInfo = $this->getUserInfo($openid);
 
         // 创建微信用户
-        $this->createWxUser($userInfo);
+        $this->createWxUser($userInfo, $postObj);
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
@@ -469,7 +469,7 @@ class WeChant extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . $accessToken;
         $postArr = array(
             'button' => array(
-                 array(
+                array(
                     'name' => urlencode('店通传媒'),
                     'sub_button' => array(
                         array(
@@ -477,24 +477,24 @@ class WeChant extends Controller
                             'name' => urlencode('广告投放'),
                             'url' => 'https://media.sustock.net/h5/'
                         ),
-                         /* array(
+                        /*array(
                             'type' => 'click',
                             'name' => urlencode('广告价格'),
                             'key' => 'ad_price'
-                        ),  */
+                        ),*/
                         array(
                             'type' => 'view',
                             'name' => urlencode('广告案例'),
                             'url' => 'https://media.sustock.net/case/'
                         )
                     )
-                ), 
+                ),
 				array(
 					'type' => 'view',
 					'name' => urlencode('店通商城'),
 					'url' =>'http://shoptest.sustock.net/'
-				), 
-                /*  array(
+				),
+                /*array(
                     'type' => 'view',
                     'name' => urlencode('广告投放'),
                     'url' => 'https://media.sustock.net/h5/'
@@ -503,7 +503,7 @@ class WeChant extends Controller
                     'type' => 'view',
                     'name' => urlencode('广告案例'),
                     'url' => 'https://media.sustock.net/case/'
-                ),  */
+                ),*/
                 array(
                     'type' => 'click',
                     'name' => urlencode('联系我们'),
@@ -662,8 +662,9 @@ class WeChant extends Controller
     /**
      * 创建微信用户
      * @param $userInfo
+     * @param object $postObj
      */
-    public function createWxUser($userInfo)
+    public function createWxUser($userInfo, $postObj = (object)[])
     {
         // 查询用户是否存在
         $openid = $userInfo['openid'];
@@ -675,6 +676,10 @@ class WeChant extends Controller
             $data['verified'] = 1;
             $data['create_time'] = time();
             $data['create_ip'] = request()->ip();
+
+            // 事件KEY值
+            $eventKey = isset($postObj->EventKey) ? str_replace('qrscene_', '', $postObj->EventKey) : 0;
+            $data['device_id'] = $eventKey; // 绑定开通用户的店铺广告屏 device_id
 
             $res = Db::name('user_oauth')->insertGetId($data);
         }
