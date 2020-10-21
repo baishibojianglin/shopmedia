@@ -13,10 +13,10 @@ use think\Db;
 
 /**
  * 微信公众号开发
- * Class WeChant
+ * Class WeChat
  * @package app\api\controller
  */
-class WeChant extends Controller
+class WeChat extends Controller
 {
     // 微信公众号全局唯一接口调用凭据 access_token
     public $accessToken = '';
@@ -77,7 +77,7 @@ class WeChant extends Controller
         $timestamp = input('timestamp'); //$_GET["timestamp"];
         $nonce = input('nonce'); //$_GET["nonce"];
 
-        $token = config('wechant.token');
+        $token = config('wechat.token');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
 
@@ -100,7 +100,7 @@ class WeChant extends Controller
     {
         //获得参数 signature nonce token timestamp echostr
         $nonce = $_GET['nonce'];
-        $token = config('wechant.token');
+        $token = config('wechat.token');
         $timestamp = $_GET['timestamp'];
         $echostr = $_GET['echostr'];
         $signature = $_GET['signature'];
@@ -414,8 +414,8 @@ class WeChant extends Controller
         // 判断 access_token 缓存是否存在
         if (empty(cache('access_token'))) {
             // 1.请求url地址
-            $appid = config('wechant.app_id');
-            $appsecret = config('wechant.app_secret');
+            $appid = config('wechat.app_id');
+            $appsecret = config('wechat.app_secret');
             $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appid . '&secret=' . $appsecret;
 
             $arr = $this->http_curl($url, 'get', 'json');
