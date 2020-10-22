@@ -355,7 +355,7 @@ class WeChat extends Controller
         $userInfo = $this->getUserInfo($openid);
 
         // 创建微信用户
-        $this->createWxUser($userInfo, $postObj);
+        $this->createWxUser($userInfo);
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
@@ -423,7 +423,7 @@ class WeChat extends Controller
             // 设置 access_token 缓存
             cache('access_token', $arr['access_token'], $arr['expires_in'] / 2); // 其中 expires_in 凭证有效时间为7200秒，这里缓存有效期取3600秒
         }
-        
+
         // 获取 access_token 缓存
         //$this->accessToken = cache('access_token');
         $accessToken = cache('access_token');
@@ -489,21 +489,16 @@ class WeChat extends Controller
                         )
                     )
                 ),
-				array(
-					'type' => 'view',
-					'name' => urlencode('店通商城'),
-					'url' =>'http://shoptest.sustock.net/'
-				),
-                /*array(
-                    'type' => 'view',
-                    'name' => urlencode('广告投放'),
-                    'url' => 'https://media.sustock.net/h5/'
-                ),
                 array(
-                    'type' => 'view',
-                    'name' => urlencode('广告案例'),
-                    'url' => 'https://media.sustock.net/case/'
-                ),*/
+                    'name' => urlencode('店通商城'),
+                    'sub_button' => array(
+                        array(
+                            'type' => 'view',
+                            'name' => urlencode('测试版'),
+                            'url' =>'http://shoptest.sustock.net/'
+                        )
+                    )
+                ),
                 array(
                     'type' => 'click',
                     'name' => urlencode('联系我们'),
@@ -662,9 +657,8 @@ class WeChat extends Controller
     /**
      * 创建微信用户
      * @param $userInfo
-     * @param object $postObj
      */
-    public function createWxUser($userInfo, $postObj = (object)[])
+    public function createWxUser($userInfo)
     {
         // 查询用户是否存在
         $openid = $userInfo['openid'];
@@ -676,10 +670,6 @@ class WeChat extends Controller
             $data['verified'] = 1;
             $data['create_time'] = time();
             $data['create_ip'] = request()->ip();
-
-            // 事件KEY值
-            $eventKey = isset($postObj->EventKey) ? str_replace('qrscene_', '', $postObj->EventKey) : 0;
-            $data['device_id'] = $eventKey; // 绑定开通用户的店铺广告屏 device_id
 
             $res = Db::name('user_oauth')->insertGetId($data);
         }
