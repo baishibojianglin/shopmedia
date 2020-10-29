@@ -355,7 +355,7 @@ class WeChat extends Controller
         $userInfo = $this->getUserInfo($openid);
 
         // 创建微信用户
-        $this->createWxUser($userInfo);
+        $this->createWxUser($userInfo, $postObj);
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
@@ -657,8 +657,9 @@ class WeChat extends Controller
     /**
      * 创建微信用户
      * @param $userInfo
+     *
      */
-    public function createWxUser($userInfo)
+    public function createWxUser($userInfo, $postObj = [])
     {
         // 查询用户是否存在
         $openid = $userInfo['openid'];
@@ -670,6 +671,9 @@ class WeChat extends Controller
             $data['verified'] = 1;
             $data['create_time'] = time();
             $data['create_ip'] = request()->ip();
+
+            $eventKey = isset($postObj->EventKey) ? str_replace('qrscene_', '', $postObj->EventKey) : 0; // 事件KEY值
+            $data['device_id'] = $eventKey; // 广告屏设备id
 
             $res = Db::name('user_oauth')->insertGetId($data);
         }

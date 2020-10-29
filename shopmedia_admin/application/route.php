@@ -183,6 +183,7 @@ Route::resource('api/partner_order', 'api/PartnerOrder');
 Route::get('api/get_shopkeeper', 'api/UserShopkeeper/read'); // 店家信息
 Route::get('api/shopkeeper_shop_list', 'api/UserShopkeeper/shopList'); // 店家店铺列表
 Route::put('api/shopRole', 'api/UserShopkeeper/shopRole');
+Route::post('api/shopkeeper_order_commission', 'api/UserShopkeeperOrderCommission/shopkeeperOrderCommission'); // 商城系统 dt.dilinsat.com 购买商品后广告机安装店家提成
 
 // 店铺
 Route::resource('api/shop', 'api/Shop');
