@@ -39,10 +39,35 @@ class UserShopkeeperOrderCommission extends Controller {
             ->where(['device_id' => $userOauth['device_id']])
             ->find();
 
-        // 店家及其用户提成
+        // 店家及其用户提成入库操作
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
+        try {
+            $res = [];
 
+            // 店家表写入提成
+            $res[0] = Db::name('user_shopkeeper')->where(['id' => $device['shopkeeper_id']])->setInc('money', $data['commission_money']) === false ? 0 : true;
+            $res[1] = Db::name('user_shopkeeper')->where(['id' => $device['shopkeeper_id']])->setInc('income', $data['commission_money']) === false ? 0 : true;
+            // 店家用户表写入提成
+            $res[2] = Db::name('user')->where(['user_id' => $device['user_id']])->setInc('money', $data['commission_money']) === false ? 0 : true;
+            $res[3] = Db::name('user')->where(['user_id' => $device['user_id']])->setInc('income', $data['commission_money']) === false ? 0 : true;
 
-        //return show(config('code.success'), 'ok', [$data, $userOauth, $device]);
-        file_put_contents('./shopkeeperOrderCommission.txt', json_encode([json_encode($data), json_encode($userOauth), json_encode($device)]));
+            // 任意一个表写入失败都会抛出异常
+            if (in_array(0, $res)) {
+                file_put_contents('../runtime/shopkeeper_order_commission.txt', json_encode($res));
+                return show(config('code.error'), '新增失败', $res, 403);
+            }
+
+            // 提交事务
+            Db::commit();
+            file_put_contents('../runtime/shopkeeper_order_commission.txt', json_encode([json_encode($data), json_encode($userOauth), json_encode($device)]));
+            return show(config('code.success'), '新增成功', '', 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            file_put_contents('../runtime/shopkeeper_order_commission.txt', '请求异常' . $e->getMessage());
+            return show(config('code.error'), '请求异常' . $e->getMessage(), '', 500);
+        }
     }
 }
