@@ -490,14 +490,9 @@ class WeChat extends Controller
                     )
                 ),
                 array(
+                    'type' => 'view',
                     'name' => urlencode('店通商城'),
-                    'sub_button' => array(
-                        array(
-                            'type' => 'view',
-                            'name' => urlencode('测试版'),
-                            'url' =>'http://dt.dilinsat.com/'
-                        )
-                    )
+                    'url' =>'http://dt.dilinsat.com/'
                 ),
                 array(
                     'type' => 'click',
