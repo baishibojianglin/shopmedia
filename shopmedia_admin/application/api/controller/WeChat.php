@@ -191,7 +191,7 @@ class WeChat extends Controller
         $userInfo = $this->getUserInfo($openid);
 
         // 创建微信用户
-        $this->createWxUser($userInfo);
+        $this->createWxUser($userInfo, $postObj);
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
@@ -491,7 +491,7 @@ class WeChat extends Controller
                 ),
                 array(
                     'type' => 'view',
-                    'name' => urlencode('店通商城'),
+                    'name' => urlencode('八七兔'),
                     'url' =>'http://dt.dilinsat.com/'
                 ),
                 array(
@@ -652,9 +652,9 @@ class WeChat extends Controller
     /**
      * 创建微信用户
      * @param $userInfo
-     *
+     * @param $postObj
      */
-    public function createWxUser($userInfo, $postObj = [])
+    public function createWxUser($userInfo, $postObj)
     {
         // 查询用户是否存在
         $openid = $userInfo['openid'];
