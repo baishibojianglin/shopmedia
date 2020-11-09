@@ -491,7 +491,7 @@ class WeChat extends Controller
                 ),
                 array(
                     'type' => 'view',
-                    'name' => urlencode('八七兔'),
+                    'name' => urlencode('八七兔商城'),
                     'url' =>'http://dt.dilinsat.com/'
                 ),
                 array(
