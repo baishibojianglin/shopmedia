@@ -1,0 +1,508 @@
+{
+	"pages": [ // pages数组中第一项表示应用启动页
+		{  //登录
+			"path": "pages/login/login",
+			"style": {
+				"app-plus": {"titleNView": false}
+			}
+		},
+		{   //注册
+			"path": "pages/reg/reg",
+			"style": {
+				"app-plus": {
+					"titleNView": true
+				},
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{ // 用户协议
+			"path": "pages/reg/book",
+			"style": {
+				"app-plus": {
+					"titleNView": true
+				},
+				"backgroundColor": "#fff",
+				"navigationBarTitleText": "用户协议"
+			}
+		},
+		{ //忘记密码
+			"path": "pages/pwd/pwd",
+			"style": {
+				"navigationBarTitleText": "找回密码"
+			}
+		},
+		{   //首页
+			"path": "pages/main/main",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "商市通"
+			}
+		},
+		{   //抽奖
+			"path": "pages/prize/index",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "店通福利"
+			}
+		},
+		{ // 申请成为广告屏合作商
+			"path": "pages/user/apply-partner",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "广告屏合作申请"
+			}
+		},
+		{ // 申请成为店家
+			"path": "pages/user/apply-shopkeeper",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "店铺安装合作申请"
+			}
+		},
+		{ // 业务员中心页
+			"path": "pages/saleperson/center",
+			"style": {
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				},
+			"navigationBarTitleText": "我的业务"
+			}
+		},
+		{ // 业务员首页
+			"path": "pages/saleperson/index",
+			"style": {
+				"navigationBarTitleText": "智能屏销售业务",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+			
+		},
+		{ // 上传店铺
+			"path": "pages/saleperson/shop",
+			"style": {
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				},
+				"navigationBarTitleText": "店铺信息"
+			}
+		},
+		{ // 业务员设备详情
+			"path": "pages/saleperson/device",
+			"style": {
+				"navigationBarTitleText": "智能屏详情",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		}, 
+		{  //个人中心
+
+			"path": "pages/user/user",
+			"style": {
+				"app-plus": {"titleNView": true},
+				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{ // 用户（智能广告屏合作商）角色
+			"path": "pages/user-partner/user-partner",
+			"style": {
+				"navigationBarTitleText": "智能广告屏合作",
+				"app-plus": {
+					"titleNView": {
+						// "type": "default",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
+		{ // 用户（店家）角色
+			"path": "pages/user-shopkeeper/user-shopkeeper",
+			"style": {
+				"navigationBarTitleText": "店铺智能屏",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
+	    { // 智能广告屏列表
+            "path" : "pages/device/device",
+            "style" : {
+				"navigationBarTitleText": "智能广告屏合作",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+		{ // 全部广告屏
+		    "path" : "pages/device/device-all-list",
+		    "style" : {
+				"navigationBarTitleText": "店通广告屏",
+				"enablePullDownRefresh": true,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
+        { // 智能广告屏详情
+            "path" : "pages/device/device-detail",
+            "style" : {
+				"navigationBarTitleText": "智能广告屏详情",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+		{
+            "path" : "pages/device/device-detail2",
+            "style" : {
+            	"navigationBarTitleText": "智能广告屏详情",
+            	"app-plus": {
+            		"titleNView": {
+            			"buttons": [{
+            				"type": "menu"
+            			}]
+            		}
+            	}
+            }
+        },
+		{ // 智能广告屏订单合作签约
+            "path" : "pages/partner-order/partner-order",
+            "style" : {
+				"navigationBarTitleText": "广告屏合作签约",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 广告屏合作商合作的广告屏详情页
+            "path" : "pages/partner-device/partner-device-detail",
+            "style" : {
+				"navigationBarTitleText": "合作广告屏详情",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+		{ // 新闻列表
+            "path" : "pages/news/news",
+            "style" : {
+				"navigationBarTitleText": "店通快讯",
+				"enablePullDownRefresh": true,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 新闻详情
+            "path" : "pages/news/news-detail",
+            "style" : {
+				"navigationBarTitleText": "新闻详情",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				},
+				"h5": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 用户反馈
+            "path" : "pages/feedback/feedback",
+            "style" : {
+				"navigationBarTitleText": "意见反馈"
+			}
+        },
+        { // 签署店铺合作协议
+            "path" : "pages/shop/shop-agreement",
+            "style" : {
+				"navigationBarTitleText": "店铺合作签约",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 业务员申请开通业务
+            "path" : "pages/saleperson/apply",
+            "style" : {
+				"navigationBarTitleText": "申请开通业务",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 业务员申请开通业务
+            "path" : "pages/saleperson/signbook",
+            "style" : {
+				"navigationBarTitleText": "广告屏合作协议样本",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 业务员版块店铺合作协议样本
+            "path" : "pages/saleperson/signshop",
+            "style" : {
+				"navigationBarTitleText": "店铺合作协议样本",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 业务员版块店铺推广主页
+            "path" : "pages/saleperson/shopindex",
+            "style" : {
+				"navigationBarTitleText": "开拓店铺业务",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+		{ // 业务员开拓店铺列表
+		    "path" : "pages/saleperson/salesman-shop-list",
+		    "style" : {
+				"navigationBarTitleText": "开拓店铺列表",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
+        { // 广告主业务员主页面
+            "path" : "pages/saleperson/advertiser-salesman",
+            "style" : {
+				"navigationBarTitleText": "广告业务员",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 投放广告：选择投放区域、行业、广告屏等
+            "path" : "pages/ad/findad",
+            "style" : {
+				"navigationBarTitleText": "投放广告",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 覆盖城市
+            "path" : "pages/city/city",
+            "style" : {
+				"navigationBarTitleText": "覆盖城市",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+        { // 服务商家
+            "path" : "pages/shop/shop-list",
+            "style" : {
+				"navigationBarTitleText": "服务商家",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        },
+		{ // 广告案例
+			"path": "pages/case/case",
+		    "style" : {
+				"navigationBarTitleText": "广告案例",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		}
+        ,{ // 广告套餐
+            "path" : "pages/ad-combo/ad-combo",
+            "style" : {
+				"navigationBarTitleText": "广告套餐",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+        ,{ // 广告套餐协议
+            "path" : "pages/ad-combo/ad-combo-agreement",
+            "style" : {
+				"navigationBarTitleText": "广告套餐协议",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+        ,{ // 店家发放的奖品列表
+            "path" : "pages/act-raffle/raffle-prize",
+            "style" : {
+				"navigationBarTitleText": "奖品发放",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+        ,{ // 获取用户获得的奖品列表
+            "path" : "pages/user/user-prize-list",
+            "style" : {
+				"navigationBarTitleText": "我的奖品",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+        }
+    ],
+	"tabBar": {
+		"color": "#808080",
+		"selectedColor": "#409EFF",
+		"backgroundColor": "#fff",
+		"list": [{
+			"pagePath": "pages/main/main",
+			"text": "首页",
+			"iconPath": "static/img/home.png",
+			"selectedIconPath": "static/img/homeHL.png"
+		}, 
+		{
+			"pagePath": "pages/prize/index",
+			"text": "店通福利",
+			"iconPath": "static/img/cj.png",
+			"selectedIconPath": "static/img/cj.png"
+		},
+		{
+			"pagePath": "pages/user/user",
+			"text": "我的",
+			"iconPath": "static/img/user.png",
+			"selectedIconPath": "static/img/userHL.png"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarBackgroundColor": "#409EFF", // #3F44F3
+		"backgroundColor": "#fff",
+		"usingComponents": {
+			"ly-tree-node": "/components/ly-tree/ly-tree-node"
+		}
+	},
+	"condition" : { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "", //模式名称
+				"path": "", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			}
+		]
+	}
+}
