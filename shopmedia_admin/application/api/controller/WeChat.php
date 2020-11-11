@@ -13,10 +13,10 @@ use think\Db;
 
 /**
  * 微信公众号开发
- * Class WeChant
+ * Class WeChat
  * @package app\api\controller
  */
-class WeChant extends Controller
+class WeChat extends Controller
 {
     // 微信公众号全局唯一接口调用凭据 access_token
     public $accessToken = '';
@@ -77,7 +77,7 @@ class WeChant extends Controller
         $timestamp = input('timestamp'); //$_GET["timestamp"];
         $nonce = input('nonce'); //$_GET["nonce"];
 
-        $token = config('wechant.token');
+        $token = config('wechat.token');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
 
@@ -100,7 +100,7 @@ class WeChant extends Controller
     {
         //获得参数 signature nonce token timestamp echostr
         $nonce = $_GET['nonce'];
-        $token = config('wechant.token');
+        $token = config('wechat.token');
         $timestamp = $_GET['timestamp'];
         $echostr = $_GET['echostr'];
         $signature = $_GET['signature'];
@@ -191,7 +191,7 @@ class WeChant extends Controller
         $userInfo = $this->getUserInfo($openid);
 
         // 创建微信用户
-        $this->createWxUser($userInfo);
+        $this->createWxUser($userInfo, $postObj);
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
@@ -355,7 +355,7 @@ class WeChant extends Controller
         $userInfo = $this->getUserInfo($openid);
 
         // 创建微信用户
-        $this->createWxUser($userInfo);
+        $this->createWxUser($userInfo, $postObj);
 
         // 回复用户消息
         //$this->_msgText($postObj, $userInfo); // 回复文本消息
@@ -414,8 +414,8 @@ class WeChant extends Controller
         // 判断 access_token 缓存是否存在
         if (empty(cache('access_token'))) {
             // 1.请求url地址
-            $appid = config('wechant.app_id');
-            $appsecret = config('wechant.app_secret');
+            $appid = config('wechat.app_id');
+            $appsecret = config('wechat.app_secret');
             $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appid . '&secret=' . $appsecret;
 
             $arr = $this->http_curl($url, 'get', 'json');
@@ -423,7 +423,7 @@ class WeChant extends Controller
             // 设置 access_token 缓存
             cache('access_token', $arr['access_token'], $arr['expires_in'] / 2); // 其中 expires_in 凭证有效时间为7200秒，这里缓存有效期取3600秒
         }
-        
+
         // 获取 access_token 缓存
         //$this->accessToken = cache('access_token');
         $accessToken = cache('access_token');
@@ -469,7 +469,7 @@ class WeChant extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . $accessToken;
         $postArr = array(
             'button' => array(
-                 array(
+                array(
                     'name' => urlencode('店通传媒'),
                     'sub_button' => array(
                         array(
@@ -477,33 +477,23 @@ class WeChant extends Controller
                             'name' => urlencode('广告投放'),
                             'url' => 'https://media.sustock.net/h5/'
                         ),
-                         /* array(
+                        /*array(
                             'type' => 'click',
                             'name' => urlencode('广告价格'),
                             'key' => 'ad_price'
-                        ),  */
+                        ),*/
                         array(
                             'type' => 'view',
                             'name' => urlencode('广告案例'),
                             'url' => 'https://media.sustock.net/case/'
                         )
                     )
-                ), 
-				array(
-					'type' => 'view',
-					'name' => urlencode('店通商城'),
-					'url' =>'http://shoptest.sustock.net/'
-				), 
-                /*  array(
-                    'type' => 'view',
-                    'name' => urlencode('广告投放'),
-                    'url' => 'https://media.sustock.net/h5/'
                 ),
                 array(
                     'type' => 'view',
-                    'name' => urlencode('广告案例'),
-                    'url' => 'https://media.sustock.net/case/'
-                ),  */
+                    'name' => urlencode('八七兔商城'),
+                    'url' =>'http://dt.dilinsat.com/'
+                ),
                 array(
                     'type' => 'click',
                     'name' => urlencode('联系我们'),
@@ -662,8 +652,9 @@ class WeChant extends Controller
     /**
      * 创建微信用户
      * @param $userInfo
+     * @param $postObj
      */
-    public function createWxUser($userInfo)
+    public function createWxUser($userInfo, $postObj)
     {
         // 查询用户是否存在
         $openid = $userInfo['openid'];
@@ -675,6 +666,9 @@ class WeChant extends Controller
             $data['verified'] = 1;
             $data['create_time'] = time();
             $data['create_ip'] = request()->ip();
+
+            $eventKey = isset($postObj->EventKey) ? str_replace('qrscene_', '', $postObj->EventKey) : 0; // 事件KEY值
+            $data['device_id'] = $eventKey; // 广告屏设备id
 
             $res = Db::name('user_oauth')->insertGetId($data);
         }
