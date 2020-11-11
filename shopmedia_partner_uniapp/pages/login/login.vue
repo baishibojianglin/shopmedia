@@ -20,6 +20,8 @@
 
 		<view>
 			<button class="login-button bg-main-color" @click="bindLogin()">登 录</button>
+			<button class="login-button bg-second-color" @click="thirdlogin()">三方登录</button>
+			<button class="login-button bg-qgray-color" @click="thirdlogin2()">三方登录2</button>
 		</view>
 
 		<view class="uni-common-mt uni-center">
@@ -122,6 +124,31 @@
 								title: res.data.message
 							});
 						}
+					}
+				})
+			},
+			
+			thirdlogin(){
+				uni.request({
+					url: this.$serverUrl + 'api/thirdlogin',
+					header:{
+						commonheader: this.commonheader
+					},
+					method: 'GET',
+					success: function(res) {
+						console.log(res);
+					}
+				})
+			},
+			thirdlogin2(){
+				uni.request({
+					url: this.$serverUrl + 'api/thirdlogin2',
+					header:{
+						commonheader: this.commonheader
+					},
+					method: 'GET',
+					success: function(res) {
+						console.log(res);
 					}
 				})
 			},
