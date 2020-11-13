@@ -7,6 +7,7 @@ use think\Route;
 // 登录
 Route::post('login', 'admin/Login/login');
 Route::get('code', 'admin/Login/createverifycode');
+Route::put('logout', 'admin/Login/logout');
 
 // 上传、删除图片
 Route::post('upload', 'admin/Upload/uploadimg');
