@@ -131,36 +131,6 @@ class Login extends Common
         }
     }
 
-    /**
-     * 微信授权登录
-     */
-     public function thirdlogin(){
-
-         $third= new ThirdLogin();
-         $data=$third ->GetOpenid();
-
-         return show(1,'测试数据',$data);
-
-//         $openid = $data['openid']; //第三方返回唯一标识
-//         $oauth = $data['oauth']; //来源
-//         if(!$openid || !$oauth)
-//             return array('status'=>-1,'msg'=>'参数有误','result'=>'');
-//         //获取用户信息
-//         if(isset($data['unionid'])){
-//             $map['unionid'] = $data['unionid'];
-//             $user = $this->get_user_info($data['unionid'],4,$oauth);
-//         }else{
-//             $user = $this->get_user_info($openid,3,$oauth);
-//         }
-//         if(!$user){
-//
-//
-//         }else
-//         {
-//
-//         }
-
-     }
 
     /**
      * 获取用户信息
