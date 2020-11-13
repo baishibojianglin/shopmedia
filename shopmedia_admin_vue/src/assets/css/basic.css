@@ -26,9 +26,6 @@ body{margin: 0;padding: 0; font-size:0.95em;overflow: hidden;}
 .main-card{
 	margin: 1rem 1rem 5rem 1rem;
 }
-.box-card {
-    margin: 0rem 0.5rem 1rem 0.5rem;
-}
 
 /* 文字颜色 */
 .text-success {color: #67c23a;}

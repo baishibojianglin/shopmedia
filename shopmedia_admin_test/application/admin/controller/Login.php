@@ -112,4 +112,39 @@ class Login extends Common
         session('code', $result['one'] + $result['two']);
         return json($result);
     }
+
+    /**
+     * 退出登录
+     * 方式1.把token字段值清空，让app再次请求的时候，找不到token，从而登录失败
+     * 方式2.把token失效时间字段token_time值清空或修改，使当前时间大于token失效时间时，登录时间过期，从而登录失败
+     *
+     * @return \think\response\Json
+     * @throws ApiException
+     */
+    public function logout()
+    {
+        // 判断为PUT请求
+        if (request()->isPut()) {
+            // 获取token
+            $token = (new Aes())->adminDecrypt($this->headers['admin-user-token']); // AES解密
+
+            // 清空token或token失效时间
+            $data = [
+                //'token' => '', // token
+                'token_time' => 0, // token失效时间
+            ];
+            try { // 捕获异常
+                $result = model('Admin')->save($data, ['token' => $token]); // 更新
+            } catch (\Exception $e) {
+                throw new ApiException($e->getMessage(), 500, config('code.error'));
+            }
+            if ($result === false) {
+                return show(config('code.error'), '退出登录失败', [], 403);
+            } else {
+                return show(config('code.success'), '退出登录成功', [], 201);
+            }
+        } else {
+            return show(config('code.error'), '请求不合法', [], 400);
+        }
+    }
 }

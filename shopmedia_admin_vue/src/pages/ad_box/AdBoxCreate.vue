@@ -1,6 +1,14 @@
 <template>
 	<div class="create">
 		<el-card class="main-card">
+			<div slot="header" class="clearfix">
+				<el-row :gutter="20" type="flex" justify="space-between">
+					<el-col :span="6"><span>新增广告框</span></el-col>
+					<el-col :span="3">
+						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
+					</el-col>
+				</el-row>
+			</div>
 			<el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="150px">
 
 				<el-form-item label="设备编号" prop="device_sn">
@@ -508,6 +516,13 @@
 			 */
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
+			},
+			
+			/**
+			 * 返回上一页
+			 */
+			back(){
+				this.$router.go(-1);
 			}
 		}
 	}

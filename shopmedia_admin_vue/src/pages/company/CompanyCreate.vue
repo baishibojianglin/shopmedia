@@ -1,6 +1,6 @@
 <template>
 	<div class="create">
-		<el-card class="box-card">
+		<el-card class="main-card">
 			<el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="150px">
 
 				<el-form-item label="分公司名称" prop="company_name">
