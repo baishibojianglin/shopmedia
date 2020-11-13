@@ -21,10 +21,6 @@ import Region from '@/pages/region/Region.vue'
 import RegionCity from '@/pages/region/RegionCity.vue'
 import RegionCounty from '@/pages/region/RegionCounty.vue'
 import RegionTown from '@/pages/region/RegionTown.vue'
-// 设备管理
-import Device from '@/pages/device/Device.vue'
-import AddDevice from '@/pages/device/AddDevice.vue'
-import EditDevice from '@/pages/device/EditDevice.vue'
 // 分公司管理
 import Company from '@/pages/company/Company.vue'
 import CompanyCreate from '@/pages/company/CompanyCreate.vue'
@@ -53,6 +49,13 @@ import UserAdvertiserEdit from '@/pages/user_advertiser/UserAdvertiserEdit.vue'
 // 店铺
 import Shop from '@/pages/shop/Shop.vue'
 import ShopEdit from '@/pages/shop/ShopEdit.vue'
+// 广告屏设备管理
+import Device from '@/pages/device/Device.vue'
+import AddDevice from '@/pages/device/AddDevice.vue'
+import EditDevice from '@/pages/device/EditDevice.vue'
+// 广告框管理
+import AdBox from '@/pages/ad_box/AdBox.vue'
+import AdBoxCreate from '@/pages/ad_box/AdBoxCreate.vue'
 // 广告管理
 import Ad from '@/pages/ad/Ad.vue'
 import AdCreate from '@/pages/ad/AdCreate.vue'
@@ -122,10 +125,6 @@ const routes = [
 			{path: 'regioncity', name: 'regioncity', component: RegionCity}, // 市级区域
 			{path: 'regioncounty', name: 'regioncounty', component: RegionCounty}, // 区县级区域
 			{path: 'regiontown', name: 'regiontown', component: RegionTown}, // 乡镇街道级区域
-			// 2--设备管理
-			{path: 'device', name: 'device', component: Device}, //设备列表
-			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加设备
-			{path: 'editdevice',name: 'editdevice',component:EditDevice}, //添加设备
 			// 2--分公司管理
 			{path: 'company',name: 'company',component:Company}, //分公司列表
 			{path: 'companycreate',name: 'companycreate',component:CompanyCreate}, //创建供应商
@@ -142,8 +141,8 @@ const routes = [
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_create', name: 'user_partner_create', component: UserPartnerCreate}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
-			{path: 'partner_device', name: 'partner_device', component: PartnerDevice}, // 用户合作的设备
-			{path: 'partner_device_edit', name: 'partner_device_edit', component: PartnerDeviceEdit}, // 编辑用户合作的设备
+			{path: 'partner_device', name: 'partner_device', component: PartnerDevice}, // 用户合作的广告屏设备
+			{path: 'partner_device_edit', name: 'partner_device_edit', component: PartnerDeviceEdit}, // 编辑用户合作的广告屏设备
 			// 2--用户（店家）管理
 			{path: 'user_shopkeeper', name: 'user_shopkeeper', component: UserShopkeeper}, // 用户列表
 			{path: 'user_shopkeeper_edit', name: 'user_shopkeeper_edit', component: UserShopkeeperEdit}, // 编辑用户
@@ -153,6 +152,13 @@ const routes = [
 			// 2--用户（广告主）管理
 			{path: 'user_advertiser', name: 'user_advertiser', component: UserAdvertiser}, // 用户列表
 			{path: 'user_advertiser_edit', name: 'user_advertiser_edit', component: UserAdvertiserEdit}, // 编辑用户
+			// 2--广告屏设备管理
+			{path: 'device', name: 'device', component: Device}, //广告屏设备列表
+			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加广告屏设备
+			{path: 'editdevice',name: 'editdevice',component:EditDevice}, //添加广告屏设备
+			// 2--广告框管理
+			{path: 'ad_box', name: 'ad_box', component: AdBox}, // 广告框列表
+			{path: 'ad_box_create', name: 'ad_box_create', component: AdBoxCreate},
 			// 2--广告管理
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告

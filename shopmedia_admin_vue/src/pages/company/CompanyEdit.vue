@@ -1,6 +1,6 @@
 <template>
 	<div class="create">
-		<el-card class="box-card">
+		<el-card class="main-card">
 
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">

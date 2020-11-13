@@ -7,6 +7,7 @@ use think\Route;
 // 登录
 Route::post('login', 'admin/Login/login');
 Route::get('code', 'admin/Login/createverifycode');
+Route::put('logout', 'admin/Login/logout');
 
 // 上传、删除图片
 Route::post('upload', 'admin/Upload/uploadimg');
@@ -64,6 +65,9 @@ Route::get('get_device_size', 'admin/Device/getDeviceSize');
 Route::get('get_device_status', 'admin/Device/getDeviceStatus');
 Route::get('get_device_level', 'admin/Device/getDeviceLevel');
 Route::get('get_device_shop', 'admin/Device/getDeviceShop');
+
+// 广告框管理
+Route::resource('ad_box', 'admin/AdBox');
 
 // 广告
 Route::resource('ad', 'admin/Ad');
