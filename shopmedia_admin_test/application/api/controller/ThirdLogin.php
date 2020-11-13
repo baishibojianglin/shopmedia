@@ -3,6 +3,9 @@
 
 namespace app\api\controller;
 
+use app\common\lib\Aes;
+use app\common\lib\exception\ApiException;
+use app\common\lib\IAuth;
 use think\Controller;
 use think\Db;
 
@@ -16,39 +19,168 @@ use think\Db;
 class ThirdLogin extends Controller
 {
 
+    //第三方登录
     public function thirdlogin(){
+        //授权获取信息
         $data = $this->GetOpenid();
-        return show(1,'测试数据',$data);
+        return show(config('code.success'), 'OK', $this->createUser($data));
+    }
+
+    /**
+     * 创建微信用户
+     * @param $userInfo
+     * @param $postObj
+     */
+    public function createUser($userInfo)
+    {
+        // 查询用户是否存在
+        $openid = $userInfo['openid'];
+        $oauth = $userInfo['oauth'];
+
+        $user = Db::name('user')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+        $useroauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+
+        //开启事务
+        Db::startTrans();
+        try {
+            $res = [];
+            $userid = '';
+            $token = IAuth::setAppLoginToken($openid);
+
+            // 用户不存在，则创建用户
+            if (empty($user)) {
+
+                $data = [
+                    'user_name' => $userInfo['nickname'],
+                    'role_ids' => 7,
+                    'openid' => $openid,
+                    'oauth' => $oauth,
+                    'token' => $token,
+                    'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+                    'avatar' => $userInfo['head_pic'],
+                    'gender' => $userInfo['sex'],
+                    'status' => 1,
+                    'create_time' =>time(),
+                    'create_ip' =>request()->ip(),
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip() // 登录IP
+                ];
+
+                $userid = Db::name('user')->insertGetId($data);     //新增用户
+                $res['1'] = $userid;
+
+                //新增advertiser
+                if($userid > 0){
+
+                    $advdata = [
+                        'user_id' => $userid,
+                        'salesman_id' => 0,
+                        'role_id' => 7,
+                        'status' => 1,
+                        'create_time' => time()
+                    ];
+
+                    $advid = Db::name('user_advertiser')->insertGetId($advdata);
+                    $res['2'] = $advid;
+                }
+
+            }
+            else{
+                //用户存在，修改登录信息
+                $data = [
+                    'token' => $token, // token
+                    'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip() // 登录IP
+                ];
+
+                $loginres = Db::name('user')->where('user_id',$user['user_id'])->update($data);
+                $res['3'] = $loginres === false ? 0 : true;
+            }
+
+            //判断user_oauth
+            if(empty($useroauth)){
+
+                $oauthdata = [
+                    'user_id' => $userid,
+                    'oauth' => $oauth,
+                    'openid' => $openid,
+                    'verified' => 1,
+                    'create_time' =>time(),
+                    'create_ip' =>request()->ip(),
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip(), // 登录IP
+                    'device_id' => 0 // 广告屏设备id
+                ];
+
+                $oauthid = Db::name('user_oauth')->insertGetId($oauthdata);     //新增user_oauth
+                $res['4'] = $oauthid;
+
+            }
+            else{
+                //oauth存在，修改登录信息
+                $data = [
+                    'user_id' => $user['user_id'],
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip() // 登录IP
+                ];
+
+                $oauthres = Db::name('user_oauth')->where('oauth_id',$useroauth['oauth_id'])->update($data);
+                $res['5'] = $oauthres === false ? 0 : true;
+            }
+
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return '用户登录失败';
+            }
+
+            // 提交事务
+            Db::commit();
+
+            $user1 = Db::name('user')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+
+            // 返回token给客户端
+            $result = [
+                'token' => (new Aes())->encrypt($token . '&' . $user1['user_id']), // AES加密（自定义拼接字符串）
+                'user_id' => $user1['user_id'],
+                'user_name' => $user1['user_name'],
+                'phone' => !empty($user1['phone']) ? $user1['phone'] : ''
+            ];
+            return $result;
+
+        }catch (\Exception $e){
+            // 回滚事务
+            Db::rollback();
+            return $e->getMessage();
+        }
     }
 
     //微信授权获取openid以及微信用户信息
     public function GetOpenid()
     {
-        //通过code获得openid
-        if (!isset($_GET['code'])){
-            //触发微信返回code码
-            //$baseUrl = urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
-            $baseUrl = urlencode($this->get_url());
+//        //通过code获得openid
+//        if (!isset($_GET['code'])){
+//            //触发微信返回code码
+//            //$baseUrl = urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
+//            $baseUrl = urlencode($this->get_url());
 //            $url = $this->__CreateOauthUrlForCode($baseUrl); // 获取 code地址
-            $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" .config('wechat.app_id'). "&redirect_uri=" .$baseUrl. "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-            Header("Location: $url"); // 跳转到微信授权页面 需要用户确认登录的页面
-            exit();
-        } else {
+//            Header("Location: $url"); // 跳转到微信授权页面 需要用户确认登录的页面
+//            exit();
+//        } else {
             //上面获取到code后这里跳转回来
-            $code = $_GET['code'];
+            $code = input('param.code');
             $data = $this->getOpenidFromMp($code);//获取网页授权access_token和用户openid
             $data2 = $this->GetUserInfo($data['access_token'],$data['openid']);//获取微信用户信息
             $data['nickname'] = empty($data2['nickname']) ? '微信用户' : trim($data2['nickname']);
             $data['sex'] = $data2['sex'];
             $data['head_pic'] = $data2['headimgurl'];
-            $data['subscribe'] = $data2['subscribe'];
             $_SESSION['openid'] = $data['openid'];
             $data['oauth'] = 'wx';
             if(isset($data2['unionid'])){
                 $data['unionid'] = $data2['unionid'];
             }
             return $data;
-        }
+//        }
     }
 
     /**

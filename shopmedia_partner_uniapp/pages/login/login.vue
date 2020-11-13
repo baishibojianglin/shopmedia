@@ -14,35 +14,37 @@
 			</view>
 			<view class="input-line-height">
 				<text class="input-line-height-1">密码</text>
-				<input class="input-line-height-2" type="password"  v-model="password" placeholder="请输入密码" />
+				<input class="input-line-height-2" type="password" v-model="password" placeholder="请输入密码" />
 			</view>
 		</view>
 
 		<view>
 			<button class="login-button bg-main-color" @click="bindLogin()">登 录</button>
-			<button class="login-button bg-second-color" @click="thirdlogin()">三方登录</button>
-			<button class="login-button bg-qgray-color" @click="thirdlogin2()">三方登录2</button>
 		</view>
 
 		<view class="uni-common-mt uni-center">
 			<checkbox-group>
-				<label><checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住账号和密码</label>
+				<label>
+					<checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住账号和密码</label>
 			</checkbox-group>
 		</view>
 
-        <view class="bottom">
+		<view class="bottom">
 			<view class="bottom-con">
 				<navigator url="../reg/reg">注册账号</navigator>
 				<text class="bottom-con-1">|</text>
 				<navigator url="../pwd/pwd">忘记密码</navigator>
 			</view>
 		</view>
- 
+
 	</view>
 </template>
 
 <script>
-	import {mapState, mapMutations} from 'vuex';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
 
 	export default {
 		components: {},
@@ -54,11 +56,12 @@
 				rememberPsw: true // 记住账号密码
 			}
 		},
-		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
-		onLoad(){
+		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo', 'commonheader']),
+		onLoad() {
 			this.getRememberPassword();
 		},
 		methods: {
+
 			/**
 			 * 映射vuex的login方法
 			 */
@@ -67,7 +70,7 @@
 			/**
 			 * 登录
 			 */
-			bindLogin(){
+			bindLogin() {
 				let self = this;
 				//验证电话
 				if (this.phone == '') {
@@ -85,10 +88,10 @@
 					return false;
 				}
 				// 密码
-				if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {   
+				if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {
 					uni.showToast({
 						icon: 'none',
-						duration:2500,
+						duration: 2500,
 						title: '由6-20位数字或字母组成'
 					});
 					return false;
@@ -100,20 +103,20 @@
 						phone: this.phone,
 						password: this.password
 					},
-					header:{
+					header: {
 						commonheader: this.commonheader
 					},
 					method: 'PUT',
 					success: function(res) {
 						if (res.data.status == 1) {
 							let userInfo = res.data.data;
-							
+
 							// 使用vuex管理登录状态时开启
 							self.login(userInfo);
-							
+
 							// 记住账号密码
 							self.rememberPassword();
-							
+
 							//跳转到首页
 							uni.reLaunch({
 								url: '../main/main',
@@ -127,36 +130,11 @@
 					}
 				})
 			},
-			
-			thirdlogin(){
-				uni.request({
-					url: this.$serverUrl + 'api/thirdlogin',
-					header:{
-						commonheader: this.commonheader
-					},
-					method: 'GET',
-					success: function(res) {
-						console.log(res);
-					}
-				})
-			},
-			thirdlogin2(){
-				uni.request({
-					url: this.$serverUrl + 'api/thirdlogin2',
-					header:{
-						commonheader: this.commonheader
-					},
-					method: 'GET',
-					success: function(res) {
-						console.log(res);
-					}
-				})
-			},
-			
+
 			/**
 			 * 登录成功将用户名密码存储到用户本地
 			 */
-			rememberPassword(){
+			rememberPassword() {
 				if (this.rememberPsw) { // 用户勾选“记住账号密码”
 					uni.setStorageSync('phone', this.phone);
 					uni.setStorageSync('password', this.password);
@@ -167,7 +145,7 @@
 					this.password = '';
 				}
 			},
-			
+
 			/**
 			 * 页面加载完成，获取本地存储的用户名及密码
 			 */
@@ -191,51 +169,60 @@
 		margin-top: 50px;
 		text-align: center;
 	}
-	.logotext{
+
+	.logotext {
 		font-size: 24px;
 		margin-bottom: 20px;
 	}
+
 	.logo {
 		height: 120px;
 		width: 120px;
 		border-radius: 20px;
 	}
-	.input-line-height{
+
+	.input-line-height {
 		display: flex;
-		align-items:center;
+		align-items: center;
 		line-height: 50px;
-		border-bottom:1px solid #ECECEC; 
-		font-size:16px;
+		border-bottom: 1px solid #ECECEC;
+		font-size: 16px;
 		position: relative;
 	}
-	.input-line-height-1{
-        position: absolute;
+
+	.input-line-height-1 {
+		position: absolute;
 		left: 5px;
-		padding:15px 0 10px 0;
+		padding: 15px 0 10px 0;
 	}
-	.input-line-height-2{
-		flex:1;
+
+	.input-line-height-2 {
+		flex: 1;
 		font-size: 16px;
 		text-align: center;
-        padding: 15px 0 10px 0;
+		padding: 15px 0 10px 0;
 	}
-	.login-button{
-		color:#fff;
+
+	.login-button {
+		color: #fff;
 		margin-top: 20px;
 	}
-	.bottom-con{
+
+	.bottom-con {
 		display: flex;
 		flex-direction: row;
-		justify-content:center;
+		justify-content: center;
 		font-size: 14px;
 	}
-	.bottom-con-1{
+
+	.bottom-con-1 {
 		padding: 0 8px;
 	}
-    .bottom{
+
+	.bottom {
 		position: fixed;
 		bottom: 40px;
-		left:0;
-		right:0;
+		left: 0;
+		right: 0;
 	}
 </style>
