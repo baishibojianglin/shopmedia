@@ -53,9 +53,6 @@ import ShopEdit from '@/pages/shop/ShopEdit.vue'
 import Device from '@/pages/device/Device.vue'
 import AddDevice from '@/pages/device/AddDevice.vue'
 import EditDevice from '@/pages/device/EditDevice.vue'
-// 广告框管理
-import AdBox from '@/pages/ad_box/AdBox.vue'
-import AdBoxCreate from '@/pages/ad_box/AdBoxCreate.vue'
 // 广告管理
 import Ad from '@/pages/ad/Ad.vue'
 import AdCreate from '@/pages/ad/AdCreate.vue'
@@ -156,9 +153,6 @@ const routes = [
 			{path: 'device', name: 'device', component: Device}, //广告屏设备列表
 			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加广告屏设备
 			{path: 'editdevice',name: 'editdevice',component:EditDevice}, //添加广告屏设备
-			// 2--广告框管理
-			{path: 'ad_box', name: 'ad_box', component: AdBox}, // 广告框列表
-			{path: 'ad_box_create', name: 'ad_box_create', component: AdBoxCreate},
 			// 2--广告管理
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告

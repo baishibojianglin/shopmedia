@@ -48,15 +48,6 @@
 								</div>
 							</el-collapse-transition>
 							
-							<dt @click="menush(11)">
-								<span class="el-icon-mobile" id="menu11"> 广告框管理</span>
-								<span class="fr derection" :class="menuvalue[11]?derectionup:derectiondown"></span>
-							</dt>
-							<el-collapse-transition>
-								<div v-show="menuvalue[11]">
-									<router-link to="/home/ad_box"><dd id='menu111' :class="activevalue[111]?activeclass:''"  @click="menuactive(111,11,1)">广告框列表</dd></router-link>
-								</div>
-							</el-collapse-transition>
 							
 							<dt @click="menush(6)">
 								<span class="el-icon-s-flag" id="menu6"> 广告管理</span>
@@ -250,8 +241,8 @@
 				let self = this;
 				this.$axios.put(this.$url + 'logout/' + this.adminUser.id, {
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+						'admin-user-id': this.adminUser.id,
+						'admin-user-token': this.adminUser.token
 					}
 				})
 				.then(function(res) {
@@ -328,8 +319,8 @@
 				this.$axios.get(this.$url + 'auth_rule_menus', {
 					// headers请求头，不能注释掉，否则会出错
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+						'admin-user-id': this.adminUser.id,
+						'admin-user-token': this.adminUser.token
 					}
 				})
 				.then(function(res) {
