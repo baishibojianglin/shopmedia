@@ -3,14 +3,19 @@
 		<el-card class="main-card">
 			<div slot="header" class="clearfix">
 				<el-row :gutter="20" type="flex" justify="space-between">
-					<el-col :span="6"><span>广告屏列表</span></el-col>
+					<el-col :span="6"><span>广告设备列表</span></el-col>
 				</el-row>
 				<el-row :gutter="20" type="flex" justify="space-between" style="margin-top: 1rem;">
 					<el-col :span="18">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
-								<el-select v-model="formInline.status" clearable placeholder="状态">
+								<el-select v-model="formInline.device_cate" clearable placeholder="设备类别">
+									<el-option v-for="(item, index) in {1: '广告屏', 2: '广告框'}" :label="item" :value="Number(index)"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="">
+								<el-select v-model="formInline.status" clearable placeholder="设备状态">
 									<el-option v-for="(item, index) in {0: '下线', 1: '正常', 2: '故障'}" :label="item" :value="Number(index)"></el-option>
 								</el-select>
 							</el-form-item>
@@ -27,18 +32,19 @@
 					</el-col>
 					<el-col :span="6">
 						<!-- 新增 s -->
-						<router-link to="adddevice"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告屏</el-button></router-link>
+						<router-link to="adddevice"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告设备</el-button></router-link>
 						<!-- 新增 e -->
 					</el-col>
 				</el-row>
 			</div>
 			<div class="">
-				<!-- 广告屏列表 s -->
+				<!-- 广告设备列表 s -->
 				<el-table :data="deviceList" empty-text="数据加载中…" border style="width: 100%">
 					<el-table-column prop="device_id" label="序号" fixed width="70"></el-table-column>
 					<el-table-column prop="device_sn" label="设备编号" width="120"></el-table-column>
+					<el-table-column prop="device_cate_name" label="设备类别" width="80"></el-table-column>
 					<el-table-column prop="shop_name" label="店铺名称" width="120"></el-table-column>
-					<el-table-column prop="shop_id" label="店铺编号" width="90"></el-table-column>
+					<el-table-column prop="shop_id" label="店铺序号" width="90"></el-table-column>
 					<el-table-column prop="brand_msg" label="品牌" min-width="100"></el-table-column>
 					<el-table-column prop="model_msg" label="型号" width="100"></el-table-column>
 					<el-table-column prop="size_msg" label="尺寸/寸" width="80"></el-table-column>
@@ -58,7 +64,7 @@
  -->						</template>
 					</el-table-column>
 				</el-table>
-				<!-- 广告屏列表 e -->
+				<!-- 广告设备列表 e -->
 				
 				<!-- 分页 s -->
 				<div>
@@ -84,25 +90,27 @@
 		data() {
 			return {
 				formInline: {
+					device_cate: '', // 广告设备类别
 					status: '', // 状态
 					device_sn: '', // 设备编号
 					shop_name: '', // 店铺名称
 				},
-				deviceList: [], // 广告屏列表
+				deviceList: [], // 广告设备列表
 				listPagination: {}, // 列表分页参数
 			}
 		},
 		mounted() {
-			this.getDeviceList(); // 获取广告屏列表
+			this.getDeviceList(); // 获取广告设备列表
 		},
 		methods: {
 			/**
-			 * 获取广告屏列表
+			 * 获取广告设备列表
 			 */
 			getDeviceList() {
 				let self = this;
 				this.$axios.get(this.$url + 'device', {
 					params: {
+						device_cate: this.formInline.device_cate,
 						status: this.formInline.status,
 						device_sn: this.formInline.device_sn,
 						shop_name: this.formInline.shop_name,
@@ -112,7 +120,7 @@
 				})
 				.then(function(res) {
 					if (res.data.status == 1) {
-						// 广告屏列表分页参数
+						// 广告设备列表分页参数
 						self.listPagination = res.data.data;
 						// 当数据为空时
 						if (self.listPagination.total == 0) {
@@ -123,7 +131,7 @@
 							return;
 						}
 						
-						// 广告屏列表
+						// 广告设备列表
 						self.deviceList = self.listPagination.data;
 					} else {
 						self.$message({
@@ -159,7 +167,7 @@
 			},
 			
 			/**
-			 * 筛选广告屏状态
+			 * 筛选广告设备状态
 			 * @param {Object} value
 			 * @param {Object} row
 			 */
@@ -168,18 +176,18 @@
 			},
 			
 			/**
-			 * 跳转广告屏编辑页
+			 * 跳转广告设备编辑页
 			 * @param {Object} row
 			 */
 			toDeviceEdit(row) {
 				this.$router.push({path: "editdevice", query: {device_id: row.device_id,city_id:row.city_id,area_id:row.area_id}});
 			},
 			/**
-			 * 删除广告屏
+			 * 删除广告设备
 			 * @param {Object} scope
 			 */
 			deleteDevice(scope) {
-				this.$confirm('此操作将永久删除该广告屏, 是否继续?', '删除', {
+				this.$confirm('此操作将永久删除该广告设备, 是否继续?', '删除', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'

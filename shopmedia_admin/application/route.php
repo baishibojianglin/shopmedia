@@ -7,6 +7,7 @@ use think\Route;
 // 登录
 Route::post('login', 'admin/Login/login');
 Route::get('code', 'admin/Login/createverifycode');
+Route::put('logout', 'admin/Login/logout');
 
 // 上传、删除图片
 Route::post('upload', 'admin/Upload/uploadimg');
@@ -116,6 +117,7 @@ Route::resource('feedback', 'admin/Feedback');
 /* -------------------- 客户端路由 -------------------- s */
 
 // 登录与注册
+Route::post('api/thirdlogin', 'api/ThirdLogin/thirdlogin'); // 第三方登录
 Route::put('api/login', 'api/Login/login'); // 登录
 Route::post('api/register', 'api/Login/register'); // 注册
 Route::put('api/pwd', 'api/Login/pwd'); // 找回密码

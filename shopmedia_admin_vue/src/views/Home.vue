@@ -4,9 +4,20 @@
 			
 			<el-col :span="24" class="homeheader color-white"> <!--header s-->
 				<el-col :span="5">
-				   <div class="hometitle" v-if="name">{{name}}</div>
-				   <div class="hometitle" v-else>店通传媒总平台</div>
+				   <div class="hometitle">店通传媒管理系统</div>
 				</el-col>
+				
+				<el-header style="text-align: right; font-size: 12px">
+					<span>{{adminUser.company_name}}</span>
+					<el-dropdown>
+						<i class="el-icon-setting" style="margin-left: 15px"></i>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item>
+								<el-button type="text" size="mini" @click="logout()">退出</el-button>
+							</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+				</el-header>
 			</el-col> <!--header e-->
 
 			<el-col :span="24"> <!--content s-->
@@ -185,7 +196,7 @@
 		name: 'home',
 		data(){
 			return {
-				name:'', //供应商名字
+				adminUser:'', //管理员信息
 				menuvalue:[], //菜单层级
 				derectiondown:'el-icon-arrow-down', //一级菜单向上箭头
 				derectionup:'el-icon-arrow-up', //一级菜单向下箭头
@@ -206,9 +217,8 @@
 			])
 		},
 		mounted(){
-			// 获取供应商名称
-			let account=JSON.parse(localStorage.getItem("admin_user"));
-			this.name=account['company_name'];
+			// 获取管理员信息
+			this.adminUser = JSON.parse(localStorage.getItem('admin_user'));
 			
 			// 控制窗口高度
 			wincontrol.wincontrol();
@@ -223,7 +233,34 @@
 			...mapMutations([
 				'menutitle', //存储菜单标题
 			]),
-			  
+			
+			/**
+			 * 退出登录
+			 */
+			logout(){
+				let self = this;
+				this.$axios.put(this.$url + 'logout/' + this.adminUser.id, {
+					headers: {
+						'admin-user-id': this.adminUser.id,
+						'admin-user-token': this.adminUser.token
+					}
+				})
+				.then(function(res) {
+					let type = res.data.status == 1 ? 'success' : 'warning';
+					self.$message({
+						message: res.data.message,
+						type: type
+					});
+					self.$router.push({ name: 'login', params: {}}); // 返回登录页
+				})
+				.catch(function (error) {
+					self.$message({
+						message: error.response.data.message,
+						type: 'warning'
+					});
+				});
+			},
+			
 			/**
 			 * menu折叠效果
 			 * @param {int} val 一级菜单索引
@@ -282,8 +319,8 @@
 				this.$axios.get(this.$url + 'auth_rule_menus', {
 					// headers请求头，不能注释掉，否则会出错
 					headers: {
-						'admin-user-id': JSON.parse(localStorage.getItem('admin_user')).id,
-						'admin-user-token': JSON.parse(localStorage.getItem('admin_user')).token
+						'admin-user-id': this.adminUser.id,
+						'admin-user-token': this.adminUser.token
 					}
 				})
 				.then(function(res) {
@@ -316,7 +353,7 @@
 		background-color:#003366;
 	}
 	.hometitle{
-		line-height: 50px;
+		line-height: 60px;
 		text-indent: 10px;
 	}
 	.homemenu{
@@ -351,5 +388,11 @@
 		background-color: #FBFCFC;
 		padding: 0 10px;
 		font-size: 1em;
+	}
+	
+	.el-header {
+		background-color: #B3C0D1;
+		color: #333;
+		line-height: 60px;
 	}
 </style>

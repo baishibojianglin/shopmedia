@@ -13,7 +13,7 @@
 							<!-- <view class="text" @click="goUserInfo()"><text class="uni-icon uni-icon-compose"></text></view> -->
 						</view>
 						<view class="uni-flex uni-row">
-							<view class="text">账号：{{userData.phone}}</view>
+							<view class="text">账号：{{userData.user_name}}</view>
 						</view>
 						<view class="uni-flex uni-row">
 							<view class="text">注册：{{userData.create_time}}</view>
