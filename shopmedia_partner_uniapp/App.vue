@@ -9,20 +9,26 @@
 		onLaunch: function(event){
 			let self = this;
 			
-			const base_url = 'http://media.dilinsat.com/h5/'; // 前端域名
-			const wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx59483b145b8ede88&redirect_uri=' + base_url +
-					'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'; //请求微信code
-			// 获取URL 上code
-			const code = this.getUrlParam('code');
-			// 判断是否存在code
-			if (code == null || code == '') {
-				// 重新获取code
-				// console.log(code)
-				window.location.href = wx_url
-			} else {
-				// 发送code           
-				this.postCode(code)
+			// #ifdef H5
+			/* 微信网页授权登录 s */
+			let ua = window.navigator.userAgent.toLowerCase()
+			if (ua.match(/MicroMessenger/i) == 'micromessenger') { // uniapp判断是否微信浏览器
+				const base_url = 'http://media.dilinsat.com/h5/'; // 前端域名
+				const wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx59483b145b8ede88&redirect_uri=' + base_url + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'; // 请求微信code
+				// 获取URL 上code
+				const code = this.getUrlParam('code');
+				// 判断是否存在code
+				if (code == null || code == '') {
+					// 重新获取code
+					// console.log(code)
+					window.location.href = wx_url
+				} else {
+					// 发送code           
+					this.postCode(code)
+				}
 			}
+			/* 微信网页授权登录 e */
+			// #endif H5
 			
 			// 获取用户登录信息缓存（异步）
 			uni.getStorage({
