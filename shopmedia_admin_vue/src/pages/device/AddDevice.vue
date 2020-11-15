@@ -3,6 +3,13 @@
 		<el-card class="main-card">
 			<el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="150px">
 
+				<el-form-item label="设备类别" prop="device_cate">
+					<el-select v-model="ruleForm.device_cate" clearable placeholder="请选择">
+						<el-option v-for="item in device_cate" :key="item.value" :label="item.label" :value="item.value">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
 				<el-form-item label="设备编号" prop="device_sn">
 					<el-input style="width:217px;" clearable v-model="ruleForm.device_sn"></el-input>
 				</el-form-item>
@@ -123,6 +130,13 @@
 					value: '',
 					label: ''
 				}],
+				device_cate: [{
+					value: 1,
+					label: '广告屏'
+				}, {
+					value: 2,
+					label: '广告框'
+				}],
 				brand_options: [{
 					value: '',
 					label: ''
@@ -140,6 +154,7 @@
 					label: ''
 				}, ],
 				ruleForm: {
+					device_cate: '', //设备类别
 					device_sn: '', //设备编号
 					brand: '', //设备品牌
 					model: '', //设备型号
@@ -159,6 +174,11 @@
 					url_image: '', //图片
 				},
 				rules: {
+					device_cate: [{
+						required: true,
+						message: '请选择设备类别',
+						trigger: 'blur'
+					}],
 					device_sn: [{
 						required: true,
 						message: '请输入设备编号'

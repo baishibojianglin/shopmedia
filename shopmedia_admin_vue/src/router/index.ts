@@ -33,11 +33,11 @@ import UserSalesman from '@/pages/user_salesman/UserSalesman.vue'
 import UserSalesmanCreate from '@/pages/user_salesman/UserSalesmanCreate.vue'
 import UserSalesmanEdit from '@/pages/user_salesman/UserSalesmanEdit.vue'
 import SonSalesman from '@/pages/user_salesman/SonSalesman.vue'
-// 用户（广告屏合作商）管理
+// 用户（广告设备合作商）管理
 import UserPartner from '@/pages/user_partner/UserPartner.vue'
 import UserPartnerCreate from '@/pages/user_partner/UserPartnerCreate.vue'
 import UserPartnerEdit from '@/pages/user_partner/UserPartnerEdit.vue'
-// 用户（广告屏合作商）合作的广告屏
+// 用户（广告设备合作商）合作的广告设备
 import PartnerDevice from '@/pages/partner_device/PartnerDevice.vue'
 import PartnerDeviceEdit from '@/pages/partner_device/PartnerDeviceEdit.vue'
 // 用户（店家）管理
@@ -49,7 +49,7 @@ import UserAdvertiserEdit from '@/pages/user_advertiser/UserAdvertiserEdit.vue'
 // 店铺
 import Shop from '@/pages/shop/Shop.vue'
 import ShopEdit from '@/pages/shop/ShopEdit.vue'
-// 广告屏设备管理
+// 广告设备管理
 import Device from '@/pages/device/Device.vue'
 import AddDevice from '@/pages/device/AddDevice.vue'
 import EditDevice from '@/pages/device/EditDevice.vue'
@@ -65,7 +65,7 @@ import AdComboOrder from '@/pages/ad_combo_order/AdComboOrder.vue'
 import AdCase from '@/pages/ad_case/AdCase.vue'
 import AdCaseCreate from '@/pages/ad_case/AdCaseCreate.vue'
 import AdCaseEdit from '@/pages/ad_case/AdCaseEdit.vue'
-// 订单管理·用户（广告屏合作商）订单
+// 订单管理·用户（广告设备合作商）订单
 import PartnerOrder from '@/pages/partner_order/PartnerOrder.vue'
 import PartnerOrderCreate from '@/pages/partner_order/PartnerOrderCreate.vue'
 import PartnerOrderEdit from '@/pages/partner_order/PartnerOrderEdit.vue'
@@ -134,12 +134,12 @@ const routes = [
 			{path: 'user_salesman_create', name: 'user_salesman_create', component: UserSalesmanCreate}, // 创建用户
 			{path: 'user_salesman_edit', name: 'user_salesman_edit', component: UserSalesmanEdit}, // 编辑用户
 			{path: 'son_salesman', name: 'son_salesman', component: SonSalesman}, // 下级业务员列表
-			// 2--用户（广告屏合作商）管理
+			// 2--用户（广告设备合作商）管理
 			{path: 'user_partner', name: 'user_partner', component: UserPartner}, // 用户列表
 			{path: 'user_partner_create', name: 'user_partner_create', component: UserPartnerCreate}, // 新增用户
 			{path: 'user_partner_edit', name: 'user_partner_edit', component: UserPartnerEdit}, // 编辑用户
-			{path: 'partner_device', name: 'partner_device', component: PartnerDevice}, // 用户合作的广告屏设备
-			{path: 'partner_device_edit', name: 'partner_device_edit', component: PartnerDeviceEdit}, // 编辑用户合作的广告屏设备
+			{path: 'partner_device', name: 'partner_device', component: PartnerDevice}, // 用户合作的广告设备
+			{path: 'partner_device_edit', name: 'partner_device_edit', component: PartnerDeviceEdit}, // 编辑用户合作的广告设备
 			// 2--用户（店家）管理
 			{path: 'user_shopkeeper', name: 'user_shopkeeper', component: UserShopkeeper}, // 用户列表
 			{path: 'user_shopkeeper_edit', name: 'user_shopkeeper_edit', component: UserShopkeeperEdit}, // 编辑用户
@@ -149,10 +149,10 @@ const routes = [
 			// 2--用户（广告主）管理
 			{path: 'user_advertiser', name: 'user_advertiser', component: UserAdvertiser}, // 用户列表
 			{path: 'user_advertiser_edit', name: 'user_advertiser_edit', component: UserAdvertiserEdit}, // 编辑用户
-			// 2--广告屏设备管理
-			{path: 'device', name: 'device', component: Device}, //广告屏设备列表
-			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加广告屏设备
-			{path: 'editdevice',name: 'editdevice',component:EditDevice}, //添加广告屏设备
+			// 2--广告设备管理
+			{path: 'device', name: 'device', component: Device}, //广告设备列表
+			{path: 'adddevice',name: 'adddevice',component:AddDevice}, //添加广告设备
+			{path: 'editdevice',name: 'editdevice',component:EditDevice}, //添加广告设备
 			// 2--广告管理
 			{path: 'ad', name: 'ad', component: Ad}, // 广告列表
 			{path: 'ad_create', name: 'ad_create', component: AdCreate}, // 新增广告
@@ -165,10 +165,10 @@ const routes = [
 			{path: 'ad_case', name: 'ad_case', component: AdCase}, // 广告案例列表
 			{path: 'ad_case_create', name: 'ad_case_create', component: AdCaseCreate}, // 新增广告案例
 			{path: 'ad_case_edit', name: 'ad_case_edit', component: AdCaseEdit}, // 编辑广告案例
-			// 2--订单管理·用户（广告屏合作商）订单
-			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告屏合作商订单
-			{path: 'partner_order_create', name: 'partner_order_create', component: PartnerOrderCreate}, // 创建广告屏合作商订单
-			{path: 'partner_order_edit', name: 'partner_order_edit', component: PartnerOrderEdit}, // 编辑广告屏合作商订单
+			// 2--订单管理·用户（广告设备合作商）订单
+			{path: 'partner_order', name: 'partner_order', component: PartnerOrder}, // 广告设备合作商订单
+			{path: 'partner_order_create', name: 'partner_order_create', component: PartnerOrderCreate}, // 创建广告设备合作商订单
+			{path: 'partner_order_edit', name: 'partner_order_edit', component: PartnerOrderEdit}, // 编辑广告设备合作商订单
 			// 2--活动管理
 			{path: 'activity', name: 'activity', component: Activity}, // 活动列表
 			{path: 'activity_create', name: 'activity_create', component: ActivityCreate}, // 新增活动

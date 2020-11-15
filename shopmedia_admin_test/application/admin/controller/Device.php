@@ -25,14 +25,14 @@ class Device extends Base
 		if (request()->isGet()) {
 			// 传入的参数
 			$param = input('param.');
-			if (isset($param['size'])) { // 每页条数
-				$param['size'] = intval($param['size']);
-			}
 
 			// 查询条件
 			$map = [];
 			if ($this->adminUser['company_id'] != config('admin.platform_company_id')) { // 平台可以查看所有数据，分公司只能查看自有数据
 				$map['c.company_id'] = $this->adminUser['company_id'];
+			}
+			if (isset($param['device_cate']) && $param['device_cate']) { // 状态
+				$map['d.device_cate'] = intval($param['device_cate']);
 			}
 			if (isset($param['status']) && $param['status'] != null) { // 状态
 				$map['d.status'] = intval($param['status']);
@@ -51,7 +51,7 @@ class Device extends Base
 
 			// 获取广告屏列表数据
 			try {
-				$data = model('Device')->getDevice($map, $this->size);
+				$data = model('Device')->getDevice($map, (int)$this->size);
 			} catch (\Exception $e) {
 				return show(config('code.error'), '网络忙，请重试'.$e->getMessage(), [], 500); // $e->getMessage()
 				//throw new ApiException('网络忙，请重试', 500, config('code.error')); // $e->getMessage()
@@ -59,11 +59,13 @@ class Device extends Base
 
 			if ($data) {
 				// 处理数据
+				$adDeviceCate = config('ad.ad_device_cate'); // 广告设备类别
 				$status = config('code.device_status'); // 状态
-				$brand = config('code.device_brand'); // 品牌
-				$model = config('code.device_model'); // 型号
-				$size = config('code.device_size'); // 尺寸
+				$brand = config('ad.device_brand'); // 品牌
+				$model = config('ad.device_model'); // 型号
+				$size = config('ad.device_size'); // 尺寸
 				foreach ($data as $key => $value) {
+					$data[$key]['device_cate_name'] = $adDeviceCate[$value['device_cate']]; // 定义广告设备类别名称
 					$data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
 					$data[$key]['brand_msg'] = isset($brand[$value['brand']]) ? $brand[$value['brand']] : ''; //定义品牌信息
 					$data[$key]['model_msg'] = $model[$value['brand']][$value['model']]; //定义型号信息
@@ -279,7 +281,7 @@ class Device extends Base
 	 */
 	public function getDeviceBrand()
     {
-        $brand= config('code.device_brand'); 
+        $brand= config('ad.device_brand');
         $data = []; // 定义二维数组列表
         // 处理数据，将一维数组转成二维数组
         foreach ($brand as $key => $value) {
@@ -296,15 +298,13 @@ class Device extends Base
 	public function getDeviceModel()
     {
         $form=input();
-        $model= config('code.device_model'); 
+        $model= config('ad.device_model');
         $data = []; // 定义二维数组列表
         //处理数据，将一维数组转成二维数组
         foreach ($model[$form['brand_id']] as $key => $value) {
             $data[] = ['model_id' => $key, 'model_name' => $value];
         }
         return show(config('code.success'), 'OK', $data);
-
-
     }
 
 	/**
@@ -313,7 +313,7 @@ class Device extends Base
 	 */
 	public function getDeviceSize()
     {
-        $size= config('code.device_size'); 
+        $size= config('ad.device_size');
         $data = []; // 定义二维数组列表
         // 处理数据，将一维数组转成二维数组
         foreach ($size as $key => $value) {
@@ -344,7 +344,7 @@ class Device extends Base
 	 */
 	public function getDeviceLevel()
     {
-        $level= config('code.device_level'); 
+        $level= config('ad.device_level');
         $data = []; // 定义二维数组列表
         // 处理数据，将一维数组转成二维数组
         foreach ($level as $key => $value) {
