@@ -395,7 +395,7 @@ class Ad extends Base
                         $deviceCount = model('Device')->where(['device_id' => ['in', $data['device_ids']]])->count('device_id');
                         $adPerPrice = $adPrice / $deviceCount;
                     }
-                    $deviceLevel = config('code.device_level');
+                    $deviceLevel = config('ad.device_level');
                     foreach ($deviceList as $key => $value) {
                         // 不同等级广告屏投放广告的单价
                         $ad_unit_price = 1 * $deviceLevel[$value['level']];

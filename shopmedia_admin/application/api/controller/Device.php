@@ -146,7 +146,7 @@ class Device extends AuthBase
 
         if(!empty($devicelist)){
             // 处理数据
-            $deviceLevel = config('code.device_level'); // 广告屏等级（用于计算广告单价）
+            $deviceLevel = config('ad.device_level'); // 广告屏等级（用于计算广告单价）
             foreach ($devicelist as $key => $value) {
                 $devicelist[$key]['ad_unit_price'] = $deviceLevel[$value['level']]; // 定义广告单价（每条广告每天的价格）
             }
@@ -182,7 +182,7 @@ class Device extends AuthBase
         if(!empty($device)){
             $adCate = config('ad.ad_cate');
             $shopEnvironment = config('code.shop_environment');
-            $deviceSize = config('code.device_size');
+            $deviceSize = config('ad.device_size');
             $device['shop_cate_name'] = isset($device['shop_cate']) ? $adCate[$device['shop_cate']] : '';
             $device['environment'] = isset($device['environment']) ? $shopEnvironment[$device['environment']] : '';
             $device['size'] = isset($device['size']) ? $deviceSize[$device['size']] : '';
@@ -203,7 +203,7 @@ class Device extends AuthBase
      */
     public function getSize()
     {
-        $size = config('code.device_size');
+        $size = config('ad.device_size');
         return json($size);
     }
 
@@ -215,7 +215,7 @@ class Device extends AuthBase
     public function getPrice()
     {
         $price = [1 => '≥1', 2 => '≥1', 3 => '≥1'];
-        //$price = config('code.device_level');
+        //$price = config('ad.device_level');
         return json($price);
     }
 }

@@ -8,7 +8,6 @@ use app\common\lib\IAuth;
 use app\common\model\User;
 use think\Controller;
 use think\Db;
-use app\api\controller\ThirdLogin;
 
 /**
  * api模块客户端登录控制器类
@@ -130,38 +129,6 @@ class Login extends Common
             return show(config('code.error'), '用户登录失败', [], 403);
         }
     }
-
-
-    /**
-     * 获取用户信息
-     * @param $user_id_or_name  用户id 邮箱 手机 第三方id
-     * @param int $type  类型 0 user_id查找 1 邮箱查找 2 手机查找 3 第三方唯一标识查找
-     * @param string $oauth  第三方来源
-     * @return mixed
-     */
-//    public function get_user_info($user_id_or_name,$type = 0,$oauth=''){
-//        $map = array();
-//        if($type == 0){
-//            $map['user_id'] = $user_id_or_name;
-//        }
-//        if($type == 1){
-//            $map['email'] = $user_id_or_name;
-//        }
-//        if($type == 2){
-//            $map['mobile'] = $user_id_or_name;
-//        }
-//        if($type == 3){
-//            $map['openid'] = $user_id_or_name;
-//            $map['oauth'] = $oauth;
-//        }
-//        if($type == 4){
-//            $map['unionid'] = $user_id_or_name;
-//            $map['oauth'] = $oauth;
-//        }
-//        $user = M('users')->where($map)->find();
-//        //file_put_contents('./test.txt', json_encode($user));
-//        return $user;
-//    }
 
     /**
      * 用户注册

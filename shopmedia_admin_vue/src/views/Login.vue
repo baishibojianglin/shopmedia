@@ -93,9 +93,18 @@
 					if (res.data['status'] == 1) { // 登录成功
 						// 前端将token、登录账号id等存入缓存
 						localStorage.setItem("admin_user",JSON.stringify(res.data.data));
+						
 						// 跳转首页
 						if (localStorage.getItem('admin_user')) {
-							self.$router.replace({path:'/home'});
+							// 登录成功提示
+							self.$message({
+								message: res.data.message,
+								type: 'success',
+								duration: 1000,
+								onClose: function(){
+									self.$router.replace({path:'/home'});
+								}
+							});
 						}
 					} else { // 验证未通过
 						self.$message({
