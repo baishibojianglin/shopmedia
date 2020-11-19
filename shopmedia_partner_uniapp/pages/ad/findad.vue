@@ -2,10 +2,9 @@
 	<view class="content">
 		<!-- <view class="line4 fon16 main-color">选择投放区域</view> -->
 		<uni-card :is-shadow="true">
-			<!-- SegmentedControl 分段器 s -->
+			<!-- 广告投放区域 SegmentedControl 分段器 s -->
 			<view>
-				<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem"
-				 style-type="button" active-color="#409EFF"></uni-segmented-control>
+				<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
 				<view class="">
 					<view v-if="segmentedControl.current === 0">
 						<view class="input-line-height">
@@ -28,7 +27,7 @@
 					</view>
 				</view>
 			</view>
-			<!-- SegmentedControl 分段器 e -->
+			<!-- 广告投放区域 SegmentedControl 分段器 e -->
 		</uni-card>
 		
 		<!-- <view class="line4 fon16 main-color">填写基本信息</view> -->
@@ -53,21 +52,26 @@
 		</uni-card>
 		
 		<!-- <view class="line4 fon16 main-color">选择投放广告屏</view> -->
-		<uni-card title="选择投放广告屏" :is-shadow="true" v-if="deviceList.length != 0">
-			<view class="uni-list">
-				<checkbox-group @change="deviceCheckboxChange">
-					<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id">
-						<view class="uni-flex uni-row">
-							<view>
-								<checkbox :value="item.device_id" :checked="item.checked" />
+		<uni-card :is-shadow="true" v-if="deviceList.length != 0">
+			<!-- 广告投放区域 SegmentedControl 分段器 s -->
+			<view>
+				<uni-segmented-control :current="deviceSegmentedControl.current" :values="deviceSegmentedControl.items" @clickItem="onClickDeviceItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
+				<view class="uni-list">
+					<checkbox-group @change="deviceCheckboxChange">
+						<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id" v-show="(deviceSegmentedControl.current == 0 && item.device_cate == 1) || (deviceSegmentedControl.current == 1 && item.device_cate == 2)">
+							<view class="uni-flex uni-row">
+								<view>
+									<checkbox :value="item.device_id" :checked="item.checked" />
+								</view>
+								<image class="uni-media-list-logo uni-common-pl" :src="item.thumb"></image>
+								<view>【店铺】{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
 							</view>
-							<image class="uni-media-list-logo uni-common-pl" :src="item.thumb"></image>
-							<view>【店铺】{{item.shop_name}}<!-- 屏编号：{{item.device_id}}，（地址：{{item.address}}） --></view>
-						</view>
-						<text class="uni-icon uni-icon-arrowright fon14" @click.stop="toDeviceDetail2(item.device_id)"></text>
-					</label>
-				</checkbox-group>
+							<text class="uni-icon uni-icon-arrowright fon14" @click.stop="toDeviceDetail2(item.device_id)"></text>
+						</label>
+					</checkbox-group>
+				</view>
 			</view>
+			<!-- 广告投放区域 SegmentedControl 分段器 e -->
 		</uni-card>
 		
 		<uni-card :is-shadow="true" class="uni-bold">
@@ -153,6 +157,12 @@
 					isLeaf: 'leaf'
 				},
 				/* 区域 Tree 树形数据 e */
+				
+				// 广告投放区域 SegmentedControl 分段器
+				deviceSegmentedControl: {
+					items: ['广告屏', '广告框'],
+					current: 0
+				},
 				
 				deviceList: [], // 广告屏列表 [{device_id: '', shop_name: ''}]
 				markers: [], //地图标记点
@@ -262,7 +272,7 @@
 			},
 
 			/**
-			 * SegmentedControl 分段器组件触发点击事件时触发
+			 * 广告投放区域 SegmentedControl 分段器组件触发点击事件时触发
 			 * @param {Object} e
 			 */
 			onClickItem(e) {
@@ -413,6 +423,16 @@
 			/* 区域 Tree 树形数据 e */
 			
 			/**
+			 * 广告投放区域 SegmentedControl 分段器组件触发点击事件时触发
+			 * @param {Object} e
+			 */
+			onClickDeviceItem(e) {
+				if (this.deviceSegmentedControl.current !== e.currentIndex) {
+					this.deviceSegmentedControl.current = e.currentIndex;
+				}
+			},
+			
+			/**
 			 * 获取广告屏列表
 			 */
 			getDeviceList() {
@@ -452,6 +472,7 @@
 					}
 					// showModalContent = '请重新选择“投放区域”或“广告所属行业类别”';
 				}
+				
 				if (_data) {
 					uni.request({
 						url: this.$serverUrl + 'api/device_list',
@@ -469,6 +490,7 @@
 									let thumb = typeof(JSON.parse(value.url_image)[0]) != 'undefined' ? JSON.parse(value.url_image)[0].url : '';
 									self.$set(self.deviceList, index, {
 										device_id: value.device_id.toString(),
+										device_cate: value.device_cate,
 										shop_name: value.shop_name,
 										address: value.address,
 										ad_unit_price: value.ad_unit_price,
@@ -477,7 +499,7 @@
 									});
 									// 地图标记点
 									self.$set(self.markers, index, {
-										title: value.device_id + ' ' + value.shop_name,
+										title: value.shop_name + ' ' + (value.device_cate == 1 ? '[屏]' : '[框]'),
 										longitude: value.longitude,
 										latitude: value.latitude
 									});

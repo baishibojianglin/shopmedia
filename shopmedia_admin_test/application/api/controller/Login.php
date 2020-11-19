@@ -429,10 +429,10 @@ class Login extends Common
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
-            if ($result) {
-                return show(config('code.success'), '退出登录成功', [], 201);
-            } else {
+            if ($result === false) {
                 return show(config('code.error'), '退出登录失败', [], 403);
+            } else {
+                return show(config('code.success'), '退出登录成功', [], 201);
             }
         } else {
             return show(config('code.error'), '请求不合法', [], 400);
