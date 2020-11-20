@@ -76,17 +76,31 @@
 		
 		<uni-card :is-shadow="true" class="uni-bold">
 			<view class="uni-flex uni-row">
-				<view class="text-left" style="width: 360rpx;">广告屏总数</view>
-				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}台</view>
+				<view class="text-left" style="width: 360rpx;">广告设备总数</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}</view>
 			</view>
 			<view class="uni-flex uni-row">
-				<view class="text-left" style="width: 360rpx;">选择投放</view>
-				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}台</view>
+				<view class="text-left" style="width: 360rpx;">投放设备数量</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}</view>
 			</view>
 			<view class="uni-flex uni-row">
 				<view class="text-left" style="width: 360rpx;">广告总价</view>
 				<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
 			</view>
+			<uni-card>
+				<view class="uni-flex uni-row">
+					<view class="text-left" style="width: 360rpx;">广告屏总数</view>
+					<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}</view>
+				</view>
+				<view class="uni-flex uni-row">
+					<view class="text-left" style="width: 360rpx;">投放广告屏数量</view>
+					<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}</view>
+				</view>
+				<view class="uni-flex uni-row">
+					<view class="text-left" style="width: 360rpx;">投放广告屏总价</view>
+					<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
+				</view>
+			</uni-card>
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
@@ -473,6 +487,7 @@
 					// showModalContent = '请重新选择“投放区域”或“广告所属行业类别”';
 				}
 				
+				// 广告类别
 				if (_data) {
 					uni.request({
 						url: this.$serverUrl + 'api/device_list',
@@ -483,6 +498,7 @@
 						},
 						method: 'GET',
 						success: function(res) {
+							console.log('deviceList ', res)
 							if (res.data.status == 1) {
 								let adPrice = 0;
 								res.data.data.forEach((value, index) => {
