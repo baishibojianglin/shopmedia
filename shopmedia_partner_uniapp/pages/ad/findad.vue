@@ -53,12 +53,12 @@
 		
 		<!-- <view class="line4 fon16 main-color">选择投放广告屏</view> -->
 		<uni-card :is-shadow="true" v-if="deviceList.length != 0">
-			<!-- 广告投放区域 SegmentedControl 分段器 s -->
+			<!-- 广告设备类别 SegmentedControl 分段器 s -->
 			<view>
-				<uni-segmented-control :current="deviceSegmentedControl.current" :values="deviceSegmentedControl.items" @clickItem="onClickDeviceItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
+				<uni-segmented-control :current="deviceCateSegmentedControl.current" :values="deviceCateSegmentedControl.items" @clickItem="onClickDeviceCateItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
 				<view class="uni-list">
 					<checkbox-group @change="deviceCheckboxChange">
-						<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id" v-show="(deviceSegmentedControl.current == 0 && item.device_cate == 1) || (deviceSegmentedControl.current == 1 && item.device_cate == 2)">
+						<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id" v-show="(deviceCateSegmentedControl.current == 0 && item.device_cate == 1) || (deviceCateSegmentedControl.current == 1 && item.device_cate == 2)">
 							<view class="uni-flex uni-row">
 								<view>
 									<checkbox :value="item.device_id" :checked="item.checked" />
@@ -71,7 +71,7 @@
 					</checkbox-group>
 				</view>
 			</view>
-			<!-- 广告投放区域 SegmentedControl 分段器 e -->
+			<!-- 广告设备类别 SegmentedControl 分段器 e -->
 		</uni-card>
 		
 		<uni-card :is-shadow="true" class="uni-bold">
@@ -80,27 +80,39 @@
 				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}</view>
 			</view>
 			<view class="uni-flex uni-row">
+				<view class="text-left" style="width: 360rpx;">广告屏总数</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{device1Count}}</view>
+			</view>
+			<view class="uni-flex uni-row">
+				<view class="text-left" style="width: 360rpx;">广告框总数</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{device2Count}}</view>
+			</view>
+			
+			<view class="uni-flex uni-row">
 				<view class="text-left" style="width: 360rpx;">投放设备数量</view>
 				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}</view>
 			</view>
 			<view class="uni-flex uni-row">
-				<view class="text-left" style="width: 360rpx;">广告总价</view>
-				<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
+				<view class="text-left" style="width: 360rpx;">投放广告屏数量</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDevice1Count}}</view>
 			</view>
-			<uni-card>
-				<view class="uni-flex uni-row">
-					<view class="text-left" style="width: 360rpx;">广告屏总数</view>
-					<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{deviceList.length}}</view>
-				</view>
-				<view class="uni-flex uni-row">
-					<view class="text-left" style="width: 360rpx;">投放广告屏数量</view>
-					<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDeviceCount}}</view>
-				</view>
-				<view class="uni-flex uni-row">
-					<view class="text-left" style="width: 360rpx;">投放广告屏总价</view>
-					<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price}}</view>
-				</view>
-			</uni-card>
+			<view class="uni-flex uni-row">
+				<view class="text-left" style="width: 360rpx;">投放广告框数量</view>
+				<view class="uni-common-pl text-right" style="-webkit-flex: 1;flex: 1;">{{checkedDevice2Count}}</view>
+			</view>
+			
+			<view class="uni-flex uni-row">
+				<view class="text-left" style="width: 360rpx;">投放广告屏总价</view>
+				<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price1}}</view>
+			</view>
+			<view class="uni-flex uni-row">
+				<view class="text-left" style="width: 360rpx;">投放广告框总价</view>
+				<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;">￥{{form.ad_price2}}</view>
+			</view>
+			<view class="uni-flex uni-row">
+				<view class="text-left" style="width: 360rpx;">广告总价</view>
+				<view class="uni-common-pl text-right color-red" style="-webkit-flex: 1;flex: 1;font-size: 36upx;">￥{{form.ad_price}}</view>
+			</view>
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
@@ -129,8 +141,11 @@
 					region_ids: [], // 区域ID集合（数组）
 					ad_cate_id: [], // 广告所属行业类别ID
 					device_ids: [], // 投放广告设备ID集合
-					ad_price: 0, // 广告总价格
-					ad_day_price: 0 // 广告每天总价格
+					ad_price: 0, // 广告设备（屏+框）投放总价格
+					ad_price1: 0, // 广告屏投放总价格
+					ad_day_price1: 0, // 广告屏投放每天总价格
+					ad_price2: 0, // 广告框投放总价格
+					ad_day_price2: 0 // 广告框投放每天总价格
 				},
 
 				adCateList: [{cate_id: 1, cate_name: '餐饮'}], // 广告所属行业类别列表
@@ -172,15 +187,19 @@
 				},
 				/* 区域 Tree 树形数据 e */
 				
-				// 广告投放区域 SegmentedControl 分段器
-				deviceSegmentedControl: {
+				// 广告设备类别 SegmentedControl 分段器
+				deviceCateSegmentedControl: {
 					items: ['广告屏', '广告框'],
 					current: 0
 				},
 				
-				deviceList: [], // 广告屏列表 [{device_id: '', shop_name: ''}]
+				deviceList: [], // 广告设备（屏+框）列表 [{device_id: '', shop_name: ''}]
+				device1Count: 0, // 广告屏总数量
+				device2Count: 0, // 广告框总数量
 				markers: [], //地图标记点
-				checkedDeviceCount: 0 // 选中的广告屏数量
+				checkedDeviceCount: 0, // 选中的广告设备（屏+框）数量
+				checkedDevice1Count: 0, // 选中的广告屏数量
+				checkedDevice2Count: 0 // 选中的广告框数量
 			}
 		},
 		computed: {
@@ -226,7 +245,11 @@
 					});
 					return;
 				} */
-				this.form.ad_price = (this.form.ad_day_price * this.form.play_days).toFixed(2);
+				
+				// 广告总价
+				this.form.ad_price1 = (this.form.ad_day_price1 * this.form.play_days).toFixed(2);
+				this.form.ad_price2 = (this.form.ad_day_price2 * this.form.play_days).toFixed(2);
+				this.form.ad_price = (Number(this.form.ad_price1) + Number(this.form.ad_price2)).toFixed(2);
 			},
 
 			/**
@@ -280,7 +303,7 @@
 				// console.log('picker发送选择改变，携带值为', e.target.value)
 				this.distanceIndex = e.target.value;
 				if (typeof(this.distanceIndex) != 'undefined') {
-					this.getDeviceList();
+					// this.getDeviceList();
 					this.getLocation();
 				}
 			},
@@ -294,22 +317,30 @@
 					this.segmentedControl.current = e.currentIndex;
 					
 					// 当选择附近区域时，获取当前地理位置
-					// this.deviceList.splice(0, this.deviceList.length); // 初始化设备列表
-					this.deviceList.forEach((item, index) => {
-						this.$set(this.deviceList, index, {})
-					})
-					this.deviceList = [];
-					this.markers = [];
-					this.form.ad_price = 0;
-					this.form.ad_day_price = 0;
-					this.checkedDeviceCount = 0;
-					
 					if (this.segmentedControl.current == 0) {
 						this.getLocation();
 						
 						// 初始化区域ID集合
 						this.form.region_ids = [];
 					} else if (this.segmentedControl.current == 1) {
+						// 初始化设备列表、数量及广告价格
+						// this.deviceList.splice(0, this.deviceList.length);
+						this.deviceList.forEach((item, index) => {
+							this.$set(this.deviceList, index, {})
+						})
+						this.deviceList = [];
+						this.device1Count = 0;
+						this.device2Count = 0;
+						this.markers = [];
+						this.checkedDeviceCount = 0;
+						this.checkedDevice1Count = 0;
+						this.checkedDevice2Count = 0;
+						this.form.ad_price1 = 0;
+						this.form.ad_day_price1 = 0;
+						this.form.ad_price2 = 0;
+						this.form.ad_day_price2 = 0;
+						this.form.ad_price = 0;
+						
 						// 初始化广告投放定位距离、经纬度
 						this.longitude = '';
 						this.latitude = '';
@@ -437,12 +468,12 @@
 			/* 区域 Tree 树形数据 e */
 			
 			/**
-			 * 广告投放区域 SegmentedControl 分段器组件触发点击事件时触发
+			 * 广告设备类别 SegmentedControl 分段器组件触发点击事件时触发
 			 * @param {Object} e
 			 */
-			onClickDeviceItem(e) {
-				if (this.deviceSegmentedControl.current !== e.currentIndex) {
-					this.deviceSegmentedControl.current = e.currentIndex;
+			onClickDeviceCateItem(e) {
+				if (this.deviceCateSegmentedControl.current !== e.currentIndex) {
+					this.deviceCateSegmentedControl.current = e.currentIndex;
 				}
 			},
 			
@@ -452,16 +483,23 @@
 			getDeviceList() {
 				let self = this;
 				
-				// 初始化设备列表
+				// 初始化设备列表、数量及广告价格
 				this.deviceList.forEach((item, index) => {
 					// console.log(12311, typeof(item));return;
 					this.$set(this.deviceList, index, {})
 				})
 				this.deviceList = [];
+				this.device1Count = 0;
+				this.device2Count = 0;
 				this.markers = [];
-				this.form.ad_price = 0;
-				this.form.ad_day_price = 0;
 				this.checkedDeviceCount = 0;
+				this.checkedDevice1Count = 0;
+				this.checkedDevice2Count = 0;
+				this.form.ad_price1 = 0;
+				this.form.ad_day_price1 = 0;
+				this.form.ad_price2 = 0;
+				this.form.ad_day_price2 = 0;
+				this.form.ad_price = 0;
 				
 				this.form.device_ids = ''; // 初始化选中的广告屏
 				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
@@ -498,11 +536,14 @@
 						},
 						method: 'GET',
 						success: function(res) {
-							console.log('deviceList ', res)
 							if (res.data.status == 1) {
-								let adPrice = 0;
+								let checkedDeviceCount = 0;
+								let checkedDevice1Count = 0;
+								let checkedDevice2Count = 0;
+								let adPrice1 = 0;
+								let adPrice2 = 0;
 								res.data.data.forEach((value, index) => {
-									// 广告屏列表
+									// 广告设备（屏+框）列表
 									let thumb = typeof(JSON.parse(value.url_image)[0]) != 'undefined' ? JSON.parse(value.url_image)[0].url : '';
 									self.$set(self.deviceList, index, {
 										device_id: value.device_id.toString(),
@@ -513,19 +554,45 @@
 										thumb: thumb,
 										checked: true
 									});
+									
+									// 获取实际的广告屏或广告框数量
+									if (value.device_cate == 1) {
+										self.device1Count ++;
+									}
+									if (value.device_cate == 2) {
+										self.device2Count ++;
+									}
+									
 									// 地图标记点
 									self.$set(self.markers, index, {
-										title: value.shop_name + ' ' + (value.device_cate == 1 ? '[屏]' : '[框]'),
+										title: value.shop_name /* + ' ' + (value.device_cate == 1 ? '[屏]' : '[框]') */,
 										longitude: value.longitude,
 										latitude: value.latitude
 									});
+									
 									if (self.deviceList[index].checked == true) {
-										adPrice = adPrice + value.ad_unit_price;
-										self.checkedDeviceCount = self.deviceList.length;
+										checkedDeviceCount ++;
+										if (value.device_cate == 1) {
+											checkedDevice1Count ++;
+											adPrice1 = adPrice1 + value.ad_unit_price;
+										}
+										if (value.device_cate == 2) {
+											checkedDevice2Count ++;
+											adPrice2 = adPrice2 + value.ad_unit_price;
+										}
 									}
 								})
-								self.form.ad_price = (adPrice * self.form.play_days).toFixed(2);
-								self.form.ad_day_price = adPrice.toFixed(2);
+								
+								// 广告设备数量
+								self.checkedDeviceCount = checkedDeviceCount;
+								self.checkedDevice1Count = checkedDevice1Count;
+								self.checkedDevice2Count = checkedDevice2Count;
+								// 广告总价
+								self.form.ad_price1 = (adPrice1 * self.form.play_days).toFixed(2);
+								self.form.ad_day_price1 = adPrice1.toFixed(2);
+								self.form.ad_price2 = (adPrice2 * self.form.play_days).toFixed(2);
+								self.form.ad_day_price2 = adPrice2.toFixed(2);
+								self.form.ad_price = (Number(self.form.ad_price1) + Number(self.form.ad_price2)).toFixed(2);
 							}/* else {
 								uni.showModal({
 									title: '获取广告屏失败',
@@ -544,8 +611,8 @@
 				} else {
 					this.deviceList = []; // 初始化设备列表
 					this.markers = [];
-					this.form.ad_price = 0;
-					this.form.ad_day_price = 0;
+					this.form.ad_price1 = 0;
+					this.form.ad_day_price1 = 0;
 					this.checkedDeviceCount = 0;
 				}
 			},
@@ -559,17 +626,36 @@
 				this.form.device_ids = e.detail.value;
 				this.checkedDeviceCount = e.detail.value.length;
 				
-				// 计算广告总价
-				let adPrice = 0;
+				// 计算广告设备数量、广告总价
+				let checkedDevice1Count = 0;
+				let checkedDevice2Count = 0;
+				let adPrice1 = 0;
+				let adPrice2 = 0;
 				this.form.device_ids.forEach((item, index) => {
 					this.deviceList.forEach((value, key) => {
 						if (Number(item) === Number(value.device_id)) {
-							adPrice = adPrice + value.ad_unit_price;
+							if (value.device_cate == 1) {
+								checkedDevice1Count ++;
+								adPrice1 = adPrice1 + value.ad_unit_price;
+							}
+							if (value.device_cate == 2) {
+								checkedDevice2Count ++;
+								adPrice2 = adPrice2 + value.ad_unit_price;
+							}
 						}
 					})
 				})
-				this.form.ad_price = (adPrice * this.form.play_days).toFixed(2);
-				this.form.ad_day_price = adPrice.toFixed(2);
+				
+				// 广告设备数量
+				this.checkedDevice1Count = checkedDevice1Count;
+				this.checkedDevice2Count = checkedDevice2Count;
+				
+				// 广告总价
+				this.form.ad_price1 = (adPrice1 * this.form.play_days).toFixed(2);
+				this.form.ad_day_price1 = adPrice1.toFixed(2);
+				this.form.ad_price2 = (adPrice2 * this.form.play_days).toFixed(2);
+				this.form.ad_day_price2 = adPrice2.toFixed(2);
+				this.form.ad_price = (Number(this.form.ad_price1) + Number(this.form.ad_price2)).toFixed(2);
 			},
 			
 			/**

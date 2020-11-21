@@ -474,12 +474,12 @@
 			"iconPath": "static/img/home.png",
 			"selectedIconPath": "static/img/homeHL.png"
 		}, 
-		{
+		/* {
 			"pagePath": "pages/prize/index",
 			"text": "店通福利",
 			"iconPath": "static/img/cj.png",
 			"selectedIconPath": "static/img/cj.png"
-		},
+		}, */
 		{
 			"pagePath": "pages/user/user",
 			"text": "我的",

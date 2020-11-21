@@ -148,7 +148,14 @@ class Device extends AuthBase
             // 处理数据
             $deviceLevel = config('ad.device_level'); // 广告屏等级（用于计算广告单价）
             foreach ($devicelist as $key => $value) {
-                $devicelist[$key]['ad_unit_price'] = $deviceLevel[$value['level']]; // 定义广告单价（每条广告每天的价格）
+                // 定义广告屏投放单价（每条广告每天的价格）
+                if ($value['device_cate'] == 1) {
+                    $devicelist[$key]['ad_unit_price'] = $deviceLevel[$value['level']];
+                }
+                // 定义广告框投放单价（每条广告每天的价格）
+                if ($value['device_cate'] == 2) {
+                    $devicelist[$key]['ad_unit_price'] = $deviceLevel[$value['level']] * 0.5;
+                }
             }
             return show(config('code.success'), '获取成功', $devicelist);
         }else{

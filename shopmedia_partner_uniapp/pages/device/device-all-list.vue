@@ -35,8 +35,14 @@
 			</view>
 		</view>
 		
+		<!-- 广告设备类别 SegmentedControl 分段器 s -->
+		<view>
+			<uni-segmented-control :current="deviceCateSegmentedControl.current" :values="deviceCateSegmentedControl.items" @clickItem="onClickDeviceCateItem" style-type="text" active-color="#409EFF"></uni-segmented-control>
+		</view>
+		<!-- 广告设备类别 SegmentedControl 分段器 e -->
+		
 		<view class="uni-list" style="margin-top:5rpx;">
-			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in listData" :key="key" @click="toDeviceDetail2(value.device_id)">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in listData" :key="key" @click="toDeviceDetail2(value.device_id)" v-show="(deviceCateSegmentedControl.current == 0 && value.device_cate == 1) || (deviceCateSegmentedControl.current == 1 && value.device_cate == 2)">
 				<view class="uni-media-list">
 					<image class="uni-media-list-logo" :src="value.thumb"></image>
 					<view class="uni-media-list-body">
@@ -72,6 +78,12 @@
 				townArray: [{region_id: '', region_name: '', parent_id: '', level: ''}],
 				townIndex: 0,
 				/* 选择区域 e */
+				
+				// 广告设备类别 SegmentedControl 分段器
+				deviceCateSegmentedControl: {
+					items: ['广告屏', '广告框'],
+					current: 0
+				},
 				
 				/* 广告屏列表 s */
 				listData: [],
@@ -188,6 +200,16 @@
 			},
 			
 			/**
+			 * 广告设备类别 SegmentedControl 分段器组件触发点击事件时触发
+			 * @param {Object} e
+			 */
+			onClickDeviceCateItem(e) {
+				if (this.deviceCateSegmentedControl.current !== e.currentIndex) {
+					this.deviceCateSegmentedControl.current = e.currentIndex;
+				}
+			},
+			
+			/**
 			 * 广告屏列表
 			 */
 			getList() {
@@ -242,6 +264,7 @@
 					let thumb = typeof(JSON.parse(e.url_image)[0]) != 'undefined' ? JSON.parse(e.url_image)[0].url : '';
 					newItems.push({
 						device_id: e.device_id,
+						device_cate: e.device_cate,
 						shop_name: e.shop_name,
 						address: e.address,
 						thumb: thumb
