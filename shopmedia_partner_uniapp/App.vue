@@ -13,7 +13,7 @@
 
 			// #ifdef H5
 			/* 微信网页授权登录 s */
-			let ua = window.navigator.userAgent.toLowerCase()
+			/* let ua = window.navigator.userAgent.toLowerCase()
 			if (ua.match(/MicroMessenger/i) == 'micromessenger') { // uniapp判断是否微信浏览器
 
 				// const base_url = 'http://media.dilinsat.com/h5/'; // 前端域名
@@ -32,7 +32,7 @@
 					// 发送code           
 					this.postCode(code)
 				}
-			}
+			} */
 			/* 微信网页授权登录 e */
 			// #endif
 
