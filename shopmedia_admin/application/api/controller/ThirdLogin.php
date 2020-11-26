@@ -44,7 +44,6 @@ class ThirdLogin extends Controller
         Db::startTrans();
         try {
             $res = [];
-            $userid = '';
             $token = IAuth::setAppLoginToken($openid);
 
             // 用户不存在，则创建用户
@@ -86,6 +85,7 @@ class ThirdLogin extends Controller
 
             }
             else{
+                $userid = $user['user_id'];
                 //用户存在，修改登录信息
                 $data = [
                     'token' => $token, // token
@@ -94,7 +94,7 @@ class ThirdLogin extends Controller
                     'login_ip' => request()->ip() // 登录IP
                 ];
 
-                $loginres = Db::name('user')->where('user_id',$user['user_id'])->update($data);
+                $loginres = Db::name('user')->where('user_id',$userid)->update($data);
                 $res['3'] = $loginres === false ? 0 : true;
             }
 
@@ -120,7 +120,7 @@ class ThirdLogin extends Controller
             else{
                 //oauth存在，修改登录信息
                 $data = [
-                    'user_id' => $user['user_id'],
+                    'user_id' => $userid,
                     'login_time' => time(), // 登录时间
                     'login_ip' => request()->ip() // 登录IP
                 ];
