@@ -1,6 +1,5 @@
 <?php
 
-
 namespace app\api\controller;
 
 use app\common\lib\Aes;
@@ -9,21 +8,118 @@ use app\common\lib\IAuth;
 use think\Controller;
 use think\Db;
 
-
 /**
  * 第三方登录
- * Class WeChat
+ * Class ThirdLogin
  * @package app\api\controller
  */
-
 class ThirdLogin extends Controller
 {
-
     //第三方登录
     public function thirdlogin(){
         //授权获取信息
-        $data = $this->GetOpenid();
+        $data = $this->getOpenid();
+
+        // 判断用户是否存在
+        $userOauth = Db::name('user_oauth')->where(['oauth' => $data['oauth'], 'openid' => $data['openid']])->find();
+        $oauthInfo = (new Aes())->encrypt(json_encode($data)); // AES加密三方授权用户信息
+        if (!empty($userOauth) && $userOauth['user_id']) {
+            $user = Db::name('user')->find($userOauth['user_id']);
+            if (empty($user) || !$user['phone'] || $user['phone'] == null) {
+                return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+            }
+        } else {
+            return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+        }
+
         return show(config('code.success'), 'OK', $this->createUser($data));
+    }
+
+    /**
+     * 绑定手机号
+     */
+    public function bindPhone()
+    {
+        // 判断为POST请求
+        if (!request()->isPost()) {
+            return show(config('code.error'), '请求不合法', '', 400);
+        }
+
+        // 传入的参数
+        $param = input('param.');
+        $param['phone'] = trim($param['phone']);
+        $oauth_info = json_decode((new Aes())->decrypt($param['oauth_info']), true); // AES解密三方授权用户信息
+        $oauth = $oauth_info['oauth'];
+        $openid = $oauth_info['openid'];
+
+        // 判断传入的参数是否存在及合法性
+        // 验证手机号码
+        if (empty($param['phone'])) {
+            return show(config('code.error'), '手机号码不能为空', '', 401);
+        }
+
+        // 验证手机短信验证码
+        if (empty($param['verify_code'])) {
+            return show(config('code.error'), '短信验证码不能为空', '', 401);
+        } else {
+            // TODO：客户端需对短信验证码AES加密，服务端对短信验证码AES解密
+            //$param['code'] = $aesObj->decrypt($param['code']);
+
+            // 判断短信验证码是否合法
+            $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+            if (empty($verifyCode) || $verifyCode != trim($param['verify_code'])) {
+                return show(config('code.error'), '短信验证码错误', '', 401);
+            }
+        }
+
+        // 判断用户是否存在
+        $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+        if (!empty($userOauth) && $userOauth['user_id']) {
+            $user = Db::name('user')->find($userOauth['user_id']);
+            if (empty($user) || !$user['phone'] || $user['phone'] == null) {
+                return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+            }
+        } else {
+            return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+        }
+
+        // 入库操作
+        /* 手动控制事务 s */
+        // 启动事务
+        Db::startTrans();
+        try {
+            // 判断该手机号用户是否存在，不存在则创建
+            $user = Db::name('user')->where(['phone' => $param['phone']])->find();
+            if (empty($user)) {
+                // 新增原始用户
+                $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+            }
+
+            // 判断三方授权用户信息是否存在，不存在则创建
+            $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+
+            // 新增原始用户
+            $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+
+            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+            if (in_array(0, $res)) {
+                return show(config('code.error'), '新增失败', '', 403);
+            }
+
+            // 返回token给客户端
+            $result = [
+                'token' => (new Aes())->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
+            ];
+            // 提交事务
+            Db::commit();
+            return show(config('code.success'), 'OK', $result, 201);
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return show(config('code.error'), '注册失败，请重试' . $e->getMessage(), '', 500);
+            //throw new ApiException($e->getMessage(), 500, config('code.error'));
+        }
+        /* 手动控制事务 e */
     }
 
     /**
@@ -38,7 +134,7 @@ class ThirdLogin extends Controller
         $oauth = $userInfo['oauth'];
 
         $user = Db::name('user')->where(['oauth' => $oauth, 'openid' => $openid])->find();
-        $useroauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+        $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
 
         //开启事务
         Db::startTrans();
@@ -99,7 +195,7 @@ class ThirdLogin extends Controller
             }
 
             //判断user_oauth
-            if(empty($useroauth)){
+            if(empty($userOauth)){
 
                 $oauthdata = [
                     'user_id' => $userid,
@@ -125,7 +221,7 @@ class ThirdLogin extends Controller
                     'login_ip' => request()->ip() // 登录IP
                 ];
 
-                $oauthres = Db::name('user_oauth')->where('oauth_id',$useroauth['oauth_id'])->update($data);
+                $oauthres = Db::name('user_oauth')->where('oauth_id', $userOauth['oauth_id'])->update($data);
                 $res['5'] = $oauthres === false ? 0 : true;
             }
 
@@ -156,7 +252,7 @@ class ThirdLogin extends Controller
     }
 
     //微信授权获取openid以及微信用户信息
-    public function GetOpenid()
+    public function getOpenid()
     {
 //        //通过code获得openid
 //        if (!isset($_GET['code'])){

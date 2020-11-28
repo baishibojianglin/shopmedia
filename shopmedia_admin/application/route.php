@@ -117,12 +117,13 @@ Route::resource('feedback', 'admin/Feedback');
 /* -------------------- 客户端路由 -------------------- s */
 
 // 登录与注册
-Route::post('api/thirdlogin', 'api/ThirdLogin/thirdlogin'); // 第三方登录
 Route::put('api/login', 'api/Login/login'); // 登录
 Route::post('api/register', 'api/Login/register'); // 注册
 Route::put('api/pwd', 'api/Login/pwd'); // 找回密码
 Route::put('api/logout', 'api/Login/logout'); // 退出登录
 Route::post('api/hasphone', 'api/Login/hasphone'); // 检查电话是否存在
+Route::post('api/thirdlogin', 'api/ThirdLogin/thirdlogin'); // 第三方登录
+Route::post('api/bind_phone', 'api/ThirdLogin/bind_phone'); // 三方登录绑定手机号
 
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');

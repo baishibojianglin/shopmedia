@@ -1,12 +1,31 @@
 {
 	"pages": [ // pages数组中第一项表示应用启动页
-		{  //登录
+        {  // 登录主页
+            "path" : "pages/login/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff",
+				"backgroundColor": "#000000"
+            }
+            
+        }
+		,{  // 登录
 			"path": "pages/login/login",
 			"style": {
-				"app-plus": {"titleNView": false}
+				// "app-plus": {"titleNView": false}
 			}
-		},
-		{   //注册
+		}
+        ,{  // 绑定手机号
+            "path" : "pages/login/bind-phone",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "手机号绑定",
+                "enablePullDownRefresh": false
+            }
+        },
+		{   // 注册
 			"path": "pages/reg/reg",
 			"style": {
 				"app-plus": {
@@ -15,7 +34,7 @@
 				"navigationBarTitleText": "注册"
 			}
 		},
-		{ // 用户协议
+		{  // 用户协议
 			"path": "pages/reg/book",
 			"style": {
 				"app-plus": {
@@ -25,7 +44,7 @@
 				"navigationBarTitleText": "用户协议"
 			}
 		},
-		{ //忘记密码
+		{  // 忘记密码
 			"path": "pages/pwd/pwd",
 			"style": {
 				"navigationBarTitleText": "找回密码"

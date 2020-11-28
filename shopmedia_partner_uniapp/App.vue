@@ -13,12 +13,12 @@
 
 			// #ifdef H5
 			/* 微信网页授权登录 s */
-			/* let ua = window.navigator.userAgent.toLowerCase()
+			let ua = window.navigator.userAgent.toLowerCase()
 			if (ua.match(/MicroMessenger/i) == 'micromessenger') { // uniapp判断是否微信浏览器
 
-				// const base_url = 'http://media.dilinsat.com/h5/'; // 前端域名
-				const base_url = 'https://media.sustock.net/h5/'; // 前端正式地址
-				const wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx141d21edf5b7aa08&redirect_uri=' +
+				const base_url = 'http://media.dilinsat.com/h5/'; // 前端域名
+				// const base_url = 'https://media.sustock.net/h5/'; // 前端正式地址
+				const wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx59483b145b8ede88&redirect_uri=' +
 					base_url +
 					'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'; //请求微信code
 				// 获取URL 上code
@@ -32,7 +32,7 @@
 					// 发送code           
 					this.postCode(code)
 				}
-			} */
+			}
 			/* 微信网页授权登录 e */
 			// #endif
 
@@ -90,7 +90,14 @@
 						} else {
 							uni.showToast({
 								icon: 'none',
-								title: res.data.message
+								title: res.data.message,
+								complete() {
+									if (res.data.message == '请输入手机号码') {
+										uni.navigateTo({
+											url: '/pages/login/bind-phone?oauth_info=' + res.data.data.oauth_info
+										})
+									}
+								}
 							});
 						}
 					}
