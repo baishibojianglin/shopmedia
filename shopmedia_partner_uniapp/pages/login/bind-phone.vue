@@ -58,6 +58,11 @@
 		},
 		methods: {
 			/**
+			 * 映射vuex的login方法
+			 */
+			...mapMutations(['login']),
+			
+			/**
 			 * 倒计时函数
 			 */
 			countseconds() {
@@ -115,7 +120,9 @@
 			 * 绑定手机号提交表单
 			 */
 			bindPhone() {
-				// 检查手机号码
+				let self = this;
+				
+				// 验证手机号码
 				if (this.phone == '') {
 					uni.showToast({
 						icon: 'none',
@@ -131,7 +138,7 @@
 					return false;
 				}
 				
-				// 验证码
+				// 验证短信验证码
 				if (this.verify_code == '') {
 					uni.showToast({
 						icon: 'none',
@@ -154,25 +161,22 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						if (0 == res.data.status) { // 验证失败
+						if (res.data.status == 1) { // 验证成功
+							let userInfo = res.data.data;
+							
+							// 使用vuex管理登录状态时开启
+							self.login(userInfo);
+							
+							// 跳转到首页
+							uni.reLaunch({
+								url: '../main/main'
+							});
+						} else { // 验证失败
 							uni.showToast({
 								icon: 'none',
 								title: res.data.message
 							});
 							return false;
-						} else { // 验证成功跳转
-						   uni.showModal({
-						       title: '提示',
-						       content: '密码重置成功，去登陆',
-							   showCancel:false,
-						       success: function (res) {
-						           if (res.confirm) {
-						               uni.navigateTo({
-						               	url: '../login/login'
-						               });
-						           }
-						       }
-						   })
 						}
 					},
 					fail: function(error) {

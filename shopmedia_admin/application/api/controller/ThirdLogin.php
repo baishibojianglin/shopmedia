@@ -9,34 +9,44 @@ use think\Controller;
 use think\Db;
 
 /**
- * 第三方登录
+ * 第三方授权登录
  * Class ThirdLogin
  * @package app\api\controller
  */
 class ThirdLogin extends Controller
 {
-    //第三方登录
+    /**
+     * 第三方授权登录
+     * @return \think\response\Json
+     */
     public function thirdlogin(){
-        //授权获取信息
+        // 获取第三方授权用户信息
         $data = $this->getOpenid();
 
-        // 判断用户是否存在
+        // 判断用户是否存在，并且是否已经绑定手机号
         $userOauth = Db::name('user_oauth')->where(['oauth' => $data['oauth'], 'openid' => $data['openid']])->find();
-        $oauthInfo = (new Aes())->encrypt(json_encode($data)); // AES加密三方授权用户信息
+        $oauthInfo = (new Aes())->encrypt(json_encode($data)); // AES加密第三方授权用户信息
         if (!empty($userOauth) && $userOauth['user_id']) {
             $user = Db::name('user')->find($userOauth['user_id']);
             if (empty($user) || !$user['phone'] || $user['phone'] == null) {
-                return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+                return show(config('code.error'), '请绑定手机号码', ['oauth_info' => $oauthInfo], 401);
             }
         } else {
-            return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+            return show(config('code.error'), '请绑定手机号码', ['oauth_info' => $oauthInfo], 401);
         }
 
-        return show(config('code.success'), 'OK', $this->createUser($data));
+        // 当用户已经绑定手机号，则进行第三方授权登录
+        $thirdLogin = $this->_thirdLogin($data);
+        if ($thirdLogin) {
+            return show(config('code.success'), 'OK', $thirdLogin, 201);
+        } else {
+            return show(config('code.error'), '登录失败', [], 403);
+        }
     }
 
     /**
-     * 绑定手机号
+     * 创建用户及第三方授权用户信息，并绑定手机号
+     * @return \think\response\Json
      */
     public function bindPhone()
     {
@@ -48,7 +58,8 @@ class ThirdLogin extends Controller
         // 传入的参数
         $param = input('param.');
         $param['phone'] = trim($param['phone']);
-        $oauth_info = json_decode((new Aes())->decrypt($param['oauth_info']), true); // AES解密三方授权用户信息
+        $token = IAuth::setAppLoginToken($param['phone']);
+        $oauth_info = json_decode((new Aes())->decrypt($param['oauth_info']), true); // AES解密第三方授权用户信息
         $oauth = $oauth_info['oauth'];
         $openid = $oauth_info['openid'];
 
@@ -67,20 +78,9 @@ class ThirdLogin extends Controller
 
             // 判断短信验证码是否合法
             $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
-            if (empty($verifyCode) || $verifyCode != trim($param['verify_code'])) {
+            /*if (empty($verifyCode) || $verifyCode != trim($param['verify_code'])) {
                 return show(config('code.error'), '短信验证码错误', '', 401);
-            }
-        }
-
-        // 判断用户是否存在
-        $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
-        if (!empty($userOauth) && $userOauth['user_id']) {
-            $user = Db::name('user')->find($userOauth['user_id']);
-            if (empty($user) || !$user['phone'] || $user['phone'] == null) {
-                return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
-            }
-        } else {
-            return show(config('code.error'), '请输入手机号码', ['oauth_info' => $oauthInfo], 401);
+            }*/
         }
 
         // 入库操作
@@ -88,166 +88,170 @@ class ThirdLogin extends Controller
         // 启动事务
         Db::startTrans();
         try {
+            $res = [];
+
             // 判断该手机号用户是否存在，不存在则创建
             $user = Db::name('user')->where(['phone' => $param['phone']])->find();
             if (empty($user)) {
                 // 新增原始用户
-                $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+                $userData = [
+                    'user_name' => $oauth_info['nickname'],
+                    'role_ids' => 7,
+                    'phone' => $param['phone'],
+                    'phone_verified' => 1, // 手机号已验证
+                    'oauth' => $oauth,
+                    'openid' => $openid,
+                    'password' => IAuth::encrypt($param['phone']),
+                    'token' => $token,
+                    'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+                    'avatar' => $oauth_info['head_pic'],
+                    'gender' => $oauth_info['sex'],
+                    'status' => 1,
+                    'create_time' => time(),
+                    'create_ip' => request()->ip(),
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip() // 登录IP
+                ];
+                $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($userData); // 新增数据并返回主键值
+            } else {
+                $userId = $user['user_id'];
             }
 
-            // 判断三方授权用户信息是否存在，不存在则创建
-            $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+            // 判断advertiser是否存在，不存在则创建
+            $advertiser = Db::name('user_advertiser')->where(['user_id' => $userId])->find();
+            if (empty($user) || (empty($advertiser) && $userId)) {
+                // 新增advertiser
+                $advData = [
+                    'user_id' => $userId,
+                    'salesman_id' => 0, // TODO
+                    'status' => 1,
+                    'create_time' => time()
+                ];
+                $res[1] = $advId = Db::name('user_advertiser')->insertGetId($advData);
+            }
 
-            // 新增原始用户
-            $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
+            // 判断第三方授权用户信息是否存在，不存在则创建，同时绑定用户user_id
+            $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
+            if(empty($userOauth)){
+                // 新增user_oauth
+                $oauthData = [
+                    'user_id' => $userId,
+                    'oauth' => $oauth,
+                    'openid' => $openid,
+                    'verified' => 1,
+                    'create_time' => time(),
+                    'create_ip' => request()->ip(),
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip(), // 登录IP
+                    'device_id' => 0 // 广告屏设备id
+                ];
+                $res[2] = $oauthId = Db::name('user_oauth')->insertGetId($oauthData);
+            }
+            // 当第三方授权用户信息存在时，若未绑定用户user_id则进行绑定
+            if (!empty($userOauth) && $userOauth['user_id'] != $userId) {
+                // 绑定用户user_id
+                $oauthUpdData = [
+                    'user_id' => $userId
+                ];
+                $oauthUpdRes = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->update($oauthUpdData);
+                $res[3] = $oauthUpdRes === false ? 0 : true;
+            }
 
             // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
             if (in_array(0, $res)) {
-                return show(config('code.error'), '新增失败', '', 403);
+                return show(config('code.error'), '绑定手机号失败', '', 403);
             }
 
-            // 返回token给客户端
-            $result = [
-                'token' => (new Aes())->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
-            ];
             // 提交事务
             Db::commit();
+
+            // 重新获取用户信息
+            $user = Db::name('user')->find($userId);
+            // 返回token等信息给客户端
+            $result = [
+                'token' => (new Aes())->encrypt($token . '&' . $userId), // AES加密（自定义拼接字符串）
+                'user_id' => $user['user_id'],
+                'user_name' => $user['user_name'],
+                'phone' => $user['phone']
+            ];
             return show(config('code.success'), 'OK', $result, 201);
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
-            return show(config('code.error'), '注册失败，请重试' . $e->getMessage(), '', 500);
+            return show(config('code.error'), '绑定手机号失败，请重试' . $e->getMessage(), '', 500);
             //throw new ApiException($e->getMessage(), 500, config('code.error'));
         }
         /* 手动控制事务 e */
     }
 
     /**
-     * 创建微信用户
+     * 当用户已经绑定手机号，则进行第三方授权登录
      * @param $userInfo
-     * @param $postObj
+     * @return array|string|void
      */
-    public function createUser($userInfo)
+    private function _thirdLogin($userInfo)
     {
         // 查询用户是否存在
         $openid = $userInfo['openid'];
         $oauth = $userInfo['oauth'];
-
-        $user = Db::name('user')->where(['oauth' => $oauth, 'openid' => $openid])->find();
         $userOauth = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->find();
-
-        //开启事务
-        Db::startTrans();
-        try {
-            $res = [];
-            $token = IAuth::setAppLoginToken($openid);
-
-            // 用户不存在，则创建用户
-            if (empty($user)) {
-
-                $data = [
-                    'user_name' => $userInfo['nickname'],
-                    'role_ids' => 7,
-                    'openid' => $openid,
-                    'oauth' => $oauth,
-                    'token' => $token,
-                    'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
-                    'avatar' => $userInfo['head_pic'],
-                    'gender' => $userInfo['sex'],
-                    'status' => 1,
-                    'create_time' =>time(),
-                    'create_ip' =>request()->ip(),
-                    'login_time' => time(), // 登录时间
-                    'login_ip' => request()->ip() // 登录IP
-                ];
-
-                $userid = Db::name('user')->insertGetId($data);     //新增用户
-                $res['1'] = $userid;
-
-                //新增advertiser
-                if($userid > 0){
-
-                    $advdata = [
-                        'user_id' => $userid,
-                        'salesman_id' => 0,
-                        'role_id' => 7,
-                        'status' => 1,
-                        'create_time' => time()
+        if (!empty($userOauth) && $userOauth['user_id']) {
+            $userId = $userOauth['user_id'];
+            $user = Db::name('user')->where(['user_id' => $userId])->find();
+            if (!empty($user)) {
+                // 入库操作
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    // 用户user存在，更新user登录信息
+                    $token = IAuth::setAppLoginToken($openid); // 设置登录的唯一性token
+                    $userData = [
+                        'token' => $token, // token
+                        'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+                        'login_time' => time(), // 登录时间
+                        'login_ip' => request()->ip() // 登录IP
                     ];
+                    $userRes = Db::name('user')->where('user_id', $userId)->update($userData);
+                    $res[1] = $userRes === false ? 0 : true;
 
-                    $advid = Db::name('user_advertiser')->insertGetId($advdata);
-                    $res['2'] = $advid;
+                    // oauth存在，更新oauth登录信息
+                    $oauthData = [
+                        'user_id' => $userId,
+                        'login_time' => time(), // 登录时间
+                        'login_ip' => request()->ip() // 登录IP
+                    ];
+                    $oauthRes = Db::name('user_oauth')->where('oauth_id', $userOauth['oauth_id'])->update($oauthData);
+                    $res[2] = $oauthRes === false ? 0 : true;
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '新增失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+
+                    // 返回token等信息给客户端
+                    $result = [
+                        'token' => (new Aes())->encrypt($token . '&' . $userId), // AES加密（自定义拼接字符串）
+                        'user_id' => $user['user_id'],
+                        'user_name' => $user['user_name'],
+                        'phone' => !empty($user['phone']) ? $user['phone'] : ''
+                    ];
+                    return $result;
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    return false;
+                    //throw new ApiException($e->getMessage(), 500, config('code.error'));
                 }
-
+                /* 手动控制事务 e */
+            } else {
+                return false;
             }
-            else{
-                $userid = $user['user_id'];
-                //用户存在，修改登录信息
-                $data = [
-                    'token' => $token, // token
-                    'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
-                    'login_time' => time(), // 登录时间
-                    'login_ip' => request()->ip() // 登录IP
-                ];
-
-                $loginres = Db::name('user')->where('user_id',$userid)->update($data);
-                $res['3'] = $loginres === false ? 0 : true;
-            }
-
-            //判断user_oauth
-            if(empty($userOauth)){
-
-                $oauthdata = [
-                    'user_id' => $userid,
-                    'oauth' => $oauth,
-                    'openid' => $openid,
-                    'verified' => 1,
-                    'create_time' =>time(),
-                    'create_ip' =>request()->ip(),
-                    'login_time' => time(), // 登录时间
-                    'login_ip' => request()->ip(), // 登录IP
-                    'device_id' => 0 // 广告屏设备id
-                ];
-
-                $oauthid = Db::name('user_oauth')->insertGetId($oauthdata);     //新增user_oauth
-                $res['4'] = $oauthid;
-
-            }
-            else{
-                //oauth存在，修改登录信息
-                $data = [
-                    'user_id' => $userid,
-                    'login_time' => time(), // 登录时间
-                    'login_ip' => request()->ip() // 登录IP
-                ];
-
-                $oauthres = Db::name('user_oauth')->where('oauth_id', $userOauth['oauth_id'])->update($data);
-                $res['5'] = $oauthres === false ? 0 : true;
-            }
-
-            // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
-            if (in_array(0, $res)) {
-                return '用户登录失败';
-            }
-
-            // 提交事务
-            Db::commit();
-
-            $user1 = Db::name('user')->where(['oauth' => $oauth, 'openid' => $openid])->find();
-
-            // 返回token给客户端
-            $result = [
-                'token' => (new Aes())->encrypt($token . '&' . $user1['user_id']), // AES加密（自定义拼接字符串）
-                'user_id' => $user1['user_id'],
-                'user_name' => $user1['user_name'],
-                'phone' => !empty($user1['phone']) ? $user1['phone'] : ''
-            ];
-            return $result;
-
-        }catch (\Exception $e){
-            // 回滚事务
-            Db::rollback();
-            return $e->getMessage();
+        } else {
+            return false;
         }
     }
 
