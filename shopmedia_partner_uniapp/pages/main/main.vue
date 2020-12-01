@@ -224,7 +224,7 @@
 						} else {
 							uni.showToast({
 								icon: 'none',
-								title: '网络繁忙，稍后重试',
+								title: res.data.message, // '网络繁忙，稍后重试'
 								duration: 2000
 							});
 						}

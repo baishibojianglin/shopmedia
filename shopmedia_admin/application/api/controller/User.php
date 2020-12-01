@@ -128,19 +128,21 @@ class User extends AuthBase
     /**
      * 获取用户角色信息
      * @return \think\response\Json
+     * @throws ApiException
      */
     public function getUserRole(){
         $param = input();
-        $match['user_id'] = $param['user_id'];
-        $userlist=Db::name('user')->where($match)->field('role_ids')->find();
-        if(!empty($userlist)){
-            $message['status']=1;
-            $message['data']=$userlist;
-            return json($message);
-        }else{
-            $message['status']=0;
-            $message['words']='角色获取失败';
-            return json($message);
+        $map['user_id'] = $param['user_id'];
+
+        try { // 捕获异常
+            $user = Db::name('user')->field('role_ids')->where($map)->find();
+        } catch (\Exception $e) {
+            throw new ApiException($e->getMessage(), 500, config('code.error'));
+        }
+        if (!empty($user)) {
+            return show(config('code.success'), 'OK', $user);
+        } else {
+            return show(config('code.error'), '角色获取失败', [], 404);
         }
     }
 

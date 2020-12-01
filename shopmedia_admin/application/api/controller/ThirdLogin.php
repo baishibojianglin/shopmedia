@@ -58,7 +58,7 @@ class ThirdLogin extends Controller
         // 传入的参数
         $param = input('param.');
         $param['phone'] = trim($param['phone']);
-        $token = IAuth::setAppLoginToken($param['phone']);
+        $token = IAuth::setAppLoginToken($param['phone']); // 设置登录的唯一性token
         $oauth_info = json_decode((new Aes())->decrypt($param['oauth_info']), true); // AES解密第三方授权用户信息
         $oauth = $oauth_info['oauth'];
         $openid = $oauth_info['openid'];
@@ -78,9 +78,9 @@ class ThirdLogin extends Controller
 
             // 判断短信验证码是否合法
             $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
-            /*if (empty($verifyCode) || $verifyCode != trim($param['verify_code'])) {
+            if (empty($verifyCode) || $verifyCode != trim($param['verify_code'])) {
                 return show(config('code.error'), '短信验证码错误', '', 401);
-            }*/
+            }
         }
 
         // 入库操作
@@ -115,6 +115,16 @@ class ThirdLogin extends Controller
                 $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($userData); // 新增数据并返回主键值
             } else {
                 $userId = $user['user_id'];
+
+                // 用户user存在，更新user登录信息
+                $userData = [
+                    'token' => $token, // token
+                    'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
+                    'login_time' => time(), // 登录时间
+                    'login_ip' => request()->ip() // 登录IP
+                ];
+                $userRes = Db::name('user')->where('user_id', $userId)->update($userData);
+                $res[1] = $userRes === false ? 0 : true;
             }
 
             // 判断advertiser是否存在，不存在则创建
@@ -127,7 +137,7 @@ class ThirdLogin extends Controller
                     'status' => 1,
                     'create_time' => time()
                 ];
-                $res[1] = $advId = Db::name('user_advertiser')->insertGetId($advData);
+                $res[2] = $advId = Db::name('user_advertiser')->insertGetId($advData);
             }
 
             // 判断第三方授权用户信息是否存在，不存在则创建，同时绑定用户user_id
@@ -145,7 +155,7 @@ class ThirdLogin extends Controller
                     'login_ip' => request()->ip(), // 登录IP
                     'device_id' => 0 // 广告屏设备id
                 ];
-                $res[2] = $oauthId = Db::name('user_oauth')->insertGetId($oauthData);
+                $res[3] = $oauthId = Db::name('user_oauth')->insertGetId($oauthData);
             }
             // 当第三方授权用户信息存在时，若未绑定用户user_id则进行绑定
             if (!empty($userOauth) && $userOauth['user_id'] != $userId) {
@@ -154,7 +164,7 @@ class ThirdLogin extends Controller
                     'user_id' => $userId
                 ];
                 $oauthUpdRes = Db::name('user_oauth')->where(['oauth' => $oauth, 'openid' => $openid])->update($oauthUpdData);
-                $res[3] = $oauthUpdRes === false ? 0 : true;
+                $res[4] = $oauthUpdRes === false ? 0 : true;
             }
 
             // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
