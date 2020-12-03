@@ -484,7 +484,7 @@ class WeChat extends Controller
                         ),*/
                         array(
                             'type' => 'view',
-                            'name' => urlencode('广告案例'),
+                            'name' => urlencode('合作案例'),
                             'url' => 'https://media.sustock.net/case/'
                         )
                     )

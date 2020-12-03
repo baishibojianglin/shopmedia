@@ -3,7 +3,7 @@
 		
 		<uni-card  :is-shadow='true'>
 			<view class="tvcon">
-				<video class="vedio-con" src="https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4" :autoplay="true"  :loop="false" :controls="true"></video>
+				<video class="vedio-con" src="https://sustock-website.oss-cn-chengdu.aliyuncs.com/company1.mp4" :autoplay="true"  :loop="false" :controls="true"></video><!-- https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4 -->
 				<view class="vedio-logo">
 					— 店通传媒 —
 				</view>
