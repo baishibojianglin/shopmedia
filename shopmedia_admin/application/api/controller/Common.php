@@ -69,7 +69,7 @@ class Common extends Controller
         if(empty($headers['commonheader']['sign'])){
             throw new ApiException('sign不存在', 400);
         }
-        if(!in_array($headers['commonheader']['apptype'], config('app.apptypes'))){
+       if(!in_array($headers['commonheader']['apptype'], config('app.apptypes'))){
             throw new ApiException('apptype不合法', 400);
         }
 

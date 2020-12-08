@@ -62,6 +62,8 @@ class Shop extends AuthBase
             // 启动事务
             Db::startTrans();
             try {
+                $res = [];
+
                 // 2.2 判断店铺所属店家（包括店家所属用户）数据：user_shopkeeper、user表
                 if ($data['phone'] == $this->user['phone']) {
                     return show(config('code.error'), '电话号码错误', '', 401);
