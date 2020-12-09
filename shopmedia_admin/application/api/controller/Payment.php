@@ -19,7 +19,7 @@ require __DIR__ . '/../../../vendor/autoload.php';
 use Alipay\EasySDK\Kernel\Factory;
 use Alipay\EasySDK\Kernel\Config;
 
-class Test extends AuthBase
+class Payment extends AuthBase
 {
     public function __construct()
     {

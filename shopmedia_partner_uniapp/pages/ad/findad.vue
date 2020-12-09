@@ -118,7 +118,7 @@
 		<view class="uni-padding-wrap uni-common-mt mb">
 			<button @click="submitForm()" type="" class="bg-main-color color-white">确认支付</button>
 			
-			<button v-if="false" @click="pay()" class="uni-common-mt">支付</button>
+			<button v-if="userInfo.user_id == 1 ? true : false" @click="pay()" class="uni-common-mt">支付</button>
 		</view>
 	</view>
 </template>
@@ -755,13 +755,13 @@
 			 */
 			pay(){
 				uni.request({
-					url: this.$serverUrl + 'api/test',
+					url: this.$serverUrl + 'api/payment',
 					// url: 'http://demo.tp5.com/index.php/api/test',
 					header:{
 						'commonheader': this.commonheader,
 						'access-user-token': this.userInfo.token
 					},
-					method: 'GET',
+					method: 'POST',
 					success: function(res) {
 						console.log(123, res);
 						uni.showModal({
