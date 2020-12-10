@@ -1,1 +1,0 @@
-{"return_code":"SUCCESS","return_msg":"OK","appid":"wx141d21edf5b7aa08","mch_id":"1601018635","nonce_str":"9z81sm2yh1k03luaotxclpp0t6mp1ro5","sign":"9E8C2B7641F7DD5CAB3FE5905A16C3F2","result_code":"SUCCESS","prepay_id":"wx1020162272724437e33c34ffd734490000","trade_type":"JSAPI"}
