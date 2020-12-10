@@ -127,8 +127,8 @@ Route::post('api/bind_phone', 'api/ThirdLogin/bindPhone'); // 第三方授权登
 
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
-// 调用支付接口
-Route::post('api/payment', 'api/Payment/index');
+// 调用微信支付接口
+Route::post('api/payment', 'api/WxPay/index');
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');
