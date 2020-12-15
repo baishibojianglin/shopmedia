@@ -754,6 +754,8 @@
 			 * 支付测试
 			 */
 			pay(){
+				let self = this;
+				
 				uni.request({
 					url: this.$serverUrl + 'api/payment',
 					// url: 'http://demo.tp5.com/index.php/api/test',
@@ -763,20 +765,65 @@
 					},
 					method: 'POST',
 					success: function(res) {
-						console.log(123, res);
+						// console.log(123, res);
 						uni.showModal({
 						    title: '提示 success',
 						    content: res.data.message,
 						})
+						
+						if (res.data.status == 1) {
+							// 微信JSAPI调起支付
+							if (typeof WeixinJSBridge == "undefined"){
+								if ( document.addEventListener ){
+									document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+								} else if (document.attachEvent){
+									document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+									document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+								}
+							}else{
+								if (res.data.data.jsApiParameters){
+									self.onBridgeReady(res.data.data.jsApiParameters);
+								}
+							}
+						}
 					},
 					fail: function(error) {
-						console.log(220, error);
+						// console.log(220, error);
 						uni.showModal({
 						    title: '提示 fail',
 						    content: error.data.message,
 						})
 					}
 				})
+			},
+			
+			/**
+			 * 微信JSAPI调起支付
+			 * @param {Object} jsApiParameters
+			 * jsApiParameters示例：
+			 * {
+				 "appId":"wx2421b1c4370ec43b",     //公众号名称，由商户传入     
+				 "timeStamp":"1395712654",         //时间戳，自1970年以来的秒数     
+				 "nonceStr":"e61463f8efa94090b1f366cccfbbb444", //随机串     
+				 "package":"prepay_id=u802345jgfjsdfgsdg888",     
+				 "signType":"MD5",         //微信签名方式：     
+				 "paySign":"70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
+			   }
+			 */
+			onBridgeReady(jsApiParameters){
+				WeixinJSBridge.invoke(
+					'getBrandWCPayRequest',
+					JSON.parse(jsApiParameters), // 由JSON字符串转换为JSON对象
+					function(res){
+					if(res.err_msg == "get_brand_wcpay_request:ok" ){
+						// 使用以上方式判断前端返回,微信团队郑重提示：
+						//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+						uni.showModal({
+							title: '提示 success',
+							content: res.err_msg
+						})
+					}
+				}); 
 			},
 			
 			//跳转到设备详情

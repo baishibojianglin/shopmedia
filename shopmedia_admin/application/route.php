@@ -128,7 +128,8 @@ Route::post('api/bind_phone', 'api/ThirdLogin/bindPhone'); // 第三方授权登
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
 // 调用微信支付接口
-Route::post('api/payment', 'api/WxPay/index');
+Route::post('api/payment', 'api/WxPay/index'); // 统一下单
+Route::any('api/wxPayNotify', 'api/WxPayNotify/notify'); // 微信支付回调通知
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');
