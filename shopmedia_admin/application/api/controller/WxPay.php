@@ -58,11 +58,11 @@ class WxPay extends AuthBase
             //echo '<font color="#f00"><b>统一下单支付单信息</b></font><br/>';
             //printf_info($order);
             $jsApiParameters = $tools->GetJsApiParameters($order);
-            file_put_contents('./wxpay.txt', json_encode($jsApiParameters));
+            //file_put_contents('./wxpay.txt', json_encode($jsApiParameters));
 
             //获取共享收货地址js函数参数
             $editAddress = $tools->GetEditAddressParameters();
-            file_put_contents('./wxpay.txt', '\\n' . json_encode($editAddress), FILE_APPEND);
+            //file_put_contents('./wxpay.txt', '\\n' . json_encode($editAddress), FILE_APPEND);
 
             $data = ['jsApiParameters' => $jsApiParameters, 'editAddress' => $editAddress];
             return show(config('code.success'), 'OK', $data);
