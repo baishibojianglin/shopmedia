@@ -116,7 +116,7 @@
 		</uni-card>
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<button @click="submitForm()" type="" class="bg-main-color color-white">确认支付</button>
+			<button @click="submitForm()" type="" class="bg-main-color color-white">确认提交</button>
 			
 			<button v-if="userInfo.user_id == 1 ? true : false" @click="pay()" class="uni-common-mt">支付</button>
 		</view>
@@ -662,12 +662,6 @@
 			 * 投放广告提交表单
 			 */
 			submitForm() {
-				/* uni.showToast({
-					icon: 'none',
-					title: '功能开发中，敬请期待！'
-				});
-				return false; */
-				
 				// 自定义验证表单
 				this.form.ad_cate_id = this.adCateList[this.adCateIndex].cate_id;
 				if (this.form.ad_cate_id == '') {
@@ -730,18 +724,22 @@
 							});
 							return;
 						} else { // 提交成功跳转
-						   uni.showModal({
-						       title: '提示',
-						       content: '广告投放成功',
-							   showCancel: false,
-						       success: function (res) {
-						           if (res.confirm == true) {
-										uni.switchTab({
-											url: '/pages/user/user'
-										})
-						           }
-						       }
-						   })
+							if (res.data.data.ad_id) {
+								let ad_id = res.data.data.ad_id;
+								uni.showModal({
+									title: '提示',
+									content: '广告投放数据提交成功，去完成支付',
+									showCancel: false,
+									success: function (res) {
+										if (res.confirm == true) {
+											uni.navigateTo({
+												url: '/pages/ad/payad?ad_id=' + ad_id
+											})
+											return false;
+										}
+									}
+								})
+							}
 						}
 					},
 					fail: function(error) {
@@ -757,7 +755,7 @@
 				let self = this;
 				
 				uni.request({
-					url: this.$serverUrl + 'api/payment',
+					url: this.$serverUrl + 'api/wxPay',
 					// url: 'http://demo.tp5.com/index.php/api/test',
 					header:{
 						'commonheader': this.commonheader,

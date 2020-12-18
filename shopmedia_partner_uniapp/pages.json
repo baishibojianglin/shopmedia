@@ -390,6 +390,15 @@
 					}
 				}
 			}
+        }
+        ,{ // 支付广告费
+            "path" : "pages/ad/payad",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "支付广告",
+                "enablePullDownRefresh": false
+            }
+            
         },
         { // 覆盖城市
             "path" : "pages/city/city",
