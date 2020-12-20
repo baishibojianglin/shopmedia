@@ -26,13 +26,13 @@ require_once __DIR__ . '/../../../extend/payment/wxpay/php_sdk_v3.0.10/example/W
 class WxPay extends AuthBase
 {
     /**
-     * 微信JSAPI调起支付
+     * 微信JSAPI支付（测试）
      * @return \think\response\Json
      * @throws ApiException
      */
     public function index()
     {
-        try{
+        try {
             // ①、获取用户openid
             //Loader::import("payment.wxpay.JsApiPay", EXTEND_PATH);
             $tools = new \JsApiPay();
@@ -66,21 +66,21 @@ class WxPay extends AuthBase
 
             $data = ['jsApiParameters' => $jsApiParameters, 'editAddress' => $editAddress];
             return show(config('code.success'), 'OK', $data);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             file_put_contents('./wxpayException.txt', json_encode($e->getMessage()));
             throw new ApiException($e->getMessage(), 500);
         }
     }
 
     /**
-     * 微信调起支付
+     * 微信（JSAPI）支付通用方法
      * @param array $param
      * @return array
      * @throws ApiException
      */
     public function wxPay($param = [])
     {
-        try{
+        try {
             // ①、获取用户openid
             //Loader::import("payment.wxpay.JsApiPay", EXTEND_PATH);
             $tools = new \JsApiPay();
@@ -114,18 +114,18 @@ class WxPay extends AuthBase
 
             //获取共享收货地址js函数参数
             $editAddress = $tools->GetEditAddressParameters();
-            //file_put_contents('./wxpay.txt', '\\n' . json_encode($editAddress), FILE_APPEND);
+            //file_put_contents('./wxpay.txt', PHP_EOL . json_encode($editAddress), FILE_APPEND);
 
             $data = ['jsApiParameters' => $jsApiParameters, 'editAddress' => $editAddress];
             return $data;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             file_put_contents('./wxpayException.txt', json_encode($e->getMessage()));
             throw new ApiException($e->getMessage(), 500);
         }
     }
 
     /**
-     * 广告投放订单（微信）支付
+     * 广告投放订单微信支付
      * @return \think\response\Json
      * @throws ApiException
      */
@@ -148,8 +148,8 @@ class WxPay extends AuthBase
                 $param['attach'] = '店通传媒';
                 $param['out_trade_no'] = $ad['order_sn'];
                 $param['total_fee'] = (int)($data['ad_price'] * 100);
-                $param['notify_url'] = 'https://media.sustock.net/index.php/api/wxPayNotify';
-                // 微信调起支付
+                $param['notify_url'] = 'https://media.sustock.net/index.php/api/adWxPayNotify';
+                // 微信支付
                 $res = $this->wxPay($param);
                 if ($res) {
                     return show(config('code.success'), 'OK', $res);

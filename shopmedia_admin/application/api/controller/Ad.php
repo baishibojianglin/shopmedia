@@ -48,7 +48,7 @@ class Ad extends AuthBase
     {
         // 判断为POST请求
         if(request()->isPost()){
-            return show(config('code.success'), '新增成功', ['ad_id' => 16], 201);
+            return show(config('code.success'), '新增成功', ['ad_id' => 17], 201);
             // 传入的参数
             $data = input('post.');
             // 处理数据
