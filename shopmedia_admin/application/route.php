@@ -128,11 +128,17 @@ Route::post('api/bind_phone', 'api/ThirdLogin/bindPhone'); // 第三方授权登
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
 
-// 调用微信支付接口
+/*调用微信支付接口 s*/
+// 微信支付测试
 Route::post('api/wxPay', 'api/WxPay/index'); // 微信JSAPI支付（测试）
+Route::post('api/wxNativePay', 'api/WxPay/wxNativePay'); // 微信Native支付（测试）
 Route::post('api/wxPayNotify', 'api/WxPayNotify/notify'); // 微信支付回调通知（测试）
+// 广告微信支付
 Route::post('api/adWxPay', 'api/WxPay/adWxPay'); // 广告投放订单微信支付
 Route::post('api/adWxPayNotify', 'api/WxPayNotify/adWxPayNotify'); // 广告投放订单微信支付回调通知
+// 广告套餐微信支付
+Route::post('api/adComboWxPayNotify', 'api/WxPayNotify/adComboWxPayNotify'); // 广告套餐订单微信支付回调通知
+/*调用微信支付接口 e*/
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');

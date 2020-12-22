@@ -17,6 +17,7 @@ require_once __DIR__ . '/../../../extend/payment/wxpay/php_sdk_v3.0.10/lib/WxPay
 require_once __DIR__ . '/../../../extend/payment/wxpay/php_sdk_v3.0.10/example/WxPay.JsApiPay.php';
 require_once __DIR__ . '/../../../extend/payment/wxpay/php_sdk_v3.0.10/example/WxPay.Config.php';
 //require_once __DIR__ . '/../../../extend/payment/wxpay/php_sdk_v3.0.10/lib/WxPay.Data.php'; // lib/WxPay.Api.php文件中已引入
+require_once __DIR__ . '/../../../extend/payment/wxpay/php_sdk_v3.0.10/example/WxPay.NativePay.php';
 
 /**
  * 微信支付控制器类
@@ -58,27 +59,27 @@ class WxPay extends AuthBase
             //echo '<font color="#f00"><b>统一下单支付单信息</b></font><br/>';
             //printf_info($order);
             $jsApiParameters = $tools->GetJsApiParameters($order);
-            //file_put_contents('./wxpay.txt', json_encode($jsApiParameters));
+            //file_put_contents(RUNTIME_PATH . 'wxpay.txt', json_encode($jsApiParameters) . PHP_EOL, FILE_APPEND);
 
             //获取共享收货地址js函数参数
             $editAddress = $tools->GetEditAddressParameters();
-            //file_put_contents('./wxpay.txt', '\\n' . json_encode($editAddress), FILE_APPEND);
+            //file_put_contents(RUNTIME_PATH . 'wxpay.txt', json_encode($editAddress) . PHP_EOL, FILE_APPEND);
 
             $data = ['jsApiParameters' => $jsApiParameters, 'editAddress' => $editAddress];
             return show(config('code.success'), 'OK', $data);
         } catch (\Exception $e) {
-            file_put_contents('./wxpayException.txt', json_encode($e->getMessage()));
+            file_put_contents(RUNTIME_PATH . 'wxpay_exception.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
             throw new ApiException($e->getMessage(), 500);
         }
     }
 
     /**
-     * 微信（JSAPI）支付通用方法
+     * 微信JSAPI支付通用方法
      * @param array $param
      * @return array
      * @throws ApiException
      */
-    public function wxPay($param = [])
+    public function wxJsApiPay($param = [])
     {
         try {
             // ①、获取用户openid
@@ -110,16 +111,51 @@ class WxPay extends AuthBase
             //echo '<font color="#f00"><b>统一下单支付单信息</b></font><br/>';
             //printf_info($order);
             $jsApiParameters = $tools->GetJsApiParameters($order);
-            //file_put_contents('./wxpay.txt', json_encode($jsApiParameters));
+            //file_put_contents(RUNTIME_PATH . 'wxpay.txt', json_encode($jsApiParameters) . PHP_EOL, FILE_APPEND);
 
             //获取共享收货地址js函数参数
             $editAddress = $tools->GetEditAddressParameters();
-            //file_put_contents('./wxpay.txt', PHP_EOL . json_encode($editAddress), FILE_APPEND);
+            //file_put_contents(RUNTIME_PATH . 'wxpay.txt', PHP_EOL . json_encode($editAddress) . PHP_EOL, FILE_APPEND);
 
             $data = ['jsApiParameters' => $jsApiParameters, 'editAddress' => $editAddress];
             return $data;
         } catch (\Exception $e) {
-            file_put_contents('./wxpayException.txt', json_encode($e->getMessage()));
+            file_put_contents(RUNTIME_PATH . 'wxpay_exception.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
+            throw new ApiException($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * 微信Native支付（扫码支付）通用方法
+     * 模式二
+     * 流程：
+     * 1、调用统一下单，取得code_url，生成二维码
+     * 2、用户扫描二维码，进行支付
+     * 3、支付完成之后，微信服务器会通知支付成功
+     * 4、在支付成功通知中需要查单确认是否真正支付成功（见：/extend/payment/wxpay/php_sdk_v3.0.10/example/notify.php）
+     */
+    public function wxNativePay()
+    {
+        try {
+            // 统一下单
+            $input = new \WxPayUnifiedOrder();
+            $input->SetBody("test");
+            $input->SetAttach("test");
+            $input->SetOut_trade_no("sdkphp123456789".date("YmdHis"));
+            $input->SetTotal_fee("1");
+            $input->SetTime_start(date("YmdHis"));
+            $input->SetTime_expire(date("YmdHis", time() + 600));
+            $input->SetGoods_tag("test");
+            $input->SetNotify_url("http://paysdk.weixin.qq.com/notify.php");
+            $input->SetTrade_type("NATIVE");
+            $input->SetProduct_id("123456789");
+
+            $notify = new \NativePay();
+            $result = $notify->GetPayUrl($input);
+            $url2 = $result["code_url"];
+            file_put_contents(RUNTIME_PATH . 'wxpay.txt', $url2 . PHP_EOL, FILE_APPEND);
+        } catch (\Exception $e) {
+            file_put_contents(RUNTIME_PATH . 'wxpay_exception.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
             throw new ApiException($e->getMessage(), 500);
         }
     }
@@ -149,8 +185,8 @@ class WxPay extends AuthBase
                 $param['out_trade_no'] = $ad['order_sn'];
                 $param['total_fee'] = (int)($data['ad_price'] * 100);
                 $param['notify_url'] = 'https://media.sustock.net/index.php/api/adWxPayNotify';
-                // 微信支付
-                $res = $this->wxPay($param);
+                // 微信JSAPI支付
+                $res = $this->wxJsApiPay($param);
                 if ($res) {
                     return show(config('code.success'), 'OK', $res);
                 }
