@@ -32,9 +32,9 @@
 			// 获取新增广告ID
 			if (option.ad_id != undefined && option.ad_id) {
 				this.ad_id = option.ad_id;
+				
+				this.getAd();
 			}
-			
-			this.getAd();
 		},
 		methods: {
 			/**

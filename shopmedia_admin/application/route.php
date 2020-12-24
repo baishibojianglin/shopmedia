@@ -131,12 +131,13 @@ Route::post('api/send_sms', 'api/SendSms/sendSms');
 /*调用微信支付接口 s*/
 // 微信支付测试
 Route::post('api/wxPay', 'api/WxPay/index'); // 微信JSAPI支付（测试）
-Route::post('api/wxNativePay', 'api/WxPay/wxNativePay'); // 微信Native支付（测试）
+//Route::post('api/wxNativePay', 'api/WxPay/wxNativePay'); // 微信Native支付（测试）
 Route::post('api/wxPayNotify', 'api/WxPayNotify/notify'); // 微信支付回调通知（测试）
 // 广告微信支付
 Route::post('api/adWxPay', 'api/WxPay/adWxPay'); // 广告投放订单微信支付
 Route::post('api/adWxPayNotify', 'api/WxPayNotify/adWxPayNotify'); // 广告投放订单微信支付回调通知
 // 广告套餐微信支付
+Route::post('api/adComboWxNativePayQRCodeUrl', 'api/WxPay/adComboWxNativePayQRCodeUrl'); // 获取广告套餐订单微信扫码支付二维码链接
 Route::post('api/adComboWxPayNotify', 'api/WxPayNotify/adComboWxPayNotify'); // 广告套餐订单微信支付回调通知
 /*调用微信支付接口 e*/
 

@@ -465,6 +465,15 @@
 				}
 			}
         }
+        ,{ // 支付广告套餐订单费
+            "path" : "pages/ad-combo/ad-combo-order-pay",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "支付广告套餐",
+                "enablePullDownRefresh": false
+            }
+            
+        }
         ,{ // 店家发放的奖品列表
             "path" : "pages/act-raffle/raffle-prize",
             "style" : {

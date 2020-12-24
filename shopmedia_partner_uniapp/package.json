@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dcloudio/uni-ui": "^1.1.8"
+    "@dcloudio/uni-ui": "^1.1.8",
+    "qrcode": "^1.4.4",
+    "tki-qrcode": "^0.1.6"
   },
   "devDependencies": {
     "crypto-js": "^4.0.0"

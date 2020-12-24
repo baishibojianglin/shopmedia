@@ -48,7 +48,7 @@ class Ad extends AuthBase
     {
         // 判断为POST请求
         if(request()->isPost()){
-            return show(config('code.success'), '新增成功', ['ad_id' => 17], 201);
+            //return show(config('code.success'), '新增成功', ['ad_id' => 18], 201); // TODO：用于支付测试：不会创建广告投放数据，直接跳转到支付页面做支付测试，若页面提示“参数错误”，修改ad_id对应订单号。
             // 传入的参数
             $data = input('post.');
             // 处理数据
@@ -103,7 +103,7 @@ class Ad extends AuthBase
             $data['phone'] = $this->user['phone'];
 
             // 订单编号与下单时间
-            $data['order_sn'] = model('Ad')->getOrderSn('shopmediaad'); // 生成唯一订单编号 order_sn
+            $data['order_sn'] = model('Ad')->getOrderSn('smad'); // 生成唯一订单编号 order_sn
             $data['order_time'] = time();
 
             // validate验证数据合法性
