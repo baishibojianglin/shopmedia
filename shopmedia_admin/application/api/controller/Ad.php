@@ -103,7 +103,7 @@ class Ad extends AuthBase
             $data['phone'] = $this->user['phone'];
 
             // 订单编号与下单时间
-            $data['order_sn'] = model('Ad')->getOrderSn('smad'); // 生成唯一订单编号 order_sn
+            $data['order_sn'] = model('Ad')->getOrderSn('msad'); // 生成唯一订单编号 order_sn
             $data['order_time'] = time();
 
             // validate验证数据合法性

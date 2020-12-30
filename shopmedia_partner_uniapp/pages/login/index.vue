@@ -4,7 +4,7 @@
 			<image class="logo" :src="logourl"></image>
 		</view>
 		<!-- <view class="uni-center logotext">
-			<text>店通传媒</text>
+			<text>商市通</text>
 		</view> -->
 
 		<view class="content-view">

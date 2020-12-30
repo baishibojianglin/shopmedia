@@ -3,9 +3,9 @@
 		<view class="contain-logo">
 			<image class="logo" :src="logourl"></image>
 		</view>
-		<view class="uni-center logotext">
-			<text>店通传媒</text>
-		</view>
+		<!-- <view class="uni-center logotext">
+			<text>商市通</text>
+		</view> -->
 
 		<view>
 			<view class="input-line-height">
