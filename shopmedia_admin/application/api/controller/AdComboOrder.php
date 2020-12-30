@@ -80,7 +80,7 @@ class AdComboOrder extends AuthBase
                 }
 
                 // 创建订单
-                $orderData['order_sn'] = model('AdComboOrder')->getOrderSn('smac'); // 生成唯一订单编号 order_sn
+                $orderData['order_sn'] = model('AdComboOrder')->getOrderSn('msac'); // 生成唯一订单编号 order_sn
                 $orderData['order_time'] = time();
                 $orderData['user_id'] = $userId;
                 $orderData['advertiser_id'] = $advertiserId;

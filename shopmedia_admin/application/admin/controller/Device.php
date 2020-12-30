@@ -145,12 +145,12 @@ class Device extends Base
 				// 添加广告屏
 				//$id = Db::name('Device')->insert($data['data']);
 				//$res[1] = $id = model('Device')->add($data['data'], 'device_id');
-				$res[0] = $id = Db::name('device')->strict(false)->insertGetId($data['data']);
+				$res[0] = $id = Db::name('device')->strict(false)->insertGetId($data['data']) === false ? 0 : true;
 				if ($res[0]) {
 					$device = Db::name('device')->field('shop_id')->find($id);
 				}
 				// 更新店铺安装广告屏数量
-				$res[1] = Db::name('shop')->where(['shop_id' => $device['shop_id']])->update(['device_quantity' => 1]);
+				$res[1] = Db::name('shop')->where(['shop_id' => $device['shop_id']])->inc('device_quantity') === false ? 0 : true;
 
 				// 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
 				if (in_array(0, $res)) {

@@ -2,3 +2,4 @@
 manifest.json
 /unpackage
 /node_modules
+*.keystore
