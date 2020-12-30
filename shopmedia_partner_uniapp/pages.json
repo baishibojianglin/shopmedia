@@ -1,24 +1,23 @@
 {
 	"pages": [ // pages数组中第一项表示应用启动页
-		{  // 首页
+		{  // 登录主页
+		    "path" : "pages/login/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff",
+				"backgroundColor": "#000000"
+		    }
+		    
+		}
+		,{  // 首页
 			"path": "pages/main/main",
 			"style": {
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "商市通"
 			}
-		},
-        {  // 登录主页
-            "path" : "pages/login/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#ffffff",
-				"backgroundColor": "#000000"
-            }
-            
-        }
-		,{  // 登录
+		},{  // 登录
 			"path": "pages/login/login",
 			"style": {
 				// "app-plus": {"titleNView": false}
