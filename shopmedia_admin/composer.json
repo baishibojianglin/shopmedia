@@ -21,7 +21,8 @@
         "aliyuncs/oss-sdk-php": "^2.3",
         "5ini99/think-auth": "^1.0",
         "alibabacloud/client": "^1.5",
-        "alipaysdk/easysdk": "^1.2"
+        "alipaysdk/easysdk": "^1.2",
+        "phpoffice/phpexcel": "^1.8"
     },
     "autoload": {
         "psr-4": {

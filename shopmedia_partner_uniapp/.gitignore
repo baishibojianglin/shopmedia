@@ -3,3 +3,5 @@ manifest.json
 /unpackage
 /node_modules
 *.keystore
+*.p12
+*.mobileprovision

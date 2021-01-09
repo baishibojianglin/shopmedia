@@ -56,15 +56,16 @@ Route::resource('user_shopkeeper', 'admin/UserShopkeeper');
 // 用户（广告主）
 Route::resource('user_advertiser', 'admin/UserAdvertiser');
 
-// 广告屏管理
+// 广告设备管理
 Route::resource('device', 'admin/Device');
-Route::get('device_list', 'admin/Device/deviceList');  // 广告屏列表（不分页）
+Route::get('device_list', 'admin/Device/deviceList');  // 广告设备列表（不分页）
 Route::get('get_device_brand', 'admin/Device/getDeviceBrand');
 Route::post('get_device_model', 'admin/Device/getDeviceModel');
 Route::get('get_device_size', 'admin/Device/getDeviceSize');
 Route::get('get_device_status', 'admin/Device/getDeviceStatus');
 Route::get('get_device_level', 'admin/Device/getDeviceLevel');
 Route::get('get_device_shop', 'admin/Device/getDeviceShop');
+Route::post('export_device', 'admin/Device/exportDevice');
 
 // 广告
 Route::resource('ad', 'admin/Ad');

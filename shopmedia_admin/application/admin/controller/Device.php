@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\lib\exception\ApiException;
 use think\Controller;
+use think\Loader;
 use think\Request;
 use think\Db;
 
@@ -379,4 +380,108 @@ class Device extends Base
             return show(config('code.error'), '没有店铺有空闲安装', [], 404);
 		}
     }
+
+	/**
+	 * 导出广告设备为Excel
+	 * @return \think\response\Json
+	 */
+	public function exportDevice()
+	{
+		// 判断为POST请求
+		if(!request()->isPost()) {
+			return show(config('code.error'), '请求不合法', '', 400);
+		}
+
+		// 传入的参数
+		$data = input('post.');
+
+		if (isset($data['device_sns']) && $data['device_sns']) {
+			// 获取广告设备列表
+			$device_sns = explode(PHP_EOL, trim($data['device_sns'])); // 将字符串按换行符拆分成数组
+			$map['d.status'] = 1;
+			$map['d.is_delete'] = 0;
+			$map['d.device_sn'] = ['in', $device_sns];
+			try {
+				$deviceList = Db::name('device')->alias('d')
+					->field('d.device_id, s.shop_name, u.phone, rp.region_name province, rc.region_name city, rco.region_name county,rt.region_name town, s.address')
+					->join('__SHOP__ s', 's.shop_id = d.shop_id', 'LEFT')
+					->join('__USER__ u', 'u.user_id = s.user_id', 'LEFT')
+					->join('__REGION__ rp', 'rp.region_id = s.province_id', 'LEFT') // 区域（省份）
+					->join('__REGION__ rc', 'rc.region_id = s.city_id', 'LEFT') // 区域（城市）
+					->join('__REGION__ rco', 'rco.region_id = s.county_id', 'LEFT') // 区域（区县）
+					->join('__REGION__ rt', 'rt.region_id = s.town_id', 'LEFT') // 区域（乡镇街道）
+					->where($map)
+					->order(['s.town_id', 's.shop_id'])
+					->select();
+			} catch (\Exception $e) {
+				show(config('code.error'), $e->getMessage());
+			}
+
+			/*// 导出Excel 方法一 TODO：无效
+			// 设置导出数据表头
+			$strTable ='<table width="500" border="1">';
+			$strTable .= '<tr>';
+			$strTable .= '<td style="text-align:center;font-size:12px;width:50px;">设备ID</td>';
+			$strTable .= '<td style="text-align:center;font-size:12px;width=120px">店铺名称</td>';
+			$strTable .= '<td style="text-align:center;font-size:12px;width=120px">店家电话</td>';
+			$strTable .= '<td style="text-align:center;font-size:12px;width=120px">乡镇街道</td>';
+			$strTable .= '<td style="text-align:center;font-size:12px;width=120px">店铺地址</td>';
+			$strTable .= '</tr>';
+			// 表格内容
+			foreach($deviceList as $key => $val){
+				$strTable .= '<tr>';
+				$strTable .= '<td style="text-align:center;font-size:12px;">&nbsp;'.$val['device_id'].'</td>';
+				$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['shop_name'].' </td>';
+				$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['phone'].'</td>';
+				$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['region_name'].'</td>';
+				$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['address'].'</td>';
+				$strTable .= '</tr>';
+			}
+			$strTable .='</table>';
+			unset($deviceList);
+			downloadExcel($strTable, 'order');
+			exit();*/
+
+			// 导出Excel 方法二：PHPExcel
+			try {
+				$xlsName = "店通传媒 - 离线广告机";
+				// 查出字段输出对应Excel对应的列名
+				$xlsCell = array(
+					array('device_id', '设备ID'),
+					array('shop_name', '店铺名称'),
+					array('phone', '店家电话'),
+					array('province', '省份'),
+					array('city', '城市'),
+					array('county', '区县'),
+					array('town', '乡镇街道'),
+					array('address', '店铺地址')
+				);
+				// 调用公共方法
+				exportExcel($xlsName, $xlsCell, $deviceList);
+			} catch (\Exception $e) {
+				show(config('code.error'), $e->getMessage());
+			}
+		}
+	}
+
+	/**
+	 * 导出Excel测试方法
+	 */
+	public function exportDevice0()
+	{
+		try {
+			vendor('phpoffice.phpexcel.Classes.PHPExcel'); // 引入PHPExcel类，或 Loader::import('phpoffice.phpexcel.Classes.PHPExcel', VENDOR_PATH, '.php');
+			$objPHPExcel = new \PHPExcel();
+			$objSheet = $objPHPExcel->getActiveSheet();
+			$objSheet->setTitle('demo');
+			$objSheet->setCellValue('A1', '姓名')->setCellValue('A2', '分数');
+			$objSheet->setCellValue('B1', '张三')->setCellValue('B2', '50');
+			$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+			$objWriter->save(RUNTIME_PATH . 'demo.xlsx'); // 下载到服务器
+			//$objWriter->save('php://output');
+		} catch (\Exception $e) {
+			file_put_contents(RUNTIME_PATH . 'export_device_exception.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
+			//show(config('code.error'), $e->getMessage());
+		}
+	}
 }

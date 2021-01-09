@@ -6,7 +6,7 @@
 					<el-col :span="6"><span>广告设备列表</span></el-col>
 				</el-row>
 				<el-row :gutter="20" type="flex" justify="space-between" style="margin-top: 1rem;">
-					<el-col :span="18">
+					<el-col :span="15">
 						<!-- 查询 s -->
 						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
@@ -30,10 +30,25 @@
 						</el-form>
 						<!-- 查询 e -->
 					</el-col>
-					<el-col :span="6">
+					<el-col :span="9">
 						<!-- 新增 s -->
 						<router-link to="adddevice"><el-button size="mini" type="primary" icon="el-icon-plus">新增广告设备</el-button></router-link>
 						<!-- 新增 e -->
+						
+						<!-- 导出 s -->
+						<el-button size="mini" type="infor" icon="el-icon-download" @click="dialogFormVisible = true" style="margin-left: 0.5rem;">导出实际在线/离线广告设备Excel</el-button>
+						<el-dialog title="导出实际在线/离线广告设备Excel" :visible.sync="dialogFormVisible">
+						  <el-form :model="exportForm">
+						    <el-form-item label="广告设备编号" :label-width="formLabelWidth">
+						      <el-input type="textarea" v-model="exportForm.device_sns" placeholder="输入广告发布系统(http://ad.sustock.net:8780/adc/)的广告设备编号，以换行符号分隔" clearable autocomplete="off"></el-input><!-- 空格或 -->
+						    </el-form-item>
+						  </el-form>
+						  <div slot="footer" class="dialog-footer">
+						    <el-button @click="dialogFormVisible = false">取 消</el-button>
+						    <el-button type="primary" icon="el-icon-download" @click="exportFormSubmit()">确定导出</el-button>
+						  </div>
+						</el-dialog>
+						<!-- 导出 e -->
 					</el-col>
 				</el-row>
 			</div>
@@ -97,6 +112,14 @@
 				},
 				deviceList: [], // 广告设备列表
 				listPagination: {}, // 列表分页参数
+				
+				/* 导出实际在线/离线设备 s */
+				dialogFormVisible: false,
+				exportForm: {
+					device_sns: ''
+				},
+				formLabelWidth: '120px'
+				/* 导出实际在线/离线设备 e */
 			}
 		},
 		mounted() {
@@ -216,6 +239,47 @@
 						type: 'info',
 						message: '已取消删除'
 					});
+				});
+			},
+			
+			/**
+			 * 导出实际在线/离线设备
+			 */
+			exportFormSubmit() {
+				// alert(this.exportForm.device_sns)
+				let self = this;
+				this.$axios.post(this.$url + 'export_device', {
+					device_sns: this.exportForm.device_sns
+				}).then(function(response) {
+					if (response.status == 200) {
+						self.dialogFormVisible = false;
+						self.$message({
+							message: '导出成功',
+							type: 'success'
+						});
+					} else {
+						self.$message({
+							message: '网络繁忙，请重试',
+							type: 'warning'
+						});
+					}
+				}).catch(function (error) {
+					/* if (error.response) {
+					      // The request was made and the server responded with a status code
+					      // that falls out of the range of 2xx
+					      console.log(1, error.response.data);
+					      console.log(2, error.response.status);
+					      console.log(3, error.response.headers);
+					} else if (error.request) {
+					      // The request was made but no response was received
+					      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+					      // http.ClientRequest in node.js
+					      console.log(4, error.request);
+					} else {
+					      // Something happened in setting up the request that triggered an Error
+					      console.log('Error', error.message);
+					}
+					console.log(5, error.config); */
 				});
 			}
 		}
