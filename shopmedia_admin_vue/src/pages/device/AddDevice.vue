@@ -14,6 +14,10 @@
 					<el-input style="width:217px;" clearable v-model="ruleForm.device_sn"></el-input>
 				</el-form-item>
 				
+				<el-form-item label="广告框数量" prop="device_quantity" v-if="ruleForm.device_cate == 2">
+					<el-input style="width:217px;" type="number" clearable v-model="ruleForm.device_quantity"></el-input>
+				</el-form-item>
+				
 				<el-form-item label="设备品牌" prop="brand">
 					<el-select @change="getmodel" v-model="ruleForm.brand" placeholder="请选择">
 						<el-option v-for="item in brand_options" :key="item.value" :label="item.label" :value="item.value">
@@ -156,6 +160,7 @@
 				ruleForm: {
 					device_cate: '', //设备类别
 					device_sn: '', //设备编号
+					device_quantity: 1, //设备数量
 					brand: '', //设备品牌
 					model: '', //设备型号
 					size: '', //设备尺寸

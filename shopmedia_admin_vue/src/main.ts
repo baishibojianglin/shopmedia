@@ -16,6 +16,13 @@ Vue.prototype.$axios = axios  //ajax插件
 Vue.prototype.$url='https://media.sustock.net/index.php/'  //正式接口域名
 axios.defaults.withCredentials=true  //解决跨域后保持相同session(允许ajax携带cook)
 Vue.use(ElementUI)
+// 修改标题title 第2步
+router.beforeEach((to, from, next) => {
+	if (to.meta.title) {
+		document.title = to.meta.title;
+	}
+	next();
+})
 
 // 引入基本样式
 import './assets/css/basic.css'

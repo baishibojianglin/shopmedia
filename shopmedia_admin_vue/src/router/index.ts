@@ -94,6 +94,9 @@ const routes = [
 		// 1--登录
 		path: '/',
 		name: 'login',
+		meta: { // 修改标题title 第1步
+			title: '店通传媒管理系统'
+		},
 		component:Login
 		//component:() => import(/* webpackChunkName: '1' */ '../views/Login.vue')
 	},
@@ -101,6 +104,9 @@ const routes = [
 		// 1--首页
 		path: '/home',
 		name: 'home',
+		meta: {
+			title: '店通传媒管理系统'
+		},
 		component:Home,
 		children: [
 			// 2--管理员管理

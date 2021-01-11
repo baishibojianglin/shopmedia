@@ -65,12 +65,14 @@ class Device extends Base
 				$brand = config('ad.device_brand'); // 品牌
 				$model = config('ad.device_model'); // 型号
 				$size = config('ad.device_size'); // 尺寸
+				$adCate = config('ad.ad_cate');
 				foreach ($data as $key => $value) {
 					$data[$key]['device_cate_name'] = $adDeviceCate[$value['device_cate']]; // 定义广告设备类别名称
 					$data[$key]['status_msg'] = $status[$value['status']]; // 定义状态信息
 					$data[$key]['brand_msg'] = isset($brand[$value['brand']]) ? $brand[$value['brand']] : ''; //定义品牌信息
 					$data[$key]['model_msg'] = $model[$value['brand']][$value['model']]; //定义型号信息
 					$data[$key]['size_msg'] = $size[$value['size']]; //定义尺寸信息
+					$data[$key]['shop_cate_name'] = $adCate[$value['cate']]; // 定义店铺类别名
 				}
 
 				return show(config('code.success'), 'OK', $data);
