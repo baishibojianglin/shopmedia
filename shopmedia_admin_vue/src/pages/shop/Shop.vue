@@ -26,7 +26,7 @@
 						<!-- 查询 e -->
 					</el-col>
 					<el-col :span="3">
-						<el-button size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
+						<el-button v-if="formInline.role_id" size="mini" icon="el-icon-back" title="返回" @click="back()">返回</el-button>
 					</el-col>
 				</el-row>
 				<!-- 用户信息 s -->
@@ -44,6 +44,7 @@
 				<el-table :data="shopList" :empty-text="listPagination.total == 0 ? '' : '数据加载中…'" max-height="500" border style="width: 100%">
 					<el-table-column prop="shop_id" label="序号" fixed width="50"></el-table-column>
 					<el-table-column prop="shop_name" label="店铺名称" fixed width="120"></el-table-column>
+					<el-table-column prop="shop_cate_name" label="店铺类别" width="120"></el-table-column>
 					<el-table-column prop="address" label="详细地址" width="180" show-overflow-tooltip></el-table-column>
 					<el-table-column label="店铺区域" header-align="center">
 						<el-table-column prop="province" label="省份" width="120"></el-table-column>

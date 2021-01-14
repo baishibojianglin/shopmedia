@@ -186,16 +186,20 @@ class WeChat extends Controller
      */
     private function _subscribe($postObj)
     {
-        // 获取用户基本信息
-        $openid = $postObj->FromUserName;
-        $userInfo = $this->getUserInfo($openid);
+        try {
+            // 获取用户基本信息
+            $openid = $postObj->FromUserName;
+            $userInfo = $this->getUserInfo($openid);
 
-        // 创建微信用户
-        $this->createWxUser($userInfo, $postObj);
+            // 创建微信用户
+            $this->createWxUser($userInfo, $postObj);
 
-        // 回复用户消息
-        //$this->_msgText($postObj, $userInfo); // 回复文本消息
-        $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息
+            // 回复用户消息
+            //$this->_msgText($postObj, $userInfo); // 回复文本消息
+            $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息
+        } catch (\Exception $e) {
+            //file_put_contents('./wechat_exception.txt', $e->getMessage());
+        }
     }
 
     /**
@@ -341,25 +345,29 @@ class WeChat extends Controller
      */
     private function _scan($postObj)
     {
-        /*$toUser   = $postObj->FromUserName;
-        $fromUser = $postObj->ToUserName;
-        $time     = time();
-        $eventKey   = $postObj->EventKey; // 事件KEY值
-        $content  = '欢迎关注我们的公众号 ' . $fromUser . ', scene_id ' . $eventKey;
-        $template = $this->_msgTemplate['text'];
-        $info     = sprintf($template, $toUser, $fromUser, $time, $content);
-        echo $info;*/
+        try {
+            /*$toUser   = $postObj->FromUserName;
+            $fromUser = $postObj->ToUserName;
+            $time     = time();
+            $eventKey   = $postObj->EventKey; // 事件KEY值
+            $content  = '欢迎关注我们的公众号 ' . $fromUser . ', scene_id ' . $eventKey;
+            $template = $this->_msgTemplate['text'];
+            $info     = sprintf($template, $toUser, $fromUser, $time, $content);
+            echo $info;*/
 
-        // 获取用户基本信息
-        $openid = $postObj->FromUserName;
-        $userInfo = $this->getUserInfo($openid);
+            // 获取用户基本信息
+            $openid = $postObj->FromUserName;
+            $userInfo = $this->getUserInfo($openid);
 
-        // 创建微信用户
-        $this->createWxUser($userInfo, $postObj);
+            // 创建微信用户
+            $this->createWxUser($userInfo, $postObj);
 
-        // 回复用户消息
-        //$this->_msgText($postObj, $userInfo); // 回复文本消息
-        $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息
+            // 回复用户消息
+            //$this->_msgText($postObj, $userInfo); // 回复文本消息
+            $this->_scanMsgNews($postObj, $userInfo); // 回复图文消息
+        } catch (\Exception $e) {
+            //file_put_contents('./wechat_exception.txt', $e->getMessage());
+        }
     }
 
     /**
@@ -484,7 +492,7 @@ class WeChat extends Controller
                         ),*/
                         array(
                             'type' => 'view',
-                            'name' => urlencode('广告案例'),
+                            'name' => urlencode('合作案例'),
                             'url' => 'https://media.sustock.net/case/'
                         )
                     )
@@ -495,9 +503,19 @@ class WeChat extends Controller
                     'url' =>'http://dt.dilinsat.com/'
                 ),
                 array(
-                    'type' => 'click',
-                    'name' => urlencode('联系我们'),
-                    'key' => 'contact_us'
+                    'name' => urlencode('关于我们'),
+                    'sub_button' => array(
+                        array(
+                            'type' => 'view',
+                            'name' => urlencode('狄霖科技'),
+                            'url' => 'https://www.sustock.net/'
+                        ),
+                        array(
+                            'type' => 'click',
+                            'name' => urlencode('联系我们'),
+                            'key' => 'contact_us'
+                        )
+                    )
                 )
             )
         );
@@ -657,7 +675,7 @@ class WeChat extends Controller
     public function createWxUser($userInfo, $postObj)
     {
         // 查询用户是否存在
-        $openid = $userInfo['openid'];
+        $openid = isset($userInfo['openid']) ? $userInfo['openid'] : '';
         $userOauth = Db::name('user_oauth')->where(['oauth' => 'wx', 'openid' => $openid])->find();
         // 用户不存在，则创建用户
         if (empty($userOauth)) {

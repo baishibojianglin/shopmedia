@@ -92,8 +92,8 @@ class Device extends Base
     private function _getListField()
     {
         return [
-            'd.device_id', 'd.device_sn', 'd.device_cate', 'd.brand', 'd.model', 'd.size', 'd.shop_id', 'd.url_image', 'd.sale_price', 'd.saled_part', 'd.company_id', 'd.status', 'd.level',
-            's.shop_name', 's.province_id', 's.city_id', 's.county_id', 's.town_id', 's.address', 's.longitude', 's.latitude',
+            'd.device_id', 'd.device_sn', 'd.device_cate', 'd.device_quantity', 'd.brand', 'd.model', 'd.size', 'd.shop_id', 'd.url_image', 'd.sale_price', 'd.saled_part', 'd.company_id', 'd.status', 'd.level',
+            's.shop_name', 's.cate', 's.province_id', 's.city_id', 's.county_id', 's.town_id', 's.address', 's.longitude', 's.latitude',
             'rp.region_name province',
             'rc.region_name city',
             'rco.region_name county',

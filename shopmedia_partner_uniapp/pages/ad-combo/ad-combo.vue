@@ -62,15 +62,6 @@
 			</view>
 		</uni-card>
 		
-		<uni-card>
-			<view class="uni-title uni-bold">付款码</view>
-			<view style="width: 100%; text-align: center;">
-				<image src="/static/img/pay_QRCode.png" :lazy-load="true" style="width: 300rpx;height: 300rpx;" @tap="previewPayQRCode('/static/img/pay_QRCode.png')"></image>
-				<br/>
-				<text class="uni-text-small">（点击放大）</text>
-			</view>
-		</uni-card>
-		
 		<view v-if="false" class="uni-padding-wrap uni-center">
 			<checkbox-group @change="isAgreement">
 				<label>
@@ -81,18 +72,6 @@
 				</navigator>
 			</checkbox-group>
 		</view>
-		
-            
-
-			
-	
-		
-			
-			
-			
-
-			
-	
 		
 		<view class="uni-padding-wrap uni-common-mt mb">
 			<button type="primary"  style="margin-bottom: 20px;" @click="createOrderSubmit()">提交</button>
@@ -267,20 +246,6 @@
 			},
 			
 			/**
-			 * 预览付款二维码
-			 * @param {Object} image
-			 */
-			previewPayQRCode(image) {
-				var imgArr = [];
-				imgArr.push(image);
-				// 预览图片
-				uni.previewImage({
-					urls: imgArr,
-					current: imgArr[0]
-				});
-			},
-			
-			/**
 			 * 改变勾选协议
 			 * @param {Object} e
 			 */
@@ -369,7 +334,7 @@
 					return false;
 				}
 				
-				uni.showModal({
+				/* uni.showModal({
 				    title: '确认收款，创建订单',
 				    content: '确认广告主已经付款成功?',
 					// showCancel: false,
@@ -378,7 +343,8 @@
 							self.createOrder();
 						}
 				    }
-				})
+				}) */
+				self.createOrder();
 			},
 			
 			/**
@@ -407,19 +373,22 @@
 					method: 'POST',
 					success: function(res) {
 						if (res.data.status == 1) {
-							uni.showModal({
-							    // title: '确认收款',
-							    content: res.data.message,
-								showCancel: false,
-							    success: function (res) {
-									if (res.confirm == true) {
-										// 跳转首页
-										uni.switchTab({
-											url: '/pages/main/main'
-										})
+							if (res.data.data.order_id) {
+								let order_id = res.data.data.order_id;
+								uni.showModal({
+									title: '提示',
+									content: '广告套餐订单提交成功，去完成支付',
+									showCancel: false,
+									success: function (res) {
+										if (res.confirm == true) {
+											uni.navigateTo({
+												url: '/pages/ad-combo/ad-combo-order-pay?order_id=' + order_id
+											})
+											return false;
+										}
 									}
-							    }
-							})
+								})
+							}
 						} else {
 							uni.showToast({
 								icon: 'none',

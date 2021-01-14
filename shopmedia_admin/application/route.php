@@ -56,15 +56,16 @@ Route::resource('user_shopkeeper', 'admin/UserShopkeeper');
 // 用户（广告主）
 Route::resource('user_advertiser', 'admin/UserAdvertiser');
 
-// 广告屏管理
+// 广告设备管理
 Route::resource('device', 'admin/Device');
-Route::get('device_list', 'admin/Device/deviceList');  // 广告屏列表（不分页）
+Route::get('device_list', 'admin/Device/deviceList');  // 广告设备列表（不分页）
 Route::get('get_device_brand', 'admin/Device/getDeviceBrand');
 Route::post('get_device_model', 'admin/Device/getDeviceModel');
 Route::get('get_device_size', 'admin/Device/getDeviceSize');
 Route::get('get_device_status', 'admin/Device/getDeviceStatus');
 Route::get('get_device_level', 'admin/Device/getDeviceLevel');
 Route::get('get_device_shop', 'admin/Device/getDeviceShop');
+Route::post('export_device', 'admin/Device/exportDevice');
 
 // 广告
 Route::resource('ad', 'admin/Ad');
@@ -117,15 +118,29 @@ Route::resource('feedback', 'admin/Feedback');
 /* -------------------- 客户端路由 -------------------- s */
 
 // 登录与注册
-Route::post('api/thirdlogin', 'api/ThirdLogin/thirdlogin'); // 第三方登录
 Route::put('api/login', 'api/Login/login'); // 登录
 Route::post('api/register', 'api/Login/register'); // 注册
 Route::put('api/pwd', 'api/Login/pwd'); // 找回密码
 Route::put('api/logout', 'api/Login/logout'); // 退出登录
 Route::post('api/hasphone', 'api/Login/hasphone'); // 检查电话是否存在
+Route::post('api/thirdlogin', 'api/ThirdLogin/thirdlogin'); // 第三方授权登录
+Route::post('api/bind_phone', 'api/ThirdLogin/bindPhone'); // 第三方授权登录绑定手机号
 
 // 调用短信接口
 Route::post('api/send_sms', 'api/SendSms/sendSms');
+
+/*调用微信支付接口 s*/
+// 微信支付测试
+Route::post('api/wxPay', 'api/WxPay/index'); // 微信JSAPI支付（测试）
+//Route::post('api/wxNativePay', 'api/WxPay/wxNativePay'); // 微信Native支付（测试）
+Route::post('api/wxPayNotify', 'api/WxPayNotify/notify'); // 微信支付回调通知（测试）
+// 广告微信支付
+Route::post('api/adWxPay', 'api/WxPay/adWxPay'); // 广告投放订单微信支付
+Route::post('api/adWxPayNotify', 'api/WxPayNotify/adWxPayNotify'); // 广告投放订单微信支付回调通知
+// 广告套餐微信支付
+Route::post('api/adComboWxNativePayQRCodeUrl', 'api/WxPay/adComboWxNativePayQRCodeUrl'); // 获取广告套餐订单微信扫码支付二维码链接
+Route::post('api/adComboWxPayNotify', 'api/WxPayNotify/adComboWxPayNotify'); // 广告套餐订单微信支付回调通知
+/*调用微信支付接口 e*/
 
 // 用户个人中心
 Route::resource('api/user', 'api/User');

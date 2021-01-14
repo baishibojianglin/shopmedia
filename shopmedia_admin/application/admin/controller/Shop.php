@@ -50,10 +50,12 @@ class Shop extends Base
             if (!$data) {
                 return show(config('code.error'), 'Not Found', '', 404);
             }
+            $adCate = config('ad.ad_cate');
             $status = config('code.status');
             $isCommission = config('code.is_commission'); // 业务员提成状态
             foreach ($data as $key => $value) {
                 // 处理数据
+                $data[$key]['shop_cate_name'] = $adCate[$value['cate']]; // 定义店铺类别名
                 $data[$key]['status_msg'] = $status[$value['status']]; // 定义status_msg
                 $data[$key]['is_commission_msg'] = $isCommission[$value['is_commission']]; // 定义is_commission_msg
             }

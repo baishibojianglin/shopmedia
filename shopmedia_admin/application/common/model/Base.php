@@ -73,14 +73,14 @@ class Base extends Model
 
     /**
      * 生成唯一订单编号 order_sn
+     * @param string $pre 订单编号前缀
      * @return string
-     * @throws \think\Exception
      */
-    public function getOrderSn()
+    public function getOrderSn($pre = '')
     {
         // 保证不会有重复订单号存在
         while(true){
-            $order_sn = date('YmdHis').rand(1000, 9999); // 订单编号
+            $order_sn = $pre . date('YmdHis').rand(1000, 9999); // 订单编号
             $order_sn_count = $this->where("order_sn = '$order_sn'")->count();
             if($order_sn_count == 0)
                 break;
