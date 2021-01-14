@@ -20,16 +20,16 @@
 				const wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx59483b145b8ede88&redirect_uri=' +
 					base_url +
 					'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'; //请求微信code
-				// 获取URL 上code
-				const code = this.getUrlParam('code');
+				
+				const code = this.getUrlParam('code');		// 获取URL 上code
 				// 判断是否存在code
 				if (code == null || code == '') {
 					// 重新获取code
 					// console.log(code)
-					window.location.href = wx_url
+					window.location.href = wx_url;
 				} else {
 					// 发送code           
-					this.postCode(code)
+					this.postCode(code);
 				}
 			}
 			/* 微信网页授权登录 e */
@@ -53,6 +53,8 @@
 			console.log('onError', event);
 		},
 		methods: {
+			...mapMutations(['login']),
+
 			// 解析URL 参数
 			getUrlParam(name) {
 				let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
@@ -62,7 +64,7 @@
 				}
 				return null;
 			},
-			// 发送code 获取信息
+			
 			postCode(code) {
 				let self = this;
 				uni.request({
@@ -78,10 +80,10 @@
 						//res里面包含用户信息  openid等
 						if (res.data.status == 1) {
 							let userInfo = res.data.data;
-
+			
 							// 使用vuex管理登录状态时开启
 							self.login(userInfo);
-
+			
 							//跳转到首页
 							uni.reLaunch({
 								url: '../main/main',
@@ -94,9 +96,7 @@
 						}
 					}
 				});
-			},
-			...mapMutations(['login'])
-
+			}
 		}
 	}
 </script>
