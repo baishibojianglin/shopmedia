@@ -36,7 +36,7 @@
 							<checkbox class="checkbox inline" value="1" color="#409EFF" checked="true" />
 						</label>
 						<navigator class="inline text" url="book">
-							阅读并同意<text class="color-blue">《商市通用户协议》</text>
+							阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
 						</navigator>
 					</checkbox-group>
 				</view>
