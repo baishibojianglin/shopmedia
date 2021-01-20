@@ -14,18 +14,61 @@
 				</navigator>
 			</view>
 		</view>
+		<!-- 对话框 s -->
+		<uni-popup id="popupDialog" ref="popupDialog" type="dialog">
+			<uni-popup-dialog type="info" title="用户及隐私协议" content="请你仔细阅读《商市通用户及隐私协议》，如果你同意协议内容，请点击“确定”开始接受我们的服务。" :before-close="true" @confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
+		</uni-popup>
+		<!-- 对话框 s -->
 	</view>
 </template>
 
 <script>
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniPopupMessage from '@/components/uni-popup/uni-popup-message.vue'
+	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue'
+	
 	export default {
+		components: {
+			uniPopup,
+			uniPopupMessage,
+			uniPopupDialog
+		},
 		data() {
 			return {
 				logourl: '/static/img/logo.png'
 			}
 		},
+		onReady() {
+			// 页面打开自动打开对话框
+			setTimeout(() => {
+				this.msgType = 'success'
+				this.$refs.popupDialog.open()
+			}, 500)
+		},
 		methods: {
+			/**
+			 * 用户协议提示框
+			 */
+			open(){
+				this.$refs.popup.open()
+			},
 			
+			/**
+			 * 对话框点击确认按钮
+			 */
+			dialogConfirm(done) {
+				
+				// 需要执行 done 才能关闭对话框
+				done()
+			},
+			
+			/**
+			 * 对话框取消按钮
+			 */
+			dialogClose(done) {
+				// 需要执行 done 才能关闭对话框
+				done()
+			}
 		}
 	}
 </script>

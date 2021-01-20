@@ -1,5 +1,11 @@
 {
 	"pages": [ // pages数组中第一项表示应用启动页
+		{  // 登录
+			"path": "pages/login/login",
+			"style": {
+				// "app-plus": {"titleNView": false}
+			}
+		},
 		{  // 登录主页
 		    "path" : "pages/login/index",
 		    "style" :                                                                                    
@@ -10,20 +16,15 @@
 				"backgroundColor": "#000000"
 		    }
 		    
-		}
-		,{  // 首页
+		},
+		{  // 首页
 			"path": "pages/main/main",
 			"style": {
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "商市通"
 			}
-		},{  // 登录
-			"path": "pages/login/login",
-			"style": {
-				// "app-plus": {"titleNView": false}
-			}
-		}
-        ,{  // 绑定手机号
+		},
+		{  // 绑定手机号
             "path" : "pages/login/bind-phone",
             "style" :                                                                                    
             {
@@ -41,7 +42,7 @@
 			}
 		},
 		{  // 用户协议
-			"path": "pages/reg/book",
+			"path": "pages/login/user-agreement",
 			"style": {
 				"app-plus": {
 					"titleNView": true
@@ -181,19 +182,13 @@
 		{ // 全部广告屏
 		    "path" : "pages/device/device-all-list",
 		    "style" : {
-				// "navigationBarTitleText": "店通广告屏",
+				"navigationBarTitleText": "店通广告屏",
 				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
 							"type": "menu"
-						}],
-						"searchInput":{
-							"align": "center",
-							"placeholder": "请输入店铺名",
-							"borderRadius":"50upx",
-							"backgroundColor": "#fff"
-						}
+						}]
 					}
 				}
 			}
