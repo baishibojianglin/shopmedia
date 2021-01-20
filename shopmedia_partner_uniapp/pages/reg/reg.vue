@@ -31,11 +31,11 @@
 				</view>
 
 				<view class="input-list" style="border-bottom: none;">
-					<checkbox-group @change="seevalue">
+					<checkbox-group @change="checkAgreement">
 						<label>
-							<checkbox class="checkbox inline" value="1" color="#409EFF" checked="true" />
+							<checkbox class="checkbox inline" value="1" color="#409EFF" :checked="checkedAgreement" />
 						</label>
-						<navigator class="inline text" url="book">
+						<navigator class="inline text" url="/pages/login/user-agreement">
 							阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
 						</navigator>
 					</checkbox-group>
@@ -55,16 +55,16 @@
 		components: {},
 		data() {
 			return {
-				invitation_code:'', // 邀请码
+				invitation_code: '', // 邀请码
 				phone: '', // 手机号
 				password: '', // 密码
-				verify_code:'', // 验证码
-				return_code:'',
-				value: 1, // 勾选协议状态
+				verify_code: '', // 验证码
+				return_code: '',
+				checkedAgreement: true, // 勾选协议状态
 				logourl: '/static/img/logo.png',
-				seconds:120 ,//倒计时秒数
-				showseconds:false ,//显示倒计时
-				timesign:'' //定时器标志
+				seconds: 120,// 倒计时秒数
+				showseconds: false,// 显示倒计时
+				timesign: '' // 定时器标志
 			}
 		},
 		computed: mapState(['forcedLogin','hasLogin','userInfo','commonheader']),
@@ -94,8 +94,12 @@
 			 * 监测是否勾选用户协议
 			 * @param {Object} e
 			 */
-			seevalue(e) {
-				this.value = e.detail.value.length;
+			checkAgreement(e) {
+				if (e.detail.value.length == 1) {
+					this.checkedAgreement = true;
+				} else {
+					this.checkedAgreement = false;
+				}
 			},
 
 			/**
@@ -182,7 +186,7 @@
 					return false;
 				}
 				// 勾选协议
-				if (this.value == 0) {
+				if (this.checkedAgreement == 0) {
 					uni.showToast({
 						icon: 'none',
 						title: '请阅读并同意用户协议'

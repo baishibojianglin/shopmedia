@@ -14,10 +14,11 @@
 				</navigator>
 			</view>
 		</view>
-		<!-- 对话框 -->
+		<!-- 对话框 s -->
 		<uni-popup id="popupDialog" ref="popupDialog" type="dialog">
 			<uni-popup-dialog type="info" title="用户及隐私协议" content="请你仔细阅读《商市通用户及隐私协议》，如果你同意协议内容，请点击“确定”开始接受我们的服务。" :before-close="true" @confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
 		</uni-popup>
+		<!-- 对话框 s -->
 	</view>
 </template>
 

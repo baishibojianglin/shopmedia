@@ -23,6 +23,15 @@
 		</view>
 
 		<view class="uni-common-mt uni-center">
+			<checkbox-group @change="checkAgreement">
+				<label>
+					<checkbox class="checkbox inline" value="1" color="#409EFF" :checked="checkedAgreement" />
+				</label>
+				<navigator class="inline text" url="/pages/login/user-agreement">
+					阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
+				</navigator>
+			</checkbox-group>
+			
 			<checkbox-group>
 				<label>
 					<checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住账号和密码</label>
@@ -37,26 +46,47 @@
 			</view>
 		</view>
 
+		<!-- 对话框 s -->
+		<uni-popup id="popupDialog" ref="popupDialog" type="dialog">
+			<uni-popup-dialog type="info" title="用户及隐私协议" content="请你仔细阅读《商市通用户及隐私协议》，如果你同意协议内容，请点击“确定”开始接受我们的服务。" :before-close="true" @confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
+		</uni-popup>
+		<!-- 对话框 e -->
 	</view>
 </template>
 
 <script>
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniPopupMessage from '@/components/uni-popup/uni-popup-message.vue'
+	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue'
+	
 	import {
 		mapState,
 		mapMutations
 	} from 'vuex';
 
 	export default {
-		components: {},
+		components: {
+			uniPopup,
+			uniPopupMessage,
+			uniPopupDialog
+		},
 		data() {
 			return {
 				phone: '',
 				password: '',
 				logourl: '/static/img/logo.png',
+				checkedAgreement: true, // 勾选协议状态
 				rememberPsw: true // 记住账号密码
 			}
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'userInfo', 'commonheader']),
+		onReady() {
+			// 页面打开自动打开对话框
+			setTimeout(() => {
+				this.msgType = 'success'
+				this.$refs.popupDialog.open()
+			}, 500)
+		},
 		onLoad() {
 			this.getRememberPassword();
 			
@@ -163,6 +193,16 @@
 					});
 					return false;
 				}
+				
+				// 勾选协议
+				if (this.checkedAgreement == 0) {
+					uni.showToast({
+						icon: 'none',
+						title: '请阅读并同意用户及隐私协议'
+					});
+					return false;
+				}
+				
 				//使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				uni.request({
 					url: this.$serverUrl + 'api/login',
@@ -197,6 +237,18 @@
 					}
 				})
 			},
+			
+			/**
+			 * 监测是否勾选用户协议
+			 * @param {Object} e
+			 */
+			checkAgreement(e) {
+				if (e.detail.value.length == 1) {
+					this.checkedAgreement = true;
+				} else {
+					this.checkedAgreement = false;
+				}
+			},
 
 			/**
 			 * 登录成功将用户名密码存储到用户本地
@@ -226,6 +278,31 @@
 					this.phone = '';
 					this.password = '';
 				}
+			},
+			
+			/**
+			 * 用户协议提示框
+			 */
+			open(){
+				this.$refs.popup.open()
+			},
+			
+			/**
+			 * 对话框点击确认按钮
+			 */
+			dialogConfirm(done) {
+				this.checkedAgreement = true;
+				// 需要执行 done 才能关闭对话框
+				done()
+			},
+			
+			/**
+			 * 对话框取消按钮
+			 */
+			dialogClose(done) {
+				this.checkedAgreement = false;
+				// 需要执行 done 才能关闭对话框
+				done()
 			}
 		}
 	}
