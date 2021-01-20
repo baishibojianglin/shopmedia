@@ -181,13 +181,19 @@
 		{ // 全部广告屏
 		    "path" : "pages/device/device-all-list",
 		    "style" : {
-				"navigationBarTitleText": "店通广告屏",
+				// "navigationBarTitleText": "店通广告屏",
 				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
 							"type": "menu"
-						}]
+						}],
+						"searchInput":{
+							"align": "center",
+							"placeholder": "请输入店铺名",
+							"borderRadius":"50upx",
+							"backgroundColor": "#fff"
+						}
 					}
 				}
 			}
