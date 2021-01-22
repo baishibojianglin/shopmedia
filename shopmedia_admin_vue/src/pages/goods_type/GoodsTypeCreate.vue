@@ -18,7 +18,7 @@
 					<el-form-item label="上级分类" prop="parent_id">
 						<el-select v-model="form.parent_id" placeholder="请选择…" filterable>
 							<el-option :key="0" label="（一级分类）" :value="0"></el-option>
-							<el-option v-for="item in options" :key="item.id" :label="item.type_name" :value="item.id">
+							<el-option v-for="item in options" :key="item.id" :label="item.type_name" :value="item.id" :disabled="item.disabled">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -80,7 +80,14 @@
 				})
 					.then(function(res) {
 						if (res.data.status == 1) {
-							self.options = res.data.data;
+							let options = res.data.data;
+							options.forEach((item, index) => {
+								// 禁用商品分类显示
+								if (item.status == 0) {
+									item.disabled = true;
+								}
+							})
+							self.options = options;
 						} else {
 							self.$message({
 								message: '网络忙，请重试',

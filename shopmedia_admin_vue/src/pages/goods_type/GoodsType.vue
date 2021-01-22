@@ -6,13 +6,13 @@
 					<el-col :span="6"><span>商品分类列表</span></el-col>
 					<el-col :span="6">
 						<!-- 查询 s -->
-						<el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
+						<!-- <el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
 							<el-form-item label="">
 								<el-input placeholder="查询商品分类" v-model="formInline.type_name" clearable>
 									<el-button slot="append" icon="el-icon-search" @click="getGoodsTypeList()"></el-button>
 								</el-input>
 							</el-form-item>
-						</el-form>
+						</el-form> -->
 						<!-- 查询 e -->
 					</el-col>
 					<el-col :span="6">
@@ -23,8 +23,8 @@
 						<!-- 新增 e -->
 					</el-col>
 					<el-col :span="6">
-						<el-button size="mini" icon="el-icon-back" title="返回顶级类别" @click="getTopGoodsCateList()" v-if="isBack">顶级类别</el-button>
-						<el-button size="mini" icon="el-icon-back" title="返回上级类别" @click="getParentGoodsCateList(grandparentId)" v-if="isBack">上级类别</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回顶级分类" @click="getTopGoodsCateList()" v-if="isBack">顶级分类</el-button>
+						<el-button size="mini" icon="el-icon-back" title="返回上级分类" @click="getParentGoodsCateList(grandparentId)" v-if="isBack">上级分类</el-button>
 					</el-col>
 				</el-row>
 			</div>
@@ -38,7 +38,7 @@
 							{{scope.row.parent_id == 0 ? '（无）' : scope.row.parent_id}}
 						</template>
 					</el-table-column>
-					<el-table-column prop="parent_name" label="上级类别" width="180"></el-table-column>
+					<el-table-column prop="parent_name" label="上级分类" width="180"></el-table-column>
 					<el-table-column prop="status" label="状态" width="90" :filters="[{ text: '禁用', value: 0 }, { text: '启用', value: 1 }]"
 					 :filter-method="filterStatus" filter-placement="bottom-end">
 						<template slot-scope="scope">
@@ -47,8 +47,9 @@
 					</el-table-column>
 					<el-table-column label="操作" fixed="right" min-width="350">
 						<template slot-scope="scope">
-							<el-button type="primary" size="mini" plain @click="toGoodsTypeEdit(scope.row)">编辑</el-button>
-							<el-button type="danger" size="mini" plain @click="disableGoodsType(scope)">禁用</el-button>
+							<el-button type="primary" size="mini" icon="el-icon-edit" circle @click="toGoodsTypeEdit(scope.row)"></el-button>
+							<el-button type="danger" size="mini" icon="el-icon-close" circle @click="disableGoodsType(scope.row)" v-if="scope.row.status == 1"></el-button>
+							<el-button type="success" size="mini" icon="el-icon-check" circle @click="disableGoodsType(scope.row)" v-if="scope.row.status == 0"></el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -73,22 +74,23 @@
 		data() {
 			return {
 				formInline: {
-					type_name: '' // 商品类别名称
+					type_name: '', // 商品分类名称
+					status: 1	//分类状态
 				},
-				goodsTypeList: [], // 商品类别列表，如 [{cate_id: 1, cate_name: '油盐酱醋茶', parent_id: 0, audit_status: 0, audit_status_msg: '待审核'}, {…}, …]
+				goodsTypeList: [], // 商品分类列表，如 [{id: 1, type_name: '油盐酱醋茶', parent_id: 0, audit_status: 0, audit_status_msg: '待审核'}, {…}, …]
 				listPagination: {}, // 列表分页参数
 				grandparentId: '', // 上上级ID
-				parentId: 0, // 上级ID，默认为 0 查看一级类别
+				parentId: 0, // 上级ID，默认为 0 查看一级分类
 				isBack: false, // 是否显示返回按钮
 
 			}
 		},
 		mounted() {
-			this.getGoodsTypeList(); // 获取商品类别列表
+			this.getGoodsTypeList(); // 获取商品分类列表
 		},
 		methods: {
 			/**
-			 * 获取商品类别列表
+			 * 获取商品分类列表
 			 */
 			getGoodsTypeList() {
 				let self = this;
@@ -106,7 +108,7 @@
 					})
 					.then(function(res) {
 						if (res.data.status == 1) {
-							// 商品类别列表分页参数
+							// 商品分类列表分页参数
 							self.listPagination = res.data.data;
 
 							// 当数据为空时
@@ -118,7 +120,7 @@
 								return;
 							}
 
-							// 商品类别列表
+							// 商品分类列表
 							let goodsTypeList = self.listPagination.data;
 							goodsTypeList.forEach((item, index) => {
 								if (index == 0) { // 0表示第1条数据，因每一条数据的上上级ID都相同
@@ -155,34 +157,34 @@
 			},
 
 			/**
-			 * 获取下级商品类别列表
+			 * 获取下级商品分类列表
 			 * @param {Object} row
 			 */
 			getSonGoodsCateList(row) {
-				this.parentId = row.cate_id;
+				this.parentId = row.id;
 				if (this.parentId) {
-					this.formInline.cate_name = '';
+					this.formInline.type_name = '';
 					this.listPagination.current_page = 1;
-					this.getGoodsCateList();
+					this.getGoodsTypeList();
 				}
 			},
 
 			/**
-			 * 返回顶级商品类别列表
+			 * 返回顶级商品分类列表
 			 */
 			getTopGoodsCateList() {
-				this.formInline.cate_name = '';
+				this.formInline.type_name = '';
 				this.parentId = 0;
-				this.getGoodsCateList();
+				this.getGoodsTypeList();
 			},
 
 			/**
-			 * 返回上级商品类别列表
+			 * 返回上级商品分类列表
 			 * @param {Object} grandparentId
 			 */
 			getParentGoodsCateList(grandparentId) {
 				this.parentId = grandparentId;
-				this.getGoodsCateList();
+				this.getGoodsTypeList();
 			},
 			/**
 			 * 分页 pageSize 改变时会触发
@@ -218,28 +220,39 @@
 				this.$router.push({
 					path: "goods_type_edit",
 					query: {
-						id: row.id
+						id: row.id,
+						type_name:row.type_name,
+						parent_id:row.parent_id
 					}
 				});
 			},
 
 			/**
-			 * 删除商品类别
+			 * 禁用商品分类
 			 * @param {Object} scope
 			 */
-			disableGoodsType(scope) {
-				this.$confirm('是否禁用该分类?', '禁用', {
+			disableGoodsType(row) {
+				let message = row.status == 1 ? '是否禁用该分类?' : '是否启用该分类？';
+				this.$confirm(message, '禁用', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					// 调用删除接口
+					// 调用禁用接口
 					let self = this;
-					this.$axios.delete(this.$url + 'goods_type/' + scope.row.id)
+					this.$axios.delete(this.$url + 'goods_type/' + row.id)
 						.then(function(res) {
-							// 移除元素
-							self.goodsCateList.splice(scope.$index, 1);
-
+							
+							if (res.data.status == 1) {
+								if(res.data.data.status == 1){ // 修改后的分类状态为启用
+									row.status = 1;
+									row.status_msg = '启用';
+								} else { // 禁用
+									row.status = 0;
+									row.status_msg = '禁用';
+								}
+							}
+							
 							let type = res.data.status == 1 ? 'success' : 'warning';
 							self.$message({
 								message: res.data.message,

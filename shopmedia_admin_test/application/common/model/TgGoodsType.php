@@ -22,7 +22,7 @@ class TgGoodsType extends Base
         $result = $this->alias('gc')
             ->field('gc.*, pgc.type_name parent_name, pgc.parent_id grandparent_id')
             ->join('__TG_GOODS_TYPE__ pgc', 'gc.parent_id = pgc.id', 'LEFT') // 上级
-            ->where($map)->cache(true, 10)->paginate($size);
+            ->where($map)->paginate($size);
         return $result;
     }
 
@@ -33,7 +33,7 @@ class TgGoodsType extends Base
      */
     public function getGoodsTypeTree($map = [])
     {
-        $result = $this->where($map)->cache(true, 10)->select();
+        $result = $this->where($map)->select();
         return $this->sort($result);
     }
 
