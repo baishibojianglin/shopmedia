@@ -46,7 +46,7 @@
 				phone: '', // 手机号
 				password: '', // 密码
 				repassword: '', // 确认密码
-				verify_code: '', // 验证码
+				verify_code: '', // 短信验证码
 				return_code: '',
 				logourl: '/static/img/logo.png',
 				seconds:120 ,//倒计时秒数
@@ -194,11 +194,11 @@
 					});
 					return false;
 				}
-				// 验证码
+				// 短信验证码
 				if (this.verify_code == '') {
 					uni.showToast({
 						icon: 'none',
-						title: '请输入验证码'
+						title: '请输入短信验证码'
 					});
 					return false;
 				}

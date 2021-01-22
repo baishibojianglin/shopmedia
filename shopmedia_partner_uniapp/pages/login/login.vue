@@ -12,37 +12,54 @@
 				<text class="input-line-height-1">手机</text>
 				<input class="input-line-height-2" type="text" v-model="phone" placeholder="请输手机号" />
 			</view>
-			<view class="input-line-height">
+			<view class="input-line-height" v-if="!is_verify_code">
 				<text class="input-line-height-1">密码</text>
 				<input class="input-line-height-2" type="password" v-model="password" placeholder="请输入密码" />
+			</view>
+			
+			<view class="input-list" v-if="is_verify_code">
+				<!-- <text class="iconposition icon color-blue">&#xe7d6;</text> -->
+				<text class="input-line-height-1">验证码</text>
+				<input name="verify_code" type="number" v-model="verify_code" placeholder="" />
+				<button  v-if="!showseconds" @click="getVerifyCode()" class="bg-main-color color-white verify-button">获取验证码</button>
+				<button  v-if="showseconds"  class="bg-main-color color-white verify-button" >{{seconds}} S</button>
 			</view>
 		</view>
 
 		<view>
 			<button class="login-button bg-main-color" @click="bindLogin()">登 录</button>
-		</view>
-
-		<view class="uni-common-mt uni-center">
-			<checkbox-group @change="checkAgreement">
-				<label>
-					<checkbox class="checkbox inline" value="1" color="#409EFF" :checked="checkedAgreement" />
-				</label>
-				<navigator class="inline text" url="/pages/login/user-agreement">
-					阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
-				</navigator>
-			</checkbox-group>
-			
-			<checkbox-group>
-				<label>
-					<checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住账号和密码</label>
-			</checkbox-group>
+			<view class="uni-common-mt uni-center">
+				
+			</view>
+			<view class="uni-common-mt">
+				<uni-grid :column="2" :showBorder="false" :square="false" :highlight="false">
+					<uni-grid-item>
+						<checkbox-group v-if="!is_verify_code">
+							<label><checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住密码</label><navigator url="../pwd/pwd">忘记密码？</navigator>
+						</checkbox-group>
+					</uni-grid-item>
+					<uni-grid-item>
+						<text class="text-right main-color" @click="is_verify_code = !is_verify_code">{{is_verify_code == true ? '密码登录' : '短信登录' }}</text>
+					</uni-grid-item>
+				</uni-grid>
+			</view>
 		</view>
 
 		<view class="bottom">
-			<view class="bottom-con">
+			<!-- <view class="bottom-con">
 				<navigator url="../reg/reg">注册账号</navigator>
 				<text class="bottom-con-1">|</text>
 				<navigator url="../pwd/pwd">忘记密码</navigator>
+			</view> -->
+			<view class="uni-common-mt uni-center">
+				<checkbox-group @change="checkAgreement">
+					<label>
+						<checkbox class="checkbox inline" value="1" color="#409EFF" :checked="checkedAgreement" />
+					</label>
+					<navigator class="inline text" url="/pages/login/user-agreement">
+						阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
+					</navigator>
+				</checkbox-group>
 			</view>
 		</view>
 
@@ -55,6 +72,7 @@
 </template>
 
 <script>
+	import Aes from '@/common/Aes.js';
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import uniPopupMessage from '@/components/uni-popup/uni-popup-message.vue'
 	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue'
@@ -74,6 +92,11 @@
 			return {
 				phone: '',
 				password: '',
+				is_verify_code: true, // 是否短信登录
+				showseconds: false, // 显示倒计时
+				seconds: 120, // 倒计时秒数
+				verify_code: '', // 短信验证码
+				return_code: '',
 				logourl: '/static/img/logo.png',
 				checkedAgreement: true, // 勾选协议状态
 				rememberPsw: true // 记住账号密码
@@ -83,8 +106,8 @@
 		onReady() {
 			// 页面打开自动打开对话框
 			setTimeout(() => {
-				this.msgType = 'success'
-				this.$refs.popupDialog.open()
+				// this.msgType = 'success'
+				this.openDialog();
 			}, 500)
 		},
 		onLoad() {
@@ -107,21 +130,23 @@
 					// console.log(code)
 					window.location.href = wx_url;
 				} else {
-					// 发送code           
-					this.postCode(code);
+					// 发送code，第三方授权登录
+					this.thirdLogin(code)
 				}
 			}
 			/* 微信网页授权登录 e */
 			// #endif
 		},
 		methods: {
-
 			/**
 			 * 映射vuex的login方法
 			 */
 			...mapMutations(['login']),
 			
-			// 解析URL 参数
+			/**
+			 * 解析 URL 参数
+			 * @param {Object} name
+			 */
 			getUrlParam(name) {
 				let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
 				let r = window.location.search.substr(1).match(reg);
@@ -131,10 +156,14 @@
 				return null;
 			},
 			
-			postCode(code) {
+			/**
+			 * 发送code，第三方授权登录
+			 * @param {Object} code
+			 */
+			thirdLogin(code) {
 				let self = this;
 				uni.request({
-					url: this.$serverUrl + 'api/thirdlogin', //发送code给后台。
+					url: this.$serverUrl + 'api/thirdlogin', // 发送code给后台，进行第三方授权登录
 					data: {
 						code: code
 					},
@@ -143,7 +172,7 @@
 					},
 					method: 'POST',
 					success: (res) => {
-						//res里面包含用户信息  openid等
+						// res里面包含用户信息 openid等
 						if (res.data.status == 1) {
 							let userInfo = res.data.data;
 			
@@ -169,7 +198,8 @@
 			 */
 			bindLogin() {
 				let self = this;
-				//验证电话
+				
+				// 验证手机号
 				if (this.phone == '') {
 					uni.showToast({
 						icon: 'none',
@@ -184,12 +214,22 @@
 					});
 					return false;
 				}
+				
 				// 密码
 				if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {
 					uni.showToast({
 						icon: 'none',
 						duration: 2500,
-						title: '由6-20位数字或字母组成'
+						title: '密码由6~20位数字或字母组成'
+					});
+					return false;
+				}
+				
+				// 短信验证码
+				if (this.is_verify_code == true && this.verify_code == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入短信验证码'
 					});
 					return false;
 				}
@@ -207,8 +247,10 @@
 				uni.request({
 					url: this.$serverUrl + 'api/login',
 					data: {
-						phone: this.phone,
-						password: this.password
+						phone: Aes.encode(this.phone),
+						password: Aes.encode(this.password),
+						verify_code: this.verify_code,
+						return_code: this.return_code
 					},
 					header: {
 						commonheader: this.commonheader
@@ -235,6 +277,100 @@
 							});
 						}
 					}
+				})
+			},
+			
+			/**
+			 * 倒计时函数
+			 */
+			countseconds() {
+				if(this.seconds > 0){
+					this.seconds--;			   
+				}else{
+					this.showseconds = false;
+					clearInterval(this.timesign);
+					this.seconds = 120;
+				}
+			},
+			
+			/**
+			 * 获取短信验证码
+			 */
+			async getVerifyCode() {
+				// 检查手机号码
+				if (this.phone == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入手机号码'
+					});
+					return false;
+				}
+				if (!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.phone))) {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入正确的手机号码'
+					});
+					return false;
+				}
+			    
+				await this.hasphone();
+				if(this.hasuser == false){
+					uni.showToast({
+						icon: 'none',
+						title: this.hasuserwords
+					});
+					return false;
+				}
+				
+			    //控制倒计时显示
+				this.showseconds = true;
+				this.countseconds();
+				
+				let self = this;
+				this.timesign=setInterval(function(){ self.countseconds(); },1000);
+				uni.request({
+					url: this.$serverUrl + 'api/send_sms',
+					data: {
+						phone: this.phone
+					},
+					header:{
+						commonheader: this.commonheader
+					},
+					method: 'POST',
+					success: function(res) {
+						self.return_code = res.data
+					}
+				})
+			},
+			
+			/**
+			 * 检查用户是否存在
+			 */
+			hasphone(){
+				let self=this;
+				return new Promise((resolve, reject) => {
+					uni.request({ 
+						url : this.$serverUrl + 'api/hasphone',
+						method : "POST",
+						data : {
+							phone:this.phone
+						},
+						header:{
+							commonheader: this.commonheader
+						},
+						success: (res) => {
+							if(res.data.status==0){
+								self.hasuser=false;
+								self.hasuserwords=res.data.words;
+							}else{
+								self.hasuser=true;
+							}
+							resolve('suc');
+						},
+						fail:(err)=>{
+							reject('err')
+						}
+					})
 				})
 			},
 			
@@ -283,8 +419,8 @@
 			/**
 			 * 用户协议提示框
 			 */
-			open(){
-				this.$refs.popup.open()
+			openDialog(){
+				this.$refs.popupDialog.open()
 			},
 			
 			/**
@@ -368,5 +504,22 @@
 		bottom: 40px;
 		left: 0;
 		right: 0;
+	}
+	
+	
+	/* 短信验证码部分 */
+	.input-list {
+		position: relative;
+		border-bottom: 1px solid #F1F1F1;
+		padding-bottom: 5px;
+		margin-bottom: 30px;
+	}
+	
+	.verify-button {
+		position: absolute;
+		right: 0;
+		bottom: 3px;
+		font-size: 13px;
+		width: 100px;
 	}
 </style>

@@ -41,13 +41,13 @@ class Login extends Common
     }
 
     /**
-     * 用户登录
+     * 用户登录（备用）
      * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 密码（暂不支持短信验证码） 登录
      *
      * @return \think\response\Json
      * @throws ApiException
      */
-    public function login()
+    public function login0()
     {
         // 判断是否为PUT请求
         if (!request()->isPut()) {
@@ -57,15 +57,18 @@ class Login extends Common
         // 传入的参数
         $param = input('param.');
         $param['phone'] = trim($param['phone']);
+
+        // 实例化Aes
+        $aesObj = new Aes();
    
         // 判断传入的参数是否存在
         // 手机号码
         if (empty($param['phone'])) {
             return show(config('code.error'), '手机号码不能为空', [], 404);
-        }/* else {
+        } else {
             // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
-            $param['phone'] = (new Aes())->decrypt($param['phone']);
-        }*/
+            $param['phone'] = $aesObj->decrypt($param['phone']);
+        }
 
         // 密码
         if (empty($param['password'])) {
@@ -94,7 +97,7 @@ class Login extends Common
         if ($user && $user['status'] == config('code.status_enable')) { // 用户存在且已启用，则登录并更新token和token失效时间   
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
-                if (IAuth::encrypt($param['password']) != $user['password']) {
+                if (IAuth::encrypt($aesObj->decrypt($param['password'])) != $user['password']) {
                     return show(config('code.error'), '密码错误', [], 401);
                 }
             }
@@ -119,7 +122,7 @@ class Login extends Common
         if ($id) {
             // 返回token给客户端
             $result = [
-                'token' => (new Aes())->encrypt($token . '&' . $user['user_id']), // AES加密（自定义拼接字符串）
+                'token' => $aesObj->encrypt($token . '&' . $user['user_id']), // AES加密（自定义拼接字符串）
                 'user_id' => $user['user_id'],
                 'user_name' => $user['user_name'],
                 'phone' => $user['phone']
@@ -312,7 +315,7 @@ class Login extends Common
 
                     // 返回token给客户端
                     $result = [
-                        'token' => (new Aes())->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
+                        'token' => $aesObj->encrypt($token . '&' . $userId) // AES加密（自定义拼接字符串）
                     ];
                     // 提交事务
                     Db::commit();
@@ -353,7 +356,7 @@ class Login extends Common
                 return show(config('code.error'), '短信验证码不能为空', '', 401);
             } else {
                 // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
-                //$param['code'] = $aesObj->decrypt($param['code']);
+                //$param['verify_code'] = $aesObj->decrypt($param['verify_code']);
 
                 // 判断短信验证码是否合法
                 $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
@@ -415,8 +418,10 @@ class Login extends Common
     {
         // 判断为PUT请求
         if (request()->isPut()) {
+            // 实例化Aes
+            $aesObj = new Aes();
             // 获取token
-            $accessUserToken = (new Aes())->decrypt($this->headers['access-user-token']); // AES解密
+            $accessUserToken = $aesObj->decrypt($this->headers['access-user-token']); // AES解密
             list($token, $id) = explode('&', $accessUserToken); // token
 
             // 清空token或token失效时间
@@ -440,16 +445,16 @@ class Login extends Common
     }
 
     /**
-     * 保存新建的资源（用户登录或注册）
+     * 用户登录与注册
      * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 短信验证码（或密码） 登录
      *
      * @return \think\response\Json
      * @throws ApiException
      */
-    public function save()
+    public function login()
     {
-        // 判断是否为POST请求
-        if (!request()->isPost()) {
+        // 判断是否为PUT请求
+        if (!request()->isPut()) {
             return show(config('code.error'), '请求不合法', [], 400);
         }
 
@@ -462,23 +467,23 @@ class Login extends Common
         // 手机号码
         if (empty($param['phone'])) {
             return show(config('code.error'), '手机号码不能为空', [], 404);
-        }/* else {
+        } else {
             // 客户端需对手机号码AES加密（可以与短信验证码一起加密），服务端对手机号码AES解密
             $param['phone'] = $aesObj->decrypt($param['phone']);
-        }*/
+        }
         // 手机短信验证码或密码二选一
-        if (empty($param['code']) && empty($param['password'])) {
-            return show(config('code.error'), '手机短信验证码或密码不能为空', [], 404);
-        }/* else {
+        if (empty($param['verify_code']) && empty($param['password'])) {
+            return show(config('code.error'), '短信验证码或密码不能为空', [], 404);
+        } else {
             // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
-            $param['code'] = $aesObj->decrypt($param['code']);
-        }*/
+            $param['verify_code'] = $aesObj->decrypt($param['verify_code']);
+        }
 
         // 当通过手机短信验证码登录时，判断手机短信验证码是否合法
-        if (!empty($param['code'])) {
-            $code = ''; // TODO 获取 调用阿里云短信服务接口时 生成的session值
-            if ($code != $param['code']) {
-                return show(config('code.error'), '手机短信验证码错误', [], 404);
+        if (!empty($param['verify_code'])) {
+            $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+            if (empty($verifyCode) || $verifyCode != $param['verify_code']) {
+                return show(config('code.error'), '短信验证码错误', '', 401);
             }
         }
 
@@ -499,7 +504,7 @@ class Login extends Common
         if ($user && $user->status == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
             // 当通过密码登录时，判断密码是否正确
             if (!empty($param['password'])) {
-                if (IAuth::encrypt($param['password']) != $user->password) {
+                if (IAuth::encrypt($aesObj->decrypt($param['password'])) != $user->password) {
                     return show(config('code.error'), '密码错误', [], 403);
                 }
             }
@@ -511,7 +516,7 @@ class Login extends Common
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
         } else { // 如果为首次登录，则注册用户
-            if (!empty($param['code'])) {
+            if (!empty($param['verify_code'])) {
                 $data['user_name'] = 'Sustock-' . $param['phone']; // 定义默认用户名
                 $data['phone'] = $param['phone'];
                 $data['status'] = config('code.status_enable');
@@ -531,7 +536,7 @@ class Login extends Common
         if ($id) {
             // 返回token给客户端
             $result = [
-                'token' => (new Aes())->encrypt($token . '&' . $id), // AES加密（自定义拼接字符串）
+                'token' => $aesObj->encrypt($token . '&' . $id), // AES加密（自定义拼接字符串）
             ];
             return show(config('code.success'), 'OK', $result);
         } else {
