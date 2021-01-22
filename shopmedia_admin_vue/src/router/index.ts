@@ -86,6 +86,10 @@ import NewsEdit from '@/pages/news/NewsEdit.vue'
 // 用户反馈
 import Feedback from '@/pages/feedback/Feedback.vue'
 import FeedbackHandle from '@/pages/feedback/FeedbackHandle.vue'
+//商品分类管理
+import GoodsType from '@/pages/goods_type/GoodsType.vue'
+import GoodsTypeCreate from '@/pages/goods_type/GoodsTypeCreate.vue'
+import GoodsTypeEdit from '@/pages/goods_type/GoodsTypeEdit.vue'
 
 Vue.use(VueRouter)
 
@@ -192,6 +196,10 @@ const routes = [
 			// 2--用户反馈
 			{path: 'feedback', name: 'feedback', component: Feedback}, // 用户反馈列表
 			{path: 'feedback_handle', name: 'feedback_handle', component: FeedbackHandle}, // 处理用户反馈
+			// 2--商品分类管理
+			{path: 'goods_type', name: 'goods_type', component: GoodsType},//商品分类列表
+			{path: 'goods_type_create', name: 'goods_type_create', component: GoodsTypeCreate},//新增商品分类
+			{path: 'goods_type_edit', name: 'goods_type_edit', component: GoodsTypeEdit},//修改商品分类
 		]
 	}
 ]

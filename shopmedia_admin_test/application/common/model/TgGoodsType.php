@@ -6,10 +6,10 @@ use think\Model;
 
 /**
  * 商品类别模型类
- * Class GoodsCate
+ * Class TgGoodsType
  * @package app\common\model
  */
-class GoodsCate extends Base
+class TgGoodsType extends Base
 {
     /**
      * 获取商品类别列表数据
@@ -17,16 +17,12 @@ class GoodsCate extends Base
      * @param int $size
      * @return \think\Paginator
      */
-    public function getGoodsCate($map = [], $size = 5)
+    public function getGoodsType($map = [], $size = 5)
     {
-        /*if(!isset($map['gc.parent_id'])) { // 父级ID
-            $map['gc.parent_id'] = 0;
-        }*/
-
         $result = $this->alias('gc')
-            ->field('gc.*, pgc.cate_name parent_name, pgc.parent_id grandparent_id')
-            ->join('__GOODS_CATE__ pgc', 'gc.parent_id = pgc.cate_id', 'LEFT') // 上级
-            ->where($map)->cache(true, 10)->paginate($size);
+            ->field('gc.*, pgc.type_name parent_name, pgc.parent_id grandparent_id')
+            ->join('__TG_GOODS_TYPE__ pgc', 'gc.parent_id = pgc.id', 'LEFT') // 上级
+            ->where($map)->paginate($size);
         return $result;
     }
 
@@ -35,9 +31,9 @@ class GoodsCate extends Base
      * @param array $map
      * @return mixed
      */
-    public function getGoodsCateTree($map = [])
+    public function getGoodsTypeTree($map = [])
     {
-        $result = $this->where($map)->cache(true, 10)->select();
+        $result = $this->where($map)->select();
         return $this->sort($result);
     }
 
@@ -62,16 +58,16 @@ class GoodsCate extends Base
                 $value['level'] = $level;
 
                 // 定义所有上级id（包含当前id）
-                $value['parent_ids'] = $this->getParentId($value['cate_id']);
+                $value['parent_ids'] = $this->getParentId($value['id']);
 
                 // 定义所有下级id（不包含当前id）
-                $value['child_ids'] = $this->getChildId($value['cate_id']);
+                $value['child_ids'] = $this->getChildId($value['id']);
 
                 // 数据放入静态数组中
                 $arr[] = $value;
 
                 // 递归：找出当前元素的子元素（当前文章类别的id即为子元素的parent_id）
-                $this->sort($data, $value['cate_id'], $level + 1);
+                $this->sort($data, $value['id'], $level + 1);
             }
         }
 
@@ -107,11 +103,11 @@ class GoodsCate extends Base
 
         foreach ($data as $key => $value) {
             if ($value['parent_id'] == $id) {
-                // 当前 cate_id 即 $value['cate_id'] 数据放入静态数组中
-                $arr[] = $value['cate_id'];
+                // 当前 id 即 $value['id'] 数据放入静态数组中
+                $arr[] = $value['id'];
 
-                // 递归：找出当前元素的子元素（当前文章类别的cate_id即为子元素的parent_id）
-                $this->_getChildId($data, $value['cate_id'], false);
+                // 递归：找出当前元素的子元素（当前文章类别的id即为子元素的parent_id）
+                $this->_getChildId($data, $value['id'], false);
             }
         }
 
@@ -150,11 +146,11 @@ class GoodsCate extends Base
         }
 
         foreach ($data as $key => $value) {
-            if ($value['cate_id'] == $id) {
-                // 当前 id 即 $value['cate_id'] 数据放入静态数组中
-                $arr[] = $value['cate_id'];
+            if ($value['id'] == $id) {
+                // 当前 id 即 $value['id'] 数据放入静态数组中
+                $arr[] = $value['id'];
 
-                // 递归：找出当前元素的父元素（当前文章类别的parent_id即为父元素的cate_id）
+                // 递归：找出当前元素的父元素（当前文章类别的parent_id即为父元素的id）
                 $this->_getParentId($data, $value['parent_id'], false);
             }
         }

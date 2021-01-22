@@ -23,7 +23,22 @@
 			<el-col :span="24"> <!--content s-->
 				<el-col  :xs="6" :sm="5" :md="4" :lg="3" :xl="2"> <!-- menu s -->
 					<div class="homemenu">
-						<dl class="m0">
+						<!-- 以下是动态数据 menus -->
+						<dl class="m0" v-for="(item, index) in menus" :key="index" v-if="item.level == 1" style="color: #303133;">
+							<dt @click="menush(item.id)">
+								<span :class="item.icon" :id="'menu' + item.id"> {{item.title}}</span>
+								<span class="fr derection" :class="menuvalue[item.id]?derectionup:derectiondown"></span>
+							</dt>
+							<el-collapse-transition>
+								<div v-show="menuvalue[item.id]">
+									<router-link v-for="(value, key) in menus" :key="key" v-if="value.pid == item.id" :to="value.name">
+										<dd :id="'menu' + value.id" :class="activevalue[value.id] ? activeclass : ''" @click="menuactive(value.id, item.id, index)">{{value.title}}</dd>
+									</router-link>
+								</div>
+							</el-collapse-transition>
+						</dl>
+						
+						<dl class="m0" style="color: #EBEEF5;">
 							
 							<dt @click="menush(3)">
 								<span class="el-icon-office-building" id="menu3"> 分公司管理</span>
@@ -146,20 +161,6 @@
 							
 						</dl>
 						
-						<!-- 以下是动态数据 menus -->
-						<dl class="m0" v-for="(item, index) in menus" :key="index" v-if="item.level == 1" style="color: #C0C4CC;">
-							<dt @click="menush(item.id)">
-								<span :class="item.icon" :id="'menu' + item.id"> {{item.title}}</span>
-								<span class="fr derection" :class="menuvalue[item.id]?derectionup:derectiondown"></span>
-							</dt>
-							<el-collapse-transition>
-								<div v-show="menuvalue[item.id]">
-									<router-link v-for="(value, key) in menus" :key="key" v-if="value.pid == item.id" :to="value.name">
-										<dd :id="'menu' + value.id" :class="activevalue[value.id] ? activeclass : ''" @click="menuactive(value.id, item.id, index)">{{value.title}}</dd>
-									</router-link>
-								</div>
-							</el-collapse-transition>
-						</dl>
 					</div>
 				</el-col> <!-- menu e -->
 				
