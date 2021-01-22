@@ -103,6 +103,9 @@ Route::resource('news_cate', 'admin/NewsCate');
 // 用户反馈
 Route::resource('feedback', 'admin/Feedback');
 
+//商品类别管理
+Route::resource('goods_type','admin/GoodsType');
+Route::get('goods_type_tree','admin/GoodsType/GoodsTypeTree');
 
 /* -------------------- 后台管理系统路由 -------------------- e */
 
