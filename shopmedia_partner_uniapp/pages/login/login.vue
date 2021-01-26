@@ -1,47 +1,46 @@
 <template>
 	<view class="uni-page-body uni-padding-wrap">
-		<view class="contain-logo">
+		<!-- <view class="contain-logo">
 			<image class="logo" :src="logourl"></image>
-		</view>
-		<!-- <view class="uni-center logotext">
-			<text>商市通</text>
 		</view> -->
+		<view class="uni-center uni-bold logotext">
+			<text>商市通登录</text>
+		</view>
 
 		<view>
 			<view class="input-line-height">
-				<text class="input-line-height-1">手机</text>
-				<input class="input-line-height-2" type="text" v-model="phone" placeholder="请输手机号" />
+				<!-- <text class="input-line-height-1">电话号码</text> -->
+				<text class="m-icon m-icon-phone"></text>
+				<input class="input-line-height-2" type="text" v-model="phone" placeholder="请输入手机号" />
 			</view>
 			<view class="input-line-height" v-if="!is_verify_code">
-				<text class="input-line-height-1">密码</text>
+				<!-- <text class="input-line-height-1">密码</text> -->
+				<text class="m-icon m-icon-locked"></text>
 				<input class="input-line-height-2" type="password" v-model="password" placeholder="请输入密码" />
 			</view>
 			
-			<view class="input-list" v-if="is_verify_code">
-				<!-- <text class="iconposition icon color-blue">&#xe7d6;</text> -->
-				<text class="input-line-height-1">验证码</text>
-				<input name="verify_code" type="number" v-model="verify_code" placeholder="" />
-				<button  v-if="!showseconds" @click="getVerifyCode()" class="bg-main-color color-white verify-button">获取验证码</button>
-				<button  v-if="showseconds"  class="bg-main-color color-white verify-button" >{{seconds}} S</button>
+			<view class="input-line-height" v-if="is_verify_code">
+				<!-- <text class="input-line-height-1">验证码</text> -->
+				<text class="m-icon m-icon-locked"></text>
+				<input class="input-line-height-2" name="verify_code" type="number" v-model="verify_code" placeholder="请输入验证码" />
+				<button v-if="!showseconds" @click="getVerifyCode()" plain="true" class="verify-button">获取验证码</button>
+				<button v-if="showseconds" plain="true" class="verify-button">剩余{{seconds}}s</button>
 			</view>
 		</view>
 
 		<view>
-			<button class="login-button bg-main-color" @click="bindLogin()">登 录</button>
-			<view class="uni-common-mt uni-center">
-				
-			</view>
-			<view class="uni-common-mt">
-				<uni-grid :column="2" :showBorder="false" :square="false" :highlight="false">
-					<uni-grid-item>
-						<checkbox-group v-if="!is_verify_code">
-							<label><checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#409EFF" />记住密码</label><navigator url="../pwd/pwd">忘记密码？</navigator>
+			<button class="login-button primary" @click="bindLogin()">登 录</button>
+			<view class="uni-common-mt" v-if="false">
+				<view class="uni-flex uni-row" :style="!is_verify_code ? '-webkit-justify-content: space-between;justify-content: space-between;' : '-webkit-justify-content: flex-end;justify-content: flex-end;'">
+					<view class="" v-if="!is_verify_code">
+						<checkbox-group>
+							<label><checkbox value="psw" :checked="rememberPsw" @click="rememberPsw = !rememberPsw" color="#4C85FC" />记住密码 <navigator url="../pwd/pwd" class="inline" style="margin-left: 1rem;">忘记密码？</navigator></label>
 						</checkbox-group>
-					</uni-grid-item>
-					<uni-grid-item>
+					</view>
+					<view class="">
 						<text class="text-right main-color" @click="is_verify_code = !is_verify_code">{{is_verify_code == true ? '密码登录' : '短信登录' }}</text>
-					</uni-grid-item>
-				</uni-grid>
+					</view>
+				</view>
 			</view>
 		</view>
 
@@ -52,9 +51,9 @@
 				<navigator url="../pwd/pwd">忘记密码</navigator>
 			</view> -->
 			<view class="uni-common-mt uni-center">
-				<checkbox-group @change="checkAgreement">
+				<checkbox-group @change="signAgreement">
 					<label>
-						<checkbox class="checkbox inline" value="1" color="#409EFF" :checked="checkedAgreement" />
+						<checkbox class="checkbox inline" value="1" color="#4C85FC" :checked="signed_agreement" />
 					</label>
 					<navigator class="inline text" url="/pages/login/user-agreement">
 						阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
@@ -97,8 +96,9 @@
 				seconds: 120, // 倒计时秒数
 				verify_code: '', // 短信验证码
 				return_code: '',
+				invitation_code: '288888', // 邀请码
 				logourl: '/static/img/logo.png',
-				checkedAgreement: true, // 勾选协议状态
+				signed_agreement: true, // 勾选协议状态
 				rememberPsw: true // 记住账号密码
 			}
 		},
@@ -203,7 +203,7 @@
 				if (this.phone == '') {
 					uni.showToast({
 						icon: 'none',
-						title: '请输入手机号码'
+						title: '请输入手机号'
 					});
 					return false;
 				}
@@ -215,27 +215,27 @@
 					return false;
 				}
 				
-				// 密码
-				if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {
-					uni.showToast({
-						icon: 'none',
-						duration: 2500,
-						title: '密码由6~20位数字或字母组成'
-					});
-					return false;
-				}
-				
-				// 短信验证码
-				if (this.is_verify_code == true && this.verify_code == '') {
-					uni.showToast({
-						icon: 'none',
-						title: '请输入短信验证码'
-					});
-					return false;
+				if (this.is_verify_code == true) { // 短信登录，验证短信验证码
+					if (this.verify_code == '') {
+						uni.showToast({
+							icon: 'none',
+							title: '请输入短信验证码'
+						});
+						return false;
+					}
+				} else { // 密码登录，验证密码
+					if (!this.password.match(/^[0-9A-Za-z]{6,20}$/)) {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '密码由6~20位数字或字母组成'
+						});
+						return false;
+					}
 				}
 				
 				// 勾选协议
-				if (this.checkedAgreement == 0) {
+				if (this.signed_agreement == 0) {
 					uni.showToast({
 						icon: 'none',
 						title: '请阅读并同意用户及隐私协议'
@@ -243,15 +243,23 @@
 					return false;
 				}
 				
+				// 请求的参数
+				let data = {
+					phone: this.phone,
+					signed_agreement: this.signed_agreement,
+					invitation_code: this.invitation_code
+				}
+				if (this.is_verify_code == true) { // 短信登录
+					data.verify_code = this.verify_code;
+					data.return_code = this.return_code = '222';
+				} else { // 密码登录
+					data.password = this.password;
+				}
+				
 				//使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				uni.request({
 					url: this.$serverUrl + 'api/login',
-					data: {
-						phone: Aes.encode(this.phone),
-						password: Aes.encode(this.password),
-						verify_code: this.verify_code,
-						return_code: this.return_code
-					},
+					data: {data: Aes.encode(JSON.stringify(data))},
 					header: {
 						commonheader: this.commonheader
 					},
@@ -312,17 +320,17 @@
 					});
 					return false;
 				}
-			    
-				await this.hasphone();
-				if(this.hasuser == false){
+				
+				// 勾选协议
+				if (this.signed_agreement == 0) {
 					uni.showToast({
 						icon: 'none',
-						title: this.hasuserwords
+						title: '请阅读并同意用户及隐私协议'
 					});
 					return false;
 				}
 				
-			    //控制倒计时显示
+				// 控制倒计时显示
 				this.showseconds = true;
 				this.countseconds();
 				
@@ -344,45 +352,14 @@
 			},
 			
 			/**
-			 * 检查用户是否存在
-			 */
-			hasphone(){
-				let self=this;
-				return new Promise((resolve, reject) => {
-					uni.request({ 
-						url : this.$serverUrl + 'api/hasphone',
-						method : "POST",
-						data : {
-							phone:this.phone
-						},
-						header:{
-							commonheader: this.commonheader
-						},
-						success: (res) => {
-							if(res.data.status==0){
-								self.hasuser=false;
-								self.hasuserwords=res.data.words;
-							}else{
-								self.hasuser=true;
-							}
-							resolve('suc');
-						},
-						fail:(err)=>{
-							reject('err')
-						}
-					})
-				})
-			},
-			
-			/**
 			 * 监测是否勾选用户协议
 			 * @param {Object} e
 			 */
-			checkAgreement(e) {
+			signAgreement(e) {
 				if (e.detail.value.length == 1) {
-					this.checkedAgreement = true;
+					this.signed_agreement = true;
 				} else {
-					this.checkedAgreement = false;
+					this.signed_agreement = false;
 				}
 			},
 
@@ -427,7 +404,7 @@
 			 * 对话框点击确认按钮
 			 */
 			dialogConfirm(done) {
-				this.checkedAgreement = true;
+				this.signed_agreement = true;
 				// 需要执行 done 才能关闭对话框
 				done()
 			},
@@ -436,7 +413,7 @@
 			 * 对话框取消按钮
 			 */
 			dialogClose(done) {
-				this.checkedAgreement = false;
+				this.signed_agreement = false;
 				// 需要执行 done 才能关闭对话框
 				done()
 			}
@@ -445,14 +422,20 @@
 </script>
 
 <style>
+	.uni-padding-wrap {
+		width: 78.4%;
+		padding: 0 10.8%;
+	}
+	
 	.contain-logo {
 		margin-top: 50px;
 		text-align: center;
 	}
 
 	.logotext {
-		font-size: 24px;
-		margin-bottom: 20px;
+		font-size: 28px;
+		margin-top: 89.5px;
+		margin-bottom: 57.5px;
 	}
 
 	.logo {
@@ -466,26 +449,26 @@
 		align-items: center;
 		line-height: 50px;
 		border-bottom: 1px solid #ECECEC;
-		font-size: 16px;
+		font-size: 15px;
 		position: relative;
 	}
 
 	.input-line-height-1 {
 		position: absolute;
 		left: 5px;
-		padding: 15px 0 10px 0;
+		padding: 20px 0 15px 0;
 	}
 
 	.input-line-height-2 {
 		flex: 1;
-		font-size: 16px;
-		text-align: center;
-		padding: 15px 0 10px 0;
+		font-size: 15px;
+		/* text-align: center; */
+		padding: 20px 0 15px 15px;
 	}
 
 	.login-button {
-		color: #fff;
-		margin-top: 20px;
+		color: #FEFEFE;
+		margin-top: 48.5px;
 	}
 
 	.bottom-con {
@@ -507,19 +490,13 @@
 	}
 	
 	
-	/* 短信验证码部分 */
-	.input-list {
-		position: relative;
-		border-bottom: 1px solid #F1F1F1;
-		padding-bottom: 5px;
-		margin-bottom: 30px;
-	}
-	
+	/* 短信验证码 */
 	.verify-button {
-		position: absolute;
+		/* position: absolute;
 		right: 0;
-		bottom: 3px;
-		font-size: 13px;
-		width: 100px;
+		bottom: 3px; */
+		font-size: 17px;
+		width: 39%;
+		border: 0;
 	}
 </style>

@@ -373,7 +373,7 @@
 		text-align: left;
 	}
 	.login-button{
-		background-color: #409EFF;
+		background-color: #4C85FC;
 		color:#fff;
 		margin-top: 20px;
 	}

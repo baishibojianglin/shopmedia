@@ -8,7 +8,7 @@
 		
 		<!-- SegmentedControl 分段器 s -->
 		<view class="uni-padding-wrap uni-common-mt mb">
-			<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="text" active-color="#409EFF"></uni-segmented-control>
+			<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="text" active-color="#4C85FC"></uni-segmented-control>
 			<view class="">
 				<view v-if="segmentedControl.current === 0">
 					<uni-card title="已合作广告屏" thumbnail="" :extra="'合计 ' + salecount + ' 台'" is-full is-shadow>

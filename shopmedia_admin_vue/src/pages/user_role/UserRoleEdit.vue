@@ -15,8 +15,8 @@
 					<el-form-item prop="title" label="角色名称">
 						<el-input v-model="form.title" disabled style="width:350px;"></el-input>
 					</el-form-item>
-					<el-form-item prop="parent_comm_ratio" label="上级提成比例">
-						<el-input v-model="form.parent_comm_ratio" placeholder="输入上级提成比例" clearable style="width:350px;"></el-input>
+					<el-form-item prop="parent_comm_ratio" label="上级统一提成比例">
+						<el-input v-model="form.parent_comm_ratio" placeholder="输入上级统一提成比例" clearable style="width:350px;"></el-input>
 					</el-form-item>
 					<el-form-item prop="status" label="状态">
 						<el-radio-group v-model="form.status">

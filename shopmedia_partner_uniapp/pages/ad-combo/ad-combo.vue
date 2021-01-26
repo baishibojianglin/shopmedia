@@ -24,7 +24,7 @@
 			</view>
 			
 			<view class="uni-title uni-bold">广告套餐</view>
-			<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="text" active-color="#409EFF"></uni-segmented-control>
+			<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="text" active-color="#4C85FC"></uni-segmented-control>
 			<view v-if="segmentedControl.current === 0">
 				<view class="uni-list">
 					<radio-group @change="radioChange">
@@ -65,7 +65,7 @@
 		<view v-if="false" class="uni-padding-wrap uni-center">
 			<checkbox-group @change="isAgreement">
 				<label>
-					<checkbox class="checkbox inline" value="1" color="#409EFF" checked="true" />
+					<checkbox class="checkbox inline" value="1" color="#4C85FC" checked="true" />
 				</label>
 				<navigator class="inline text" url="/pages/ad-combo/ad-combo-agreement">
 					阅读并同意<text class="color-blue">《广告套餐协议》</text>

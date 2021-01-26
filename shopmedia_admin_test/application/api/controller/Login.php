@@ -21,22 +21,22 @@ class Login extends Common
      * @return \think\response\Json
      */
     public function hasphone(){
-        $form=input();
-        $match['phone']=$form['phone'];
-        $userlist=Db::name('user')->where($match)->find();
+        $form = input();
+        $match['phone'] = $form['phone'];
+        $userlist = Db::name('user')->where($match)->find();
         if(empty($userlist)){
             //用户不存在
-            $message['status']=0;
-            $message['words']='该用户不存在';
+            $message['status'] = 0;
+            $message['words'] = '用户不存在';
             return json($message);
         }
-        if($userlist['status']==0){
+        if($userlist['status'] == 0){
             //用户被禁用
-            $message['status']=0;
-            $message['words']='该账号被冻结';
+            $message['status'] = 0;
+            $message['words'] = '账号被冻结';
             return json($message);
         }
-        $message['status']=1;
+        $message['status'] = 1;
         return json($message);
     }
 
@@ -64,7 +64,7 @@ class Login extends Common
         // 判断传入的参数是否存在
         // 手机号码
         if (empty($param['phone'])) {
-            return show(config('code.error'), '手机号码不能为空', [], 404);
+            return show(config('code.error'), '手机号码不能为空', [], 401);
         } else {
             // TODO：客户端需对手机号码AES加密（可以与密码一起加密），服务端对手机号码AES解密
             $param['phone'] = $aesObj->decrypt($param['phone']);
@@ -72,7 +72,7 @@ class Login extends Common
 
         // 密码
         if (empty($param['password'])) {
-            return show(config('code.error'), '密码不能为空', [], 404);
+            return show(config('code.error'), '密码不能为空', [], 401);
         }
 
         // validate验证
@@ -197,11 +197,11 @@ class Login extends Common
             // 判断该业务员所属用户是否存在广告主业务员角色，存在则默认创建广告主
             $advertiserSalesman = Db::name('user_salesman')->where(['uid' => $salesman['uid'], 'role_id' => 5])->find();
 
-            /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
+            /* TODO：获取新增的目标客户或下级业务员的角色类型，封装方法 s */
             $roleId = ''; 
             // 判断为（目标客户）邀请码时
             if ($salesman['invitation_code'] == $param['invitation_code']) {
-                // 根据业务员类型，获取新增的目标客户的类型
+                // 根据业务员角色类型，获取新增的目标客户的角色类型
                 switch ($salesman['role_id']) {
                     case 4: // 广告屏业务员
                         $roleId = 2; // 广告屏合作商
@@ -221,7 +221,7 @@ class Login extends Common
             if($salesman['son_invitation_code'] == $param['invitation_code']) {
                 $roleId = $salesman['role_id'];
             }
-            /* TODO：获取新增的（目标客户或下级业务员）的类型，封装方法 s */
+            /* TODO：获取新增的目标客户或下级业务员的角色类型，封装方法 e */
 
             // 查询该手机号用户是否存在
             $user = User::get(['phone' => $param['phone']]);
@@ -231,7 +231,7 @@ class Login extends Common
                 // 设置唯一性token
                 $token = IAuth::setAppLoginToken($param['phone']);
 
-                // 原始用户的新增数据
+                // 用户基本信息
                 $data['token'] = $token; // token
                 $data['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
                 $data['user_name'] = 'sustock-' . trim($param['phone']); // 定义默认用户名
@@ -254,7 +254,7 @@ class Login extends Common
                 // 启动事务
                 Db::startTrans();
                 try {
-                    // 新增原始用户
+                    // 注册用户基本信息
                     $res[0] = $userId = Db::name('user')->strict(false)->insertGetId($data); // 新增数据并返回主键值
 
                     // 新增（目标客户或下级业务员）用户角色明细
@@ -310,7 +310,7 @@ class Login extends Common
 
                     // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
                     if (in_array(0, $res)) {
-                        return show(config('code.error'), '新增失败', '', 403);
+                        return show(config('code.error'), '注册失败', '', 403);
                     }
 
                     // 返回token给客户端
@@ -446,7 +446,10 @@ class Login extends Common
 
     /**
      * 用户登录与注册
-     * 系统默认以 手机号码 + 短信验证码 注册，以 手机号码 + 短信验证码（或密码） 登录
+     * 说明：
+     * 1.系统默认以 手机号码 + 短信验证码 注册（首次登录），以 手机号码 + 短信验证码（或密码） 登录
+     * 2.注册用户时的默认角色：①创建广告主；②默认绑定尾货业务员（用户扩展信息表）
+     * 3.TODO：根据邀请码创建对应客户角色或业务员角色
      *
      * @return \think\response\Json
      * @throws ApiException
@@ -458,89 +461,195 @@ class Login extends Common
             return show(config('code.error'), '请求不合法', [], 400);
         }
 
-        // 传入的参数
-        $param = input('param.');
         // 实例化Aes
         $aesObj = new Aes();
 
+        // 传入的参数
+        $param = input('param.');
+        // 客户端需对手机号码、短信验证码（或密码）单独（或统一成一个参数如data）进行AES加密，服务端对这些参数进行AES解密
+        $_data = json_decode($aesObj->decrypt($param['data']), true);
+
         // 判断传入的参数是否存在
         // 手机号码
-        if (empty($param['phone'])) {
-            return show(config('code.error'), '手机号码不能为空', [], 404);
-        } else {
-            // 客户端需对手机号码AES加密（可以与短信验证码一起加密），服务端对手机号码AES解密
-            $param['phone'] = $aesObj->decrypt($param['phone']);
+        if (empty($_data['phone'])) {
+            return show(config('code.error'), '手机号码不能为空', [], 401);
+        }
+        // 同意用户及隐私协议
+        if (empty($_data['signed_agreement']) || $_data['signed_agreement'] != 1) {
+            return show(config('code.error'), '请同意用户及隐私协议', [], 401);
         }
         // 手机短信验证码或密码二选一
-        if (empty($param['verify_code']) && empty($param['password'])) {
-            return show(config('code.error'), '短信验证码或密码不能为空', [], 404);
-        } else {
-            // 客户端需对短信验证码AES加密，服务端对短信验证码AES解密
-            $param['verify_code'] = $aesObj->decrypt($param['verify_code']);
+        if (empty($_data['verify_code']) && empty($_data['password'])) {
+            return show(config('code.error'), '短信验证码或密码不能为空', [], 401);
         }
 
         // 当通过手机短信验证码登录时，判断手机短信验证码是否合法
-        if (!empty($param['verify_code'])) {
-            $verifyCode = $param['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
-            if (empty($verifyCode) || $verifyCode != $param['verify_code']) {
+        if (!empty($_data['verify_code'])) {
+            $verifyCode = $_data['return_code']; // TODO：获取 调用阿里云短信服务接口时 生成的session值
+            if (empty($verifyCode) || $verifyCode != $_data['verify_code']) {
                 return show(config('code.error'), '短信验证码错误', '', 401);
             }
         }
 
         // validate验证
         $validate = validate('User');
-        if (!$validate->check($param, [], 'login')) {
+        if (!$validate->check($_data, [], 'login')) {
             return show(config('code.error'), $validate->getError(), [], 403);
         }
 
-        $token = IAuth::setAppLoginToken($param['phone']); // 设置登录的唯一性token
-        $data = [
+        // 设置登录的唯一性token
+        $token = IAuth::setAppLoginToken($_data['phone']);
+        $userData = [
             'token' => $token, // token
             'token_time' => strtotime('+' . config('app.login_time_out')), // token失效时间
         ];
 
         // 查询该手机号用户是否存在
-        $user = User::get(['phone' => $param['phone']]);
+        $user = User::get(['phone' => $_data['phone']]);
         if ($user && $user->status == config('code.status_enable')) { // 用户已存在，则登录并更新token和token失效时间
+            // 获取用户ID
+            $userId = $user['user_id'];
+
             // 当通过密码登录时，判断密码是否正确
-            if (!empty($param['password'])) {
-                if (IAuth::encrypt($aesObj->decrypt($param['password'])) != $user->password) {
+            if (!empty($_data['password'])) {
+                if (IAuth::encrypt($_data['password']) != $user->password) {
                     return show(config('code.error'), '密码错误', [], 403);
                 }
             }
 
             // 更新token和token失效时间
             try { // 捕获异常
-                $id = model('User')->save($data, ['phone' => $param['phone']]); // 更新
+                $res = model('User')->save($userData, ['phone' => $_data['phone']]); // 更新
             } catch (\Exception $e) {
                 throw new ApiException($e->getMessage(), 500, config('code.error'));
             }
         } else { // 如果为首次登录，则注册用户
-            if (!empty($param['verify_code'])) {
-                $data['user_name'] = 'Sustock-' . $param['phone']; // 定义默认用户名
-                $data['phone'] = $param['phone'];
-                $data['status'] = config('code.status_enable');
-
-                // 注册用户
-                try { // 捕获异常
-                    $id = model('User')->add($data, 'user_id'); // 新增
-                } catch (\Exception $e) {
-                    throw new ApiException($e->getMessage(), 500, config('code.error'));
+            if (!empty($_data['verify_code'])) {
+                // 根据（目标客户或下级业务员）邀请码获取业务员信息
+                $salesman = Db::name('user_salesman')->where(['invitation_code|son_invitation_code' => $_data['invitation_code']])->find();
+                // 判断（目标客户或下级业务员）邀请码对应的业务员是否存在，并且两者的邀请码不能相同
+                if (!$salesman || $salesman['invitation_code'] == $salesman['son_invitation_code']) {
+                    return show(config('code.error'), '邀请码错误', '', 401);
                 }
+                // 获取新增的目标客户或下级业务员的角色类型
+                $roleId = $this->_getRoleId($salesman, $_data['invitation_code']);
+                // 判断该业务员所属用户是否存在广告主业务员角色，存在则默认创建广告主，不存在则创建为平台直属分公司（成都分公司）广告业务员的广告主
+                $advertiserSalesman = Db::name('user_salesman')->where(['uid' => $salesman['uid'], 'role_id' => 5])->find();
+                // 判断该业务员所属用户是否存在尾货业务员角色，存在则绑定尾货业务员，不存在则绑定平台直属分公司（成都分公司）尾货业务员
+                $tgSalesman = Db::name('user_salesman')->where(['uid' => $salesman['uid'], 'role_id' => 8])->find();
+
+                // 入库操作
+                /* 手动控制事务 s */
+                // 启动事务
+                Db::startTrans();
+                try {
+                    $res = [];
+
+                    // 注册用户基本信息
+                    $userData['token'] = $token; // token
+                    $userData['token_time'] = strtotime('+' . config('app.login_time_out')); // token失效时间
+                    $userData['user_name'] = 'sustock-' . trim($_data['phone']); // 定义默认用户名
+                    $userData['phone'] = trim($_data['phone']);
+                    $userData['status'] = config('code.status_enable');
+                    $userData['signed_agreement'] = $_data['signed_agreement'];
+                    if ($advertiserSalesman) {
+                        $userData['role_ids'] = implode(',', array_unique([$roleId, 7])); // 用户角色ID集合，默认创建广告主角色
+                    } else {
+                        $userData['role_ids'] = $roleId; // 用户角色ID集合
+                    }
+                    $userData['phone_verified'] = 1; // 手机号已验证
+                    $userData['password'] = IAuth::encrypt($_data['phone']); // 短信注册时默认密码
+                    $userData['create_time'] = time(); // 创建时间
+                    $userData['create_ip'] = request()->ip(); // 创建IP
+                    $res[0] = $userId = Db::name('User')->insertGetId($userData);
+                    $res[0] === false ? 0 : true;
+
+                    // 创建用户扩展信息，绑定尾货业务员
+                    if (empty($tgSalesman)) {
+                        // 获取平台直属分公司（成都分公司）尾货业务员
+                        $tgSalesman = Db::name('user_salesman')->where(['role_id' => 8, 'company_id' => 1, 'parent_id' => 0, 'invitation_code' => '288888'])->find();
+                    }
+                    $userExtendData['user_id'] = $userId;
+                    $userExtendData['tg_salesman_id'] = $tgSalesman['id'];
+                    $res[1] = Db::name('user_extend')->insert($userExtendData)=== false ? 0 : true;
+
+                    // 创建广告主角色
+                    if (empty($advertiserSalesman)) {
+                        // 获取平台直属分公司（成都分公司）广告业务员
+                        $advertiserSalesman = Db::name('user_salesman')->where(['role_id' => 5, 'company_id' => 1, 'parent_id' => 0, 'invitation_code' => '255555'])->find();
+                    }
+                    $advertiserData['user_id'] = $userId;
+                    $advertiserData['salesman_id'] = $advertiserSalesman['id']; // 业务员ID
+                    $advertiserData['status'] = config('code.status_enable');
+                    $advertiserData['create_time'] = time(); // 创建时间
+                    $res[2] = Db::name('user_advertiser')->insert($advertiserData) === false ? 0 : true;
+
+                    // 任意一个表写入失败都会抛出异常，TODO：是否可以不做该判断
+                    if (in_array(0, $res)) {
+                        return show(config('code.error'), '注册失败', '', 403);
+                    }
+
+                    // 提交事务
+                    Db::commit();
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    //return show(config('code.error'), '注册失败，请重试' . $e->getMessage(), '', 500);
+                    throw new ApiException('注册失败，请重试', 500, config('code.error'));
+                }
+                /* 手动控制事务 e */
             } else { // 首次登录（实为注册），当短信验证码为空，则以密码（上面已经判断短信验证码或密码二选一）注册时，并且系统默认不能用密码注册，则会注册失败
                 return show(config('code.error'), '用户不存在', [], 403);
             }
         }
 
         // 判断是否登录或注册成功
-        if ($id) {
+        if ($res) {
             // 返回token给客户端
             $result = [
-                'token' => $aesObj->encrypt($token . '&' . $id), // AES加密（自定义拼接字符串）
+                'token' => $aesObj->encrypt($token . '&' . $userId), // AES加密（自定义拼接字符串）
             ];
             return show(config('code.success'), 'OK', $result);
         } else {
             return show(config('code.error'), '用户登录失败', [], 403);
         }
+    }
+
+    /**
+     * 获取新增的目标客户或下级业务员的角色类型
+     * @param $salesman
+     * @param $invitation_code
+     * @return int|string
+     */
+    private function _getRoleId($salesman, $invitation_code)
+    {
+        $roleId = '';
+        // 判断为（目标客户）邀请码时
+        if ($salesman['invitation_code'] == $invitation_code) {
+            // 根据业务员角色类型，获取新增的目标客户的角色类型
+            switch ($salesman['role_id']) {
+                case 4: // 广告屏业务员
+                    $roleId = 2; // 广告屏合作商
+                    break;
+                case 5: // 广告业务员
+                    $roleId = 7; // 广告主
+                    break;
+                case 6: // 店铺业务员
+                    $roleId = 3; // 店家
+                    break;
+                case 8: // 尾货业务员
+                    $roleId = 9; // 尾货卖家
+                    break;
+                default:
+                    // 其他情况默认执行代码
+            }
+        }
+
+        // 判断为（下级业务员）邀请码时
+        if($salesman['son_invitation_code'] == $invitation_code) {
+            $roleId = $salesman['role_id'];
+        }
+
+        return $roleId;
     }
 }

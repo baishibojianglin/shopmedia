@@ -265,7 +265,7 @@
 		line-height: 80px;
 		font-weight: bolder;
 		font-size: 17px;
-		color: #409EFF;
+		color: #4C85FC;
 	}
 
 	.user-title {
@@ -288,7 +288,7 @@
 		border: 1px solid #F3F3F3;
 		line-height: 45px;
 		display: inline-block;
-		background-color: #409EFF;
+		background-color: #4C85FC;
 	}
 	.iconbg-parnter{
 		height: 45px;

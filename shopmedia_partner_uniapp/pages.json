@@ -47,7 +47,7 @@
 				"app-plus": {
 					"titleNView": true
 				},
-				"backgroundColor": "#fff",
+				"backgroundColor": "#ffffff",
 				"navigationBarTitleText": "用户协议"
 			}
 		},
@@ -503,8 +503,8 @@
     ],
 	"tabBar": {
 		"color": "#808080",
-		"selectedColor": "#409EFF",
-		"backgroundColor": "#fff",
+		"selectedColor": "#4C85FC",
+		"backgroundColor": "#ffffff",
 		"list": [{
 			"pagePath": "pages/main/main",
 			"text": "首页",
@@ -525,9 +525,9 @@
 		}]
 	},
 	"globalStyle": {
-		"navigationBarTextStyle": "white",
-		"navigationBarBackgroundColor": "#409EFF", // #3F44F3
-		"backgroundColor": "#fff",
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff",
 		"usingComponents": {
 			"ly-tree-node": "/components/ly-tree/ly-tree-node"
 		}

@@ -33,7 +33,7 @@
 				<view class="input-list" style="border-bottom: none;">
 					<checkbox-group @change="checkAgreement">
 						<label>
-							<checkbox class="checkbox inline" value="1" color="#409EFF" :checked="checkedAgreement" />
+							<checkbox class="checkbox inline" value="1" color="#4C85FC" :checked="checkedAgreement" />
 						</label>
 						<navigator class="inline text" url="/pages/login/user-agreement">
 							阅读并同意<text class="color-blue">《商市通用户及隐私协议》</text>
@@ -278,7 +278,7 @@
 		right: 0;
 		bottom: 3px;
 		font-size: 13px;
-		background-color: #409EFF;
+		background-color: #4C85FC;
 		width: 100px;
 	}
 
@@ -301,7 +301,7 @@
 	}
 
 	.submit {
-		background-color: #409EFF;
+		background-color: #4C85FC;
 		margin-top: 30px;
 	}
 </style>

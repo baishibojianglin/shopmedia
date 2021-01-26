@@ -107,6 +107,13 @@ Route::resource('feedback', 'admin/Feedback');
 Route::resource('goods_type','admin/GoodsType');
 Route::get('goods_type_tree','admin/GoodsType/GoodsTypeTree');
 
+//系统配置
+Route::resource('system','admin/System');
+
+//VIP套餐管理
+Route::resource('vip_set_meal','admin/VipSetMeal');
+Route::get('vip_pay_record','admin/VipSetMeal/getPayRecord');   //VIP套餐支付流水
+
 /* -------------------- 后台管理系统路由 -------------------- e */
 
 

@@ -87,7 +87,7 @@
 				}],
 				buttonGroup: [{
 					text: '合作签约',
-					backgroundColor: '#409EFF',
+					backgroundColor: '#4C85FC',
 					color: '#fff'
 				}]
 				/* GoodsNav 商品导航 e */

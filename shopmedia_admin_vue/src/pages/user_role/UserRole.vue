@@ -28,7 +28,7 @@
 					<!-- <el-table-column prop="id" label="序号" fixed width="90"></el-table-column> -->
 					<el-table-column prop="title" label="角色名称" fixed min-width="180"></el-table-column>
 					<!-- <el-table-column prop="parent_id" label="上级角色序号" width="120"></el-table-column> -->
-					<el-table-column prop="parent_comm_ratio" label="上级提成比例" width="180">
+					<el-table-column prop="parent_comm_ratio" label="上级统一提成比例" width="180">
 						<template slot-scope="scope">
 							<span>{{scope.row.id == 1 ? '-' : scope.row.parent_comm_ratio}}</span>
 						</template>

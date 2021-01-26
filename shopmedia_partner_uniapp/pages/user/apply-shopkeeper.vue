@@ -115,7 +115,7 @@
 	}
 
 	.login-button {
-		background-color: #409EFF;
+		background-color: #4C85FC;
 		color: #fff;
 		margin: 40px 10px 20px 10px;
 	}

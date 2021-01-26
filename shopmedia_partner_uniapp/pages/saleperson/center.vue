@@ -364,7 +364,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		border-bottom: 1px solid #409EFF;
+		border-bottom: 1px solid #4C85FC;
 		padding: 15px 10px;
 	}
 
@@ -404,7 +404,7 @@
 		z-index: 2;
 		padding: 3px 15px;
 		background-color: #fff;
-		border: 1px solid #409EFF;
+		border: 1px solid #4C85FC;
 		border-radius: 5px;
 		top: -15px;
 	}

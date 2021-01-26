@@ -4,7 +4,7 @@
 		<uni-card :is-shadow="true">
 			<!-- 广告投放区域 SegmentedControl 分段器 s -->
 			<view>
-				<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
+				<uni-segmented-control :current="segmentedControl.current" :values="segmentedControl.items" @clickItem="onClickItem" style-type="button" active-color="#4C85FC"></uni-segmented-control>
 				<view class="">
 					<view v-if="segmentedControl.current === 0">
 						<view class="input-line-height">
@@ -55,7 +55,7 @@
 		<uni-card :is-shadow="true" v-if="deviceList.length != 0">
 			<!-- 广告设备类别 SegmentedControl 分段器 s -->
 			<view>
-				<uni-segmented-control :current="deviceCateSegmentedControl.current" :values="deviceCateSegmentedControl.items" @clickItem="onClickDeviceCateItem" style-type="button" active-color="#409EFF"></uni-segmented-control>
+				<uni-segmented-control :current="deviceCateSegmentedControl.current" :values="deviceCateSegmentedControl.items" @clickItem="onClickDeviceCateItem" style-type="button" active-color="#4C85FC"></uni-segmented-control>
 				<view class="uni-list">
 					<checkbox-group @change="deviceCheckboxChange">
 						<label class="uni-list-cell uni-list-cell-pd" v-for="item in deviceList" :key="item.device_id" v-show="(deviceCateSegmentedControl.current == 0 && item.device_cate == 1) || (deviceCateSegmentedControl.current == 1 && item.device_cate == 2)">
@@ -167,8 +167,8 @@
 					longitude: '', // 104.065922
 					radius: 5000,
 					strokeWidth: 2,
-					color: '#409EFF01',
-					fillColor: '#409EFF33'
+					color: '#4C85FC01',
+					fillColor: '#4C85FC33'
 				}],
 
 				/* scroll-view 纵向滚动 s */
@@ -368,8 +368,8 @@
 								longitude: self.longitude,
 								radius: self.distanceList[self.distanceIndex].distance * 1000,
 								strokeWidth: 2,
-								color: '#409EFF01',
-								fillColor: '#409EFF33'
+								color: '#4C85FC01',
+								fillColor: '#4C85FC33'
 							}]
 						}
 					}

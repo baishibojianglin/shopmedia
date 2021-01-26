@@ -38,7 +38,7 @@
 		
 		<!-- 广告设备类别 SegmentedControl 分段器 s -->
 		<view>
-			<uni-segmented-control :current="deviceCateSegmentedControl.current" :values="deviceCateSegmentedControl.items" @clickItem="onClickDeviceCateItem" style-type="text" active-color="#409EFF"></uni-segmented-control>
+			<uni-segmented-control :current="deviceCateSegmentedControl.current" :values="deviceCateSegmentedControl.items" @clickItem="onClickDeviceCateItem" style-type="text" active-color="#4C85FC"></uni-segmented-control>
 		</view>
 		<!-- 广告设备类别 SegmentedControl 分段器 e -->
 		
