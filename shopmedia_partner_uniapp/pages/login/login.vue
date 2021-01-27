@@ -9,19 +9,18 @@
 
 		<view>
 			<view class="input-line-height">
-				<!-- <text class="input-line-height-1">电话号码</text> -->
-				<text class="m-icon m-icon-phone"></text>
+				<!-- <text class="uni-icon uni-icon-phone"></text> -->
+				<image src="../../static/img/login_page/phone_icon.png" style="width: 15px;height: 17px;"></image>
 				<input class="input-line-height-2" type="text" v-model="phone" placeholder="请输入手机号" />
 			</view>
 			<view class="input-line-height" v-if="!is_verify_code">
-				<!-- <text class="input-line-height-1">密码</text> -->
-				<text class="m-icon m-icon-locked"></text>
+				<!-- <text class="uni-icon uni-icon-locked"></text> -->
+				<image src="../../static/img/login_page/CAPTCHA_icon.png" style="width: 15px;height: 17px;"></image>
 				<input class="input-line-height-2" type="password" v-model="password" placeholder="请输入密码" />
 			</view>
-			
 			<view class="input-line-height" v-if="is_verify_code">
-				<!-- <text class="input-line-height-1">验证码</text> -->
-				<text class="m-icon m-icon-locked"></text>
+				<!-- <text class="uni-icon uni-icon-locked"></text> -->
+				<image src="../../static/img/login_page/CAPTCHA_icon.png" style="width: 15px;height: 17px;"></image>
 				<input class="input-line-height-2" name="verify_code" type="number" v-model="verify_code" placeholder="请输入验证码" />
 				<button v-if="!showseconds" @click="getVerifyCode()" plain="true" class="verify-button">获取验证码</button>
 				<button v-if="showseconds" plain="true" class="verify-button">剩余{{seconds}}s</button>
@@ -451,12 +450,6 @@
 		border-bottom: 1px solid #ECECEC;
 		font-size: 15px;
 		position: relative;
-	}
-
-	.input-line-height-1 {
-		position: absolute;
-		left: 5px;
-		padding: 20px 0 15px 0;
 	}
 
 	.input-line-height-2 {

@@ -20,6 +20,8 @@
 		{  // 首页
 			"path": "pages/main/main",
 			"style": {
+				"navigationBarBackgroundColor": "#4C85FC",
+				"navigationBarTextStyle": "#ffffff",
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "商市通"
 			}

@@ -1,90 +1,164 @@
 <template>
-	<view class="content">
-		
-		<uni-card  :is-shadow='true'>
-			<view class="tvcon">
-				<video class="vedio-con" src="https://sustock-website.oss-cn-chengdu.aliyuncs.com/company1.mp4" :autoplay="true"  :loop="false" :controls="true"></video><!-- https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4 -->
-				<view class="vedio-logo">
-					— 店通传媒 —
-				</view>
+	<view class="uni-page-body">
+		<!-- 顶部视频 s -->
+		<view class="uni-padding-wrap uni-center" style="width: auto;height: 137.1vim;background-image: linear-gradient(#4C85FC, #ffffff);padding: 10px 15px;">
+			<view style="position: relative;z-index: 1;">
+				<video class="" src="https://sustock-website.oss-cn-chengdu.aliyuncs.com/company1.mp4" :autoplay="true" :loop="false" :controls="true" style="width: 92vmin;height: 51.75vmin;border-radius: 5px;"></video><!-- https://sustock-app-test.oss-cn-chengdu.aliyuncs.com/company.mp4 -->
 			</view>
-		</uni-card>
+		</view>
+		<!-- 顶部视频 e -->
 
-		<view>
-			<uni-card style="background-image: url(../../static/img/bgg.png);" :is-shadow='false'>
-				<uni-grid class="view-grid-con totalcontentbg" :column="3">
-					<navigator url="/pages/device/device-all-list">
-						<uni-grid-item>
-							<text class="text-grid-title">广告屏</text>
-							<text class="text-grid">{{totaldata.addevice}}+</text>
-						</uni-grid-item>
-					</navigator>	
-					<navigator url="/pages/city/city">
-						<uni-grid-item>
-							<text class="text-grid-title">覆盖城市</text>
-							<text class="text-grid">{{totaldata.city}}</text>
-						</uni-grid-item>
-					</navigator>
-					<navigator url="/pages/shop/shop-list">
-						<uni-grid-item>
-							<text class="text-grid-title">服务商家</text>
-							<text class="text-grid">{{totaldata.shop}}+</text>
-						</uni-grid-item>
-					</navigator>
+		<!-- 店通服务 s -->
+		<view class="uni-padding-wrap uni-center" style="margin-top: 91.9vim">
+			<view class="text-left">
+				<text class="uni-h4 uni-bold" style="color: #333333;">店通服务</text>
+			</view>
+			
+			<uni-card :isFull="true" style="border: 0;">
+				<uni-grid :column="3" :showBorder="false">
+					<uni-grid-item>
+						<view @click="usead()">
+							<!-- <text class="icon color-white iconbg-ad">&#xe636;</text> -->
+							<image src="../../static/img/home_page/ad_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+							<br/>
+							<text>投放广告</text>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item v-if="role.device">
+						<view @click="toRole(2)">
+							<!-- <text class="icon color-white iconbg-partner">&#xe637;</text> -->
+							<image src="../../static/img/home_page/partner_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+							<br/>
+							<text>合作经营</text>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item v-if="role.shop">
+						<view @click="toRole(3)">
+							<!-- <text class="icon color-white iconbg-shop">&#xe61b;</text> -->
+							<image src="../../static/img/home_page/shop_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+							<br/>
+							<text>店铺合作</text>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item v-if="role.saleperson">
+						<view @click="toRole(1)">
+							<!-- <text class="icon color-white iconbg-sale">&#xe63d;</text> -->
+							<image src="../../static/img/home_page/business_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+							<br/>
+							<text>业务申请</text>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						<view>
+							<navigator url="/pages/news/news">
+								<!-- <text class="icon color-white iconbg-notice">&#xe652;</text> -->
+								<image src="../../static/img/home_page/news_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+								<br/>
+								<text>店通资讯</text>
+							</navigator>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						<view>
+							<navigator url="/pages/case/case">
+								<!-- <text class="icon color-white iconbg-case">&#xe648;</text> -->
+								<image src="../../static/img/home_page/news_case_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+								<br/>
+								<text>广告案列</text>
+							</navigator>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						<view>
+							<navigator url="/pages/feedback/feedback">
+								<!-- <text class="icon color-white iconbg-advice">&#xe74f;</text> -->
+								<image src="../../static/img/home_page/feedback_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+								<br/>
+								<text>投诉建议</text>
+							</navigator>
+						</view>
+					</uni-grid-item>
+					<uni-grid-item>
+						<view>
+							<navigator url="">
+								<!-- <text class="icon color-white iconbg-advice">&#xe74f;</text> -->
+								<image src="../../static/img/home_page/tail_cargo_icon.png" style="width: 65.5px;height: 65.5px;"></image>
+								<br/>
+								<text>尾货系统</text>
+							</navigator>
+						</view>
+					</uni-grid-item>
 				</uni-grid>
 			</uni-card>
 		</view>
-
-		<view>
-			<text class="user-title"> <text class="color-blue">—</text> <span style="padding: 0 5px;">店通服务</span> <text class="color-blue">—</text></text>
+		<!-- 店通服务 e -->
+        
+		<!-- 统计内容 s -->
+		<view class="uni-center">
+			<uni-card :isFull="true" style="border: 0;background-color: #F6F6F6;"> <!-- style="background-image: url(../../static/img/bgg.png);" -->
+				<uni-grid :column="3" :showBorder="false" :square="false">
+					<uni-grid-item style="width: 104.5px;height: 85px;background-image: url(../../static/img/home_page/total_device.png);background-size: contain;">
+						<navigator url="/pages/device/device-all-list">
+							<text class="text-grid">{{totaldata.addevice}}+</text>
+							<br/>
+							<text class="color-white">广告屏</text>
+						</navigator>
+					</uni-grid-item>
+					<uni-grid-item style="width: 104.5px;height: 85px;margin-left: 16px;background-image: url(../../static/img/home_page/total_city.png);background-size: contain;">
+						<navigator url="/pages/city/city">
+							<text class="text-grid">{{totaldata.city}}</text>
+							<br/>
+							<text class="color-white">覆盖城市</text>
+						</navigator>
+					</uni-grid-item>
+					<uni-grid-item style="width: 104.5px;height: 85px;margin-left: 16px;background-image: url(../../static/img/home_page/total_merchant.png);background-size: contain;">
+						<navigator url="/pages/shop/shop-list">
+							<text class="text-grid">{{totaldata.shop}}+</text>
+							<br/>
+							<text class="color-white">服务商家</text>
+						</navigator>
+					</uni-grid-item>
+				</uni-grid>
+			</uni-card>
 		</view>
-
-        <uni-card  :is-shadow='true'>
-			<view class="navcon">
-				<view class="navcon-item" @click="usead()">
-					<text class="iconposition icon color-white iconbg-ad">&#xe636;</text>
-					<br />
-					<text>投放广告</text>
+		<!-- 统计内容 s -->
+		
+		<!-- 尾货紧急处理 s -->
+		<view class="uni-padding-wrap uni-common-mt uni-center">
+			<view class="text-left">
+				<text class="uni-h4 uni-bold" style="color: #333333;">紧急处理</text>
+			</view>
+			
+			<view class="uni-flex uni-row" style="-webkit-flex-wrap: wrap;flex-wrap: wrap;">
+				<view class="" style="width: 168px;" v-for="(item, index) in 6" :key="index">
+					<!-- <uni-card note="Tips">
+						内容主体，可自定义内容及样式
+					</uni-card> -->
+					
+					<uni-card :is-shadow="true" title="下架时间：01/29 12:00" mode="style" thumbnail="../../static/img/home_page/tg_goods_cover.png" note="true" @click="clickCard">
+						<text class="content-box-text uni-ellipsis">惠氏启韵启赋妈妈奶粉上...</text>
+						<block slot="footer">
+							<view class="footer-box">
+								<view class="" @click.stop="footerClick('喜欢')"><text class="footer-box__item">喜欢</text></view>
+								<view class="" @click.stop="footerClick('评论')"><text class="footer-box__item">评论</text></view>
+								<view class="" @click.stop="footerClick('分享')"><text class="footer-box__item">分享</text></view>
+							</view>
+						</block>
+					</uni-card>
 				</view>
-				<view v-if="role.device" @click="toRole(2)" class="navcon-item">
-					<text class="iconposition icon color-white iconbg-parnter">&#xe637;</text>
-					<br />
-					<text>合作经营</text>
+				<view class="" style="width: 168px;">
+					<uni-card title="标题文字" thumbnail="" extra="额外信息" note="Tips">
+						内容主体，可自定义内容及样式
+					</uni-card>
 				</view>
-				<view v-if="role.shop" @click="toRole(3)" class="navcon-item">
-					<text class="iconposition icon color-white iconbg-shop">&#xe61b;</text>
-					<br />
-					<text>店铺合作</text>
-				</view>
-				<view v-if="role.saleperson" @click="toRole(1)" class="navcon-item">
-					<text class="iconposition icon color-white iconbg-sale">&#xe63d;</text>
-					<br />
-					<text>业务申请</text>
-				</view>
-				<view class="navcon-item">
-					<navigator url="/pages/news/news">
-						<text class="iconposition icon color-white iconbg-notice">&#xe652;</text>
-						<br />
-						<text>店通资讯</text>
-					</navigator>
-				</view>
-				<view class="navcon-item">
-					<navigator url="/pages/case/case">
-						<text class="iconposition icon color-white iconbg-case">&#xe648;</text>
-						<br/>
-						<text>广告案列</text>
-					</navigator>
-				</view>
-				<view class="navcon-item">
-					<navigator url="/pages/feedback/feedback">
-						<text class="iconposition icon color-white iconbg-advice">&#xe74f;</text>
-						<br/>
-						<text>投诉建议</text>
-					</navigator>
+				<view class="" style="width: 168px;">
+					<uni-card title="标题文字" thumbnail="" extra="额外信息" note="Tips">
+						内容主体，可自定义内容及样式
+					</uni-card>
 				</view>
 			</view>
-		</uni-card>
-		
+		</view>
+		<!-- 尾货紧急处理 e -->
 	</view>
 </template>
 
@@ -236,41 +310,11 @@
 </script>
 
 <style>
-	.content {
-		margin: 0;
-		padding: 0;
-		text-align: center;
-	}
-
-	.vedio-con {
-		width:100%;
-		margin:0px;
-		padding: 0px;
-		border:15px solid #57585C;
-		border-bottom: 30px solid #57585C;
-		box-sizing: border-box;
-		border-radius: 7px;
-		height: 205px;
-	}
-
-	.view-grid-con {
-		margin: 0px 5px;
-	}
-
-	.text-grid-title {
-		margin-top: 10px;
-	}
-
 	.text-grid {
-		line-height: 80px;
+		font-size: 24px;
+		line-height: 54px;
 		font-weight: bolder;
-		font-size: 17px;
-		color: #4C85FC;
-	}
-
-	.user-title {
-		line-height: 50px;
-		font-size: 16px;
+		color: #FFFFFF;
 	}
 
 	.iconbg {
@@ -290,7 +334,7 @@
 		display: inline-block;
 		background-color: #4C85FC;
 	}
-	.iconbg-parnter{
+	.iconbg-partner{
 		height: 45px;
 		width: 45px;
 		border-radius: 45px;
@@ -343,30 +387,5 @@
 		line-height: 45px;
 		display: inline-block;
 		background-color: #8CE050;
-	}
-	.navcon {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: left;
-		text-align: center;
-	}
-
-	.navcon-item {
-		flex: 0 0 33%;
-		padding: 10px 0;
-	}
-	.tvcon{
-		width:100%;
-		position: relative;
-	}
-	.totalcontentbg{
-		background-color: #fff;
-	}
-	.vedio-logo{
-		width: 100%;
-		position: absolute;
-		bottom:10px;
-		text-align: center;
-		color:#fff;
 	}
 </style>
