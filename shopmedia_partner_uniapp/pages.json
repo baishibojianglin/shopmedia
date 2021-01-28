@@ -21,7 +21,7 @@
 			"path": "pages/main/main",
 			"style": {
 				"navigationBarBackgroundColor": "#4C85FC",
-				"navigationBarTextStyle": "#ffffff",
+				"navigationBarTextStyle": "white",
 				"app-plus": {"titleNView": true},
 				"navigationBarTitleText": "商市通"
 			}

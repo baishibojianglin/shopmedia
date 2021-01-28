@@ -18,7 +18,6 @@
 				<uni-grid :column="3" :showBorder="false">
 					<uni-grid-item>
 						<view @click="usead()">
-							<!-- <text class="icon color-white iconbg-ad">&#xe636;</text> -->
 							<image src="../../static/img/home_page/ad_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 							<br/>
 							<text>投放广告</text>
@@ -26,7 +25,6 @@
 					</uni-grid-item>
 					<uni-grid-item v-if="role.device">
 						<view @click="toRole(2)">
-							<!-- <text class="icon color-white iconbg-partner">&#xe637;</text> -->
 							<image src="../../static/img/home_page/partner_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 							<br/>
 							<text>合作经营</text>
@@ -34,7 +32,6 @@
 					</uni-grid-item>
 					<uni-grid-item v-if="role.shop">
 						<view @click="toRole(3)">
-							<!-- <text class="icon color-white iconbg-shop">&#xe61b;</text> -->
 							<image src="../../static/img/home_page/shop_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 							<br/>
 							<text>店铺合作</text>
@@ -42,7 +39,6 @@
 					</uni-grid-item>
 					<uni-grid-item v-if="role.saleperson">
 						<view @click="toRole(1)">
-							<!-- <text class="icon color-white iconbg-sale">&#xe63d;</text> -->
 							<image src="../../static/img/home_page/business_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 							<br/>
 							<text>业务申请</text>
@@ -51,7 +47,6 @@
 					<uni-grid-item>
 						<view>
 							<navigator url="/pages/news/news">
-								<!-- <text class="icon color-white iconbg-notice">&#xe652;</text> -->
 								<image src="../../static/img/home_page/news_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 								<br/>
 								<text>店通资讯</text>
@@ -61,7 +56,6 @@
 					<uni-grid-item>
 						<view>
 							<navigator url="/pages/case/case">
-								<!-- <text class="icon color-white iconbg-case">&#xe648;</text> -->
 								<image src="../../static/img/home_page/news_case_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 								<br/>
 								<text>广告案列</text>
@@ -71,7 +65,6 @@
 					<uni-grid-item>
 						<view>
 							<navigator url="/pages/feedback/feedback">
-								<!-- <text class="icon color-white iconbg-advice">&#xe74f;</text> -->
 								<image src="../../static/img/home_page/feedback_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 								<br/>
 								<text>投诉建议</text>
@@ -81,7 +74,6 @@
 					<uni-grid-item>
 						<view>
 							<navigator url="">
-								<!-- <text class="icon color-white iconbg-advice">&#xe74f;</text> -->
 								<image src="../../static/img/home_page/tail_cargo_icon.png" style="width: 65.5px;height: 65.5px;"></image>
 								<br/>
 								<text>尾货系统</text>
@@ -99,21 +91,21 @@
 				<uni-grid :column="3" :showBorder="false" :square="false">
 					<uni-grid-item style="width: 104.5px;height: 85px;background-image: url(../../static/img/home_page/total_device.png);background-size: contain;">
 						<navigator url="/pages/device/device-all-list">
-							<text class="text-grid">{{totaldata.addevice}}+</text>
+							<text class="grid-item-text">{{totaldata.addevice}}+</text>
 							<br/>
 							<text class="color-white">广告屏</text>
 						</navigator>
 					</uni-grid-item>
 					<uni-grid-item style="width: 104.5px;height: 85px;margin-left: 16px;background-image: url(../../static/img/home_page/total_city.png);background-size: contain;">
 						<navigator url="/pages/city/city">
-							<text class="text-grid">{{totaldata.city}}</text>
+							<text class="grid-item-text">{{totaldata.city}}</text>
 							<br/>
 							<text class="color-white">覆盖城市</text>
 						</navigator>
 					</uni-grid-item>
 					<uni-grid-item style="width: 104.5px;height: 85px;margin-left: 16px;background-image: url(../../static/img/home_page/total_merchant.png);background-size: contain;">
 						<navigator url="/pages/shop/shop-list">
-							<text class="text-grid">{{totaldata.shop}}+</text>
+							<text class="grid-item-text">{{totaldata.shop}}+</text>
 							<br/>
 							<text class="color-white">服务商家</text>
 						</navigator>
@@ -124,36 +116,32 @@
 		<!-- 统计内容 s -->
 		
 		<!-- 尾货紧急处理 s -->
-		<view class="uni-padding-wrap uni-common-mt uni-center">
+		<view class="uni-padding-wrap uni-common-mt uni-common-mb uni-center">
 			<view class="text-left">
 				<text class="uni-h4 uni-bold" style="color: #333333;">紧急处理</text>
 			</view>
 			
-			<view class="uni-flex uni-row" style="-webkit-flex-wrap: wrap;flex-wrap: wrap;">
-				<view class="" style="width: 168px;" v-for="(item, index) in 6" :key="index">
-					<!-- <uni-card note="Tips">
-						内容主体，可自定义内容及样式
-					</uni-card> -->
-					
-					<uni-card :is-shadow="true" title="下架时间：01/29 12:00" mode="style" thumbnail="../../static/img/home_page/tg_goods_cover.png" note="true" @click="clickCard">
-						<text class="content-box-text uni-ellipsis">惠氏启韵启赋妈妈奶粉上...</text>
+			<view class="uni-flex uni-row uni-common-mt" style="-webkit-flex-wrap: wrap;flex-wrap: wrap;-webkit-justify-content: space-between;justify-content: space-between;">
+				<view class="tail-cargo-item" style="width: 168px;" v-for="(item, index) in 6" :key="index">
+					<uni-card :isFull="true" :is-shadow="false" title="下架时间 01/29 12:00" mode="style" thumbnail="../../static/img/home_page/tg_goods_cover.png" note="true" @click="clickCard" style="margin-bottom: 10px;border: 0;border-radius: 2px;">
+						<view class="">
+							<view class="uni-ellipsis">
+								<text class="content-box-text">惠氏启韵启赋妈妈奶粉上...</text>
+							</view>
+							<view class="text-left">
+								<text class="fon16 uni-bold" style="color: #D71818;">￥135</text>
+								<text class="uni-text-small uni-product-price-favour">￥158</text>
+								<text class="uni-text-small color-blue uni-common-pl">库存484</text>
+							</view>
+						</view>
+						
 						<block slot="footer">
 							<view class="footer-box">
-								<view class="" @click.stop="footerClick('喜欢')"><text class="footer-box__item">喜欢</text></view>
-								<view class="" @click.stop="footerClick('评论')"><text class="footer-box__item">评论</text></view>
-								<view class="" @click.stop="footerClick('分享')"><text class="footer-box__item">分享</text></view>
+								<view class="" @click.stop="footerClick('立即联系')">
+									<button size="mini" class="login-button primary color-white"><text class="footer-box__item">立即联系</text></button>
+								</view>
 							</view>
 						</block>
-					</uni-card>
-				</view>
-				<view class="" style="width: 168px;">
-					<uni-card title="标题文字" thumbnail="" extra="额外信息" note="Tips">
-						内容主体，可自定义内容及样式
-					</uni-card>
-				</view>
-				<view class="" style="width: 168px;">
-					<uni-card title="标题文字" thumbnail="" extra="额外信息" note="Tips">
-						内容主体，可自定义内容及样式
 					</uni-card>
 				</view>
 			</view>
@@ -310,82 +298,25 @@
 </script>
 
 <style>
-	.text-grid {
+	.grid-item-text {
 		font-size: 24px;
 		line-height: 54px;
 		font-weight: bolder;
 		color: #FFFFFF;
 	}
-
-	.iconbg {
-		height: 50px;
-		width: 50px;
-		border-radius: 50px;
-		border: 1px solid #F3F3F3;
-		line-height: 50px;
-		display: inline-block;
+	
+	.tail-cargo-item .footer-box {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		justify-content: flex-end;
+		flex-direction: row;
 	}
-	.iconbg-ad{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color: #4C85FC;
-	}
-	.iconbg-partner{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color: #EB795B;
-	}
-	.iconbg-sale{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color: #C9D269;
-	}
-	.iconbg-notice{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color: #F7D810;
-	}
-	.iconbg-advice{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color:#7EECF9;
-	}
-	.iconbg-case{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color:#FF4403;
-	}
-	.iconbg-shop{
-		height: 45px;
-		width: 45px;
-		border-radius: 45px;
-		border: 1px solid #F3F3F3;
-		line-height: 45px;
-		display: inline-block;
-		background-color: #8CE050;
+	
+	.tail-cargo-item .footer-box__item {
+		align-items: center;
+		padding: 2px 0;
+		/* font-size: 12px; */
+		/* color: #666; */
 	}
 </style>
