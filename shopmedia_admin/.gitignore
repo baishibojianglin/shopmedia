@@ -3,10 +3,10 @@ composer.lock
 *.log
 thinkphp
 /application/database.php
-/application/common.php
+# /application/common.php
 /application/extra/app.php
 /application/extra/commission.php
-/application/extra/alipay.php
+/application/extra/aliyun.php
 /application/extra/wechat.php
 /application/common/lib/Aes.php
 /public/phpMyAdmin4.8.5
